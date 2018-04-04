@@ -1,0 +1,4 @@
+node_modules
+package_lock.json
+dist/data/mnist
+dump_checkpoints
