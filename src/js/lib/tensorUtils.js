@@ -1,23 +1,23 @@
-import * as tfc from '@tensorflow/tfjs-core';
-const math = tfc.ENV.math;
+import * as dl from 'deeplearn';
+const math = dl.ENV.math;
 
 const tensorUtils = {
   inputTimesWeightAddBias(params) { // takes in input, weights, biases and activation function
-    return tfc.tidy(() => {
+    return dl.tidy(() => {
       const { input, weights, biases } = { ...params };
       return math.add(math.vectorTimesMatrix(input, weights), biases);
     })
   },
 	lerp(from, to, step) {
-    return tfc.tidy(() => {
-      return from.add(to.sub(from).mul(tfc.scalar(step)));
+    return dl.tidy(() => {
+      return from.add(to.sub(from).mul(dl.scalar(step)));
     });
   },
   slerp(from, to, step) { // spherical
-    return tfc.tidy(() => {
-      const omega = tfc.acos(from.mul(to));
-      const so = tfc.sin(omega);
-      return tfc.sin(omega.mul(tfc.scalar(1 - step)).div(so).mul(from).add(tfc.sin(tfc.scalar(step).mul(omega)).div(so).mul(to)));
+    return dl.tidy(() => {
+      const omega = dl.acos(from.mul(to));
+      const so = dl.sin(omega);
+      return dl.sin(omega.mul(dl.scalar(1 - step)).div(so).mul(from).add(dl.sin(dl.scalar(step).mul(omega)).div(so).mul(to)));
     });
   },
   blerp(x, y, points) { // bilinear interpolation
@@ -47,18 +47,18 @@ const tensorUtils = {
     //         q22 * (x - x1) * (y - y1)
     //        ) / ((x2 - x1) * (y2 - y1) + 0.0)
     // console.log(points)
-    return tfc.tidy(() => {
+    return dl.tidy(() => {
       const [ x1, y1, q11 ]   = [ ... sorted[0] ];
       const [ _x1, y2, q12 ]  = [ ... sorted[1] ];
       const [ x2, _y1, q21 ]  = [ ... sorted[2] ];
       const [ _x2, _y2, q22 ] = [ ... sorted[3] ];
 
-      const a = tfc.tensor1d(q11).mul(tfc.scalar(x2 - x)).mul(tfc.scalar(y2 - y));
-      const b = tfc.tensor1d(q21).mul(tfc.scalar(x - x1)).mul(tfc.scalar(y2 - y));
-      const c = tfc.tensor1d(q12).mul(tfc.scalar(x2 - x)).mul(tfc.scalar(y - y1));
-      const d = tfc.tensor1d(q22).mul(tfc.scalar(x - x1)).mul(tfc.scalar(y - y1));
+      const a = dl.tensor1d(q11).mul(dl.scalar(x2 - x)).mul(dl.scalar(y2 - y));
+      const b = dl.tensor1d(q21).mul(dl.scalar(x - x1)).mul(dl.scalar(y2 - y));
+      const c = dl.tensor1d(q12).mul(dl.scalar(x2 - x)).mul(dl.scalar(y - y1));
+      const d = dl.tensor1d(q22).mul(dl.scalar(x - x1)).mul(dl.scalar(y - y1));
 
-      const denominator = tfc.scalar(x2 - x1).mul(tfc.scalar(y2 - y1));
+      const denominator = dl.scalar(x2 - x1).mul(dl.scalar(y2 - y1));
       const result = a.add(b).add(c).add(c).div(denominator).getValues();
       // console.log(result)
       return a.add(b).add(c).add(c).div(denominator)

@@ -1,16 +1,17 @@
-import * as tfc from '@tensorflow/tfjs-core';
+// import * as dl from '@tensorflow/tfjs-core';
+import * as dl from 'deeplearn';
 import { randomInt, randomPick } from '../lib/helpers.js';
 import { inputTimesWeightAddBias } from '../lib/tensorUtils.js';
 
-const math = tfc.ENV.math;
+const math = dl.ENV.math;
 
 export default class FontModel {
-  constructor(args) {
-    this.init();
+  constructor(loadedCallback) {
+    this.init(loadedCallback);
     this.modelVars = {};
   };
   init(loadedCallback) {
-    const varLoader = new tfc.CheckpointLoader(`./dist/data/fonts`);
+    const varLoader = new dl.CheckpointLoader(`./dist/data/Model`);
     varLoader.getAllVariables().then(vars => {
       this.modelVars = {
         input: { biases: '', weights: vars['input_font_bottleneck_W'] }, // W: 56443, 40 - input vectors for dataset
@@ -26,28 +27,25 @@ export default class FontModel {
     })
   };
   randomFontEmbedding(characterIndex) {
-    return tfc.tidy(() => {
+    return dl.tidy(() => {
       const fontEmbeddings = this.modelVars.input.weights.getValues();
       const startIndex = randomInt(0, fontEmbeddings.length/40) * 40;
-      const randomEmbedding = tfc.tensor1d(fontEmbeddings.slice(startIndex, startIndex + 40));
+      const randomEmbedding = dl.tensor1d(fontEmbeddings.slice(startIndex, startIndex + 40));
       return randomEmbedding;
     });
   };
   formatFontTensor(fontVector, characterIndex) {
     // Input Vector: 40 long font noise vector, with 62 one hot character vector at end
-    return tfc.tidy(() => {
-      const oneHot = tfc.oneHot(tfc.tensor1d([characterIndex]), 62).reshape([62]);
+    return dl.tidy(() => {
+      const oneHot = dl.oneHot(dl.tensor1d([characterIndex]), 62).reshape([62]);
       return fontVector.concat(oneHot);
     });
   };
-  encode(imageTensor) {
-    // encodes an image to a vector in the model's space
-  };
   decode(fontVector, characterIndex) { // vector to image
-    // console.log(tfc.memory().numTensors)
-    return tfc.tidy(() => {
+    // console.log(dl.memory().numTensors)
+    return dl.tidy(() => {
       const inputVector = this.formatFontTensor(fontVector, characterIndex);
-      const inputTensor = tfc.tidy(() => {
+      const inputTensor = dl.tidy(() => {
         return math.leakyRelu(
           inputTimesWeightAddBias({
             input: inputVector,
@@ -57,7 +55,7 @@ export default class FontModel {
         0.01);
       });
 
-      const hidden1 = tfc.tidy(() => {
+      const hidden1 = dl.tidy(() => {
         return math.leakyRelu(
           inputTimesWeightAddBias({
             input: inputTensor,
@@ -67,7 +65,7 @@ export default class FontModel {
         0.01);
       });
 
-      const hidden2 = tfc.tidy(() => {
+      const hidden2 = dl.tidy(() => {
         return math.leakyRelu(
           inputTimesWeightAddBias({
             input: hidden1,
@@ -77,7 +75,7 @@ export default class FontModel {
         0.01);
       });
 
-      const hidden3 = tfc.tidy(() => {
+      const hidden3 = dl.tidy(() => {
         return math.leakyRelu(
           inputTimesWeightAddBias({
             input: hidden2,
@@ -87,7 +85,7 @@ export default class FontModel {
         0.01);
       });
 
-      const output = tfc.tidy(() => {
+      const output = dl.tidy(() => {
         return math.sigmoid(
           inputTimesWeightAddBias({
             input: hidden3,
