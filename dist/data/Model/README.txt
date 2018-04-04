@@ -1,0 +1,1 @@
+Weights and Biases for erikbern's deepfonts model (https://github.com/erikbern/deep-fonts). Extracted to be compatible with deeplearn.js
