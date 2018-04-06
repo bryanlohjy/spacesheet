@@ -240,13 +240,39 @@ export default class DataPicker {
             subCell.draw();
           }
         }
-        if (subdivisions > 1) {
-          this.ctx.strokeStyle = '#C9C9C9';
-          this.ctx.lineWidth = 2 / this.scale;
-          this.ctx.setLineDash([2, 4]);
-          this.ctx.lineDashOffset = 4;
-          this.ctx.strokeRect(cell.x, cell.y, cell.w, cell.h);
-        }
+        // draw data corners
+        this.ctx.strokeStyle = '#C9C9C9';
+        this.ctx.lineWidth = 2 / this.scale;
+        const cornerSize = 3;
+        // tl
+        this.ctx.beginPath();
+        this.ctx.moveTo(cell.x, cell.y + cornerSize);
+        this.ctx.lineTo(cell.x, cell.y);
+        this.ctx.lineTo(cell.x + cornerSize, cell.y);
+        this.ctx.stroke();
+        // tr
+        this.ctx.beginPath();
+        this.ctx.moveTo(cell.x + cell.w, cell.y + cornerSize);
+        this.ctx.lineTo(cell.x + cell.w, cell.y);
+        this.ctx.lineTo(cell.x  + cell.w - cornerSize, cell.y);
+        this.ctx.stroke();
+        // // br
+        this.ctx.beginPath();
+        this.ctx.moveTo(cell.x + cell.w, cell.y + cell.h - cornerSize);
+        this.ctx.lineTo(cell.x + cell.w, cell.y + cell.h);
+        this.ctx.lineTo(cell.x  + cell.w - cornerSize, cell.y + cell.h);
+        this.ctx.stroke();
+        // bl
+        this.ctx.beginPath();
+        this.ctx.moveTo(cell.x, cell.y + cell.h - cornerSize);
+        this.ctx.lineTo(cell.x, cell.y + cell.h);
+        this.ctx.lineTo(cell.x + cornerSize, cell.y + cell.h);
+        this.ctx.stroke();
+
+        // this.ctx.setLineDash([2, 4]);
+        // this.ctx.lineDashOffset = 4;
+        // this.ctx.strokeRect(cell.x, cell.y, cell.w, cell.h);
+        // }
       }
     }
   };
