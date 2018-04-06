@@ -1,0 +1,216 @@
+// import React from 'react';
+// import PropTypes from 'prop-types';
+// import DataPickerCanvas from './DataPickerCanvas.js';
+// import { getData } from '../../lib/helpers.js';
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import * as dl from 'deeplearn';
+import { lerp, slerp } from '../../lib/tensorUtils.js';
+import DataPickerCanvas from './DataPickerCanvas.js';
+
+export default class DataPicker extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleMouse = this.handleMouse.bind(this);
+    this.handleMouseWheel = this.handleMouseWheel.bind(this);
+    this.mouseToDataCoordinates = this.mouseToDataCoordinates.bind(this);
+
+    this.elementBounds = null;
+
+    this.state = { // used to manage highlighter
+      showHighlighter: false,
+      highlighterColumn: 0,
+      highlighterRow: 0,
+      scale: null,
+    };
+  };
+  componentDidMount() {
+    const { rows, columns } = this.props.gridData.grid;
+    this.refs.dataPickerCanvas.width =  this.props.width;
+    this.refs.dataPickerCanvas.height = this.props.height;
+
+    if (this.props.gridData) {
+      const el = this.refs.dataPickerCanvas;
+      this.dataPicker = new DataPickerCanvas(el.getContext('2d'), this.props.gridData, {
+        outputWidth: this.props.outputWidth,
+        outputHeight: this.props.outputHeight,
+        drawFn: this.props.drawFn,
+        decodeFn: this.props.decodeFn,
+        memoryCtx: this.refs.memoryCanvas.getContext('2d'),
+      });
+      this.dataPicker.draw();
+      this.setState({
+        scale: this.dataPicker.scale,
+      });
+    }
+  };
+  mouseToDataCoordinates(mouseX, mouseY) {
+    // takes in mouse coords and returns row and col index
+    let { a: scale, b, c, d, e: translateX, f: translateY } = this.dataPicker.ctx.getTransform();
+
+    const subdivisionWidth = this.dataPicker.outputWidth / this.dataPicker.subdivisions * scale;
+    const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
+
+    const subdivisionHeight = this.dataPicker.outputHeight / this.dataPicker.subdivisions * scale;
+    const row = Math.floor(((mouseY - translateY)) / subdivisionHeight);
+
+    return { row, column };
+  };
+  handleMouse(e) {
+    e.stopPropagation();
+    switch (e.type) {
+      case 'mousemove':
+        this.dataPicker.prevX = e.clientX;
+        this.dataPicker.prevY = e.clientY;
+        this.dataPicker.dragged = true;
+        let showHighlighter = false;
+
+        if (this.dataPicker.dragStart) {
+          const pt = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
+          this.dataPicker.ctx.translate(pt.x-this.dataPicker.dragStart.x,pt.y-this.dataPicker.dragStart.y);
+          this.dataPicker.draw();
+        } else {
+          showHighlighter = true;
+        }
+
+        const { row, column } = this.mouseToDataCoordinates(e.clientX, e.clientY);
+        this.setState({
+          highlighterColumn: column,
+          highlighterRow: row,
+          showHighlighter: showHighlighter,
+        });
+        break;
+      case 'mousedown':
+        this.dataPicker.prevX = e.clientX;
+        this.dataPicker.prevY = e.clientY;
+        this.dataPicker.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
+        this.dataPicker.dragged = false;
+        break;
+      case 'mouseup':
+        this.dataPicker.dragStart = null;
+        if (this.state.showHighlighter) {
+          const subdivisions = this.dataPicker.subdivisions;
+          const totalRows = this.dataPicker.rows * subdivisions;
+          const row = Math.floor(this.state.highlighterRow / subdivisions);
+          const subrow = this.state.highlighterRow - (row * subdivisions);
+
+          const totalColumns = this.dataPicker.columns * subdivisions;
+          const column = Math.floor(this.state.highlighterColumn / subdivisions);
+          const subcolumn = this.state.highlighterColumn - (column * subdivisions);
+
+          const dataKey = `${subdivisions}-${column}-${row}-${subcolumn}-${subrow}`;
+          const data = this.dataPicker.cells[dataKey].data;
+        }
+        break;
+      case 'mouseout':
+        this.dataPicker.dragStart = null;
+        this.setState({
+          highlighterColumn: 0,
+          highlighterRow: 0,
+          showHighlighter: false,
+        });
+        break;
+    }
+  };
+  handleMouseWheel(e) {
+    e.preventDefault();
+    const delta = e.deltaY;
+    if (delta) {
+      if (delta < 0) {
+        this.dataPicker.zoom(1);
+      } else {
+        this.dataPicker.zoom(-1);
+      }
+      const { row, column } = this.mouseToDataCoordinates(e.clientX, e.clientY);
+      this.setState({
+        highlighterColumn: column,
+        highlighterRow: row,
+        scale: this.dataPicker.scale,
+      });
+    }
+  };
+  render() {
+    return (
+      <div className="datapicker-container">
+        { this.state.showHighlighter ?
+          (
+            <DataPickerHighlighter
+              dataPicker={ this.dataPicker }
+              highlighterColumn={ this.state.highlighterColumn }
+              highlighterRow={ this.state.highlighterRow }
+              scale={ this.state.scale }
+            />
+          ) : ''
+        }
+        <canvas className="memory-canvas" ref="memoryCanvas"/>
+        <canvas
+          ref='dataPickerCanvas'
+          onMouseMove={ this.handleMouse }
+          onMouseDown={ this.handleMouse }
+          onMouseOut={ this.handleMouse }
+          onMouseUp={ this.handleMouse }
+          onWheel={ this.handleMouseWheel }
+        />
+      </div>
+    );
+  }
+}
+DataPicker.propTypes = {
+  outputWidth: PropTypes.number.isRequired,
+  outputHeight: PropTypes.number.isRequired,
+  drawFn: PropTypes.func.isRequired,
+  decodeFn: PropTypes.func.isRequired,
+  gridData: PropTypes.object,
+  isColorTest: PropTypes.bool,
+  onChange: PropTypes.func,
+};
+
+
+class DataPickerHighlighter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.computeStyle = this.computeStyle.bind(this);
+  };
+  computeStyle() {
+    const highlighter = this.refs.highlighter;
+    let style = {};
+    let { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
+
+    const subdivisionWidth = this.props.dataPicker.outputWidth / this.props.dataPicker.subdivisions * this.props.scale;
+    const subdivisionHeight = this.props.dataPicker.outputHeight / this.props.dataPicker.subdivisions * this.props.scale;
+
+    const top = translateY + this.props.highlighterRow * subdivisionHeight;
+    const left = translateX + this.props.highlighterColumn * subdivisionWidth;
+
+    style.width = `${subdivisionWidth}px`;
+    style.height = `${subdivisionHeight}px`;
+    style.top = `${top}px`;
+    style.left = `${left}px`;
+
+    return style;
+  };
+  shouldComponentUpdate(nextProps, nextState) {
+    const newColumn = nextProps.highlighterColumn !== this.props.highlighterColumn;
+    const newRow = nextProps.highlighterRow !== this.props.highlighterRow;
+    const newScale = nextProps.scale !== this.props.scale;
+
+    return newColumn || newRow || newScale;
+  };
+  render() {
+    return (
+      <div
+        className='highlighter'
+        ref='highlighter'
+        style={ this.computeStyle() }
+      />
+    )
+  }
+}
+DataPicker.propTypes = {
+  dataPicker: PropTypes.object,
+  highlighterColumn: PropTypes.number,
+  highlighterRow: PropTypes.number,
+  scale: PropTypes.number,
+};

@@ -9,6 +9,9 @@ export default class FontModel {
   constructor(loadedCallback) {
     this.init(loadedCallback);
     this.modelVars = {};
+    // Output dimensions in pixels
+    this.outputWidth = 64;
+    this.outputHeight = 64;
   };
   init(loadedCallback) {
     const varLoader = new dl.CheckpointLoader(`./dist/data/Model`);
@@ -37,6 +40,9 @@ export default class FontModel {
   formatFontTensor(fontVector, characterIndex) {
     // Input Vector: 40 long font noise vector, with 62 one hot character vector at end
     return dl.tidy(() => {
+      if (fontVector.constructor.name.toLowerCase() !== 'tensor') {
+        fontVector = dl.tensor1d(fontVector);
+      }
       const oneHot = dl.oneHot(dl.tensor1d([characterIndex]), 62).reshape([62]);
       return fontVector.concat(oneHot);
     });

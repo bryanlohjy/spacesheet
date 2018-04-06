@@ -1,0 +1,14 @@
+.datapicker-container {
+  display: inline-flex;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  .highlighter {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 2px;
+    box-shadow: 0px 3px 10px #696969;
+    border: 1px solid #B2B2B2;
+  }
+  canvas {}
+}

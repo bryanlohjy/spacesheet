@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+    "@tensorflow/tfjs": "^0.6.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "deeplearn": "^0.5.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
