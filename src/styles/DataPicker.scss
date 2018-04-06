@@ -3,6 +3,30 @@
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  user-select: none;
+  .scale-buttons {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid grey;
+    background-color: lightgrey;
+    span {
+      display: flex;
+      align-items: center;
+      padding: 5px 8px;
+      &:hover {
+        background-color: whitesmoke;
+      }
+      &:first-child {
+        border-radius: 5px 5px 0 0;
+        border-bottom: 1px solid grey;
+      }
+      &:nth-child(2) {
+        border-radius: 0 0 5px 5px;
+      }
+    }
+  }
   .highlighter {
     position: absolute;
     pointer-events: none;

@@ -16,7 +16,7 @@ export default class DataPicker extends React.Component {
     this.handleMouse = this.handleMouse.bind(this);
     this.handleMouseWheel = this.handleMouseWheel.bind(this);
     this.mouseToDataCoordinates = this.mouseToDataCoordinates.bind(this);
-
+    this.handleZoomClick = this.handleZoomClick.bind(this);
     this.elementBounds = null;
 
     this.state = { // used to manage highlighter
@@ -131,6 +131,22 @@ export default class DataPicker extends React.Component {
       });
     }
   };
+  handleZoomClick(direction) {
+    // zoom towards center
+    const centerX = this.refs.dataPickerCanvas.width / 2;
+    const centerY = this.refs.dataPickerCanvas.height / 2;
+    this.dataPicker.prevX = centerX;
+    this.dataPicker.prevY = centerY;
+
+    this.dataPicker.zoom(direction)
+    const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
+    
+    this.setState({
+      highlighterColumn: column,
+      highlighterRow: row,
+      scale: this.dataPicker.scale,
+    });
+  };
   render() {
     return (
       <div className="datapicker-container">
@@ -144,6 +160,18 @@ export default class DataPicker extends React.Component {
             />
           ) : ''
         }
+        <div className="scale-buttons">
+          <span onClick={() => {
+            this.handleZoomClick(1);
+          }}>
+            +
+          </span>
+          <span onClick={() => {
+            this.handleZoomClick(-1);
+          }}>
+            -
+          </span>
+        </div>
         <canvas className="memory-canvas" ref="memoryCanvas"/>
         <canvas
           ref='dataPickerCanvas'
