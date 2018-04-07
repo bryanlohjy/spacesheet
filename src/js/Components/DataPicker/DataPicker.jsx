@@ -23,6 +23,8 @@ export default class DataPicker extends React.Component {
       showHighlighter: false,
       highlighterColumn: 0,
       highlighterRow: 0,
+      drawnWidth: 0,
+      drawnHeight: 0,
       scale: null,
     };
   };
@@ -50,11 +52,20 @@ export default class DataPicker extends React.Component {
     // takes in mouse coords and returns row and col index
     let { a: scale, b, c, d, e: translateX, f: translateY } = this.dataPicker.ctx.getTransform();
 
-    const subdivisionWidth = this.dataPicker.outputWidth / this.dataPicker.subdivisions * scale;
+    const el = this.refs.dataPickerCanvas;
+
+    const drawnScaleX = el.clientWidth / (this.dataPicker.outputWidth * this.dataPicker.columns);
+    const subdivisionWidth = this.dataPicker.outputWidth / this.dataPicker.subdivisions * scale * drawnScaleX;
     const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
 
-    const subdivisionHeight = this.dataPicker.outputHeight / this.dataPicker.subdivisions * scale;
+    const drawnScaleY = el.clientHeight / (this.dataPicker.outputHeight * this.dataPicker.rows);
+    const subdivisionHeight = this.dataPicker.outputHeight / this.dataPicker.subdivisions * scale * drawnScaleY;
     const row = Math.floor(((mouseY - translateY)) / subdivisionHeight);
+
+    this.setState({
+      drawnWidth: subdivisionWidth,
+      drawnHeight: subdivisionHeight,
+    });
 
     return { row, column };
   };
@@ -156,7 +167,8 @@ export default class DataPicker extends React.Component {
               dataPicker={ this.dataPicker }
               highlighterColumn={ this.state.highlighterColumn }
               highlighterRow={ this.state.highlighterRow }
-              scale={ this.state.scale }
+              drawnWidth={ this.state.drawnWidth }
+              drawnHeight={ this.state.drawnHeight }
             />
           ) : ''
         }
@@ -202,29 +214,21 @@ class DataPickerHighlighter extends React.Component {
     this.computeStyle = this.computeStyle.bind(this);
   };
   computeStyle() {
-    const highlighter = this.refs.highlighter;
-    let style = {};
-    let { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
+    const { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
+    const top = `${translateY + this.props.highlighterRow * this.props.drawnWidth}px`;
+    const left = `${translateX + this.props.highlighterColumn * this.props.drawnHeight}px`;
+    const width = `${this.props.drawnWidth}px`;
+    const height = `${this.props.drawnHeight}px`;
 
-    const subdivisionWidth = this.props.dataPicker.outputWidth / this.props.dataPicker.subdivisions * this.props.scale;
-    const subdivisionHeight = this.props.dataPicker.outputHeight / this.props.dataPicker.subdivisions * this.props.scale;
-
-    const top = translateY + this.props.highlighterRow * subdivisionHeight;
-    const left = translateX + this.props.highlighterColumn * subdivisionWidth;
-
-    style.width = `${subdivisionWidth}px`;
-    style.height = `${subdivisionHeight}px`;
-    style.top = `${top}px`;
-    style.left = `${left}px`;
-
-    return style;
+    return { top, left, width, height };
   };
   shouldComponentUpdate(nextProps, nextState) {
     const newColumn = nextProps.highlighterColumn !== this.props.highlighterColumn;
     const newRow = nextProps.highlighterRow !== this.props.highlighterRow;
-    const newScale = nextProps.scale !== this.props.scale;
+    const newDrawnWidth = nextProps.drawnWidth !== this.props.drawnWidth;
+    const newDrawnHeight = nextProps.drawnHeight !== this.props.drawnHeight;
 
-    return newColumn || newRow || newScale;
+    return newColumn || newRow || newDrawnWidth || newDrawnHeight;
   };
   render() {
     return (
@@ -240,5 +244,6 @@ DataPicker.propTypes = {
   dataPicker: PropTypes.object,
   highlighterColumn: PropTypes.number,
   highlighterRow: PropTypes.number,
-  scale: PropTypes.number,
+  drawnWidth: PropTypes.number,
+  drawnHeight: PropTypes.number,
 };
