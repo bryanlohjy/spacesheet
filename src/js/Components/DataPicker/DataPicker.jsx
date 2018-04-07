@@ -25,7 +25,6 @@ export default class DataPicker extends React.Component {
       highlighterRow: 0,
       drawnWidth: 0,
       drawnHeight: 0,
-      scale: null,
     };
   };
   componentDidMount() {
@@ -43,9 +42,6 @@ export default class DataPicker extends React.Component {
         memoryCtx: this.refs.memoryCanvas.getContext('2d'),
       });
       this.dataPicker.draw();
-      this.setState({
-        scale: this.dataPicker.scale,
-      });
     }
   };
   mouseToDataCoordinates(mouseX, mouseY) {
@@ -138,7 +134,6 @@ export default class DataPicker extends React.Component {
       this.setState({
         highlighterColumn: column,
         highlighterRow: row,
-        scale: this.dataPicker.scale,
       });
     }
   };
@@ -155,7 +150,6 @@ export default class DataPicker extends React.Component {
     this.setState({
       highlighterColumn: column,
       highlighterRow: row,
-      scale: this.dataPicker.scale,
     });
   };
   render() {
