@@ -50,14 +50,15 @@ export default class Application extends React.Component {
     });
   };
   render () {
+    const docHeight = document.body.clientHeight;
     return (
       <div className="section-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded && this.state.gridData ?
             <DataPicker
-              width={ this.state.gridData.grid.columns * this.state.outputWidth }
-              height={ this.state.gridData.grid.rows * this.state.outputHeight }
+              width={ docHeight || this.state.gridData.grid.columns * this.state.outputWidth }
+              height={ docHeight || this.state.gridData.grid.rows * this.state.outputHeight }
               outputWidth={ this.state.outputWidth }
               outputHeight={ this.state.outputHeight }
               drawFn={ this.drawFn }

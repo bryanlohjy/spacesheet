@@ -140,7 +140,7 @@ export default class DataPicker extends React.Component {
 
     this.dataPicker.zoom(direction)
     const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
-    
+
     this.setState({
       highlighterColumn: column,
       highlighterRow: row,
