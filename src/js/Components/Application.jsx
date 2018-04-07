@@ -57,7 +57,7 @@ export default class Application extends React.Component {
         {
           this.state.modelIsLoaded && this.state.gridData ?
             <DataPicker
-              width={ docHeight || this.state.gridData.grid.columns * this.state.outputWidth }
+              width={ docHeight  || this.state.gridData.grid.columns * this.state.outputWidth }
               height={ docHeight || this.state.gridData.grid.rows * this.state.outputHeight }
               outputWidth={ this.state.outputWidth }
               outputHeight={ this.state.outputHeight }
