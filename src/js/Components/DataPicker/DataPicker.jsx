@@ -70,13 +70,13 @@ export default class DataPicker extends React.Component {
     e.stopPropagation();
     switch (e.type) {
       case 'mousemove':
-        this.dataPicker.prevX = e.clientX;
-        this.dataPicker.prevY = e.clientY;
+        this.dataPicker.originX = e.clientX;
+        this.dataPicker.originY = e.clientY;
         this.dragged = true;
         let showHighlighter = false;
 
         if (this.dragStart) {
-          const pt = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
+          const pt = this.dataPicker.ctx.transformedPoint(this.dataPicker.originX, this.dataPicker.originY);
           this.dataPicker.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
           this.dataPicker.draw();
         } else {
@@ -91,9 +91,9 @@ export default class DataPicker extends React.Component {
         });
         break;
       case 'mousedown':
-        this.dataPicker.prevX = e.clientX;
-        this.dataPicker.prevY = e.clientY;
-        this.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
+        this.dataPicker.originX = e.clientX;
+        this.dataPicker.originY = e.clientY;
+        this.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.originX, this.dataPicker.originY);
         this.dragged = false;
         break;
       case 'mouseup':
@@ -145,8 +145,8 @@ export default class DataPicker extends React.Component {
     // zoom towards center
     const centerX = this.refs.dataPickerCanvas.width / 2;
     const centerY = this.refs.dataPickerCanvas.height / 2;
-    this.dataPicker.prevX = centerX;
-    this.dataPicker.prevY = centerY;
+    this.dataPicker.originX = centerX;
+    this.dataPicker.originY = centerY;
 
     this.dataPicker.zoom(direction)
     const { row, column } = this.mouseToDataCoordinates(centerX, centerY);

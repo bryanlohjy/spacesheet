@@ -3,7 +3,7 @@ import { lerp } from '../../lib/tensorUtils.js';
 import { map } from '../../lib/helpers.js';
 
 export default class DataPicker {
-  constructor(ctx, data, opts) {
+  constructor(ctx, gridData, opts) {
     this.ctx = ctx;
 
     this.width = this.ctx.canvas.width;
@@ -12,12 +12,12 @@ export default class DataPicker {
     this.outputWidth = opts.outputWidth;
     this.outputHeight = opts.outputHeight;
 
-    this.data = data.data; // keys are [ column-row ]
-    this.rows = data.grid.rows;
-    this.columns = data.grid.columns;
+    this.grid = gridData.data; // keys are [ column-row ]
+    this.rows = gridData.grid.rows;
+    this.columns = gridData.grid.columns;
 
-    this.prevX = this.width / 2;
-    this.prevY = this.height / 2;
+    this.originX = this.width / 2;
+    this.originY = this.height / 2;
 
     this.scale = 1;
     this.minScale = 1;
@@ -39,7 +39,7 @@ export default class DataPicker {
   zoom(degree) {
     // scale around origin
     const prevTransform = this.ctx.getTransform();
-    const pt = this.ctx.transformedPoint(this.prevX,this.prevY);
+    const pt = this.ctx.transformedPoint(this.originX, this.originY);
     this.ctx.translate(pt.x,pt.y);
 
     const factor = Math.pow(1.1, degree);
@@ -141,8 +141,8 @@ export default class DataPicker {
     this.updateTransform();
     const toDraw = this.indicesToDraw;
     this.clearCanvas();
-    for (let cellKey in this.data) {
-      const data = this.data[cellKey];
+    for (let cellKey in this.grid) {
+      const data = this.grid[cellKey];
       const column = toDraw.indexOf(data.column);
       const row = toDraw.indexOf(data.row);
       const shouldDraw = toDraw.indexOf(column) >= 0 && toDraw.indexOf(row) >= 0;
@@ -227,7 +227,7 @@ export default class DataPicker {
               subCell.outputWidth = this.outputWidth;
               subCell.outputHeight = this.outputHeight;
 
-              subCell = new Cell(this.ctx, this.drawFn, this.decodeFn, this.data, subCell);
+              subCell = new Cell(this.ctx, this.drawFn, this.decodeFn, this.grid, subCell);
               this.cells[dataKey] = subCell;
             }
             subCell.draw();
@@ -272,11 +272,11 @@ export default class DataPicker {
 }
 
 class Cell {
-  constructor(ctx, drawFn, decodeFn, gridData, params) {
+  constructor(ctx, drawFn, decodeFn, grid, params) {
     this.ctx = ctx;
     this.drawFn = drawFn;
     this.decodeFn = decodeFn;
-    this.gridData = gridData;
+    this.grid = grid;
     this.outputWidth = params.outputWidth;
     this.outputHeight = params.outputHeight;
 
@@ -305,13 +305,13 @@ class Cell {
 
     if (xBy === 0 && yBy === 0) { // lookup non interp color
       const dataKey = `${xFrom}-${yFrom}`;
-      return this.gridData[dataKey].data;
+      return this.grid[dataKey].data;
     }
     return dl.tidy(() => { // interpolate
-      const xFromData = this.gridData[`${xFrom}-${yFrom}`].data;
-      const xToData = this.gridData[`${xTo}-${yFrom}`].data;
-      const yFromData = this.gridData[`${xFrom}-${yFrom}`].data;
-      const yToData = this.gridData[`${xFrom}-${yTo}`].data;
+      const xFromData = this.grid[`${xFrom}-${yFrom}`].data;
+      const xToData = this.grid[`${xTo}-${yFrom}`].data;
+      const yFromData = this.grid[`${xFrom}-${yFrom}`].data;
+      const yToData = this.grid[`${xFrom}-${yTo}`].data;
 
       // To be optimized further - sometimes only interpolating across one axis
       // Construct corners interpolation =================
