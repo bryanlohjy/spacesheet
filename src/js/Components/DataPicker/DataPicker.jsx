@@ -18,6 +18,8 @@ export default class DataPicker extends React.Component {
     this.mouseToDataCoordinates = this.mouseToDataCoordinates.bind(this);
     this.handleZoomClick = this.handleZoomClick.bind(this);
     this.elementBounds = null;
+    this.dragStart = null;
+    this.dragged = null;
 
     this.state = { // used to manage highlighter
       showHighlighter: false,
@@ -71,12 +73,12 @@ export default class DataPicker extends React.Component {
       case 'mousemove':
         this.dataPicker.prevX = e.clientX;
         this.dataPicker.prevY = e.clientY;
-        this.dataPicker.dragged = true;
+        this.dragged = true;
         let showHighlighter = false;
 
-        if (this.dataPicker.dragStart) {
+        if (this.dragStart) {
           const pt = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
-          this.dataPicker.ctx.translate(pt.x-this.dataPicker.dragStart.x,pt.y-this.dataPicker.dragStart.y);
+          this.dataPicker.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
           this.dataPicker.draw();
         } else {
           showHighlighter = true;
@@ -92,11 +94,11 @@ export default class DataPicker extends React.Component {
       case 'mousedown':
         this.dataPicker.prevX = e.clientX;
         this.dataPicker.prevY = e.clientY;
-        this.dataPicker.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
-        this.dataPicker.dragged = false;
+        this.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.prevX, this.dataPicker.prevY);
+        this.dragged = false;
         break;
       case 'mouseup':
-        this.dataPicker.dragStart = null;
+        this.dragStart = null;
         if (this.state.showHighlighter) {
           const subdivisions = this.dataPicker.subdivisions;
           const totalRows = this.dataPicker.rows * subdivisions;
@@ -115,7 +117,7 @@ export default class DataPicker extends React.Component {
         }
         break;
       case 'mouseout':
-        this.dataPicker.dragStart = null;
+        this.dragStart = null;
         this.setState({
           highlighterColumn: 0,
           highlighterRow: 0,

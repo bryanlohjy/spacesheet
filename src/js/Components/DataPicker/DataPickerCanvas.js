@@ -20,8 +20,6 @@ export default class DataPicker {
     this.outputWidth = opts.outputWidth;
     this.outputHeight = opts.outputHeight;
 
-    this.dragStart = null;
-    this.dragged = null;
     this.prevX = this.width / 2;
     this.prevY = this.height / 2;
 
@@ -42,13 +40,13 @@ export default class DataPicker {
     this.cells = {};
     this.draw();
   };
-  zoom(clicks) {
+  zoom(degree) {
     // scale around origin
     const prevTransform = this.ctx.getTransform();
     const pt = this.ctx.transformedPoint(this.prevX,this.prevY);
     this.ctx.translate(pt.x,pt.y);
 
-    const factor = Math.pow(1.1, clicks);
+    const factor = Math.pow(1.1, degree);
     this.ctx.scale(factor,factor);
     this.ctx.translate(-pt.x,-pt.y);
 
