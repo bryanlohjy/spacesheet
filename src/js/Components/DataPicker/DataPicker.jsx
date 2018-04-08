@@ -109,6 +109,10 @@ export default class DataPicker extends React.Component {
 
           const dataKey = `${subdivisions}-${column}-${row}-${subcolumn}-${subrow}`;
           const data = this.dataPicker.cells[dataKey].data;
+          if (this.props.onChange) {
+            console.log(this.dataPicker.cells[dataKey])
+            this.props.onChange(data);
+          }
         }
         break;
       case 'mouseout':

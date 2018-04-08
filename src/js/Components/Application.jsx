@@ -37,7 +37,6 @@ export default class Application extends React.Component {
         this.memoryCtx.putImageData(memoryCtxData, 0, 0);
         ctx.drawImage(this.memoryCtx.canvas, 0, 0);
       };
-
       this.decodeFn = vector => { // vector to output
         return model.decode(vector, 0);
       };
@@ -64,6 +63,9 @@ export default class Application extends React.Component {
               drawFn={ this.drawFn }
               decodeFn={ this.decodeFn }
               gridData= { this.state.gridData }
+              onChange={ (vec) => {
+                console.log(vec)
+              }}
             /> : ''
         }
       </div>
