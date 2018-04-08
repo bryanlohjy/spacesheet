@@ -98,7 +98,7 @@ export default class FontModel {
             weights: this.modelVars.output.weights,
             biases: this.modelVars.output.biases,
           }),
-        0.01);
+        );
       });
       return output.getValues();
     });
