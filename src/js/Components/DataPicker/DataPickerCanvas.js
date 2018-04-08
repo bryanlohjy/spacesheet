@@ -296,9 +296,10 @@ class Cell {
     this.w = params.w;
     this.h = params.h;
 
-    this.data = this.computeData();
+    this.vector = this.computeVector();
+    this.image = this.decodeFn(this.vector); // decoded vector
   };
-  computeData() { // interpolates a vector relative to cell position, and then decodes that data
+  computeVector() { // interpolates a vector relative to cell position, and then decodes that data
     const xPos = this.relativeX;
     const yPos = this.relativeY;
 
@@ -312,7 +313,7 @@ class Cell {
 
     if (xBy === 0 && yBy === 0) { // lookup non interp color
       const dataKey = `${xFrom}-${yFrom}`;
-      return this.gridData[dataKey].image;
+      return this.gridData[dataKey].data;
     }
     return dl.tidy(() => { // interpolate
       const xFromData = this.gridData[`${xFrom}-${yFrom}`].data;
@@ -338,8 +339,7 @@ class Cell {
       const tChord = lerp(tl, tr, xBy);
       const bChord = lerp(bl, br, xBy);
 
-      const interpolated = lerp(tChord, bChord, yBy);
-      return this.decodeFn(interpolated);
+      return lerp(tChord, bChord, yBy).getValues();
     });
   }
   draw() {
@@ -347,7 +347,7 @@ class Cell {
     const scaleFactor = this.w / this.outputWidth;
     this.ctx.translate(this.x, this.y);
     this.ctx.scale(scaleFactor, scaleFactor);
-    this.drawFn(this.ctx, this.data);
+    this.drawFn(this.ctx, this.image);
     this.ctx.restore();
   };
 }

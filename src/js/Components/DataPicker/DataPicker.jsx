@@ -108,10 +108,9 @@ export default class DataPicker extends React.Component {
           const subcolumn = this.state.highlighterColumn - (column * subdivisions);
 
           const dataKey = `${subdivisions}-${column}-${row}-${subcolumn}-${subrow}`;
-          const data = this.dataPicker.cells[dataKey].data;
+          const vector = this.dataPicker.cells[dataKey].vector;
           if (this.props.onChange) {
-            console.log(this.dataPicker.cells[dataKey])
-            this.props.onChange(data);
+            this.props.onChange(vector);
           }
         }
         break;
