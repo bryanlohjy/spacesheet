@@ -5,8 +5,6 @@ import { map } from '../../lib/helpers.js';
 export default class DataPicker {
   constructor(ctx, data, opts) {
     this.ctx = ctx;
-    // used to apply transformations to putImageData
-    this.memoryCtx = opts.memoryCtx;
 
     this.width = this.ctx.canvas.width;
     this.height = this.ctx.canvas.height;
@@ -228,7 +226,6 @@ export default class DataPicker {
               subCell.relativeY = mappedY;
               subCell.outputWidth = this.outputWidth;
               subCell.outputHeight = this.outputHeight;
-              subCell.memoryCtx = this.memoryCtx;
 
               subCell = new Cell(this.ctx, this.drawFn, this.decodeFn, this.data, subCell);
               this.cells[dataKey] = subCell;
@@ -286,7 +283,6 @@ class Cell {
     this.relativeX = params.relativeX;
     this.relativeY = params.relativeY;
 
-    this.memoryCtx = params.memoryCtx;
     this.x = params.x;
     this.y = params.y;
     this.w = params.w;

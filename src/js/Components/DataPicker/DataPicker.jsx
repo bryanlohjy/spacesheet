@@ -41,7 +41,6 @@ export default class DataPicker extends React.Component {
         outputHeight: this.props.outputHeight,
         drawFn: this.props.drawFn,
         decodeFn: this.props.decodeFn,
-        memoryCtx: this.refs.memoryCanvas.getContext('2d'),
       });
       this.dataPicker.draw();
     }
@@ -183,7 +182,6 @@ export default class DataPicker extends React.Component {
             -
           </span>
         </div>
-        <canvas className="memory-canvas" ref="memoryCanvas"/>
         <canvas
           ref='dataPickerCanvas'
           onMouseMove={ this.handleMouse }
