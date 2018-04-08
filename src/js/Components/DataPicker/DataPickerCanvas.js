@@ -17,8 +17,6 @@ export default class DataPicker {
     this.data = data.data; // keys are [ column-row ]
     this.rows = data.grid.rows;
     this.columns = data.grid.columns;
-    this.outputWidth = opts.outputWidth;
-    this.outputHeight = opts.outputHeight;
 
     this.prevX = this.width / 2;
     this.prevY = this.height / 2;
