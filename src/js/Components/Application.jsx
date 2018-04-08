@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DataPicker from './DataPicker/DataPicker.jsx';
+import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
+
 import FontModel from '../Models/FontModel.js';
 import { getData } from '../lib/helpers.js';
 
@@ -49,24 +51,27 @@ export default class Application extends React.Component {
     });
   };
   render () {
-    const docHeight = document.body.clientHeight;
+    const docHeight = document.body.clientHeight - 1;
     return (
-      <div className="section-container">
+      <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded && this.state.gridData ?
-            <DataPicker
-              width={ docHeight  || this.state.gridData.grid.columns * this.state.outputWidth }
-              height={ docHeight || this.state.gridData.grid.rows * this.state.outputHeight }
-              outputWidth={ this.state.outputWidth }
-              outputHeight={ this.state.outputHeight }
-              drawFn={ this.drawFn }
-              decodeFn={ this.decodeFn }
-              gridData= { this.state.gridData }
-              onChange={ (vec) => {
-                console.log(vec)
-              }}
-            /> : ''
+            <div>
+              <DataPicker
+                width={ docHeight  || this.state.gridData.grid.columns * this.state.outputWidth }
+                height={ docHeight || this.state.gridData.grid.rows * this.state.outputHeight }
+                outputWidth={ this.state.outputWidth }
+                outputHeight={ this.state.outputHeight }
+                drawFn={ this.drawFn }
+                decodeFn={ this.decodeFn }
+                gridData= { this.state.gridData }
+                onChange={ (vec) => {
+                  console.log(vec)
+                }}
+              />
+              <Spreadsheet/>
+            </div> : ''
         }
       </div>
     );
