@@ -7,7 +7,7 @@
   overflow: hidden;
   z-index: 1;
   background-color: white;
-  
+
   .input-bar {
     box-sizing: border-box;
     width: 100%;
@@ -16,5 +16,6 @@
   .table-container {
     overflow: hidden;
     height: 100%;
+    width: 100%;
   }
 }
