@@ -24,6 +24,7 @@ export default class Application extends React.Component {
     });
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
+    this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d');
     new FontModel(model => {
       this.drawFn = (ctx, decodedData) => { // decoded vector => canvas rendering logic
@@ -51,9 +52,12 @@ export default class Application extends React.Component {
     });
   };
   render () {
-    const docHeight = document.body.clientHeight;
-    const navHeight = 50;
-    const spreadSheetWidth = document.body.clientWidth - (docHeight  - navHeight);
+    const docHeight = document.body.offsetHeight;
+    const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
+    const dataPickerSize = docHeight - navHeight;
+    
+    const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
+    const spreadsheetHeight = docHeight - navHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -61,8 +65,8 @@ export default class Application extends React.Component {
           this.state.modelIsLoaded && this.state.gridData ?
             <div>
               <DataPicker
-                width={ docHeight  - navHeight || this.state.gridData.grid.columns * this.state.outputWidth }
-                height={ docHeight - navHeight || this.state.gridData.grid.rows * this.state.outputHeight }
+                width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
+                height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
@@ -73,14 +77,14 @@ export default class Application extends React.Component {
                 }}
               />
               <Spreadsheet
-                width={ spreadSheetWidth }
-                height={ docHeight - navHeight }
+                width={ spreadsheetWidth }
+                height={ spreadsheetHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
               />
             </div> : ''
         }
-        <nav className="bottom-nav">
+        <nav ref="bottomNav" className="bottom-nav">
           <a href="">Releases</a>
         </nav>
       </div>

@@ -1,6 +1,7 @@
 .datapicker-container {
-  display: inline-flex;
+  display: flex;
   position: relative;
+  width: 100%;
   cursor: pointer;
   user-select: none;
   .scale-buttons {

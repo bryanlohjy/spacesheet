@@ -5,11 +5,24 @@ import HotTable from 'react-handsontable';
 export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
-  }
+    this.setInputRef = this.setInputRef.bind(this);
+    this.state = {
+      inputBarIsMounted: false,
+    }
+  };
+  setInputRef(el) {
+    if (!this.inputBar) {
+      this.inputBar = el;
+      this.setState({ inputBarIsMounted : true });
+    }
+  };
   render() {
+    const inputBarHeight = this.inputBar ? this.inputBar.offsetHeight : 21;
     return (
       <div className="spreadsheet-container">
-        <InputBar/>
+        <InputBar
+          setInputRef={ this.setInputRef }
+        />
         <div className="table-container" ref="tableContainer">
           <HotTable
             className="table"
@@ -29,7 +42,7 @@ export default class Spreadsheet extends React.Component {
             colWidths={this.props.outputWidth}
 
             width={this.props.width}
-            height={this.props.height - 21}
+            height={this.props.height - inputBarHeight}
 
             minCols={ Math.ceil(this.props.width / this.props.outputWidth) }
             minRows={ Math.ceil(this.props.height / this.props.outputHeight) }
@@ -69,10 +82,14 @@ class InputBar extends React.Component {
   }
   render() {
     return (
-      <input className="input-bar" type="text"/>
+      <input className="input-bar" type="text"
+        ref={ (el) => {
+          this.props.setInputRef(el);
+        }}
+      />
     )
   }
 }
 InputBar.propTypes = {
-
+  setInputRef: PropTypes.func,
 };

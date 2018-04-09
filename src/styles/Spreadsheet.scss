@@ -6,13 +6,15 @@
   flex-direction: column;
   overflow: hidden;
   z-index: 1;
-
+  background-color: white;
+  
   .input-bar {
     box-sizing: border-box;
     width: 100%;
+    height: 21px;
   }
   .table-container {
-    overflow: auto;
+    overflow: hidden;
     height: 100%;
   }
 }
