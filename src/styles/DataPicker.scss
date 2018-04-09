@@ -1,7 +1,5 @@
 .datapicker-container {
   display: inline-flex;
-  align-self: flex-start;
-  overflow: hidden;
   position: relative;
   cursor: pointer;
   user-select: none;
@@ -11,13 +9,14 @@
     bottom: 10px;
     border-radius: 5px;
     border: 1px solid grey;
-    background-color: lightgrey;
+    background-color: whitesmoke;
     span {
+      color: grey;
       display: flex;
       align-items: center;
       padding: 5px 8px;
       &:hover {
-        background-color: whitesmoke;
+        background-color: white;
       }
       &:first-child {
         border-radius: 5px 5px 0 0;

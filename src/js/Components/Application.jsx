@@ -51,7 +51,9 @@ export default class Application extends React.Component {
     });
   };
   render () {
-    const docHeight = document.body.clientHeight - 1;
+    const docHeight = document.body.clientHeight;
+    const navHeight = 50;
+    const spreadSheetWidth = document.body.clientWidth - (docHeight  - navHeight);
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -59,8 +61,8 @@ export default class Application extends React.Component {
           this.state.modelIsLoaded && this.state.gridData ?
             <div>
               <DataPicker
-                width={ docHeight  || this.state.gridData.grid.columns * this.state.outputWidth }
-                height={ docHeight || this.state.gridData.grid.rows * this.state.outputHeight }
+                width={ docHeight  - navHeight || this.state.gridData.grid.columns * this.state.outputWidth }
+                height={ docHeight - navHeight || this.state.gridData.grid.rows * this.state.outputHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
@@ -70,9 +72,17 @@ export default class Application extends React.Component {
                   console.log(vec)
                 }}
               />
-              <Spreadsheet/>
+              <Spreadsheet
+                width={ spreadSheetWidth }
+                height={ docHeight - navHeight }
+                outputWidth={ this.state.outputWidth }
+                outputHeight={ this.state.outputHeight }
+              />
             </div> : ''
         }
+        <nav className="bottom-nav">
+          <a href="">Releases</a>
+        </nav>
       </div>
     );
   }

@@ -9,6 +9,7 @@ export default class Spreadsheet extends React.Component {
   render() {
     return (
       <div className="spreadsheet-container">
+        <InputBar/>
         <div className="table-container" ref="tableContainer">
           <HotTable
             className="table"
@@ -18,15 +19,20 @@ export default class Spreadsheet extends React.Component {
             // }}
             root='hot'
             // data={ this.props.data }
+            rowHeaderWidth={32}
+            colHeaderHeight={32}
+
             colHeaders={true}
             rowHeaders={true}
             preventOverflow="horizontal"
-            rowHeights={64}
-            colWidths={64}
-            minCols={5}
-            minRows={5}
-            maxCols={5}
-            maxRows={5}
+            rowHeights={this.props.outputHeight}
+            colWidths={this.props.outputWidth}
+
+            width={this.props.width}
+            height={this.props.height - 21}
+
+            minCols={ Math.ceil(this.props.width / this.props.outputWidth) }
+            minRows={ Math.ceil(this.props.height / this.props.outputHeight) }
 
             viewportColumnRenderingOffset={26}
             viewportRowRenderingOffset={26}
@@ -47,8 +53,26 @@ export default class Spreadsheet extends React.Component {
   }
 }
 Spreadsheet.propTypes = {
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
+  width: PropTypes.number,
+  height: PropTypes.number,
   // data: PropTypes.array,
   // setTableRef: PropTypes.func,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
+};
+
+class InputBar extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <input className="input-bar" type="text"/>
+    )
+  }
+}
+InputBar.propTypes = {
+
 };
