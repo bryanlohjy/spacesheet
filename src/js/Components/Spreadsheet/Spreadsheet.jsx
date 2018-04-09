@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
+import Cell from './CellTypes.js';
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
