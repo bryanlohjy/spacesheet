@@ -1,4 +1,11 @@
-export default (() => {
+export default class CellType {
+  constructor(outputWidth) {
+    console.log('constr', outputWidth)
+    this.outputWidth = outputWidth;
+    this.renderer = this.renderer.bind(this);
+    // this.drawFn
+    // this.decodeFn
+  };
   // let editor = HandsOnTable.editors.TextEditor.prototype.extend();
   // editor.prototype.prepare = function(row, col, prop, td, originalValue, cellProperties){
   //   HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
@@ -11,15 +18,23 @@ export default (() => {
   //     }
   //   }
   // };
-  return {
-    renderer: (hotInstance, td, row, col, prop, value, cellProperties) => {
-      // td.style.background = 'whitesmoke';
-      td.innerHTML = value;
-      if (value) {
-        console.log(value, col, row)
+  // return {
+  renderer(hotInstance, td, row, col, prop, value, cellProperties) {
+    console.log(this.outputWidth)
+    if (value) {
+      if (value.image && value.image.length > 0) {
+        // const canvas =
+        // td.innerHTML = this.outputWidth
+        // td.appendChild()
       }
-    },
-    editor: () => {},
-    validator: (value, callback) => {},
-  }
-})();
+    } else {
+      // td.innerHTML = this.outputWidth
+
+      // console.log(value)
+      // td.innerHTML = value;
+    }
+  };
+  //   editor: () => {},
+  //   validator: (value, callback) => {},
+  // }
+};
