@@ -36,7 +36,7 @@ export default class Application extends React.Component {
           memoryCtxData.data[4*i] = val;    // RED (0-255)
           memoryCtxData.data[4*i+1] = val;    // GREEN (0-255)
           memoryCtxData.data[4*i+2] = val;    // BLUE (0-255)
-          memoryCtxData.data[4*i+3] = 255;  // ALPHA (0-255)
+          memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
         }
         this.memoryCtx.putImageData(memoryCtxData, 0, 0);
         ctx.drawImage(this.memoryCtx.canvas, 0, 0);
