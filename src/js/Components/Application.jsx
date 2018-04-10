@@ -72,8 +72,8 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 gridData= { this.state.gridData }
-                onChange={ vec => {
-                  console.log(vec)
+                onChange={ (vector, image) => {
+                  console.log(vector, image)
                 }}
               />
               <Spreadsheet
