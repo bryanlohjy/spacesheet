@@ -81,6 +81,9 @@ export default class Application extends React.Component {
                 height={ spreadsheetHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
+                setTableRef={ ref => {
+                  this.hotTable = ref;
+                }}
               />
             </div> : ''
         }
