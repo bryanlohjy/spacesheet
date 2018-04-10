@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import Cell from './CellTypes.js';
+import { Data, DataSchema } from './SpreadsheetData.js';
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
@@ -10,6 +11,10 @@ export default class Spreadsheet extends React.Component {
     this.state = {
       inputBarIsMounted: false,
     }
+    this.data = [];
+    this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
+    this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
+    this.dataSchema = DataSchema(this.minCols);
   };
   setInputRef(el) {
     if (!this.inputBar) {
@@ -32,7 +37,12 @@ export default class Spreadsheet extends React.Component {
             //   this.table = ref;
             // }}
             root='hot'
-            // data={ this.props.data }
+            data={ this.data }
+            // columns={ column => {
+            //   return { data: 'image' }
+            // }}
+            dataSchema={ this.dataSchema }
+
             rowHeaderWidth={32}
             colHeaderHeight={32}
 
@@ -42,11 +52,11 @@ export default class Spreadsheet extends React.Component {
             rowHeights={this.props.outputHeight}
             colWidths={this.props.outputWidth}
 
-            width={this.props.width}
-            height={this.props.height - inputBarHeight}
+            width={ this.props.width }
+            height={ this.props.height - inputBarHeight }
 
-            minCols={ Math.ceil(this.props.width / this.props.outputWidth) }
-            minRows={ Math.ceil(this.props.height / this.props.outputHeight) }
+            minCols={ this.minCols }
+            minRows={ this.minRows }
 
             viewportColumnRenderingOffset={26}
             viewportRowRenderingOffset={26}
@@ -55,7 +65,7 @@ export default class Spreadsheet extends React.Component {
             persistentState
             undo
 
-            // renderer={MatrixCellType.renderer}
+            renderer={ Cell.renderer }
             // editor={MatrixCellType.editor}
             // validator={MatrixCellType.validator}
             // beforeChange={ this.handleBeforeChange }

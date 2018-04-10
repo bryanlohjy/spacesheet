@@ -55,9 +55,9 @@ export default class Application extends React.Component {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
     const dataPickerSize = docHeight - navHeight;
-    
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
     const spreadsheetHeight = docHeight - navHeight;
+
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -72,7 +72,7 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 gridData= { this.state.gridData }
-                onChange={ (vec) => {
+                onChange={ vec => {
                   console.log(vec)
                 }}
               />
