@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
-import Cell from './CellTypes.js';
+import CellType from './CellTypes.js';
 import { Data, DataSchema } from './SpreadsheetData.js';
 
 export default class Spreadsheet extends React.Component {
@@ -15,6 +15,11 @@ export default class Spreadsheet extends React.Component {
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
     this.dataSchema = DataSchema(this.minCols);
+    this.CellType = new CellType({
+      drawFn: this.props.drawFn,
+      outputWidth: this.props.outputWidth,
+      outputHeight: this.props.outputHeight,
+    });
   };
   setInputRef(el) {
     if (!this.inputBar) {
@@ -32,10 +37,10 @@ export default class Spreadsheet extends React.Component {
         <div className="table-container" ref="tableContainer">
           <HotTable
             className="table"
-            // ref={(ref) => {
-            //   this.props.setTableRef(ref);
-            //   this.table = ref;
-            // }}
+            ref={ ref => {
+              this.props.setTableRef(ref);
+              // this.table = ref;
+            }}
             root='hot'
             data={ this.data }
             // columns={ column => {
@@ -65,7 +70,7 @@ export default class Spreadsheet extends React.Component {
             persistentState
             undo
 
-            renderer={ Cell.renderer }
+            renderer={ this.CellType.renderer }
             // editor={MatrixCellType.editor}
             // validator={MatrixCellType.validator}
             // beforeChange={ this.handleBeforeChange }
@@ -81,8 +86,9 @@ Spreadsheet.propTypes = {
   outputHeight: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
+  drawFn: PropTypes.func,
   // data: PropTypes.array,
-  // setTableRef: PropTypes.func,
+  setTableRef: PropTypes.func,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };

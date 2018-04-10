@@ -15,6 +15,7 @@ export default class Application extends React.Component {
       outputWidth: 0,
       outputHeight: 0,
     };
+    this.setCellValue = this.setCellValue.bind(this);
   };
   componentWillMount() {
     getData('./dist/data/DataPicker/font_grid_vectors_10x10_min.json').then(res => {
@@ -51,6 +52,27 @@ export default class Application extends React.Component {
       });
     });
   };
+  setCellValue(vector, image) {
+    const hotInstance = this.hotTable.hotInstance;
+    const selection = hotInstance.getSelected();
+    if (selection) {
+      let tempData = hotInstance.getDataAtCell(selection[0], selection[1]);
+      tempData.vector = vector;
+      tempData.image = image;
+      hotInstance.setDataAtCell(selection[0], selection[1], tempData);
+    }
+    // const hotInstance = this.tableRef.hotInstance;
+    // const selection = hotInstance.getSelected();
+    //
+    // const { 0: r, 1: g, 2: b } = { ...color };
+    //
+    // if (selection) {
+    //   const cellValue = `=[${r},${g},${b}]`
+    //   hotInstance.setDataAtCell(selection[0], selection[1], cellValue);
+    //   //  update inputBarValue
+    //   this.refs.colortable.updateInputBarValue(cellValue);
+    // }
+  };
   render () {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
@@ -72,15 +94,14 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 gridData= { this.state.gridData }
-                onChange={ (vector, image) => {
-                  console.log(vector, image)
-                }}
+                onChange={ this.setCellValue }
               />
               <Spreadsheet
                 width={ spreadsheetWidth }
                 height={ spreadsheetHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
+                drawFn={ this.drawFn }
                 setTableRef={ ref => {
                   this.hotTable = ref;
                 }}

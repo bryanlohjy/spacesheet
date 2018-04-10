@@ -17,5 +17,16 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
+    .cell-type {
+      display: flex;
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+.handsontable { // overrides
+  td {
+    padding: 0;
   }
 }

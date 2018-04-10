@@ -1,7 +1,9 @@
 export default class CellType {
-  constructor(outputWidth) {
-    console.log('constr', outputWidth)
-    this.outputWidth = outputWidth;
+  constructor(opts) {
+    this.drawFn = opts.drawFn;
+    this.outputWidth = opts.outputWidth;
+    this.outputHeight = opts.outputHeight;
+
     this.renderer = this.renderer.bind(this);
     // this.drawFn
     // this.decodeFn
@@ -20,21 +22,18 @@ export default class CellType {
   // };
   // return {
   renderer(hotInstance, td, row, col, prop, value, cellProperties) {
-    console.log(this.outputWidth)
     if (value) {
       if (value.image && value.image.length > 0) {
-        // const canvas =
-        // td.innerHTML = this.outputWidth
-        // td.appendChild()
+        td.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        canvas.width = this.outputWidth - 1;
+        canvas.height = this.outputHeight - 1;
+        canvas.classList.add('cell-type', 'canvas');
+        const ctx = canvas.getContext('2d');
+        this.drawFn(ctx, value.image);
+        td.appendChild(canvas);
       }
     } else {
-      // td.innerHTML = this.outputWidth
-
-      // console.log(value)
-      // td.innerHTML = value;
     }
   };
-  //   editor: () => {},
-  //   validator: (value, callback) => {},
-  // }
 };
