@@ -12,10 +12,20 @@ const CellTypes = opts => {
       canvas.height = opts.outputHeight - 1;
       canvas.classList.add('cell-type', 'canvas');
       const ctx = canvas.getContext('2d');
-      opts.drawFn(ctx, data.image);
-      td.appendChild(canvas);
+
+      if (data) {
+        const dataKey = data.match(/\(([^)]+)\)/)[1];
+        let dataPickerCell;
+        try {
+          dataPickerCell = opts.getCellFromDataPicker(dataKey);
+          opts.drawFn(ctx, dataPickerCell.image);
+        } catch (e) {
+          console.error(`Cell ${dataKey} hasn't been loaded.`)
+        }
+        td.appendChild(canvas);
+      }
     },
-    editor: false,
+    editor: 'text',
   };
 
   // Text ==============
@@ -44,27 +54,10 @@ const CellTypes = opts => {
     // },
     editor: 'text' || CustomTextEditor,
   };
-
   return {
     DataPicker,
     Text,
   };
 }
 
-
-const GetCellType = cellData => {
-  if (!cellData) { return; }
-  const hasImage = cellData.image && (cellData.image.length || Object.keys(cellData.image).length);
-  const hasValue = cellData.value && cellData.value.length;
-
-  if (hasImage && hasValue) {
-    console.log('datapicker')
-    return 'DATAPICKER';
-  } else {
-    return 'TEXT';
-  }
-  // if there is a value, but no image - Text
-  // if there is a value which starts with '=' - formula
-}
-
-module.exports = { CellTypes, GetCellType };
+module.exports = { CellTypes };

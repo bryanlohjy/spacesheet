@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
-import { CellTypes, GetCellType } from './CellTypes.js';
+import { CellTypes } from './CellTypes.js';
+import { GetCellType } from './CellHelpers.js';
 import { Data, DataSchema } from './SpreadsheetData.js';
 
 export default class Spreadsheet extends React.Component {
@@ -23,11 +24,11 @@ export default class Spreadsheet extends React.Component {
       drawFn: this.props.drawFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
+      getCellFromDataPicker: this.props.getCellFromDataPicker,
     });
   };
   componentDidMount() {
     this.initHotTable();
-    console.log(this.props)
   };
   initHotTable() {
     const hotInstance = this.hotTable.hotInstance;
@@ -35,7 +36,7 @@ export default class Spreadsheet extends React.Component {
       cells: (row, col, prop) => { // determine and set cell types based on value
         let cellProperties = {};
         const cellData = hotInstance.getDataAtRowProp(row, prop);
-
+        // take in cell data and return celltype and values
         switch (GetCellType(cellData)) {
           case 'DATAPICKER':
             cellProperties.renderer = this.CellTypes.DataPicker.renderer;
@@ -115,6 +116,7 @@ Spreadsheet.propTypes = {
   // data: PropTypes.array,
   setTableRef: PropTypes.func,
   dataPickerCellData: PropTypes.object,
+  getCellFromDataPicker: PropTypes.func,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };
