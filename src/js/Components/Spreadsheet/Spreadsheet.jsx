@@ -27,6 +27,7 @@ export default class Spreadsheet extends React.Component {
   };
   componentDidMount() {
     this.initHotTable();
+    console.log(this.hotTable)
   };
   initHotTable() {
     const hotInstance = this.hotTable.hotInstance;

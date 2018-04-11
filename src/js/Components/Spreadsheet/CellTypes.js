@@ -1,54 +1,56 @@
 import HandsOnTable from 'handsontable';
 // takes in params from component and spits out an object of spreadsheet CellTypes
-class CellTypes {
-  constructor(opts) { // text cell, and formula cell
-    this.drawFn = opts.drawFn;
-    this.outputWidth = opts.outputWidth;
-    this.outputHeight = opts.outputHeight;
+const CellTypes = opts => {
 
-    this.initDataPickerCellType = this.initDataPickerCellType.bind(this);
-    this.initTextCellType = this.initTextCellType.bind(this);
+  // DataPicker ==============
+  // A non editable cell which renders references from the DataPicker
+  const DataPicker = {
+    renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
+      td.innerHTML = '';
+      const canvas = document.createElement('canvas');
+      canvas.width = opts.outputWidth - 1;
+      canvas.height = opts.outputHeight - 1;
+      canvas.classList.add('cell-type', 'canvas');
+      const ctx = canvas.getContext('2d');
+      opts.drawFn(ctx, data.image);
+      td.appendChild(canvas);
+    },
+    editor: false,
+  };
 
-    this.DataPicker = this.initDataPickerCellType();
-    this.Text = this.initTextCellType();
-    console.log(HandsOnTable.editors.TextEditor.prototype)
+  // Text ==============
+  // Editable cell which renders the cell value
+  let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
+  CustomTextEditor.prototype.prepare = function() { // runs when a cell is clicked
+    // store display data to manage in object
+    this.data = this.originalValue;
+    HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
   };
-  initDataPickerCellType() { // A non editable cell which renders references from the DataPicker
-    return {
-      renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
-        td.innerHTML = '';
-        const canvas = document.createElement('canvas');
-        canvas.width = this.outputWidth - 1;
-        canvas.height = this.outputHeight - 1;
-        canvas.classList.add('cell-type', 'canvas');
-        const ctx = canvas.getContext('2d');
-        this.drawFn(ctx, data.image);
-        td.appendChild(canvas);
-      },
-      editor: false,
-    };
+  CustomTextEditor.prototype.open = function() {
+    HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
+    console.log(this.data)
+    this.TEXTAREA.value = this.data.value;
   };
-  initTextCellType() { // Editable cell which renders the cell valye
-    return {
-      renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
-        td.innerHTML = data.value || '';
-      },
-      editor: 'text',
-    };
+  // CustomTextEditor.prototype.setValue = function(val) {
+  //   HandsOnTable.editors.TextEditor.prototype.setValue.apply(this, arguments);
+  //
+  //   console.log('setval', this, val)
+  // }
+
+  const Text = {
+    renderer: 'text',
+    // renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
+    //   td.innerHTML = Object.keys(data).value || '';
+    // },
+    editor: 'text' || CustomTextEditor,
   };
-  // let editor = HandsOnTable.editors.TextEditor.prototype.extend();
-  // editor.prototype.prepare = function(row, col, prop, td, originalValue, cellProperties){
-  //   HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-  //   this.beginEditing = () => {
-  //     HandsOnTable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
-  //     this.textareaStyle.color = 'black';
-  //     if (td.style.backgroundColor && td.style.backgroundColor.length > 0) {
-  //       const brightness = chroma(td.style.backgroundColor).luminance();
-  //       this.textareaStyle.color = brightness < 0.2 ? 'white' : 'black';
-  //     }
-  //   }
-  // };
-};
+
+  return {
+    DataPicker,
+    Text,
+  };
+}
+
 
 const GetCellType = cellData => {
   if (!cellData) { return; }
