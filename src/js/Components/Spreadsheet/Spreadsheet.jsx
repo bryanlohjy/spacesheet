@@ -15,10 +15,10 @@ export default class Spreadsheet extends React.Component {
     this.state = {
       inputBarIsMounted: false,
     }
-    this.data = [];
+    // this.data = [];
+    // this.dataSchema = DataSchema(this.minCols);
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
-    this.dataSchema = DataSchema(this.minCols);
     this.CellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       outputWidth: this.props.outputWidth,
@@ -27,7 +27,7 @@ export default class Spreadsheet extends React.Component {
   };
   componentDidMount() {
     this.initHotTable();
-    console.log(this.hotTable)
+    console.log(this.props)
   };
   initHotTable() {
     const hotInstance = this.hotTable.hotInstance;
@@ -35,6 +35,7 @@ export default class Spreadsheet extends React.Component {
       cells: (row, col, prop) => { // determine and set cell types based on value
         let cellProperties = {};
         const cellData = hotInstance.getDataAtRowProp(row, prop);
+
         switch (GetCellType(cellData)) {
           case 'DATAPICKER':
             cellProperties.renderer = this.CellTypes.DataPicker.renderer;
@@ -69,11 +70,11 @@ export default class Spreadsheet extends React.Component {
               this.hotTable = ref;
             }}
             root='hot'
-            data={ this.data }
+            // data={ this.data }
             // columns={ column => {
             //   return { data: 'image' }
             // }}
-            dataSchema={ this.dataSchema }
+            // dataSchema={ this.dataSchema }
 
             rowHeaderWidth={32}
             colHeaderHeight={32}
@@ -113,6 +114,7 @@ Spreadsheet.propTypes = {
   drawFn: PropTypes.func,
   // data: PropTypes.array,
   setTableRef: PropTypes.func,
+  dataPickerCellData: PropTypes.object,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };

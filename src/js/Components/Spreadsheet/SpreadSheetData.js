@@ -1,4 +1,4 @@
-const CellSchema = { image: [], value: '' };
+const CellSchema = '';
 module.exports = {
   Data: (rows, columns) => {
     const data = [];
@@ -8,7 +8,7 @@ module.exports = {
   DataSchema: (rows) => {
     let dataSchema = [];
     for (let row = 0; row < rows; row++) {
-      dataSchema.push('');
+      dataSchema.push(CellSchema);
     }
     return dataSchema;
   }

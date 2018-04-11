@@ -112,7 +112,7 @@ export default class DataPicker extends React.Component {
           const vector = this.dataPicker.cells[dataKey].vector;
           const image = this.dataPicker.cells[dataKey].image;
           if (this.props.onChange) {
-            this.props.onChange(vector, image);
+            this.props.onChange(vector, image, dataKey);
           }
         }
         break;

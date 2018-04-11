@@ -58,6 +58,7 @@ const GetCellType = cellData => {
   const hasValue = cellData.value && cellData.value.length;
 
   if (hasImage && hasValue) {
+    console.log('datapicker')
     return 'DATAPICKER';
   } else {
     return 'TEXT';

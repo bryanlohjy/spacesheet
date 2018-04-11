@@ -15,7 +15,8 @@ export default class Application extends React.Component {
       outputWidth: 0,
       outputHeight: 0,
     };
-    this.setCellFromDataPicker = this.setCellFromDataPicker.bind(this);
+    this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
+    this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
   };
   componentWillMount() {
     getData('./dist/data/DataPicker/font_grid_vectors_10x10_min.json').then(res => {
@@ -52,18 +53,15 @@ export default class Application extends React.Component {
       });
     });
   };
-  setCellFromDataPicker(vector, image) {
+  setSpreadsheetCellFromDataPicker(vector, image, dataKey) {
+    const data = this.getCellFromDataPicker(dataKey); // to do: move this step to cell renderer
     const hotInstance = this.hotTable.hotInstance;
     const selection = hotInstance.getSelected();
+
     if (selection) {
-      let tempData = {};
-      tempData.value = vector;
-      tempData.image = image;
-      hotInstance.setDataAtCell(selection[0], selection[1], tempData);
+      const cellData = `=DATAPICKER(${dataKey})`;
+      hotInstance.setDataAtCell(selection[0], selection[1], cellData);
     }
-    // const hotInstance = this.tableRef.hotInstance;
-    // const selection = hotInstance.getSelected();
-    //
     // const { 0: r, 1: g, 2: b } = { ...color };
     //
     // if (selection) {
@@ -72,6 +70,10 @@ export default class Application extends React.Component {
     //   //  update inputBarValue
     //   this.refs.colortable.updateInputBarValue(cellValue);
     // }
+  };
+  getCellFromDataPicker(dataKey) {
+    const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
+    return { image: cell.image, vector: cell.vector };
   };
   render () {
     const docHeight = document.body.offsetHeight;
@@ -94,7 +96,8 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 gridData= { this.state.gridData }
-                onChange={ this.setCellFromDataPicker }
+                onChange={ this.setSpreadsheetCellFromDataPicker }
+                ref='dataPicker'
               />
               <Spreadsheet
                 width={ spreadsheetWidth }
