@@ -1,4 +1,4 @@
-const CellSchema = { image: [], vector: [] };
+const CellSchema = { image: [], value: [] };
 module.exports = {
   Data: (rows, columns) => {
     const data = [];

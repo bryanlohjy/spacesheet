@@ -57,7 +57,7 @@ export default class Application extends React.Component {
     const selection = hotInstance.getSelected();
     if (selection) {
       let tempData = hotInstance.getDataAtCell(selection[0], selection[1]);
-      tempData.vector = vector;
+      tempData.value = vector;
       tempData.image = image;
       hotInstance.setDataAtCell(selection[0], selection[1], tempData);
     }

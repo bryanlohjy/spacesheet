@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
-import CellType from './CellTypes.js';
+import HandsOnTable from 'handsontable';
+import { CellTypes, GetCellType } from './CellTypes.js';
 import { Data, DataSchema } from './SpreadsheetData.js';
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
+
     this.setInputRef = this.setInputRef.bind(this);
+    this.initHotTable = this.initHotTable.bind(this);
+
     this.state = {
       inputBarIsMounted: false,
     }
@@ -15,10 +19,32 @@ export default class Spreadsheet extends React.Component {
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
     this.dataSchema = DataSchema(this.minCols);
-    this.CellType = new CellType({
+    this.CellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
+    });
+  };
+  componentDidMount() {
+    this.initHotTable();
+  };
+  initHotTable() {
+    const hotInstance = this.hotTable.hotInstance;
+    hotInstance.updateSettings({
+      cells: (row, col, prop) => { // determine and set cell types based on value
+        let cellProperties = {};
+        const cellData = hotInstance.getDataAtRowProp(row, prop);
+        switch (GetCellType(cellData)) {
+          case 'DATAPICKER':
+            cellProperties.renderer = this.CellTypes.DataPicker.renderer;
+            cellProperties.editor = this.CellTypes.DataPicker.editor;
+            break;
+          default:
+            cellProperties.renderer = this.CellTypes.Text.renderer;
+            cellProperties.editor = this.CellTypes.Text.editor;
+        }
+        return cellProperties;
+      }
     });
   };
   setInputRef(el) {
@@ -39,7 +65,7 @@ export default class Spreadsheet extends React.Component {
             className="table"
             ref={ ref => {
               this.props.setTableRef(ref);
-              // this.table = ref;
+              this.hotTable = ref;
             }}
             root='hot'
             data={ this.data }
@@ -69,9 +95,6 @@ export default class Spreadsheet extends React.Component {
             outsideClickDeselects={false}
             persistentState
             undo
-
-            renderer={ this.CellType.renderer }
-            // editor={MatrixCellType.editor}
             // validator={MatrixCellType.validator}
             // beforeChange={ this.handleBeforeChange }
             // afterSelection={ this.handleAfterSelection }
