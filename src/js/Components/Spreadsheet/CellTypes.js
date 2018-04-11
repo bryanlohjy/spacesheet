@@ -15,14 +15,14 @@ class CellTypes {
   };
   initDataPickerCellType() { // A non editable cell which renders references from the DataPicker
     return {
-      renderer: (hotInstance, td, row, col, prop, value, cellProperties) => {
+      renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
         td.innerHTML = '';
         const canvas = document.createElement('canvas');
         canvas.width = this.outputWidth - 1;
         canvas.height = this.outputHeight - 1;
         canvas.classList.add('cell-type', 'canvas');
         const ctx = canvas.getContext('2d');
-        this.drawFn(ctx, value.image);
+        this.drawFn(ctx, data.image);
         td.appendChild(canvas);
       },
       editor: false,
@@ -30,7 +30,9 @@ class CellTypes {
   };
   initTextCellType() { // Editable cell which renders the cell valye
     return {
-      renderer: 'text',
+      renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
+        td.innerHTML = data.value || '';
+      },
       editor: 'text',
     };
   };
@@ -50,8 +52,7 @@ class CellTypes {
 
 const GetCellType = cellData => {
   if (!cellData) { return; }
-
-  const hasImage = cellData.image && cellData.image.length;
+  const hasImage = cellData.image && (cellData.image.length || Object.keys(cellData.image).length);
   const hasValue = cellData.value && cellData.value.length;
 
   if (hasImage && hasValue) {
