@@ -15,7 +15,7 @@ export default class Application extends React.Component {
       outputWidth: 0,
       outputHeight: 0,
     };
-    this.setCellValue = this.setCellValue.bind(this);
+    this.setCellFromDataPicker = this.setCellFromDataPicker.bind(this);
   };
   componentWillMount() {
     getData('./dist/data/DataPicker/font_grid_vectors_10x10_min.json').then(res => {
@@ -52,11 +52,11 @@ export default class Application extends React.Component {
       });
     });
   };
-  setCellValue(vector, image) {
+  setCellFromDataPicker(vector, image) {
     const hotInstance = this.hotTable.hotInstance;
     const selection = hotInstance.getSelected();
     if (selection) {
-      let tempData = hotInstance.getDataAtCell(selection[0], selection[1]);
+      let tempData = {};
       tempData.value = vector;
       tempData.image = image;
       hotInstance.setDataAtCell(selection[0], selection[1], tempData);
@@ -94,7 +94,7 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 gridData= { this.state.gridData }
-                onChange={ this.setCellValue }
+                onChange={ this.setCellFromDataPicker }
               />
               <Spreadsheet
                 width={ spreadsheetWidth }
