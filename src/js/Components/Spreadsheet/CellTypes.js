@@ -4,7 +4,7 @@ const CellTypes = opts => {
 
   // DataPicker ==============
   // A non editable cell which renders references from the DataPicker
-  const DataPicker = {
+  const Formula = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       td.innerHTML = '';
       const canvas = document.createElement('canvas');
@@ -55,7 +55,7 @@ const CellTypes = opts => {
     editor: 'text' || CustomTextEditor,
   };
   return {
-    DataPicker,
+    Formula,
     Text,
   };
 }

@@ -41,9 +41,9 @@ export default class Spreadsheet extends React.Component {
         const cellData = hotInstance.getDataAtRowProp(row, prop);
         // take in cell data and return celltype and values
         switch (GetCellType(cellData)) {
-          case 'DATAPICKER':
-            cellProperties.renderer = this.CellTypes.DataPicker.renderer;
-            cellProperties.editor = this.CellTypes.DataPicker.editor;
+          case 'FORMULA':
+            cellProperties.renderer = this.CellTypes.Formula.renderer;
+            cellProperties.editor = this.CellTypes.Formula.editor;
             break;
           default:
             cellProperties.renderer = this.CellTypes.Text.renderer;
