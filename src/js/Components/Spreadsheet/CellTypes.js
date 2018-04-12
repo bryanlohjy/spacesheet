@@ -8,25 +8,30 @@ const CellTypes = opts => {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
         td.innerHTML = '';
-        const canvas = document.createElement('canvas');
-        canvas.width = opts.outputWidth - 1;
-        canvas.height = opts.outputHeight - 1;
-        canvas.classList.add('cell-type', 'canvas');
-        const ctx = canvas.getContext('2d');
         try {
           const result = opts.formulaParser.parse(data.replace('=', '')).result;
           if (result) {
-            let image = result.image;
-            if (image) {
-              opts.drawFn(ctx, result.image);
+            if (typeof result === 'object') { // it is a vector or image
+              const canvas = document.createElement('canvas');
+              canvas.width = opts.outputWidth - 1;
+              canvas.height = opts.outputHeight - 1;
+              canvas.classList.add('cell-type', 'canvas');
+              const ctx = canvas.getContext('2d');
+
+              let image = result.image;
+              if (image) {
+                opts.drawFn(ctx, result.image);
+              } else {
+                console.warn(`No image for Row: ${row}, Col: ${col}. Decode vector`)
+              }
+              td.appendChild(canvas);
             } else {
-              console.warn(`No image for Row: ${row}, Col: ${col}. Decode vector`)
+              td.innerText = result;
             }
           }
         } catch (e) {
           console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
         }
-        td.appendChild(canvas);
       }
     },
     editor: 'text',
