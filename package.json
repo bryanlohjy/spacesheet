@@ -7,6 +7,7 @@
     "@tensorflow/tfjs": "^0.6.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "deeplearn": "^0.5.1",
+    "hot-formula-parser": "^2.3.3",
     "react-handsontable": "^0.3.1"
   },
   "devDependencies": {

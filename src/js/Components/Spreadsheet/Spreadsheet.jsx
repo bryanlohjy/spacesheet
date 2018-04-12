@@ -5,6 +5,7 @@ import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
 import { GetCellType } from './CellHelpers.js';
 import { Data, DataSchema } from './SpreadsheetData.js';
+import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
@@ -20,14 +21,16 @@ export default class Spreadsheet extends React.Component {
     // this.dataSchema = DataSchema(this.minCols);
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
+
+  };
+  componentDidMount() {
     this.CellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
       getCellFromDataPicker: this.props.getCellFromDataPicker,
+      formulaParser: new FormulaParser(this.hotTable.hotInstance),
     });
-  };
-  componentDidMount() {
     this.initHotTable();
   };
   initHotTable() {
