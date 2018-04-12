@@ -14,10 +14,17 @@ const CellTypes = opts => {
         canvas.classList.add('cell-type', 'canvas');
         const ctx = canvas.getContext('2d');
         try {
-          const { result } = opts.formulaParser.parse(data.replace('=', ''));
-          opts.drawFn(ctx, result.image);
+          const result = opts.formulaParser.parse(data.replace('=', '')).result;
+          if (result) {
+            let image = result.image;
+            if (image) {
+              opts.drawFn(ctx, result.image);
+            } else {
+              console.warn(`No image for Row: ${row}, Col: ${col}. Decode vector`)
+            }
+          }
         } catch (e) {
-          console.error(`Cell hasn't been loaded.`)
+          console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
         }
         td.appendChild(canvas);
       }
