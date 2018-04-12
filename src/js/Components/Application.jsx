@@ -53,7 +53,7 @@ export default class Application extends React.Component {
       });
     });
   };
-  setSpreadsheetCellFromDataPicker(vector, image, dataKey) {
+  setSpreadsheetCellFromDataPicker(vector, dataKey) {
     const data = this.getCellFromDataPicker(dataKey); // to do: move this step to cell renderer
     const hotInstance = this.hotTable.hotInstance;
     const selection = hotInstance.getSelected();
@@ -73,7 +73,7 @@ export default class Application extends React.Component {
   };
   getCellFromDataPicker(dataKey) {
     const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
-    return { image: cell.image, vector: cell.vector };
+    return cell.vector;
   };
   render () {
     const docHeight = document.body.offsetHeight;

@@ -12,21 +12,17 @@ const CellTypes = opts => {
           const compiled = opts.formulaParser.parse(data.replace('=', ''));
           const { result } = compiled;
           if (result) {
-            if (typeof result === 'object') { // it is a vector or image
+            if (typeof result === 'object') { // it is a vector
               const canvas = document.createElement('canvas');
               canvas.width = opts.outputWidth - 1;
               canvas.height = opts.outputHeight - 1;
               canvas.classList.add('cell-type', 'canvas');
+
               const ctx = canvas.getContext('2d');
+              const imageData = opts.decodeFn(result);
+              opts.drawFn(ctx, imageData);
 
               let image = result.image;
-              if (image) {
-                const imageData = opts.decodeFn(result.vector);
-                // console.log(this.deoced)
-                opts.drawFn(ctx, imageData);
-              } else {
-                console.warn(`No image for Row: ${row}, Col: ${col}. Decode vector`)
-              }
               td.appendChild(canvas);
             } else {
               td.innerText = result;
