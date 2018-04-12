@@ -1,8 +1,9 @@
 const { Parser } = require('hot-formula-parser');
+import * as dl from 'deeplearn';
 
 const arrayContainsArray = arr => {
   for (let i = 0; i < arr.length; i++) {
-    if (typeof arr[i] === 'array') {
+    if (arr[i].constructor.name === 'Array' || arr[i].constructor.name === 'Float32Array') {
       return true;
     }
   }
@@ -17,21 +18,27 @@ const FormulaParser = (hotInstance, opts) => {
     const newVal = hotInstance.getDataAtCell(rowIndex, columnIndex).replace('=', '');
     done(parser.parse(newVal).result);
   });
-
   // override common functions to check for and work with tensors
-  // parser.on('callFunction', (name, params, done) => {
-  //   switch (name) {
-  //     case 'AVERAGE':
-  //       console.log(name, params, done)
-  //       done('UWAT')
-  //
-  //       return;
-  //       break;
-  //     default:
-  //       return;
-  //   }
-  //   done();
-  // });
+  parser.on('callFunction', (name, params, done) => {
+    switch (name.toUpperCase()) {
+      case 'AVERAGE':
+        if (arrayContainsArray(params)) { // calulate tensor
+          const result = dl.tidy(() => {
+            let count = 1;
+            let total = dl.tensor1d(params[0]);
+            for (count; count < params.length; count++) {
+              total = total.add(dl.tensor1d(params[count]));
+            }
+            return total.div(dl.scalar(count));
+          }).getValues();
+          done(result);
+        }
+        break;
+      default:
+        return;
+    }
+    done();
+  });
 
   parser.setFunction('DATAPICKER', params => {
     return opts.getCellFromDataPicker(params);
