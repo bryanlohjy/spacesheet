@@ -2,25 +2,22 @@ import HandsOnTable from 'handsontable';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
 
-  // DataPicker ==============
-  // A non editable cell which renders references from the DataPicker
+  // Formula ==============
+  // A non editable cell which renders references from the Formula
   const Formula = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
-      td.innerHTML = '';
-      const canvas = document.createElement('canvas');
-      canvas.width = opts.outputWidth - 1;
-      canvas.height = opts.outputHeight - 1;
-      canvas.classList.add('cell-type', 'canvas');
-      const ctx = canvas.getContext('2d');
-
-      if (data) {
-        const dataKey = data.match(/\(([^)]+)\)/)[1];
-        let dataPickerCell;
+      if (data && data.trim().length) {
+        td.innerHTML = '';
+        const canvas = document.createElement('canvas');
+        canvas.width = opts.outputWidth - 1;
+        canvas.height = opts.outputHeight - 1;
+        canvas.classList.add('cell-type', 'canvas');
+        const ctx = canvas.getContext('2d');
         try {
-          dataPickerCell = opts.getCellFromDataPicker(dataKey);
-          opts.drawFn(ctx, dataPickerCell.image);
+          const { result } = opts.formulaParser.parse(data.replace('=', ''));
+          opts.drawFn(ctx, result.image);
         } catch (e) {
-          console.error(`Cell ${dataKey} hasn't been loaded.`)
+          console.error(`Cell hasn't been loaded.`)
         }
         td.appendChild(canvas);
       }

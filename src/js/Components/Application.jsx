@@ -59,7 +59,7 @@ export default class Application extends React.Component {
     const selection = hotInstance.getSelected();
 
     if (selection) {
-      const cellData = `=DATAPICKER(${dataKey})`;
+      const cellData = `=DATAPICKER('${dataKey}')`;
       hotInstance.setDataAtCell(selection[0], selection[1], cellData);
     }
     // const { 0: r, 1: g, 2: b } = { ...color };

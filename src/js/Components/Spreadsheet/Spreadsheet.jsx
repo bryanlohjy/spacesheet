@@ -29,7 +29,9 @@ export default class Spreadsheet extends React.Component {
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
       getCellFromDataPicker: this.props.getCellFromDataPicker,
-      formulaParser: new FormulaParser(this.hotTable.hotInstance),
+      formulaParser: new FormulaParser(this.hotTable.hotInstance, {
+        getCellFromDataPicker: this.props.getCellFromDataPicker
+      }),
     });
     this.initHotTable();
   };
