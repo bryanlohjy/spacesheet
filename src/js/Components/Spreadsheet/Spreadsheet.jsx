@@ -26,6 +26,7 @@ export default class Spreadsheet extends React.Component {
   componentDidMount() {
     this.CellTypes = new CellTypes({
       drawFn: this.props.drawFn,
+      decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
       getCellFromDataPicker: this.props.getCellFromDataPicker,
@@ -118,6 +119,8 @@ Spreadsheet.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   drawFn: PropTypes.func,
+  decodeFn: PropTypes.func,
+
   // data: PropTypes.array,
   setTableRef: PropTypes.func,
   dataPickerCellData: PropTypes.object,

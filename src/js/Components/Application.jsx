@@ -105,6 +105,7 @@ export default class Application extends React.Component {
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
+                decodeFn={ this.decodeFn }
                 getCellFromDataPicker={ this.getCellFromDataPicker }
                 setTableRef={ ref => {
                   this.hotTable = ref;

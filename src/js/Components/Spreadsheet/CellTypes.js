@@ -9,7 +9,8 @@ const CellTypes = opts => {
       if (data && data.trim().length) {
         td.innerHTML = '';
         try {
-          const result = opts.formulaParser.parse(data.replace('=', '')).result;
+          const compiled = opts.formulaParser.parse(data.replace('=', ''));
+          const { result } = compiled;
           if (result) {
             if (typeof result === 'object') { // it is a vector or image
               const canvas = document.createElement('canvas');
@@ -20,7 +21,9 @@ const CellTypes = opts => {
 
               let image = result.image;
               if (image) {
-                opts.drawFn(ctx, result.image);
+                const imageData = opts.decodeFn(result.vector);
+                // console.log(this.deoced)
+                opts.drawFn(ctx, imageData);
               } else {
                 console.warn(`No image for Row: ${row}, Col: ${col}. Decode vector`)
               }
@@ -28,6 +31,8 @@ const CellTypes = opts => {
             } else {
               td.innerText = result;
             }
+          } else {
+            td.innerText = compiled.error;
           }
         } catch (e) {
           console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
