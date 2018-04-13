@@ -107,9 +107,7 @@ export default class Application extends React.Component {
               />
             </div> : ''
         }
-        <nav ref="bottomNav" className="bottom-nav">
-          <a href="">Releases</a>
-        </nav>
+        <nav ref="bottomNav" className="bottom-nav"/>
       </div>
     );
   }
