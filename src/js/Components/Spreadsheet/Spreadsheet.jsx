@@ -4,7 +4,7 @@ import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
 import { GetCellType } from './CellHelpers.js';
-import { Data, DataSchema } from './SpreadsheetData.js';
+import { DemoData } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
@@ -21,8 +21,7 @@ export default class Spreadsheet extends React.Component {
       inputBarIsMounted: false,
       inputBarValue: "",
     };
-    // this.data = [];
-    // this.dataSchema = DataSchema(this.minCols);
+
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
 
@@ -42,6 +41,7 @@ export default class Spreadsheet extends React.Component {
   };
   initHotTable() {
     const hotInstance = this.hotTable.hotInstance;
+    console.log(hotInstance)
     hotInstance.updateSettings({
       cells: (row, col, prop) => { // determine and set cell types based on value
         let cellProperties = {};
@@ -99,7 +99,7 @@ export default class Spreadsheet extends React.Component {
               this.hotTable = ref;
             }}
             root='hot'
-
+            data={ DemoData }
             rowHeaderWidth={32}
             colHeaderHeight={32}
 
