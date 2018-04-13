@@ -105,7 +105,11 @@ export default class Application extends React.Component {
                   this.hotTable = ref;
                 }}
               />
-            </div> : ''
+            </div> :
+            <div className="loader-container">
+              <div className="loader"/>
+              <span className="loading-message">Loading model ...</span>
+            </div>
         }
         <nav ref="bottomNav" className="bottom-nav"/>
       </div>
