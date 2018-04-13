@@ -55,6 +55,16 @@ const FormulaParser = (hotInstance, opts) => {
           }).getValues();
           done(result);
           break;
+        case 'LERP':
+        case 'INTERPOLATE':
+          result = dl.tidy(() => {
+            const from = dl.tensor1d(params[0]);
+            const to = dl.tensor1d(params[1]);
+            const step = params[2];
+            return from.add(to.sub(from).mul(dl.scalar(step)));
+          }).getValues();
+          done(result);
+          break;
         default:
           return;
       }
