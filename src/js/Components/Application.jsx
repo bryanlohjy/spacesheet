@@ -61,15 +61,8 @@ export default class Application extends React.Component {
     if (selection) {
       const cellData = `=DATAPICKER('${dataKey}')`;
       hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+      this.refs.spreadsheet.updateInputBarValue(cellData);
     }
-    // const { 0: r, 1: g, 2: b } = { ...color };
-    //
-    // if (selection) {
-    //   const cellValue = `=[${r},${g},${b}]`
-    //   hotInstance.setDataAtCell(selection[0], selection[1], cellValue);
-    //   //  update inputBarValue
-    //   this.refs.colortable.updateInputBarValue(cellValue);
-    // }
   };
   getCellFromDataPicker(dataKey) {
     const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
@@ -87,7 +80,7 @@ export default class Application extends React.Component {
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded && this.state.gridData ?
-            <div>
+            <div className="spreadsheet-datapicker-container">
               <DataPicker
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
@@ -107,15 +100,18 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 getCellFromDataPicker={ this.getCellFromDataPicker }
+                ref='spreadsheet'
                 setTableRef={ ref => {
                   this.hotTable = ref;
                 }}
               />
-            </div> : ''
+            </div> :
+            <div className="loader-container">
+              <div className="loader"/>
+              <span className="loading-message">Loading model ...</span>
+            </div>
         }
-        <nav ref="bottomNav" className="bottom-nav">
-          <a href="">Releases</a>
-        </nav>
+        <nav ref="bottomNav" className="bottom-nav"/>
       </div>
     );
   }

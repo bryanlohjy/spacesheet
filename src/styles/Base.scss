@@ -10,7 +10,8 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  > div { // holds datapicker and spreadsheet
+
+  .spreadsheet-datapicker-container { // holds datapicker and spreadsheet
     width: 100%;
     height: 100%;
     display: inline-flex;
@@ -31,6 +32,16 @@
     border-top: 1px solid lightgrey;
     width: 100%;
     height: 50px;
+  }
+
+  .loader-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .loading-message {
+      font-family: monospace;
+      margin-top: 50px;
+    }
   }
 }
 .memory-canvas {
