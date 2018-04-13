@@ -14,6 +14,7 @@ export default class Spreadsheet extends React.Component {
     this.setInputRef = this.setInputRef.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
     this.updateInputBarValue = this.updateInputBarValue.bind(this);
+    this.handleAfterSelection = this.handleAfterSelection.bind(this);
 
     this.state = {
       inputBarIsMounted: false,
@@ -67,6 +68,14 @@ export default class Spreadsheet extends React.Component {
   updateInputBarValue(value) {
     this.setState({ inputBarValue: value || ""});
   };
+  handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
+    let currentSelection = [rowFrom, colFrom].toString();
+    if (this.previousSelection !== currentSelection) { // only update if the value is different
+      const cell = this.hotTable.hotInstance.getDataAtCell(rowFrom, colFrom);
+      this.updateInputBarValue(cell);
+      this.previousSelection = currentSelection;
+    }
+  }
   render() {
     const inputBarHeight = this.inputBar ? this.inputBar.offsetHeight : 21;
     return (
@@ -110,9 +119,10 @@ export default class Spreadsheet extends React.Component {
             outsideClickDeselects={false}
             persistentState
             undo
+
+            afterSelection={ this.handleAfterSelection }
             // validator={MatrixCellType.validator}
             // beforeChange={ this.handleBeforeChange }
-            // afterSelection={ this.handleAfterSelection }
           />
         </div>
       </div>
