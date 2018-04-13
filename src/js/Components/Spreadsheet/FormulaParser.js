@@ -65,6 +65,17 @@ const FormulaParser = (hotInstance, opts) => {
           }).getValues();
           done(result);
           break;
+        case 'SLERP':
+          result = dl.tidy(() => {
+            const from = dl.tensor1d(params[0]);
+            const to = dl.tensor1d(params[1]);
+            const step = params[2];
+            const omega = dl.acos(from.mul(to));
+            const so = dl.sin(omega);
+            return dl.sin(omega.mul(dl.scalar(1 - step)).div(so).mul(from).add(dl.sin(dl.scalar(step).mul(omega)).div(so).mul(to)));
+          }).getValues();
+          done(result);
+          break;
         default:
           return;
       }
