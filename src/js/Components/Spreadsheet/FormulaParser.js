@@ -20,10 +20,11 @@ const FormulaParser = (hotInstance, opts) => {
   });
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
-    switch (name.toUpperCase()) {
-      case 'AVERAGE':
-        if (arrayContainsArray(params)) { // calulate tensor
-          const result = dl.tidy(() => {
+    if (arrayContainsArray(params)) { // calulate tensor
+      let result;
+      switch (name.toUpperCase()) {
+        case 'AVERAGE':
+          result = dl.tidy(() => {
             let count = 1;
             let total = dl.tensor1d(params[0]);
             for (count; count < params.length; count++) {
@@ -32,12 +33,22 @@ const FormulaParser = (hotInstance, opts) => {
             return total.div(dl.scalar(count));
           }).getValues();
           done(result);
-        }
-        break;
-      default:
-        return;
+          break;
+        case 'SUM':
+        case 'ADD':
+          result = dl.tidy(() => {
+            let total = dl.tensor1d(params[0]);
+            for (let i = 0; i < params.length; i++) {
+              total = total.add(dl.tensor1d(params[i]));
+            }
+            return total;
+          }).getValues();
+          done(result);
+          break;
+        default:
+          return;
+      }
     }
-    done();
   });
 
   parser.setFunction('DATAPICKER', params => {
