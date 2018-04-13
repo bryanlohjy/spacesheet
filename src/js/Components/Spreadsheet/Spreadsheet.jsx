@@ -22,9 +22,9 @@ export default class Spreadsheet extends React.Component {
       inputBarValue: "",
     };
 
-    this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
-    this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
-    this.demoSheet = DemoSheet(this.minRows, this.minCols);
+    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
+    this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
+    this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
   };
   componentDidMount() {
     this.CellTypes = new CellTypes({
@@ -114,8 +114,8 @@ export default class Spreadsheet extends React.Component {
             width={ this.props.width }
             height={ this.props.height - inputBarHeight }
 
-            minCols={ this.minCols }
-            minRows={ this.minRows }
+            maxCols={ this.maxCols }
+            maxRows={ this.maxRows }
 
             viewportColumnRenderingOffset={26}
             viewportRowRenderingOffset={26}
