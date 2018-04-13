@@ -80,7 +80,7 @@ export default class Application extends React.Component {
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded && this.state.gridData ?
-            <div>
+            <div className="spreadsheet-datapicker-container">
               <DataPicker
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
