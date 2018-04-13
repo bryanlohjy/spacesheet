@@ -4,7 +4,7 @@ import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
 import { GetCellType } from './CellHelpers.js';
-import { DemoData } from './SpreadsheetData.js';
+import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
@@ -24,7 +24,7 @@ export default class Spreadsheet extends React.Component {
 
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.minRows = Math.ceil(this.props.height / this.props.outputHeight);
-
+    this.demoSheet = DemoSheet(this.minRows, this.minCols);
   };
   componentDidMount() {
     this.CellTypes = new CellTypes({
@@ -41,7 +41,6 @@ export default class Spreadsheet extends React.Component {
   };
   initHotTable() {
     const hotInstance = this.hotTable.hotInstance;
-    console.log(hotInstance)
     hotInstance.updateSettings({
       cells: (row, col, prop) => { // determine and set cell types based on value
         let cellProperties = {};
@@ -57,7 +56,8 @@ export default class Spreadsheet extends React.Component {
             cellProperties.editor = this.CellTypes.Text.editor;
         }
         return cellProperties;
-      }
+      },
+      data: this.demoSheet.data,
     });
   };
   setInputRef(el) {
@@ -99,7 +99,9 @@ export default class Spreadsheet extends React.Component {
               this.hotTable = ref;
             }}
             root='hot'
-            data={ DemoData }
+
+            mergeCells={ this.demoSheet.mergeCells }
+
             rowHeaderWidth={32}
             colHeaderHeight={32}
 
@@ -119,9 +121,9 @@ export default class Spreadsheet extends React.Component {
             viewportRowRenderingOffset={26}
 
             outsideClickDeselects={false}
-            persistentState
-            undo
 
+            undo
+            redo
             afterSelection={ this.handleAfterSelection }
           />
         </div>
