@@ -14,6 +14,7 @@ export default class Spreadsheet extends React.Component {
     this.setInputRef = this.setInputRef.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
     this.updateInputBarValue = this.updateInputBarValue.bind(this);
+    this.setCellValue = this.setCellValue.bind(this);
     this.handleAfterSelection = this.handleAfterSelection.bind(this);
 
     this.state = {
@@ -68,6 +69,10 @@ export default class Spreadsheet extends React.Component {
   updateInputBarValue(value) {
     this.setState({ inputBarValue: value || ""});
   };
+  setCellValue(value) {
+    const selection = this.hotTable.hotInstance.getSelected();
+    this.hotTable.hotInstance.setDataAtCell(selection[0], selection[1], value);
+  };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
     let currentSelection = [rowFrom, colFrom].toString();
     if (this.previousSelection !== currentSelection) { // only update if the value is different
@@ -83,6 +88,8 @@ export default class Spreadsheet extends React.Component {
         <InputBar
           setInputRef={ this.setInputRef }
           inputBarValue={ this.state.inputBarValue }
+          updateInputBarValue={ this.updateInputBarValue }
+          setCellValue={ this.setCellValue }
         />
         <div className="table-container" ref="tableContainer">
           <HotTable
@@ -92,11 +99,6 @@ export default class Spreadsheet extends React.Component {
               this.hotTable = ref;
             }}
             root='hot'
-            // data={ this.data }
-            // columns={ column => {
-            //   return { data: 'image' }
-            // }}
-            // dataSchema={ this.dataSchema }
 
             rowHeaderWidth={32}
             colHeaderHeight={32}
@@ -121,8 +123,6 @@ export default class Spreadsheet extends React.Component {
             undo
 
             afterSelection={ this.handleAfterSelection }
-            // validator={MatrixCellType.validator}
-            // beforeChange={ this.handleBeforeChange }
           />
         </div>
       </div>
@@ -137,7 +137,6 @@ Spreadsheet.propTypes = {
   drawFn: PropTypes.func,
   decodeFn: PropTypes.func,
 
-  // data: PropTypes.array,
   setTableRef: PropTypes.func,
   dataPickerCellData: PropTypes.object,
   getCellFromDataPicker: PropTypes.func,
@@ -152,8 +151,16 @@ class InputBar extends React.Component {
   render() {
     return (
       <input className="input-bar" type="text"
-        ref={ (el) => {
+        ref={ el => {
           this.props.setInputRef(el);
+        }}
+        onChange={ e => {
+          this.props.updateInputBarValue(e.target.value);
+        }}
+        onKeyDown={ e => {
+          if (e.keyCode === 13) {
+            this.props.setCellValue(e.target.value);
+          }
         }}
         value={ this.props.inputBarValue }
       />
@@ -162,5 +169,7 @@ class InputBar extends React.Component {
 }
 InputBar.propTypes = {
   setInputRef: PropTypes.func,
+  setCellValue: PropTypes.func,
   inputBarValue: PropTypes.string,
+  updateInputBarValue: PropTypes.func,
 };
