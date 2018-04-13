@@ -61,15 +61,8 @@ export default class Application extends React.Component {
     if (selection) {
       const cellData = `=DATAPICKER('${dataKey}')`;
       hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+      this.refs.spreadsheet.updateInputBarValue(cellData);
     }
-    // const { 0: r, 1: g, 2: b } = { ...color };
-    //
-    // if (selection) {
-    //   const cellValue = `=[${r},${g},${b}]`
-    //   hotInstance.setDataAtCell(selection[0], selection[1], cellValue);
-    //   //  update inputBarValue
-    //   this.refs.colortable.updateInputBarValue(cellValue);
-    // }
   };
   getCellFromDataPicker(dataKey) {
     const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
@@ -107,6 +100,7 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 getCellFromDataPicker={ this.getCellFromDataPicker }
+                ref='spreadsheet'
                 setTableRef={ ref => {
                   this.hotTable = ref;
                 }}

@@ -13,10 +13,12 @@ export default class Spreadsheet extends React.Component {
 
     this.setInputRef = this.setInputRef.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
+    this.updateInputBarValue = this.updateInputBarValue.bind(this);
 
     this.state = {
       inputBarIsMounted: false,
-    }
+      inputBarValue: "",
+    };
     // this.data = [];
     // this.dataSchema = DataSchema(this.minCols);
     this.minCols = Math.ceil(this.props.width / this.props.outputWidth);
@@ -62,12 +64,16 @@ export default class Spreadsheet extends React.Component {
       this.setState({ inputBarIsMounted : true });
     }
   };
+  updateInputBarValue(value) {
+    this.setState({ inputBarValue: value || ""});
+  };
   render() {
     const inputBarHeight = this.inputBar ? this.inputBar.offsetHeight : 21;
     return (
       <div className="spreadsheet-container">
         <InputBar
           setInputRef={ this.setInputRef }
+          inputBarValue={ this.state.inputBarValue }
         />
         <div className="table-container" ref="tableContainer">
           <HotTable
@@ -139,10 +145,12 @@ class InputBar extends React.Component {
         ref={ (el) => {
           this.props.setInputRef(el);
         }}
+        value={ this.props.inputBarValue }
       />
     )
   }
 }
 InputBar.propTypes = {
   setInputRef: PropTypes.func,
+  inputBarValue: PropTypes.string,
 };
