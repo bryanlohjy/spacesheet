@@ -38,8 +38,18 @@ const FormulaParser = (hotInstance, opts) => {
         case 'ADD':
           result = dl.tidy(() => {
             let total = dl.tensor1d(params[0]);
-            for (let i = 0; i < params.length; i++) {
+            for (let i = 1; i < params.length; i++) {
               total = total.add(dl.tensor1d(params[i]));
+            }
+            return total;
+          }).getValues();
+          done(result);
+          break;
+        case 'MINUS':
+          result = dl.tidy(() => {
+            let total = dl.tensor1d(params[0]);
+            for (let i = 1; i < params.length; i++) {
+              total = total.sub(dl.tensor1d(params[i]));
             }
             return total;
           }).getValues();
