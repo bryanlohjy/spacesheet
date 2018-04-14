@@ -72,7 +72,6 @@ export default class Spreadsheet extends React.Component {
     this.hotInstance.setDataAtCell(selection[0], selection[1], value);
   };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
-    console.log('afterselection')
     let currentSelection = [rowFrom, colFrom].toString();
     if (this.previousSelection !== currentSelection) { // only update if the value is different
       const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
@@ -125,7 +124,25 @@ export default class Spreadsheet extends React.Component {
                 outsideClickDeselects={false}
 
                 contextMenu
-
+                // make sure input bar is in sync
+                afterUndo={ e => {
+                  const selection = this.hotInstance.getSelected();
+                  if (selection) {
+                    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+                    if (this.inputBar.innerText !== data) {
+                      this.updateInputBarValue(data);
+                    }
+                  }
+                }}
+                afterRedo={ e => {
+                  const selection = this.hotInstance.getSelected();
+                  if (selection) {
+                    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+                    if (this.inputBar.innerText !== data) {
+                      this.updateInputBarValue(data);
+                    }
+                  }
+                }}
                 undo
                 redo
                 // afterSelection={ this.handleAfterSelection }
@@ -167,8 +184,6 @@ class InputBar extends React.Component {
         onKeyDown={ e => {
           if (e.keyCode === 13) {
             this.props.setCellValue(e.target.value);
-          } else {
-            console.log(e.target.value)
           }
         }}
         style={{
