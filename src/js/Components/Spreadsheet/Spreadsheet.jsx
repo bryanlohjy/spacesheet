@@ -19,41 +19,39 @@ export default class Spreadsheet extends React.Component {
 
     this.state = {
       inputBarIsMounted: false,
-      inputBarValue: "",
     };
 
     this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
     this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
   };
-  componentDidMount() {
-    this.CellTypes = new CellTypes({
+  initHotTable() {
+    const hotInstance = this.hotInstance;
+
+    const cellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
       getCellFromDataPicker: this.props.getCellFromDataPicker,
-      formulaParser: new FormulaParser(this.hotTable.hotInstance, {
+      formulaParser: new FormulaParser(this.hotInstance, {
         getCellFromDataPicker: this.props.getCellFromDataPicker
       }),
+      updateInputBarValue: this.updateInputBarValue,
     });
-    this.initHotTable();
-  };
-  initHotTable() {
-    const hotInstance = this.hotTable.hotInstance;
+
     hotInstance.updateSettings({
-      cells: (row, col, prop) => { // determine and set cell types based on value
+      cells: (row, col, prop) => {
         let cellProperties = {};
         const cellData = hotInstance.getDataAtRowProp(row, prop);
-        // take in cell data and return celltype and values
         switch (GetCellType(cellData)) {
           case 'FORMULA':
-            cellProperties.renderer = this.CellTypes.Formula.renderer;
-            cellProperties.editor = this.CellTypes.Formula.editor;
+            cellProperties.renderer = cellTypes.Formula.renderer;
+            cellProperties.editor = cellTypes.Formula.editor;
             break;
           default:
-            cellProperties.renderer = this.CellTypes.Text.renderer;
-            cellProperties.editor = this.CellTypes.Text.editor;
+            cellProperties.renderer = cellTypes.Text.renderer;
+            cellProperties.editor = cellTypes.Text.editor;
         }
         return cellProperties;
       },
@@ -67,66 +65,90 @@ export default class Spreadsheet extends React.Component {
     }
   };
   updateInputBarValue(value) {
-    this.setState({ inputBarValue: value || ""});
+    this.inputBar.value = value;
   };
   setCellValue(value) {
-    const selection = this.hotTable.hotInstance.getSelected();
-    this.hotTable.hotInstance.setDataAtCell(selection[0], selection[1], value);
+    const selection = this.hotInstance.getSelected();
+    this.hotInstance.setDataAtCell(selection[0], selection[1], value);
   };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
     let currentSelection = [rowFrom, colFrom].toString();
     if (this.previousSelection !== currentSelection) { // only update if the value is different
-      const cell = this.hotTable.hotInstance.getDataAtCell(rowFrom, colFrom);
+      const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
       this.updateInputBarValue(cell);
       this.previousSelection = currentSelection;
     }
   }
   render() {
-    const inputBarHeight = this.inputBar ? this.inputBar.offsetHeight : 21;
+    const inputBarHeight = 21;
     return (
       <div className="spreadsheet-container">
         <InputBar
           setInputRef={ this.setInputRef }
-          inputBarValue={ this.state.inputBarValue }
           updateInputBarValue={ this.updateInputBarValue }
           setCellValue={ this.setCellValue }
+          height={ inputBarHeight }
         />
-        <div className="table-container" ref="tableContainer">
-          <HotTable
-            className="table"
-            ref={ ref => {
-              this.props.setTableRef(ref);
-              this.hotTable = ref;
-            }}
-            root='hot'
+        {
+          this.state.inputBarIsMounted ? (
+            <div className="table-container" ref="tableContainer">
+              <HotTable
+                className="table"
+                ref={ ref => {
+                  this.props.setTableRef(ref);
+                  this.hotInstance = ref.hotInstance;
+                  this.initHotTable();
+                }}
+                root='hot'
 
-            mergeCells={ this.demoSheet.mergeCells }
+                mergeCells={ this.demoSheet.mergeCells }
 
-            rowHeaderWidth={32}
-            colHeaderHeight={32}
+                rowHeaderWidth={32}
+                colHeaderHeight={32}
 
-            colHeaders={true}
-            rowHeaders={true}
-            preventOverflow="horizontal"
-            rowHeights={this.props.outputHeight}
-            colWidths={this.props.outputWidth}
+                colHeaders={true}
+                rowHeaders={true}
+                preventOverflow="horizontal"
+                rowHeights={this.props.outputHeight}
+                colWidths={this.props.outputWidth}
 
-            width={ this.props.width }
-            height={ this.props.height - inputBarHeight }
+                width={ this.props.width }
+                height={ this.props.height - inputBarHeight }
 
-            maxCols={ this.maxCols }
-            maxRows={ this.maxRows }
+                maxCols={ this.maxCols }
+                maxRows={ this.maxRows }
 
-            viewportColumnRenderingOffset={26}
-            viewportRowRenderingOffset={26}
+                viewportColumnRenderingOffset={26}
+                viewportRowRenderingOffset={26}
 
-            outsideClickDeselects={false}
+                outsideClickDeselects={false}
 
-            undo
-            redo
-            afterSelection={ this.handleAfterSelection }
-          />
-        </div>
+                contextMenu
+                // make sure input bar is in sync
+                afterUndo={ e => {
+                  const selection = this.hotInstance.getSelected();
+                  if (selection) {
+                    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+                    if (this.inputBar.innerText !== data) {
+                      this.updateInputBarValue(data);
+                    }
+                  }
+                }}
+                afterRedo={ e => {
+                  const selection = this.hotInstance.getSelected();
+                  if (selection) {
+                    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+                    if (this.inputBar.innerText !== data) {
+                      this.updateInputBarValue(data);
+                    }
+                  }
+                }}
+                undo
+                redo
+                // afterSelection={ this.handleAfterSelection }
+              />
+            </div>) : ''
+        }
       </div>
     )
   }
@@ -164,7 +186,9 @@ class InputBar extends React.Component {
             this.props.setCellValue(e.target.value);
           }
         }}
-        value={ this.props.inputBarValue }
+        style={{
+          height: this.props.height || 21,
+        }}
       />
     )
   }
@@ -172,6 +196,6 @@ class InputBar extends React.Component {
 InputBar.propTypes = {
   setInputRef: PropTypes.func,
   setCellValue: PropTypes.func,
-  inputBarValue: PropTypes.string,
   updateInputBarValue: PropTypes.func,
+  height: PropTypes.number,
 };
