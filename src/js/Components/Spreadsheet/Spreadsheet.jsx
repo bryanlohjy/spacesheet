@@ -19,7 +19,6 @@ export default class Spreadsheet extends React.Component {
 
     this.state = {
       inputBarIsMounted: false,
-      inputBarValue: "",
     };
 
     this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
@@ -67,7 +66,8 @@ export default class Spreadsheet extends React.Component {
     }
   };
   updateInputBarValue(value) {
-    this.setState({ inputBarValue: value || ""});
+    console.log(value)
+    this.inputBar.value = value;
   };
   setCellValue(value) {
     const selection = this.hotTable.hotInstance.getSelected();
@@ -82,12 +82,12 @@ export default class Spreadsheet extends React.Component {
     }
   }
   render() {
+    console.log('render');
     const inputBarHeight = this.inputBar ? this.inputBar.offsetHeight : 21;
     return (
       <div className="spreadsheet-container">
         <InputBar
           setInputRef={ this.setInputRef }
-          inputBarValue={ this.state.inputBarValue }
           updateInputBarValue={ this.updateInputBarValue }
           setCellValue={ this.setCellValue }
         />
@@ -121,6 +121,8 @@ export default class Spreadsheet extends React.Component {
             viewportRowRenderingOffset={26}
 
             outsideClickDeselects={false}
+
+            contextMenu
 
             undo
             redo
@@ -164,7 +166,6 @@ class InputBar extends React.Component {
             this.props.setCellValue(e.target.value);
           }
         }}
-        value={ this.props.inputBarValue }
       />
     )
   }
@@ -172,6 +173,5 @@ class InputBar extends React.Component {
 InputBar.propTypes = {
   setInputRef: PropTypes.func,
   setCellValue: PropTypes.func,
-  inputBarValue: PropTypes.string,
   updateInputBarValue: PropTypes.func,
 };
