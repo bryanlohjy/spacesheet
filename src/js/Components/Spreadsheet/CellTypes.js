@@ -1,7 +1,30 @@
 import HandsOnTable from 'handsontable';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
+  let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
 
+  const onKeyDown = function(e) { // update input bar as cell is edited
+    if (String.fromCharCode(e.keyCode).trim().length) {
+      setTimeout(() => {
+        opts.inputBar.value = e.target.value;
+      }, 0);
+    }
+  };
+  CustomTextEditor.prototype.prepare = function() {
+    HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
+    opts.inputBar.value = this.originalValue || '';
+  };
+  CustomTextEditor.prototype.open = function() {
+    HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
+    setTimeout(() => {
+      opts.inputBar.value = this.TEXTAREA.value || '';
+    },0)
+    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown);
+  };
+  CustomTextEditor.prototype.close = function() {
+    HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
+    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown);
+  }
   // Formula ==============
   // A non editable cell which renders references from the Formula
   const Formula = {
@@ -35,34 +58,13 @@ const CellTypes = opts => {
         }
       }
     },
-    editor: 'text',
+    editor: CustomTextEditor,
   };
-
   // Text ==============
   // Editable cell which renders the cell value
-  let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
-  CustomTextEditor.prototype.prepare = function() { // runs when a cell is clicked
-    // store display data to manage in object
-    this.data = this.originalValue;
-    HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-  };
-  CustomTextEditor.prototype.open = function() {
-    HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
-    console.log(this.data)
-    this.TEXTAREA.value = this.data.value;
-  };
-  // CustomTextEditor.prototype.setValue = function(val) {
-  //   HandsOnTable.editors.TextEditor.prototype.setValue.apply(this, arguments);
-  //
-  //   console.log('setval', this, val)
-  // }
-
   const Text = {
     renderer: 'text',
-    // renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
-    //   td.innerHTML = Object.keys(data).value || '';
-    // },
-    editor: 'text' || CustomTextEditor,
+    editor: CustomTextEditor,
   };
   return {
     Formula,

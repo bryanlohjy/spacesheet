@@ -72,6 +72,7 @@ export default class Spreadsheet extends React.Component {
     this.hotInstance.setDataAtCell(selection[0], selection[1], value);
   };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
+    console.log('afterselection')
     let currentSelection = [rowFrom, colFrom].toString();
     if (this.previousSelection !== currentSelection) { // only update if the value is different
       const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
@@ -127,7 +128,7 @@ export default class Spreadsheet extends React.Component {
 
                 undo
                 redo
-                afterSelection={ this.handleAfterSelection }
+                // afterSelection={ this.handleAfterSelection }
               />
             </div>) : ''
         }
