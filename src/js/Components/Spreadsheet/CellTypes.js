@@ -4,9 +4,13 @@ const CellTypes = opts => {
   let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
 
   const onKeyDown = function(e) { // update input bar as cell is edited
-    if (String.fromCharCode(e.keyCode).trim().length) {
+    if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
         opts.updateInputBarValue(e.target.value);
+      }, 0);
+    } else if (e.keyCode === 27) { // if escape, then set to originalValue
+      setTimeout(() => {
+        opts.updateInputBarValue(this.originalValue);
       }, 0);
     }
   };
@@ -19,11 +23,11 @@ const CellTypes = opts => {
     setTimeout(() => {
       opts.updateInputBarValue(this.TEXTAREA.value || '');
     }, 0);
-    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown);
+    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   };
   CustomTextEditor.prototype.close = function() {
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
-    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown);
+    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   }
   // Formula ==============
   // A non editable cell which renders references from the Formula
