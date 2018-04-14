@@ -25,34 +25,33 @@ export default class Spreadsheet extends React.Component {
     this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
     this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
   };
-  componentDidMount() {
-    this.CellTypes = new CellTypes({
+  initHotTable() {
+    const hotInstance = this.hotInstance;
+
+    const cellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
       getCellFromDataPicker: this.props.getCellFromDataPicker,
-      formulaParser: new FormulaParser(this.hotTable.hotInstance, {
+      formulaParser: new FormulaParser(this.hotInstance, {
         getCellFromDataPicker: this.props.getCellFromDataPicker
       }),
+      inputBar: this.inputBar,
     });
-    this.initHotTable();
-  };
-  initHotTable() {
-    const hotInstance = this.hotTable.hotInstance;
+
     hotInstance.updateSettings({
-      cells: (row, col, prop) => { // determine and set cell types based on value
+      cells: (row, col, prop) => {
         let cellProperties = {};
         const cellData = hotInstance.getDataAtRowProp(row, prop);
-        // take in cell data and return celltype and values
         switch (GetCellType(cellData)) {
           case 'FORMULA':
-            cellProperties.renderer = this.CellTypes.Formula.renderer;
-            cellProperties.editor = this.CellTypes.Formula.editor;
+            cellProperties.renderer = cellTypes.Formula.renderer;
+            cellProperties.editor = cellTypes.Formula.editor;
             break;
           default:
-            cellProperties.renderer = this.CellTypes.Text.renderer;
-            cellProperties.editor = this.CellTypes.Text.editor;
+            cellProperties.renderer = cellTypes.Text.renderer;
+            cellProperties.editor = cellTypes.Text.editor;
         }
         return cellProperties;
       },
@@ -66,23 +65,21 @@ export default class Spreadsheet extends React.Component {
     }
   };
   updateInputBarValue(value) {
-    console.log(value)
     this.inputBar.value = value;
   };
   setCellValue(value) {
-    const selection = this.hotTable.hotInstance.getSelected();
-    this.hotTable.hotInstance.setDataAtCell(selection[0], selection[1], value);
+    const selection = this.hotInstance.getSelected();
+    this.hotInstance.setDataAtCell(selection[0], selection[1], value);
   };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
     let currentSelection = [rowFrom, colFrom].toString();
     if (this.previousSelection !== currentSelection) { // only update if the value is different
-      const cell = this.hotTable.hotInstance.getDataAtCell(rowFrom, colFrom);
+      const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
       this.updateInputBarValue(cell);
       this.previousSelection = currentSelection;
     }
   }
   render() {
-    console.log('render');
     const inputBarHeight = 21;
     return (
       <div className="spreadsheet-container">
@@ -92,44 +89,48 @@ export default class Spreadsheet extends React.Component {
           setCellValue={ this.setCellValue }
           height={ inputBarHeight }
         />
-        <div className="table-container" ref="tableContainer">
-          <HotTable
-            className="table"
-            ref={ ref => {
-              this.props.setTableRef(ref);
-              this.hotTable = ref;
-            }}
-            root='hot'
+        {
+          this.state.inputBarIsMounted ? (
+            <div className="table-container" ref="tableContainer">
+              <HotTable
+                className="table"
+                ref={ ref => {
+                  this.props.setTableRef(ref);
+                  this.hotInstance = ref.hotInstance;
+                  this.initHotTable();
+                }}
+                root='hot'
 
-            mergeCells={ this.demoSheet.mergeCells }
+                mergeCells={ this.demoSheet.mergeCells }
 
-            rowHeaderWidth={32}
-            colHeaderHeight={32}
+                rowHeaderWidth={32}
+                colHeaderHeight={32}
 
-            colHeaders={true}
-            rowHeaders={true}
-            preventOverflow="horizontal"
-            rowHeights={this.props.outputHeight}
-            colWidths={this.props.outputWidth}
+                colHeaders={true}
+                rowHeaders={true}
+                preventOverflow="horizontal"
+                rowHeights={this.props.outputHeight}
+                colWidths={this.props.outputWidth}
 
-            width={ this.props.width }
-            height={ this.props.height - inputBarHeight }
+                width={ this.props.width }
+                height={ this.props.height - inputBarHeight }
 
-            maxCols={ this.maxCols }
-            maxRows={ this.maxRows }
+                maxCols={ this.maxCols }
+                maxRows={ this.maxRows }
 
-            viewportColumnRenderingOffset={26}
-            viewportRowRenderingOffset={26}
+                viewportColumnRenderingOffset={26}
+                viewportRowRenderingOffset={26}
 
-            outsideClickDeselects={false}
+                outsideClickDeselects={false}
 
-            contextMenu
+                contextMenu
 
-            undo
-            redo
-            afterSelection={ this.handleAfterSelection }
-          />
-        </div>
+                undo
+                redo
+                afterSelection={ this.handleAfterSelection }
+              />
+            </div>) : ''
+        }
       </div>
     )
   }

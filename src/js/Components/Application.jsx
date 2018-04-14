@@ -55,12 +55,10 @@ export default class Application extends React.Component {
   };
   setSpreadsheetCellFromDataPicker(vector, dataKey) {
     const data = this.getCellFromDataPicker(dataKey); // to do: move this step to cell renderer
-    const hotInstance = this.hotTable.hotInstance;
-    const selection = hotInstance.getSelected();
-
+    const selection = this.hotInstance.getSelected();
     if (selection) {
       const cellData = `=DATAPICKER('${dataKey}')`;
-      hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+      this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
       this.refs.spreadsheet.updateInputBarValue(cellData);
     }
   };
@@ -102,7 +100,7 @@ export default class Application extends React.Component {
                 getCellFromDataPicker={ this.getCellFromDataPicker }
                 ref='spreadsheet'
                 setTableRef={ ref => {
-                  this.hotTable = ref;
+                  this.hotInstance = ref.hotInstance;
                 }}
               />
             </div> :
