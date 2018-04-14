@@ -83,13 +83,14 @@ export default class Spreadsheet extends React.Component {
   }
   render() {
     console.log('render');
-    const inputBarHeight = this.inputBar ? this.inputBar.offsetHeight : 21;
+    const inputBarHeight = 21;
     return (
       <div className="spreadsheet-container">
         <InputBar
           setInputRef={ this.setInputRef }
           updateInputBarValue={ this.updateInputBarValue }
           setCellValue={ this.setCellValue }
+          height={ inputBarHeight }
         />
         <div className="table-container" ref="tableContainer">
           <HotTable
@@ -166,6 +167,9 @@ class InputBar extends React.Component {
             this.props.setCellValue(e.target.value);
           }
         }}
+        style={{
+          height: this.props.height || 21,
+        }}
       />
     )
   }
@@ -174,4 +178,5 @@ InputBar.propTypes = {
   setInputRef: PropTypes.func,
   setCellValue: PropTypes.func,
   updateInputBarValue: PropTypes.func,
+  height: PropTypes.number,
 };
