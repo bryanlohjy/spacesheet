@@ -37,7 +37,7 @@ export default class Spreadsheet extends React.Component {
       formulaParser: new FormulaParser(this.hotInstance, {
         getCellFromDataPicker: this.props.getCellFromDataPicker
       }),
-      inputBar: this.inputBar,
+      updateInputBarValue: this.updateInputBarValue,
     });
 
     hotInstance.updateSettings({
@@ -167,6 +167,8 @@ class InputBar extends React.Component {
         onKeyDown={ e => {
           if (e.keyCode === 13) {
             this.props.setCellValue(e.target.value);
+          } else {
+            console.log(e.target.value)
           }
         }}
         style={{

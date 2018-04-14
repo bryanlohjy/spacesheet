@@ -6,19 +6,19 @@ const CellTypes = opts => {
   const onKeyDown = function(e) { // update input bar as cell is edited
     if (String.fromCharCode(e.keyCode).trim().length) {
       setTimeout(() => {
-        opts.inputBar.value = e.target.value;
+        opts.updateInputBarValue(e.target.value);
       }, 0);
     }
   };
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-    opts.inputBar.value = this.originalValue || '';
+    opts.updateInputBarValue(this.originalValue || '');
   };
   CustomTextEditor.prototype.open = function() {
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     setTimeout(() => {
-      opts.inputBar.value = this.TEXTAREA.value || '';
-    },0)
+      opts.updateInputBarValue(this.TEXTAREA.value || '');
+    }, 0);
     this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown);
   };
   CustomTextEditor.prototype.close = function() {
