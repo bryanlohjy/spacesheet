@@ -23,6 +23,27 @@
       margin: 0;
     }
   }
+  .fake-input {
+    box-sizing: content-box;
+    line-height: 21px;
+    white-space: pre-line;
+    background-color: white;
+    border: 2px solid red;
+    // rgb(82, 146, 247);
+    overflow: hidden;
+    width: 200px;
+    height: 50px;
+    position: absolute;
+    right: 0;
+    top: 20px;
+    z-index: 200;
+
+
+    &.hidden {
+      visibility: hidden;
+      display: none;
+    }
+  }
 }
 
 .handsontable { // overrides

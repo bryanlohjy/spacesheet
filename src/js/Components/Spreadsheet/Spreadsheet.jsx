@@ -16,6 +16,8 @@ export default class Spreadsheet extends React.Component {
     this.updateInputBarValue = this.updateInputBarValue.bind(this);
     this.setCellValue = this.setCellValue.bind(this);
     this.handleAfterSelection = this.handleAfterSelection.bind(this);
+    this.setFakeCellValue = this.setFakeCellValue.bind(this);
+    this.setFakeCellVisibility = this.setFakeCellVisibility.bind(this);
 
     this.state = {
       inputBarIsMounted: false,
@@ -79,7 +81,28 @@ export default class Spreadsheet extends React.Component {
       this.updateInputBarValue(cell);
       this.previousSelection = currentSelection;
     }
-  }
+  };
+  setFakeCellValue(value) {
+    this.refs.fakeInput.value = value;
+  };
+  setFakeCellVisibility(visible) {
+    const selection = this.hotInstance.getSelected();
+    if (selection) {
+      let fakeInput = this.refs.fakeInput;
+      if (visible) {
+        const cell = this.hotInstance.getCell(selection[0], selection[1]).getBoundingClientRect();
+        const cellData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+        fakeInput.value = cellData;
+        fakeInput.style.width = `${cell.width - 4}px`;
+        fakeInput.style.height = `${cell.height - 4}px`;
+        fakeInput.style.left = `${cell.left}px`;
+        fakeInput.style.top = `${cell.top}px`;
+        fakeInput.classList.remove('hidden');
+      } else {
+        fakeInput.classList.add('hidden');
+      }
+    }
+  };
   render() {
     const inputBarHeight = 21;
     return (
@@ -89,49 +112,51 @@ export default class Spreadsheet extends React.Component {
           updateInputBarValue={ this.updateInputBarValue }
           setCellValue={ this.setCellValue }
           height={ inputBarHeight }
+          setFakeCellValue={ this.setFakeCellValue }
+          setFakeCellVisibility={ this.setFakeCellVisibility }
         />
-        {
-          this.state.inputBarIsMounted ? (
-            <div className="table-container" ref="tableContainer">
-              <HotTable
-                className="table"
-                ref={ ref => {
-                  this.props.setTableRef(ref);
-                  this.hotInstance = ref.hotInstance;
-                  this.initHotTable();
-                }}
-                root='hot'
+        <textarea className="fake-input hidden" ref="fakeInput"/>
+        <div className="table-container" ref="tableContainer">
+          <HotTable
+            className="table"
+            ref={ ref => {
+              if (ref && !this.hotInstance) {
+                this.props.setTableRef(ref);
+                this.hotInstance = ref.hotInstance;
+                this.initHotTable();
+              }
+            }}
+            root='hot'
 
-                mergeCells={ this.demoSheet.mergeCells }
+            mergeCells={ this.demoSheet.mergeCells }
 
-                rowHeaderWidth={32}
-                colHeaderHeight={32}
+            rowHeaderWidth={32}
+            colHeaderHeight={32}
 
-                colHeaders={true}
-                rowHeaders={true}
-                preventOverflow="horizontal"
-                rowHeights={this.props.outputHeight}
-                colWidths={this.props.outputWidth}
+            colHeaders={true}
+            rowHeaders={true}
+            preventOverflow="horizontal"
+            rowHeights={this.props.outputHeight}
+            colWidths={this.props.outputWidth}
 
-                width={ this.props.width }
-                height={ this.props.height - inputBarHeight }
+            width={ this.props.width }
+            height={ this.props.height - inputBarHeight }
 
-                maxCols={ this.maxCols }
-                maxRows={ this.maxRows }
+            maxCols={ this.maxCols }
+            maxRows={ this.maxRows }
 
-                viewportColumnRenderingOffset={26}
-                viewportRowRenderingOffset={26}
+            viewportColumnRenderingOffset={26}
+            viewportRowRenderingOffset={26}
 
-                outsideClickDeselects={false}
+            outsideClickDeselects={false}
 
-                contextMenu
+            contextMenu
 
-                undo
-                redo
-                // afterSelection={ this.handleAfterSelection }
-              />
-            </div>) : ''
-        }
+            undo
+            redo
+            // afterSelection={ this.handleAfterSelection }
+          />
+        </div>
       </div>
     )
   }
@@ -163,13 +188,18 @@ class InputBar extends React.Component {
         }}
         onChange={ e => {
           this.props.updateInputBarValue(e.target.value);
+          this.props.setFakeCellValue(e.target.value);
         }}
         onKeyDown={ e => {
           if (e.keyCode === 13) {
             this.props.setCellValue(e.target.value);
-          } else {
-            console.log(e.target.value)
           }
+        }}
+        onFocus={ e => {
+          this.props.setFakeCellVisibility(true);
+        }}
+        onBlur={ e => {
+          this.props.setFakeCellVisibility(false);
         }}
         style={{
           height: this.props.height || 21,
@@ -181,6 +211,8 @@ class InputBar extends React.Component {
 InputBar.propTypes = {
   setInputRef: PropTypes.func,
   setCellValue: PropTypes.func,
+  setFakeCellValue: PropTypes.func,
+  setFakeCellVisibility: PropTypes.func,
   updateInputBarValue: PropTypes.func,
   height: PropTypes.number,
 };
