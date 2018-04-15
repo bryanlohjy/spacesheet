@@ -37,7 +37,7 @@ const CellTypes = opts => {
         td.innerHTML = '';
         try {
           const compiled = opts.formulaParser.parse(data.replace('=', ''));
-          const { result } = compiled;
+          const { result, error } = compiled;
           if (result) {
             if (typeof result === 'object') { // it is a vector
               const canvas = document.createElement('canvas');
@@ -55,7 +55,7 @@ const CellTypes = opts => {
               td.innerText = result;
             }
           } else {
-            td.innerText = compiled.error;
+            td.innerText = error || "#ERROR!";
           }
         } catch (e) {
           console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
