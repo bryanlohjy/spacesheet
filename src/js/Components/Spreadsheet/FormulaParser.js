@@ -21,11 +21,30 @@ const FormulaParser = (hotInstance, opts) => {
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
     let result;
-    if (name.toUpperCase() === 'RANDFONT') {
+    if (name.toUpperCase() === 'RANDFONT') { // adding functions
       const randomSeed = params.length ? params[0] : null
       result = opts.model.randomFontEmbedding(0, randomSeed).getValues();
       done(result);
-    } else if (arrayContainsArray(params)) { // calulate tensor
+      return;
+    }
+    if (name.toUpperCase() === 'DIST') {
+      if (arrayContainsArray(params)) {
+        result = dl.tidy(() => {
+          const a = dl.tensor1d(params[0]);
+          const b = dl.tensor1d(params[1]);
+          return b.sub(a).square().sum().sqrt();
+        }).getValues()[0].toString();
+        done(result);
+      } else {
+        const a = params[0];
+        const b = params[1];
+        result = Math.sqrt(a*a + b*b).toString();
+        done(result);
+      }
+      return;
+    }
+
+    if (arrayContainsArray(params)) { // overwriting existing functions
       switch (name.toUpperCase()) {
         case 'AVERAGE':
           result = dl.tidy(() => {
