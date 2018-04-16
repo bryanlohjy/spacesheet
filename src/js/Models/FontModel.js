@@ -29,10 +29,11 @@ export default class FontModel {
       }
     })
   };
-  randomFontEmbedding(characterIndex) {
+  randomFontEmbedding(characterIndex, randomSeed) {
     return dl.tidy(() => {
       const fontEmbeddings = this.modelVars.input.weights.getValues();
-      const startIndex = randomInt(0, fontEmbeddings.length/40) * 40;
+      const numberOfFonts = fontEmbeddings.length/40;
+      const startIndex = randomInt(0, numberOfFonts, randomSeed) * 40;
       const randomEmbedding = dl.tensor1d(fontEmbeddings.slice(startIndex, startIndex + 40));
       return randomEmbedding;
     });

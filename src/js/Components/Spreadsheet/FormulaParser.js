@@ -20,8 +20,12 @@ const FormulaParser = (hotInstance, opts) => {
   });
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
-    if (arrayContainsArray(params)) { // calulate tensor
-      let result;
+    let result;
+    if (name.toUpperCase() === 'RANDFONT') {
+      const randomSeed = params.length ? params[0] : null
+      result = opts.model.randomFontEmbedding(0, randomSeed).getValues();
+      done(result);
+    } else if (arrayContainsArray(params)) { // calulate tensor
       switch (name.toUpperCase()) {
         case 'AVERAGE':
           result = dl.tidy(() => {
