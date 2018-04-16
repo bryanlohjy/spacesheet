@@ -4,10 +4,15 @@ const helpers = {
 		max = Math.floor(max);
 		return (Math.random() * (max - min)) + min;
 	},
-	randomInt: function(min, max) { // max is non-inclusive
+	randomInt: function(min, max, seed) { // max is non-inclusive
+    let seededRandom;
+    if (!isNaN(seed)) {
+      const x = Math.sin(seed++) * 10000;
+      seededRandom = x - Math.floor(x);
+    }
 		min = Math.ceil(min);
 		max = Math.floor(max);
-		return Math.floor(Math.random() * (max - min)) + min;
+		return Math.floor((seededRandom || Math.random()) * (max - min)) + min;
 	},
 	randomPick: function(arr, cb) {
 		if (cb) { // return random picked and index of element
