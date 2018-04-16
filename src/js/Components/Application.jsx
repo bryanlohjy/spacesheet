@@ -45,7 +45,7 @@ export default class Application extends React.Component {
       this.decodeFn = vector => { // vector to output
         return model.decode(vector, 0);
       };
-
+      this.model = model;
       this.setState({
         modelIsLoaded: true,
         outputWidth: model.outputWidth,
@@ -99,6 +99,7 @@ export default class Application extends React.Component {
                 decodeFn={ this.decodeFn }
                 getCellFromDataPicker={ this.getCellFromDataPicker }
                 ref='spreadsheet'
+                model={ this.model }
                 setTableRef={ ref => {
                   this.hotInstance = ref.hotInstance;
                 }}
