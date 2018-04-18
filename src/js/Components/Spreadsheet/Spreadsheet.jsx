@@ -92,12 +92,17 @@ export default class Spreadsheet extends React.Component {
       if (visible) {
         const cell = this.hotInstance.getCell(selection[0], selection[1]).getBoundingClientRect();
         const cellData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-        console.log(cell)
+
+        // set active mode for cell
+        const activeEditor = this.hotInstance.getActiveEditor();
+        activeEditor.beginEditing(selection[0], selection[1]);
+        // show and style fake input
+        fakeInput.classList.remove('hidden');
         fakeInput.style.minWidth = `${cell.width}px`;
         fakeInput.style.height = `${cell.height - 1}px`;
         fakeInput.style.left = `${cell.left - 1}px`;
         fakeInput.style.top = `${cell.top}px`;
-        fakeInput.classList.remove('hidden');
+        this.inputBar.focus();
       } else {
         fakeInput.classList.add('hidden');
       }
