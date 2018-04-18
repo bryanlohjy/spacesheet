@@ -6,22 +6,22 @@ const CellTypes = opts => {
   const onKeyDown = function(e) { // update input bar as cell is edited
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
-        opts.updateInputBarValue(e.target.value);
+        opts.setInputValue(e.target.value);
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue
       setTimeout(() => {
-        opts.updateInputBarValue(this.originalValue);
+        opts.setInputValue(this.originalValue);
       }, 0);
     }
   };
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-    opts.updateInputBarValue(this.originalValue || '');
+    opts.setInputValue(this.originalValue || '');
   };
   CustomTextEditor.prototype.open = function() {
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     setTimeout(() => {
-      opts.updateInputBarValue(this.TEXTAREA.value || '');
+      opts.setInputValue(this.TEXTAREA.value || '');
     }, 0);
     this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   };

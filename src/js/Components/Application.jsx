@@ -59,7 +59,7 @@ export default class Application extends React.Component {
     if (selection) {
       const cellData = `=DATAPICKER('${dataKey}')`;
       this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-      this.refs.spreadsheet.updateInputBarValue(cellData);
+      this.refs.spreadsheet.setInputValue(cellData);
     }
   };
   getCellFromDataPicker(dataKey) {
