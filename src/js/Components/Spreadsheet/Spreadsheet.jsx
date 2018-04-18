@@ -83,7 +83,7 @@ export default class Spreadsheet extends React.Component {
     }
   };
   setFakeCellValue(value) {
-    this.refs.fakeInput.value = value;
+    this.refs.fakeInput.innerText = value;
   };
   setFakeCellVisibility(visible) {
     const selection = this.hotInstance.getSelected();
@@ -92,10 +92,10 @@ export default class Spreadsheet extends React.Component {
       if (visible) {
         const cell = this.hotInstance.getCell(selection[0], selection[1]).getBoundingClientRect();
         const cellData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-        fakeInput.value = cellData;
-        fakeInput.style.width = `${cell.width - 4}px`;
-        fakeInput.style.height = `${cell.height - 4}px`;
-        fakeInput.style.left = `${cell.left}px`;
+        console.log(cell)
+        fakeInput.style.minWidth = `${cell.width}px`;
+        fakeInput.style.height = `${cell.height - 1}px`;
+        fakeInput.style.left = `${cell.left - 1}px`;
         fakeInput.style.top = `${cell.top}px`;
         fakeInput.classList.remove('hidden');
       } else {
@@ -115,7 +115,7 @@ export default class Spreadsheet extends React.Component {
           setFakeCellValue={ this.setFakeCellValue }
           setFakeCellVisibility={ this.setFakeCellVisibility }
         />
-        <textarea className="fake-input hidden" ref="fakeInput"/>
+        <div contentEditable className="fake-input hidden" ref="fakeInput"/>
         <div className="table-container" ref="tableContainer">
           <HotTable
             className="table"
@@ -195,10 +195,11 @@ class InputBar extends React.Component {
             this.props.setCellValue(e.target.value);
           }
         }}
-        onFocus={ e => {
+        onClick={ e => {
           this.props.setFakeCellVisibility(true);
         }}
         onBlur={ e => {
+          this.props.setCellValue("");
           this.props.setFakeCellVisibility(false);
         }}
         style={{

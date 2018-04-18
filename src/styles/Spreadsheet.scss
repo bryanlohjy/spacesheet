@@ -24,20 +24,18 @@
     }
   }
   .fake-input {
-    box-sizing: content-box;
+    font-family: sans-serif;
     line-height: 21px;
-    white-space: pre-line;
+    padding: 1px 5px 0 5px;
+    // white-space: pre-line;
     background-color: white;
-    border: 2px solid red;
-    // rgb(82, 146, 247);
-    overflow: hidden;
-    width: 200px;
-    height: 50px;
+    box-shadow: 0 0 0 2px #5292F7 inset;
+    // overflow: hidden;
+    display: inline-block;
     position: absolute;
-    right: 0;
-    top: 20px;
+    // right: 0;
+    // top: 20px;
     z-index: 200;
-
 
     &.hidden {
       visibility: hidden;
