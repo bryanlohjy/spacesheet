@@ -20,7 +20,6 @@ const CellTypes = opts => {
         opts.inputBar.value = this.originalValue || '';
       }, 0);
     }
-
     if (this.editingFromInputBar) {
       if (e.keyCode === 13) {
         console.log('submite')
@@ -61,11 +60,11 @@ const CellTypes = opts => {
   CustomTextEditor.prototype.open = function() {
     console.log('Editor: open');
     setTimeout(() => {
-      opts.updateInputBarValue(this.TEXTAREA.value || '');
+      opts.inputBar.value = this.TEXTAREA.value || '';
     }, 0);
     this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
     if (this.editingFromInputBar) {
-      console.log("Editing from input bar, listen for changes in input bar");
+      console.log("Listening for changes in input bar");
       this.onInputBarUpdate = onInputBarUpdate.bind(this);
       this.eventManager.addEventListener(opts.inputBar, 'update', this.onInputBarUpdate);
     }
