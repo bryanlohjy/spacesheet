@@ -11,11 +11,12 @@ export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setInputRef = this.setInputRef.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
     this.updateInputBarValue = this.updateInputBarValue.bind(this);
-    this.setCellValue = this.setCellValue.bind(this);
-    this.handleAfterSelection = this.handleAfterSelection.bind(this);
+    // this.setCellValue = this.setCellValue.bind(this);
+    // this.handleAfterSelection = this.handleAfterSelection.bind(this);
+    // this.activateEditor = this.activateEditor.bind(this);
+    // this.onInputKeydown = this.onInputKeydown.bind(this);
 
     this.state = {
       inputBarIsMounted: false,
@@ -29,6 +30,7 @@ export default class Spreadsheet extends React.Component {
     const hotInstance = this.hotInstance;
 
     const cellTypes = new CellTypes({
+      inputBar: this.inputBar,
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
@@ -58,36 +60,100 @@ export default class Spreadsheet extends React.Component {
       data: this.demoSheet.data,
     });
   };
-  setInputRef(el) {
-    if (!this.inputBar) {
-      this.inputBar = el;
-      this.setState({ inputBarIsMounted : true });
+  updateInputBarValue(value, emitUpdate) {
+    if (this.activeEditor) {
+      this.activeEditor.TEXTAREA.value = value;
+      if (emitUpdate) {
+        const updateEvent = new CustomEvent("update", { "detail": "inputbar" });
+        this.activeEditor.TEXTAREA.dispatchEvent(updateEvent);
+      }
     }
+    // this.inputBar.value = value;
   };
-  updateInputBarValue(value) {
-    this.inputBar.value = value;
-  };
-  setCellValue(value) {
-    const selection = this.hotInstance.getSelected();
-    this.hotInstance.setDataAtCell(selection[0], selection[1], value);
-  };
-  handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
-    let currentSelection = [rowFrom, colFrom].toString();
-    if (this.previousSelection !== currentSelection) { // only update if the value is different
-      const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
-      this.updateInputBarValue(cell);
-      this.previousSelection = currentSelection;
-    }
-  }
+  // setCellValue(value) {
+  //   const selection = this.hotInstance.getSelected();
+  //   this.hotInstance.setDataAtCell(selection[0], selection[1], value);
+  // };
+  // handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
+  //   let currentSelection = [rowFrom, colFrom].toString();
+  //   if (this.previousSelection !== currentSelection) { // only update if the value is different
+  //     const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
+  //     this.updateInputBarValue(cell);
+  //     this.previousSelection = currentSelection;
+  //   }
+  // }
+  // onInputKeydown(e) {
+  //   if (e.keyCode === 13) {
+  //     this.activeEditor.finishEditing();
+  //   }
+  // };
   render() {
     const inputBarHeight = 21;
     return (
       <div className="spreadsheet-container">
-        <InputBar
+        {/* <InputBar
+          onInputKeydown={ this.onInputKeydown }
           setInputRef={ this.setInputRef }
           updateInputBarValue={ this.updateInputBarValue }
           setCellValue={ this.setCellValue }
           height={ inputBarHeight }
+          activateEditor={ this.activateEditor }
+        /> */}
+        <input className="input-bar" type="text"
+          ref={ el => {
+            console.log('remder')
+            if (!this.inputBar) {
+              this.inputBar = el;
+              this.setState({ inputBarIsMounted : true });
+            }
+          }}
+          onChange={ e => { // update active edit cell
+            // const updateEvent = new CustomEvent("update", { "detail": "inputbar" });
+            // e.target.dispatchEvent(updateEvent);
+            const activeEditor = this.hotInstance.getActiveEditor();
+            if (!this.activeEditor && !activeEditor.isOpened()) { // if the cell is not being edited, set edit mode
+              console.log('Cell was not in edit mode, set it to edit mode');
+              this.activeEditor = activeEditor;
+              this.activeEditor.beginEditing(null, "FROMINPUTBAR");
+              // console.log('INPUT BAR: Initiate editor');
+              // this.activeEditor = this.hotInstance.getActiveEditor();
+              // this.activeEditor.close();
+              // this.activeEditor.beginEditing(null, "FROMINPUTBAR");
+              // // listen for updates in cell
+              // console.log('INPUT BAR LISTENING FOR CELL UPDATES');
+              // this.activeEditor.TEXTAREA.addEventListener('update', () => {
+              //   console.log('INPUT BAR DETECTS CELL UPDATES')
+              // });
+            }
+            const updateEvent = new CustomEvent("update", { "detail": "inputbar" });
+            e.target.dispatchEvent(updateEvent);
+            // this.updateInputBarValue(e.target.value, true);
+          }}
+          onKeyDown={ e => { // check for submits + aborts
+            if (e.keyCode === 13 && this.activeEditor) { // enter: stop editing
+              console.log('Submit input and, close and clear activeEditor');
+              this.activeEditor.editingFromInputBar = false;
+              this.activeEditor.focus();
+              this.activeEditor.finishEditing();
+              this.activeEditor = null;
+              this.inputBar.blur();
+            //   console.log("Finish editing and delete editor");
+            //   this.activeEditor.close();
+            //   this.activeEditor.finishEditing();
+            //   this.activeEditor = null;
+            }
+            // console.log("Input Keydown", e.keyCode)
+            // if (e.keyCode === 13) {
+            //   this.activeEditor.finishEditing();
+            // }
+            // this.props.onInputKeydown(e);
+            // if (e.keyCode === 13) {
+            //   this.props.setCellValue(e.target.value);
+            // }
+          }}
+          style={{
+            height: inputBarHeight || 21,
+          }}
         />
         {
           this.state.inputBarIsMounted ? (
@@ -168,34 +234,39 @@ Spreadsheet.propTypes = {
   // setCurrentColor: PropTypes.func,
 };
 
-class InputBar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <input className="input-bar" type="text"
-        ref={ el => {
-          this.props.setInputRef(el);
-        }}
-        onChange={ e => {
-          this.props.updateInputBarValue(e.target.value);
-        }}
-        onKeyDown={ e => {
-          if (e.keyCode === 13) {
-            this.props.setCellValue(e.target.value);
-          }
-        }}
-        style={{
-          height: this.props.height || 21,
-        }}
-      />
-    )
-  }
-}
-InputBar.propTypes = {
-  setInputRef: PropTypes.func,
-  setCellValue: PropTypes.func,
-  updateInputBarValue: PropTypes.func,
-  height: PropTypes.number,
-};
+// class InputBar extends React.Component {
+//   constructor(props) {
+//     super(props);
+//   }
+//   render() {
+//     return (
+//       <input className="input-bar" type="text"
+//         ref={ el => {
+//           this.props.setInputRef(el);
+//         }}
+//         onChange={ e => {
+//           this.props.updateInputBarValue(e.target.value);
+//         }}
+//         onKeyDown={ e => {
+//           this.props.onInputKeydown(e);
+//           if (e.keyCode === 13) {
+//             this.props.setCellValue(e.target.value);
+//           }
+//         }}
+//         style={{
+//           height: this.props.height || 21,
+//         }}
+//         onClick={ this.props.activateEditor }
+//       />
+//     )
+//   }
+// }
+// InputBar.propTypes = {
+//   onInputKeydown: PropTypes.func,
+//   onChange: PropTypes.func,
+//   setInputRef: PropTypes.func,
+//   setCellValue: PropTypes.func,
+//   updateInputBarValue: PropTypes.func,
+//   height: PropTypes.number,
+//   activateEditor: PropTypes.func,
+// };
