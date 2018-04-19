@@ -9,16 +9,15 @@ const CellTypes = opts => {
   // });
 
   const onKeyDown = function(e) { // update input bar as cell is edited
-    console.log(e)
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       // const updateEvent = new CustomEvent("update", { "detail": "cell" });
       // e.target.dispatchEvent(updateEvent)
       setTimeout(() => {
-        opts.updateInputBarValue(e.target.value);
+        opts.inputBar.value = e.target.value || '';
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue
       setTimeout(() => {
-        opts.updateInputBarValue(this.originalValue);
+        opts.inputBar.value = this.originalValue || '';
       }, 0);
     }
 
