@@ -9,9 +9,10 @@ const CellTypes = opts => {
   // });
 
   const onKeyDown = function(e) { // update input bar as cell is edited
+    console.log(e)
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
-      const updateEvent = new CustomEvent("update", { "detail": "cell" });
-      e.target.dispatchEvent(updateEvent)
+      // const updateEvent = new CustomEvent("update", { "detail": "cell" });
+      // e.target.dispatchEvent(updateEvent)
       setTimeout(() => {
         opts.updateInputBarValue(e.target.value);
       }, 0);
@@ -55,7 +56,7 @@ const CellTypes = opts => {
 
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-    opts.updateInputBarValue(this.originalValue || '');
+    opts.inputBar.value = this.originalValue || '';
   };
 
   CustomTextEditor.prototype.open = function() {
