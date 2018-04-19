@@ -59,6 +59,7 @@ export default class Spreadsheet extends React.Component {
       },
       data: this.demoSheet.data,
     });
+    this.hotInstance.selectCell(0, 0, 0, 0);
   };
   updateInputBarValue(value, emitUpdate) {
     if (this.activeEditor) {
