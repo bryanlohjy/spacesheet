@@ -21,7 +21,9 @@ const CellTypes = opts => {
       }, 0);
     }
     if (this.editingFromInputBar) {
-      if (e.keyCode === 13) {
+      if (isSubmitKey(e)) {
+        this.finishEditing(e.keyCode === 27);
+        updateCellSelectionOnSubmit(this.instance, e);
         console.log('submite')
       }
     }
@@ -140,6 +142,28 @@ const CellTypes = opts => {
     Formula,
     Text,
   };
-}
+};
 
-module.exports = { CellTypes };
+const isSubmitKey = e => {
+  if (e.keyCode === 13 || e.keyCode === 33 || e.keyCode === 34 || e.keyCode === 9 || e.keyCode === 27) {
+    return true;
+  }
+  return false;
+};
+
+const updateCellSelectionOnSubmit = (hotInstance, e) => {
+  const selection = hotInstance.getSelected();
+  if (e.keyCode === 13) { // if enter, move to row below
+    hotInstance.selectCell(selection[0] + 1, selection[1]);
+  } else if (e.keyCode === 33) { // pageup, select top row
+    this.hotInstance.selectCell(0, selection[1]);
+  } else if (e.keyCode === 34) { // pagedown, select last row
+    const numRows = hotInstance.countRows();
+    hotInstance.selectCell(numRows - 1, selection[1]);
+  } else if (e.keyCode === 9) { // if tab, move to col across
+    hotInstance.selectCell(selection[0], selection[1] + 1);
+  }
+  return;
+};
+
+module.exports = { CellTypes, isSubmitKey, updateCellSelectionOnSubmit };

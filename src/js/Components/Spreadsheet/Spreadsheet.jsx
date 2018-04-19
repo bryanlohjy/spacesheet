@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
-import { CellTypes } from './CellTypes.js';
+import { CellTypes, isSubmitKey, updateCellSelectionOnSubmit } from './CellTypes.js';
 import { GetCellType } from './CellHelpers.js';
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
@@ -112,45 +112,23 @@ export default class Spreadsheet extends React.Component {
             // const updateEvent = new CustomEvent("update", { "detail": "inputbar" });
             // e.target.dispatchEvent(updateEvent);
             const activeEditor = this.hotInstance.getActiveEditor();
-            if (!this.activeEditor && !activeEditor.isOpened()) { // if the cell is not being edited, set edit mode
+            if (!this.activeEditor || !activeEditor.isOpened()) { // if the cell is not being edited, set edit mode
               console.log('Cell was not in edit mode, set it to edit mode');
               this.activeEditor = activeEditor;
               this.activeEditor.beginEditing(null, "FROMINPUTBAR");
-              // console.log('INPUT BAR: Initiate editor');
-              // this.activeEditor = this.hotInstance.getActiveEditor();
-              // this.activeEditor.close();
-              // this.activeEditor.beginEditing(null, "FROMINPUTBAR");
-              // // listen for updates in cell
-              // console.log('INPUT BAR LISTENING FOR CELL UPDATES');
-              // this.activeEditor.TEXTAREA.addEventListener('update', () => {
-              //   console.log('INPUT BAR DETECTS CELL UPDATES')
-              // });
             }
             const updateEvent = new CustomEvent("update", { "detail": "inputbar" });
             e.target.dispatchEvent(updateEvent);
             // this.updateInputBarValue(e.target.value, true);
           }}
           onKeyDown={ e => { // check for submits + aborts
-            if (e.keyCode === 13 && this.activeEditor) { // enter: stop editing
+            if (isSubmitKey(e) && this.activeEditor) { // enter: stop editing
               console.log('Submit input and, close and clear activeEditor');
-              this.activeEditor.editingFromInputBar = false;
-              this.activeEditor.focus();
-              this.activeEditor.finishEditing();
+              this.activeEditor.finishEditing(e.keyCode === 27); // sets cell to original value if escaped is pressed
+              updateCellSelectionOnSubmit(this.hotInstance, e);
               this.activeEditor = null;
               this.inputBar.blur();
-            //   console.log("Finish editing and delete editor");
-            //   this.activeEditor.close();
-            //   this.activeEditor.finishEditing();
-            //   this.activeEditor = null;
             }
-            // console.log("Input Keydown", e.keyCode)
-            // if (e.keyCode === 13) {
-            //   this.activeEditor.finishEditing();
-            // }
-            // this.props.onInputKeydown(e);
-            // if (e.keyCode === 13) {
-            //   this.props.setCellValue(e.target.value);
-            // }
           }}
           style={{
             height: inputBarHeight || 21,
@@ -234,6 +212,7 @@ Spreadsheet.propTypes = {
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };
+//
 
 // class InputBar extends React.Component {
 //   constructor(props) {
