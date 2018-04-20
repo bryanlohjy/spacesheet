@@ -1,5 +1,6 @@
 const Regex = {
   cellReferences: /[a-z]\d{1,2}/ig,
+  dataPickerFormula: /DATAPICKER\(([^)]+)\)/ig,
 }
 
 const GetCellType = cellData => {
@@ -20,6 +21,13 @@ const highlightReferencesInString = (hotInstance, cellData) => {
       cell.classList.add(`reference-cell-${index}`);
     }
   }
+  const dataPickerReferences = parseDataPickerReferences(cellData);
+  if (dataPickerReferences && dataPickerReferences.length > 0) {
+    for (let index in dataPickerReferences) {
+      const reference = dataPickerReferences[index]
+      console.log(reference)
+    }
+  }
 }
 
 const clearHighlightedReferences = () => {
@@ -36,6 +44,16 @@ const clearHighlightedReferences = () => {
       }
     }
   }
+}
+
+const parseDataPickerReferences = cellData => {
+  let references = cellData.match(Regex.dataPickerFormula);
+  if (references && references.length > 0) {
+    references = references.map(dataPickerReference => {
+      return (/\(([^)]+)\)/ig).exec(dataPickerReference)[1].replace(/\"|'/g, "");
+    });
+  }
+  return references;
 }
 
 const parseCellReferences = cellData => {
