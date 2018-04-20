@@ -358,7 +358,14 @@ class Cell {
     this.ctx.translate(this.x, this.y);
     this.ctx.scale(scaleFactor, scaleFactor);
     if (this.highlighted) {
-      this.ctx.strokeRect(0, 0, this.outputWidth, this.outputHeight)
+      this.ctx.save();
+      this.ctx.rect(0, 0, this.outputWidth, this.outputHeight)
+      this.ctx.fillStyle = 'rgba(255, 180, 0, 0.2)';
+      this.ctx.strokeStyle = 'rgba(235, 160, 0, 1)';
+      this.ctx.lineWidth = 1;
+      this.ctx.fill();
+      this.ctx.stroke();
+      this.ctx.restore();
     }
     this.drawFn(this.ctx, this.image);
     this.ctx.restore();
