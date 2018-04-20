@@ -361,7 +361,7 @@ class Cell {
       this.ctx.save();
       this.ctx.rect(0, 0, this.outputWidth, this.outputHeight)
       this.ctx.fillStyle = 'rgba(255, 180, 0, 0.2)';
-      this.ctx.strokeStyle = 'rgba(235, 160, 0, 1)';
+      this.ctx.strokeStyle = 'rgba(235, 160, 0, 0.3)';
       this.ctx.lineWidth = 1;
       this.ctx.fill();
       this.ctx.stroke();

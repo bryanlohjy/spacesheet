@@ -19,7 +19,7 @@ const highlightReferencesInString = (hotInstance, highlightDataPickerReferences,
       for (let index in cellReferences) {
         const cellPos = cellReferences[index];
         const cell = hotInstance.getCell(cellPos.row, cellPos.column);
-        cell.classList.add(`reference-cell-${index}`);
+        cell.classList.add(`reference-cell`);
       }
     }
     const dataPickerReferences = parseDataPickerReferences(cellData);
