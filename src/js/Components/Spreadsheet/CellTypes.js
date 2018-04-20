@@ -3,15 +3,8 @@ import HandsOnTable from 'handsontable';
 const CellTypes = opts => {
   let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
 
-  // Listen to updates from input bar, and update cell
-  // opts.inputBar.addEventListener('update', e => {
-  //   console.log("Input bar updated", e);
-  // });
-
   const onKeyDown = function(e) { // update input bar as cell is edited
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
-      // const updateEvent = new CustomEvent("update", { "detail": "cell" });
-      // e.target.dispatchEvent(updateEvent)
       setTimeout(() => {
         opts.inputBar.value = e.target.value || '';
       }, 0);
@@ -20,17 +13,10 @@ const CellTypes = opts => {
         opts.inputBar.value = this.originalValue || '';
       }, 0);
     }
-    if (this.editingFromInputBar) {
-      if (isSubmitKey(e)) {
-        this.finishEditing(e.keyCode === 27);
-        updateCellSelectionOnSubmit(this.instance, e);
-        console.log('submite')
-      }
+    if (this.editingFromInputBar && isSubmitKey(e)) {
+      this.finishEditing(e.keyCode === 27);
+      updateCellSelectionOnSubmit(this.instance, e);
     }
-  };
-
-  const onCellUpdate = function(e) {
-    console.log('Cell Update')
   };
 
   const onInputBarUpdate = function(e) { // update cell with input bar value
@@ -64,7 +50,9 @@ const CellTypes = opts => {
     setTimeout(() => {
       opts.inputBar.value = this.TEXTAREA.value || '';
     }, 0);
-    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
+    this.onKeyDown = onKeyDown.bind(this);
+    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', this.onKeyDown);
+
     if (this.editingFromInputBar) {
       console.log("Listening for changes in input bar");
       this.onInputBarUpdate = onInputBarUpdate.bind(this);
@@ -77,25 +65,27 @@ const CellTypes = opts => {
     if (event === "FROMINPUTBAR") { this.editingFromInputBar = true };
     HandsOnTable.editors.TextEditor.prototype.beginEditing.apply(this, arguments);
   };
+  CustomTextEditor.prototype.finishEditing = function(initialValue, event) {
+    // console.log('Finish editing')
+    HandsOnTable.editors.TextEditor.prototype.finishEditing.apply(this, arguments);
+  };
   CustomTextEditor.prototype.focus = function() {
     if (this.editingFromInputBar) {
       return;
     }
     HandsOnTable.editors.TextEditor.prototype.focus.apply(this, arguments);
   };
-
   CustomTextEditor.prototype.close = function() {
     console.log('Editor: close');
-    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
+    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', this.onKeyDown);
+
     if (this.editingFromInputBar) {
       console.log("Closing editor from input bar, remove listener");
       this.eventManager.removeEventListener(opts.inputBar, 'update', this.onInputBarUpdate);
       this.onInputBarUpdate = null;
     }
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
-    // this.eventManager.removeEventListener(this.TEXTAREA, 'update', onCellUpdate.bind(this));
   }
-
 
   // Formula ==============
   // A non editable cell which renders references from the Formula
@@ -152,6 +142,7 @@ const isSubmitKey = e => {
 };
 
 const updateCellSelectionOnSubmit = (hotInstance, e) => {
+  console.log('updateCellSelectionOnSubmit')
   const selection = hotInstance.getSelected();
   if (e.keyCode === 13) { // if enter, move to row below
     hotInstance.selectCell(selection[0] + 1, selection[1]);
