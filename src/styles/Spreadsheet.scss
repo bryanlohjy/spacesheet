@@ -22,6 +22,20 @@
       padding: 0;
       margin: 0;
     }
+    .reference-cell {
+      &-0 {
+        box-shadow: inset 0px 0px 3px rgba(235, 160, 0, 1);
+        background-color: rgba(255, 180, 0, 0.2);
+      }
+      &-1 {
+        box-shadow: inset 0px 0px 3px rgba(160, 235, 0, 1);
+        background-color: rgba(180, 255, 0, 0.2);
+      }
+      &-3 {
+        box-shadow: inset 0px 0px 3px rgba(235, 0, 80, 1);
+        background-color: rgba(255, 0, 100, 0.2);
+      }
+    }
   }
 }
 

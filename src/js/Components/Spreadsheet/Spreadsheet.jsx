@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
-import { GetCellType } from './CellHelpers.js';
+import { GetCellType, parseCellReferences } from './CellHelpers.js';
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
@@ -72,13 +72,33 @@ export default class Spreadsheet extends React.Component {
     this.hotInstance.setDataAtCell(selection[0], selection[1], value);
   };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
-    let currentSelection = [rowFrom, colFrom].toString();
-    if (this.previousSelection !== currentSelection) { // only update if the value is different
-      const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
-      this.updateInputBarValue(cell);
-      this.previousSelection = currentSelection;
+    // clear previously styled references
+    const existingReferences = document.querySelectorAll("[class^='reference']");
+    if (existingReferences && existingReferences.length > 0) {
+      for (let index in existingReferences) {
+        let reference = existingReferences[index];
+        let classes = reference.classList;
+        for (let classIndex in classes) {
+          let className = classes[classIndex];
+          if (className && className.toString().indexOf('reference-cell') >= 0) {
+            reference.classList.remove(className);
+          }
+        }
+      }
     }
-  }
+
+    const cellData = this.hotInstance.getDataAtCell(rowFrom, colFrom);
+    if (cellData && cellData.trim()[0] === '=') { // if it is a formula
+      const cellReferences = parseCellReferences(cellData);
+      if (cellReferences && cellReferences.length > 0) {
+        for (let index in cellReferences) {
+          const cellPos = cellReferences[index];
+          const cell = this.hotInstance.getCell(cellPos.row, cellPos.column);
+          cell.classList.add(`reference-cell-${index}`);
+        }
+      }
+    }
+  };
   render() {
     const inputBarHeight = 21;
     return (
@@ -96,6 +116,7 @@ export default class Spreadsheet extends React.Component {
                 className="table"
                 ref={ ref => {
                   this.props.setTableRef(ref);
+                  this.hot = ref;
                   this.hotInstance = ref.hotInstance;
                   this.initHotTable();
                 }}
@@ -145,7 +166,7 @@ export default class Spreadsheet extends React.Component {
                 }}
                 undo
                 redo
-                // afterSelection={ this.handleAfterSelection }
+                afterSelection={ this.handleAfterSelection }
               />
             </div>) : ''
         }
