@@ -79,22 +79,26 @@ export default class Spreadsheet extends React.Component {
             }
           }}
           onChange={ e => { // update active edit cell
-            const activeEditor = this.hotInstance.getActiveEditor();
-            if (!this.activeEditor || !activeEditor.isOpened()) { // if the cell is not being edited, set edit mode
-              console.log('Cell was not in edit mode, set it to edit mode');
-              this.activeEditor = activeEditor;
-              this.activeEditor.beginEditing(null, "FROMINPUTBAR");
-            }
+            // console.log('!! ONCHANGE')
+
             const updateEvent = new CustomEvent("update", { "detail": "inputbar" });
             e.target.dispatchEvent(updateEvent);
           }}
           onKeyDown={ e => { // check for submits + aborts
+            console.log('!! KEYDOWN', e.target.value)
             if (isSubmitKey(e) && this.activeEditor && this.activeEditor.isOpened()) { // enter: stop editing
               console.log('Submit input and, close and clear activeEditor');
               this.activeEditor.finishEditing(e.keyCode === 27); // sets cell to original value if escaped is pressed
               updateCellSelectionOnSubmit(this.hotInstance, e);
               this.activeEditor = null;
-              this.inputBar.blur();
+              this.inputBar.focus();
+            } else {
+              const activeEditor = this.hotInstance.getActiveEditor();
+              if (!this.activeEditor || !activeEditor.isOpened()) { // if the cell is not being edited, set edit mode
+                console.log('Cell was not in edit mode, set it to edit mode');
+                this.activeEditor = activeEditor;
+                this.activeEditor.beginEditing(null, "FROMINPUTBAR");
+              }
             }
           }}
           style={{
