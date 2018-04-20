@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
-import { GetCellType, parseCellReferences } from './CellHelpers.js';
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
+import { highlightReferencesInString, clearHighlightedReferences, GetCellType } from './SpreadsheetHelpers.js';
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
@@ -73,30 +73,10 @@ export default class Spreadsheet extends React.Component {
   };
   handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
     // clear previously styled references
-    const existingReferences = document.querySelectorAll("[class^='reference']");
-    if (existingReferences && existingReferences.length > 0) {
-      for (let index in existingReferences) {
-        let reference = existingReferences[index];
-        let classes = reference.classList;
-        for (let classIndex in classes) {
-          let className = classes[classIndex];
-          if (className && className.toString().indexOf('reference-cell') >= 0) {
-            reference.classList.remove(className);
-          }
-        }
-      }
-    }
-
+    clearHighlightedReferences();
     const cellData = this.hotInstance.getDataAtCell(rowFrom, colFrom);
     if (cellData && cellData.trim()[0] === '=') { // if it is a formula
-      const cellReferences = parseCellReferences(cellData);
-      if (cellReferences && cellReferences.length > 0) {
-        for (let index in cellReferences) {
-          const cellPos = cellReferences[index];
-          const cell = this.hotInstance.getCell(cellPos.row, cellPos.column);
-          cell.classList.add(`reference-cell-${index}`);
-        }
-      }
+      highlightReferencesInString(this.hotInstance, cellData);
     }
   };
   render() {
