@@ -75,8 +75,9 @@ export default class Spreadsheet extends React.Component {
     // clear previously styled references
     const cellData = this.hotInstance.getDataAtCell(rowFrom, colFrom);
     clearHighlightedReferences();
+    this.props.clearDataPickerReferences();
     if (cellData && cellData.trim()[0] === '=') { // if it is a formula
-      highlightReferencesInString(this.hotInstance, this.props.highlightDataPickerReference, cellData);
+      highlightReferencesInString(this.hotInstance, this.props.highlightDataPickerReferences, cellData);
     }
   };
   render() {
@@ -165,7 +166,8 @@ Spreadsheet.propTypes = {
   setTableRef: PropTypes.func,
   dataPickerCellData: PropTypes.object,
   getCellFromDataPicker: PropTypes.func,
-  highlightDataPickerReference: PropTypes.func,
+  highlightDataPickerReferences: PropTypes.func,
+  clearDataPickerReferences: PropTypes.func,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };

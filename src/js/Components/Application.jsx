@@ -17,6 +17,8 @@ export default class Application extends React.Component {
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
+    this.highlightDataPickerReferences = this.highlightDataPickerReferences.bind(this);
+    this.clearDataPickerReferences = this.clearDataPickerReferences.bind(this);
   };
   componentWillMount() {
     getData('./dist/data/DataPicker/font_grid_vectors_10x10_min.json').then(res => {
@@ -66,6 +68,14 @@ export default class Application extends React.Component {
     const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
     return cell.vector;
   };
+  highlightDataPickerReferences(keys) {
+    this.refs.dataPicker.dataPicker.updateHighlightedCells(keys);
+    this.refs.dataPicker.dataPicker.draw();
+  };
+  clearDataPickerReferences() {
+    this.refs.dataPicker.dataPicker.updateHighlightedCells([]);
+    this.refs.dataPicker.dataPicker.draw();
+  };
   render () {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
@@ -98,6 +108,8 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 getCellFromDataPicker={ this.getCellFromDataPicker }
+                highlightDataPickerReferences={ this.highlightDataPickerReferences }
+                clearDataPickerReferences={ this.clearDataPickerReferences }
                 ref='spreadsheet'
                 setTableRef={ ref => {
                   this.hotInstance = ref.hotInstance;

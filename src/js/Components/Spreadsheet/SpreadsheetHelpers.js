@@ -12,20 +12,19 @@ const GetCellType = cellData => {
   }
 }
 
-const highlightReferencesInString = (hotInstance, cellData) => {
-  const cellReferences = parseCellReferences(cellData);
-  if (cellReferences && cellReferences.length > 0) {
-    for (let index in cellReferences) {
-      const cellPos = cellReferences[index];
-      const cell = hotInstance.getCell(cellPos.row, cellPos.column);
-      cell.classList.add(`reference-cell-${index}`);
+const highlightReferencesInString = (hotInstance, highlightDataPickerReferences, cellData) => {
+  if (cellData) {
+    const cellReferences = parseCellReferences(cellData);
+    if (cellReferences && cellReferences.length > 0) {
+      for (let index in cellReferences) {
+        const cellPos = cellReferences[index];
+        const cell = hotInstance.getCell(cellPos.row, cellPos.column);
+        cell.classList.add(`reference-cell-${index}`);
+      }
     }
-  }
-  const dataPickerReferences = parseDataPickerReferences(cellData);
-  if (dataPickerReferences && dataPickerReferences.length > 0) {
-    for (let index in dataPickerReferences) {
-      const reference = dataPickerReferences[index]
-      console.log(reference)
+    const dataPickerReferences = parseDataPickerReferences(cellData);
+    if (dataPickerReferences && dataPickerReferences.length > 0) {
+      highlightDataPickerReferences(dataPickerReferences);
     }
   }
 }

@@ -28,6 +28,8 @@ export default class DataPicker {
     this.drawFn = opts.drawFn || (() => { return; });
     this.decodeFn = opts.decodeFn || (() => { return; });
 
+    this.highlightedCells = [];
+
     initCanvas(ctx);
     /*
       Map of drawn objects, store under the key schema:
@@ -36,6 +38,20 @@ export default class DataPicker {
     this.cells = {};
     this.draw();
   };
+  updateHighlightedCells(references) {
+    const prevHighlighted = this.highlightedCells;
+    for (let keyIndex in prevHighlighted) {
+      const key = prevHighlighted[keyIndex];
+      this.cells[key].highlighted = false;
+    }
+
+    for (let keyIndex in references) {
+      const key = references[keyIndex];
+      this.cells[key].highlighted = true;
+    }
+    this.highlightedCells = references;
+  };
+
   zoom(degree) {
     // scale around origin
     const prevTransform = this.ctx.getTransform();
@@ -290,6 +306,8 @@ class Cell {
 
     this.vector = this.computeVector();
     this.image = this.decodeFn(this.vector); // decoded vector
+
+    this.highlighted = false;
   };
   computeVector() { // interpolates a vector relative to cell position, and then decodes that data
     const xPos = this.relativeX;
@@ -339,6 +357,9 @@ class Cell {
     const scaleFactor = this.w / this.outputWidth;
     this.ctx.translate(this.x, this.y);
     this.ctx.scale(scaleFactor, scaleFactor);
+    if (this.highlighted) {
+      this.ctx.strokeRect(0, 0, this.outputWidth, this.outputHeight)
+    }
     this.drawFn(this.ctx, this.image);
     this.ctx.restore();
   };
