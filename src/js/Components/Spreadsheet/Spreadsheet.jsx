@@ -35,7 +35,8 @@ export default class Spreadsheet extends React.Component {
       outputHeight: this.props.outputHeight,
       getCellFromDataPicker: this.props.getCellFromDataPicker,
       formulaParser: new FormulaParser(this.hotInstance, {
-        getCellFromDataPicker: this.props.getCellFromDataPicker
+        getCellFromDataPicker: this.props.getCellFromDataPicker,
+        model: this.props.model,
       }),
       updateInputBarValue: this.updateInputBarValue,
     });
@@ -164,6 +165,7 @@ Spreadsheet.propTypes = {
   setTableRef: PropTypes.func,
   dataPickerCellData: PropTypes.object,
   getCellFromDataPicker: PropTypes.func,
+  model: PropTypes.object,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };
