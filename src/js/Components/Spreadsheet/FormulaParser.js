@@ -33,7 +33,6 @@ const FormulaParser = (hotInstance, opts) => {
       fragment.push(colFragment);
     }
     if (fragment) {
-      console.log([... fragment])
       done.apply(null, fragment);
     }
   });
@@ -42,18 +41,29 @@ const FormulaParser = (hotInstance, opts) => {
   parser.on('callFunction', (name, params, done) => {
     if (arrayContainsArray(params)) { // calulate tensor
       let result;
-      if (params.length === 1) {
+      if (params.length === 1) { // if a range is called, it sends an array of values
         params = params[0];
+        if (!arrayContainsArray(params)) { // check to see if
+          return;
+        }
       }
       switch (name.toUpperCase()) {
         case 'AVERAGE':
           result = dl.tidy(() => {
-            let count = 1;
-            let total = dl.tensor1d(params[0]);
-            for (count; count < params.length; count++) {
-              total = total.add(dl.tensor1d(params[count]));
+            let total;
+            for (var count = 0; count < params.length; count++) {
+              const param = params[count];
+              if (param) {
+                if (!total) {
+                  total = dl.tensor1d(param);
+                } else {
+                  total = total.add(dl.tensor1d(param));
+                }
+              }
             }
-            return total.div(dl.scalar(count));
+            if (total) {
+              return total.div(dl.scalar(count));
+            }
           }).getValues();
           done(result);
           break;
