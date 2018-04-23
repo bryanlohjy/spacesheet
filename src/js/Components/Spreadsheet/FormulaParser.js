@@ -1,5 +1,6 @@
 const { Parser } = require('hot-formula-parser');
 import * as dl from 'deeplearn';
+import { callCustomFormula } from './Formulae.js';
 
 const arrayContainsArray = arr => {
   for (let i = 0; i < arr.length; i++) {
@@ -8,110 +9,55 @@ const arrayContainsArray = arr => {
     }
   }
   return false;
+};
+
+const arrayIsARangeFragment = arr => {
+  if (arr && arr.length === 1) {
+    return true;
+  };
 }
 
 const FormulaParser = (hotInstance, opts) => {
   const parser = new Parser();
+
   parser.on('callCellValue', (cellCoord, done) => {
     const rowIndex = cellCoord.row.index;
     const columnIndex = cellCoord.column.index;
     const newVal = hotInstance.getDataAtCell(rowIndex, columnIndex).replace('=', '');
     done(parser.parse(newVal).result);
   });
+
   parser.on('callRangeValue', function(startCellCoord, endCellCoord, done) {
-    const fragment = [];
-    for (let row = startCellCoord.row.index; row <= endCellCoord.row.index; row++) {
+    const startRowIndex = Math.min(startCellCoord.row.index, endCellCoord.row.index);
+    const endRowIndex = Math.max(startCellCoord.row.index, endCellCoord.row.index);
+
+    const startColIndex = Math.min(startCellCoord.column.index, endCellCoord.column.index);
+    const endColIndex = Math.max(startCellCoord.column.index, endCellCoord.column.index);
+
+    let fragment = [];
+    for (let row = startRowIndex; row <= endRowIndex; row++) {
       const rowData = hotInstance.getDataAtRow(row);
-      const colFragment = [];
-      for (let col = startCellCoord.column.index; col <= endCellCoord.column.index; col++) {
+      for (let col = startColIndex; col <= endColIndex; col++) {
         let value = rowData[col];
-        if (value.toString().search('=') === 0) {
+        if (value.toString().trim()[0] === '=') {
           value = parser.parse(rowData[col].slice(1)).result;
         }
-        colFragment.push(value);
+        fragment.push(value);
       }
-      fragment.push(colFragment);
     }
-    if (fragment) {
-      done.apply(null, fragment);
-    }
+    done(fragment);
   });
-
+  
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
-    if (arrayContainsArray(params)) { // calulate tensor
-      let result;
-      if (params.length === 1) { // if a range is called, it sends an array of values
+    if (name.toUpperCase() !== 'DATAPICKER') {
+      if (arrayIsARangeFragment(params)) {
         params = params[0];
-        if (!arrayContainsArray(params)) { // check to see if
-          return;
-        }
       }
-      switch (name.toUpperCase()) {
-        case 'AVERAGE':
-          result = dl.tidy(() => {
-            let total;
-            for (var count = 0; count < params.length; count++) {
-              const param = params[count];
-              if (param) {
-                if (!total) {
-                  total = dl.tensor1d(param);
-                } else {
-                  total = total.add(dl.tensor1d(param));
-                }
-              }
-            }
-            if (total) {
-              return total.div(dl.scalar(count));
-            }
-          }).getValues();
-          done(result);
-          break;
-        case 'SUM':
-        case 'ADD':
-          result = dl.tidy(() => {
-            let total = dl.tensor1d(params[0]);
-            for (let i = 1; i < params.length; i++) {
-              total = total.add(dl.tensor1d(params[i]));
-            }
-            return total;
-          }).getValues();
-          done(result);
-          break;
-        case 'MINUS':
-          result = dl.tidy(() => {
-            let total = dl.tensor1d(params[0]);
-            for (let i = 1; i < params.length; i++) {
-              total = total.sub(dl.tensor1d(params[i]));
-            }
-            return total;
-          }).getValues();
-          done(result);
-          break;
-        case 'LERP':
-        case 'INTERPOLATE':
-          result = dl.tidy(() => {
-            const from = dl.tensor1d(params[0]);
-            const to = dl.tensor1d(params[1]);
-            const step = params[2];
-            return from.add(to.sub(from).mul(dl.scalar(step)));
-          }).getValues();
-          done(result);
-          break;
-        case 'SLERP':
-          result = dl.tidy(() => {
-            const from = dl.tensor1d(params[0]);
-            const to = dl.tensor1d(params[1]);
-            const step = params[2];
-            const omega = dl.acos(from.mul(to));
-            const so = dl.sin(omega);
-            return dl.sin(omega.mul(dl.scalar(1 - step)).div(so).mul(from).add(dl.sin(dl.scalar(step).mul(omega)).div(so).mul(to)));
-          }).getValues();
-          done(result);
-          break;
-        default:
-          return;
-      }
+      const isTensorCalculation = arrayContainsArray(params);
+      // evaluates using overwritten formulae, first, otherwise uses hot-formula defaults
+      const result = callCustomFormula(name, params, isTensorCalculation);
+      done(result);
     }
   });
 
