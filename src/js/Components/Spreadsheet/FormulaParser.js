@@ -1,6 +1,6 @@
 const { Parser } = require('hot-formula-parser');
 import * as dl from 'deeplearn';
-import { callCustomFormula } from './Formulae.js';
+import Formulae from './Formulae.js';
 
 const arrayContainsArray = arr => {
   for (let i = 0; i < arr.length; i++) {
@@ -19,6 +19,10 @@ const arrayIsARangeFragment = arr => {
 
 const FormulaParser = (hotInstance, opts) => {
   const parser = new Parser();
+  const CustomFormula = new Formulae({
+    getCellFromDataPicker: opts.getCellFromDataPicker,
+    model: opts.model,
+  });
 
   parser.on('callCellValue', (cellCoord, done) => {
     const rowIndex = cellCoord.row.index;
@@ -48,9 +52,9 @@ const FormulaParser = (hotInstance, opts) => {
     done(fragment);
   });
 
-  parser.setFunction('DATAPICKER', params => {
-    return opts.getCellFromDataPicker(params);
-  });
+  // parser.setFunction('DATAPICKER', params => {
+  //   return opts.getCellFromDataPicker(params);
+  // });
 
   parser.setFunction('RANDFONT', params => {
     const randomSeed = params.length ? params[0] : null
@@ -59,15 +63,15 @@ const FormulaParser = (hotInstance, opts) => {
 
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
-    if (name.toUpperCase() !== 'DATAPICKER' || name.toUpperCase() !== 'RANDFONT') {
+    // if (name.toUpperCase() !== 'DATAPICKER' || name.toUpperCase() !== 'RANDFONT') {
       if (arrayIsARangeFragment(params)) {
         params = params[0];
       }
       const isTensorCalculation = arrayContainsArray(params);
       // evaluates using overwritten formulae, first, otherwise uses hot-formula defaults
-      const result = callCustomFormula(name, params, isTensorCalculation);
+      const result = CustomFormula.call(name, params, isTensorCalculation);
       done(result);
-    }
+    // }
   });
 
 

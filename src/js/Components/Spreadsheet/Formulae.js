@@ -1,13 +1,24 @@
 import * as dl from 'deeplearn';
-const Formulae = {
-  AVERAGE: params => {
+export default class Formulae {
+  constructor(opts) {
+    this.getCellFromDataPicker = opts.getCellFromDataPicker;
+    this.model = opts.model;
+  };
+  DATAPICKER(params) {
+    return this.getCellFromDataPicker(params);
+  };
+  RANDFONT(params) {
+    const randomSeed = params.length ? params[0] : null
+    return this.model.randomFontEmbedding(0, randomSeed).getValues();
+  };
+  AVERAGE(params) {
     let result = 0;
     for (let i = 0; i < params.length; i++) {
       result += Number(params[i]);
     }
     return result /= params.length;
-  },
-  AVERAGE_TENSOR: params => {
+  };
+  AVERAGE_TENSOR(params) {
     return dl.tidy(() => {
       let total;
       let count = 0;
@@ -25,8 +36,8 @@ const Formulae = {
         return total.div(dl.scalar(count));
       }
     }).getValues();
-  },
-  MINUS_TENSOR: params => {
+  };
+  MINUS_TENSOR(params) {
     if (params.length > 2 || params.length === 1) {
       return;
     }
@@ -44,15 +55,15 @@ const Formulae = {
       }
       return total;
     }).getValues();
-  },
-  SUM: params => {
+  };
+  SUM(params) {
     let total = 0;
     for (let index = 0; index < params.length; index++) {
       total += Number(params[index]);
     }
     return total;
-  },
-  SUM_TENSOR: params => {
+  };
+  SUM_TENSOR(params) {
     return dl.tidy(() => {
       let total;
       for (let count = 0; count < params.length; count++) {
@@ -67,8 +78,8 @@ const Formulae = {
       }
       return total;
     }).getValues();
-  },
-  LERP: params => {
+  };
+  LERP(params) {
     if (params.length !== 3) {
       return '#N/A';
     }
@@ -76,8 +87,8 @@ const Formulae = {
     const to = params[1];
     const by = params[2];
     return from + ((to - from) * by);
-  },
-  LERP_TENSOR: params => {
+  };
+  LERP_TENSOR(params) {
     if (params.length !== 3) {
       return '#N/A';
     }
@@ -87,11 +98,11 @@ const Formulae = {
       const step = params[2];
       return from.add(to.sub(from).mul(dl.scalar(step)));
     }).getValues();
-  },
-  SLERP: params => {
+  };
+  SLERP(params) {
     return '#N/A';
-  },
-  SLERP_TENSOR: params => {
+  };
+  SLERP_TENSOR(params) {
     if (params.length !== 3) {
       return '#N/A';
     }
@@ -103,11 +114,11 @@ const Formulae = {
       const so = dl.sin(omega);
       return dl.sin(omega.mul(dl.scalar(1 - step)).div(so).mul(from).add(dl.sin(dl.scalar(step).mul(omega)).div(so).mul(to)));
     }).getValues();
-  },
-  DIST: params => {
+  };
+  DIST(params) {
     return '#N/A';
-  },
-  DIST_TENSOR: params => {
+  };
+  DIST_TENSOR(params) {
     if (params.length !== 2) {
       return '#N/A';
     }
@@ -116,26 +127,23 @@ const Formulae = {
       const b = dl.tensor1d(params[1]);
       return b.sub(a).square().sum().sqrt();
     }).getValues()[0].toString();
-  },
-};
-
-const callCustomFormula = (name, params, isTensorCalculation) => {
-  const aliases = {
-    'ADD': 'SUM',
-    'INTERPOLATE': 'LERP',
   };
+  call(name, params, isTensorCalculation) {
+    const aliases = {
+      'ADD': 'SUM',
+      'INTERPOLATE': 'LERP',
+    };
 
-  name = name.toUpperCase();
-  if (aliases[name]) {
-    name = aliases[name];
-  }
+    name = name.toUpperCase();
+    if (aliases[name]) {
+      name = aliases[name];
+    }
 
-  let formulaKey = `${name.toUpperCase()}${isTensorCalculation ? '_TENSOR' : ''}`;
-  if (!Formulae[formulaKey]) {
-    return;
-  } else {
-    return Formulae[formulaKey](params);
-  }
-}
-
-module.exports = { callCustomFormula };
+    let formulaKey = `${name.toUpperCase()}${isTensorCalculation ? '_TENSOR' : ''}`;
+    if (!this[formulaKey]) {
+      return;
+    } else {
+      return this[formulaKey](params);
+    }
+  };
+};
