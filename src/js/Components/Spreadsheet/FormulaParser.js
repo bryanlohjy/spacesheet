@@ -59,7 +59,7 @@ const FormulaParser = (hotInstance, opts) => {
 
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
-    if (name.toUpperCase() !== 'DATAPICKER') {
+    if (name.toUpperCase() !== 'DATAPICKER' || name.toUpperCase() !== 'RANDFONT') {
       if (arrayIsARangeFragment(params)) {
         params = params[0];
       }
