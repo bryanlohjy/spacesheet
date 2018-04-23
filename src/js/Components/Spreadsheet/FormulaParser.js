@@ -18,10 +18,33 @@ const FormulaParser = (hotInstance, opts) => {
     const newVal = hotInstance.getDataAtCell(rowIndex, columnIndex).replace('=', '');
     done(parser.parse(newVal).result);
   });
+  parser.on('callRangeValue', function(startCellCoord, endCellCoord, done) {
+    const fragment = [];
+    for (let row = startCellCoord.row.index; row <= endCellCoord.row.index; row++) {
+      const rowData = hotInstance.getDataAtRow(row);
+      const colFragment = [];
+      for (let col = startCellCoord.column.index; col <= endCellCoord.column.index; col++) {
+        let value = rowData[col];
+        if (value.toString().search('=') === 0) {
+          value = parser.parse(rowData[col].slice(1)).result;
+        }
+        colFragment.push(value);
+      }
+      fragment.push(colFragment);
+    }
+    if (fragment) {
+      console.log([... fragment])
+      done.apply(null, fragment);
+    }
+  });
+
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
     if (arrayContainsArray(params)) { // calulate tensor
       let result;
+      if (params.length === 1) {
+        params = params[0];
+      }
       switch (name.toUpperCase()) {
         case 'AVERAGE':
           result = dl.tidy(() => {
