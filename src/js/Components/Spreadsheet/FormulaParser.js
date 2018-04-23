@@ -47,7 +47,16 @@ const FormulaParser = (hotInstance, opts) => {
     }
     done(fragment);
   });
-  
+
+  parser.setFunction('DATAPICKER', params => {
+    return opts.getCellFromDataPicker(params);
+  });
+
+  parser.setFunction('RANDFONT', params => {
+    const randomSeed = params.length ? params[0] : null
+    return opts.model.randomFontEmbedding(0, randomSeed).getValues();
+  });
+
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
     if (name.toUpperCase() !== 'DATAPICKER') {
@@ -61,9 +70,6 @@ const FormulaParser = (hotInstance, opts) => {
     }
   });
 
-  parser.setFunction('DATAPICKER', params => {
-    return opts.getCellFromDataPicker(params);
-  });
 
   return parser;
 };

@@ -104,6 +104,24 @@ const Formulae = {
       return dl.sin(omega.mul(dl.scalar(1 - step)).div(so).mul(from).add(dl.sin(dl.scalar(step).mul(omega)).div(so).mul(to)));
     }).getValues();
   },
+
+  // if (name.toUpperCase() === 'DIST') {
+  //   if (arrayContainsArray(params)) {
+  //     result = dl.tidy(() => {
+  //       const a = dl.tensor1d(params[0]);
+  //       const b = dl.tensor1d(params[1]);
+  //       return b.sub(a).square().sum().sqrt();
+  //     }).getValues()[0].toString();
+  //     done(result);
+  //   } else {
+  //     const a = params[0];
+  //     const b = params[1];
+  //     result = Math.sqrt(a*a + b*b).toString();
+  //     done(result);
+  //   }
+  //   return;
+  // }
+
 }
 const callCustomFormula = (name, params, isTensorCalculation) => {
   const aliases = {
