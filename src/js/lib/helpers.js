@@ -6,8 +6,8 @@ const helpers = {
 	},
 	randomInt: function(min, max, seed) { // max is non-inclusive
     let seededRandom;
-    if (!isNaN(seed)) {
-      const x = Math.sin(seed++) * 10000;
+    if (!isNaN(parseInt(seed))) {
+      const x = Math.sin(2231 - seed++) * 10000;
       seededRandom = x - Math.floor(x);
     }
 		min = Math.ceil(min);

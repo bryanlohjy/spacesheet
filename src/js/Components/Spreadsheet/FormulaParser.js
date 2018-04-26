@@ -52,29 +52,16 @@ const FormulaParser = (hotInstance, opts) => {
     done(fragment);
   });
 
-  // parser.setFunction('DATAPICKER', params => {
-  //   return opts.getCellFromDataPicker(params);
-  // });
-
-  parser.setFunction('RANDFONT', params => {
-    const randomSeed = params.length ? params[0] : null
-    return opts.model.randomFontEmbedding(0, randomSeed).getValues();
-  });
-
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, params, done) => {
-    // if (name.toUpperCase() !== 'DATAPICKER' || name.toUpperCase() !== 'RANDFONT') {
-      if (arrayIsARangeFragment(params)) {
-        params = params[0];
-      }
-      const isTensorCalculation = arrayContainsArray(params);
-      // evaluates using overwritten formulae, first, otherwise uses hot-formula defaults
-      const result = CustomFormula.call(name, params, isTensorCalculation);
-      done(result);
-    // }
+    if (arrayIsARangeFragment(params)) {
+      params = params[0];
+    }
+    const isTensorCalculation = arrayContainsArray(params);
+    // evaluates using overwritten formulae, first, otherwise uses hot-formula defaults
+    const result = CustomFormula.call(name, params, isTensorCalculation);
+    done(result);
   });
-
-
   return parser;
 };
 

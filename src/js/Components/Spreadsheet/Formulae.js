@@ -8,7 +8,7 @@ export default class Formulae {
     return this.getCellFromDataPicker(params);
   };
   RANDFONT(params) {
-    const randomSeed = params.length ? params[0] : null
+    let randomSeed = !isNaN(parseInt(params)) ? params : null;
     return this.model.randomFontEmbedding(0, randomSeed).getValues();
   };
   AVERAGE(params) {
