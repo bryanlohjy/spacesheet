@@ -140,10 +140,10 @@ export default class Formulae {
 
     if (min === max) {
       return '#N/A';
-    } else if (step > (max - min)) {
+    } else if (step > Math.abs(max - min)) {
       return '#N/A';
     }
-
+    
     return { min, max, step, };
   };
   SLIDER_TENSOR(params) {
