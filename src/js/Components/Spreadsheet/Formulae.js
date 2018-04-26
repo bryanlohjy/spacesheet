@@ -1,4 +1,6 @@
 import * as dl from 'deeplearn';
+import { randomInt } from '../../lib/helpers';
+
 export default class Formulae {
   constructor(opts) {
     this.getCellFromDataPicker = opts.getCellFromDataPicker;
@@ -8,8 +10,17 @@ export default class Formulae {
     return this.getCellFromDataPicker(params);
   };
   RANDFONT(params) {
-    let randomSeed = !isNaN(parseInt(params)) ? params : null;
-    return this.model.randomFontEmbedding(0, randomSeed).getValues();
+    return dl.tidy(() => {
+      let randomSeed = !isNaN(parseInt(params)) ? params : null;
+      if (randomSeed) {
+        // const res = this.model.randomFontEmbedding(0, randomSeed);
+        return dl.randomNormal([40], 0, 0.2, 'float32', randomSeed);
+      } else {
+        randomSeed = randomInt(0, 999999);
+        const result = dl.randomNormal([40], 0, 0.2, 'float32', randomSeed);
+        return { randomSeed, result };
+      }
+    });
   };
   AVERAGE(params) {
     let result = 0;
@@ -143,7 +154,7 @@ export default class Formulae {
     } else if (step > Math.abs(max - min)) {
       return '#N/A';
     }
-    
+
     return { min, max, step, };
   };
   SLIDER_TENSOR(params) {
