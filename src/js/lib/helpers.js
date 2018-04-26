@@ -55,5 +55,8 @@ const helpers = {
       return Math.max(Math.min(newval, start2), stop2);
     }
   },
+  countDecimalPlaces(number) {
+    return number.toString().split('.')[1].length;
+  },
 };
 module.exports = helpers;

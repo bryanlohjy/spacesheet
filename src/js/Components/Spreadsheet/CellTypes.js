@@ -1,4 +1,5 @@
 import HandsOnTable from 'handsontable';
+import { countDecimalPlaces } from '../../lib/helpers.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
@@ -79,11 +80,16 @@ const CellTypes = opts => {
       let prevSliderValue;
       const prevSlider = td.querySelector('input');
 
-      if (result) {
-        const { min, max, step } = result;
+      if (result && typeof result !== 'string') {
+        const min = result.min;
+        const max = result.max;
+        const step = result.step || 0.1;
+
         let slider;
+        let valueSpan;
         if (prevSlider) {
           slider = prevSlider;
+          valueSpan = td.querySelector('span');
         } else {
           td.innerHTML = '';
           const sliderContainer = document.createElement('div');
@@ -91,8 +97,12 @@ const CellTypes = opts => {
 
           slider = document.createElement('input');
           slider.setAttribute('type', 'range');
+          slider.setAttribute('tabindex', '-1');
+
           HandsOnTable.dom.addEvent(slider, 'input', function(e) {
-            hotInstance.render();
+            setTimeout(() => {
+              hotInstance.render();
+            }, 0);
           });
           HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
             e.preventDefault();
@@ -100,16 +110,22 @@ const CellTypes = opts => {
           HandsOnTable.dom.addEvent(slider, 'mousedown', function(e) {
             e.stopPropagation();
           });
+
+          valueSpan = document.createElement('span');
+
+          sliderContainer.appendChild(valueSpan);
           sliderContainer.appendChild(slider);
           td.appendChild(sliderContainer);
         }
+        const numDecimals = countDecimalPlaces(step);
+        valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
         slider.setAttribute('min', min);
         slider.setAttribute('max', max);
-        slider.setAttribute('step', step || 0.1);
+        slider.setAttribute('step', step);
         slider.setAttribute('title', slider.value || 0);
       } else {
         td.innerHTML = '';
-        td.innerText = error;
+        td.innerText = error || result;
       }
     },
     editor: CustomTextEditor,

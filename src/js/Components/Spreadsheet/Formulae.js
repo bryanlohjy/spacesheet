@@ -129,6 +129,11 @@ export default class Formulae {
     }).getValues()[0].toString();
   };
   SLIDER(params) {
+    // if min is greater than max, reorder
+    // if min === max, return
+    // check if the step is smaller than the dist between min and max
+    // enable a value to be set
+      // make sure value is within range
     const validParams = params.filter(val => { return !isNaN(val) })
     if (validParams.length < 2 || validParams.length > 3) {
       return '#N/A';
@@ -139,8 +144,7 @@ export default class Formulae {
     return { min, max, step };
   };
   SLIDER_TENSOR(params) {
-    console.log('DOING THE SLIDER TING')
-    return '#N/A';    
+    return '#N/A';
   };
   call(name, params, isTensorCalculation) {
     const aliases = {
