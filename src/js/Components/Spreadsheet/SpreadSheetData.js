@@ -7,10 +7,6 @@ const DemoSheet = (rows, cols) => {
     data: [
       emptyRow.slice(),
       [ '', 'Explore a latent space of fonts by picking fonts and\noperating between them!\n=======================================',  '', '' , '', '' ],
-      // emptyRow.slice(),
-
-      // [ '', '0', '1' , '0.1', '=SLIDER(B4, C4, D4)', '=E4'],
-      // [ '', "=DATAPICKER('1-8-6-0-0')", "=DATAPICKER('1-8-2-0-0')" , '=SLIDER(0, 1, 0.05)', '=LERP(B5, C5, D5)'],
       [ '', "Fill a cell using the grid on the left. You can zoom in to find intermediate fonts. Let's pick a couple of interesting fonts.", '', '', '', "=DATAPICKER('1-8-6-0-0')", "=DATAPICKER('1-8-2-0-0')" ],
       [ '', 'Reference cells by specifying their cell coordinate. e.g. "=F3".', '', '', '', "=F3"],
       [ '', "Let's find the average of our two fonts. We can do so by using the \"AVERAGE\" operator.", '', '','', "=AVERAGE(F3, G3)" ],
@@ -32,11 +28,6 @@ const DemoSheet = (rows, cols) => {
       { row: 7, col: 1, rowspan: 1, colspan: 4 },
       { row: 8, col: 1, rowspan: 1, colspan: 6 },
       { row: 10, col: 1, rowspan: 1, colspan: 6 },
-      // { row: 11, col: 3, rowspan: 1, colspan: 2 },
-
-
-      // { row: 9, col: 1, rowspan: 1, colspan: 6 },
-      // { row: 11, col: 1, rowspan: 1, colspan: 6 },
     ],
   }
   if (data.data.length < (rows || 17)) {
