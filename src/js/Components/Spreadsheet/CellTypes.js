@@ -34,6 +34,7 @@ const CellTypes = opts => {
   const Formula = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
+        console.log('RENDERER', data)
         td.innerHTML = '';
         try {
           const compiled = opts.formulaParser.parse(data.replace('=', ''));
@@ -70,9 +71,19 @@ const CellTypes = opts => {
     renderer: 'text',
     editor: CustomTextEditor,
   };
+
+  const Slider = {
+    renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
+      // console.log('SLIDER RENDERER')
+      td.innerText = 'Slider renderer';
+    },
+    editor: CustomTextEditor,
+  };
+
   return {
     Formula,
     Text,
+    Slider
   };
 }
 

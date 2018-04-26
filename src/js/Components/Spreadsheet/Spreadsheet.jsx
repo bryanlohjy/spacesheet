@@ -50,6 +50,10 @@ export default class Spreadsheet extends React.Component {
             cellProperties.renderer = cellTypes.Formula.renderer;
             cellProperties.editor = cellTypes.Formula.editor;
             break;
+          case 'SLIDER':
+            cellProperties.renderer = cellTypes.Slider.renderer;
+            cellProperties.editor = cellTypes.Slider.editor;
+            break;
           default:
             cellProperties.renderer = cellTypes.Text.renderer;
             cellProperties.editor = cellTypes.Text.editor;
