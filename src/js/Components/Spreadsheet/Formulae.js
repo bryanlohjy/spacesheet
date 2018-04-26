@@ -128,6 +128,16 @@ export default class Formulae {
       return b.sub(a).square().sum().sqrt();
     }).getValues()[0].toString();
   };
+  SLIDER(params) {
+    const validParams = params.filter(val => { return !isNaN(val) })
+    if (validParams.length < 2 || validParams.length > 3) {
+      return '#N/A';
+    }
+    const min = validParams[0];
+    const max = validParams[1];
+    const step = validParams.length === 3 ? validParams[2] : null;
+    return { min, max, step };
+  };
   call(name, params, isTensorCalculation) {
     const aliases = {
       'ADD': 'SUM',
