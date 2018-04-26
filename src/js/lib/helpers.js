@@ -56,7 +56,11 @@ const helpers = {
     }
   },
   countDecimalPlaces(number) {
-    return number.toString().split('.')[1].length;
+    if ((number - parseInt(number) > 0)) { // if it is not a whole number
+      return number.toString().split('.')[1].length;
+    } else {
+      return 0;
+    }
   },
 };
 module.exports = helpers;
