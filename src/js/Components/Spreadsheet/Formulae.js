@@ -140,7 +140,7 @@ export default class Formulae {
     }
     const min = validParams[0];
     const max = validParams[1];
-    const step = validParams.length === 3 ? validParams[2] : null;
+    const step = validParams[2] || 0.05;
     return { min, max, step };
   };
   SLIDER_TENSOR(params) {

@@ -83,7 +83,7 @@ const CellTypes = opts => {
       if (result && typeof result !== 'string') {
         const min = result.min;
         const max = result.max;
-        const step = result.step || 0.1;
+        const step = result.step;
 
         let slider;
         let valueSpan;
