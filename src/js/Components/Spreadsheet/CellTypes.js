@@ -81,9 +81,9 @@ const CellTypes = opts => {
       const prevSlider = td.querySelector('input');
 
       if (result && typeof result !== 'string') {
-        const min = result.min;
-        const max = result.max;
-        const step = result.step;
+        let min = result.min;
+        let max = result.max;
+        let step = result.step;
 
         let slider;
         let valueSpan;
@@ -117,6 +117,15 @@ const CellTypes = opts => {
           sliderContainer.appendChild(slider);
           td.appendChild(sliderContainer);
         }
+
+        if (min > max) {
+          min = result.max;
+          max = result.min;
+          slider.classList.add('reversed');
+        } else {
+          slider.classList.remove('reversed');
+        }
+        
         slider.setAttribute('min', min);
         slider.setAttribute('max', max);
         slider.setAttribute('step', step);
