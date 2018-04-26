@@ -129,19 +129,22 @@ export default class Formulae {
     }).getValues()[0].toString();
   };
   SLIDER(params) {
-    // if min is greater than max, reorder
-    // if min === max, return
-    // check if the step is smaller than the dist between min and max
-    // enable a value to be set
-      // make sure value is within range
     const validParams = params.filter(val => { return !isNaN(val) })
     if (validParams.length < 2 || validParams.length > 3) {
       return '#N/A';
     }
-    const min = validParams[0];
-    const max = validParams[1];
-    const step = validParams[2] || 0.05;
-    return { min, max, step };
+
+    let min = validParams[0];
+    let max = validParams[1];
+    let step = validParams[2] || (max - min) / 20;
+
+    if (min === max) {
+      return '#N/A';
+    } else if (step > (max - min)) {
+      return '#N/A';
+    }
+
+    return { min, max, step, };
   };
   SLIDER_TENSOR(params) {
     return '#N/A';

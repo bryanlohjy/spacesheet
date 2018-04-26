@@ -125,7 +125,7 @@ const CellTypes = opts => {
         } else {
           slider.classList.remove('reversed');
         }
-        
+
         slider.setAttribute('min', min);
         slider.setAttribute('max', max);
         slider.setAttribute('step', step);
