@@ -100,9 +100,7 @@ const CellTypes = opts => {
           slider.setAttribute('tabindex', '-1');
 
           HandsOnTable.dom.addEvent(slider, 'input', function(e) {
-            setTimeout(() => {
-              hotInstance.render();
-            }, 0);
+            hotInstance.render();
           });
           HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
             e.preventDefault();
