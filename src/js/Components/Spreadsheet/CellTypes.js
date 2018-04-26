@@ -37,9 +37,8 @@ const CellTypes = opts => {
         td.innerHTML = '';
         try {
           const compiled = opts.formulaParser.parse(data.replace('=', ''));
-          console.log('COMPILED', compiled, data)
           const { result, error } = compiled;
-          if (result) {
+          if (result || result === 0) {
             if (typeof result === 'object') { // it is a vector
               const canvas = document.createElement('canvas');
               canvas.width = opts.outputWidth - 1;
@@ -75,57 +74,43 @@ const CellTypes = opts => {
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
       const compiled = opts.formulaParser.parse(data.replace('=', ''))
-      console.log('SLIDER RENDERER', compiled)
       const { result, error } = compiled;
-      td.innerHTML = '';
+
+      let prevSliderValue;
+      const prevSlider = td.querySelector('input');
+
       if (result) {
         const { min, max, step } = result;
-        const sliderContainer = document.createElement('div');
-        sliderContainer.classList.add('slider-container');
+        let slider;
+        if (prevSlider) {
+          slider = prevSlider;
+        } else {
+          td.innerHTML = '';
+          const sliderContainer = document.createElement('div');
+          sliderContainer.classList.add('slider-container');
 
-        const slider = document.createElement('input');
-        slider.setAttribute('type', 'range');
+          slider = document.createElement('input');
+          slider.setAttribute('type', 'range');
+          HandsOnTable.dom.addEvent(slider, 'input', function(e) {
+            hotInstance.render();
+          });
+          HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
+            e.preventDefault();
+          });
+          HandsOnTable.dom.addEvent(slider, 'mousedown', function(e) {
+            e.stopPropagation();
+          });
+          sliderContainer.appendChild(slider);
+          td.appendChild(sliderContainer);
+        }
         slider.setAttribute('min', min);
         slider.setAttribute('max', max);
         slider.setAttribute('step', step || 0.1);
-        // slider.setAttribute('title', sliderValue)
-        // slider.setAttribute('value', sliderValue);
-        sliderContainer.appendChild(slider);
-        td.appendChild(sliderContainer);
-        // HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
-        //   e.preventDefault();
-        // });
-        // HandsOnTable.dom.addEvent(slider, 'mousedown', function(e) {
-        //   e.stopPropagation();
-        // });
+        slider.setAttribute('title', slider.value || 0);
       } else {
+        td.innerHTML = '';
         td.innerText = error;
       }
-      // try {
-      //   const compiled = opts.formulaParser.parse(data.replace('=', ''));
-      //   if (result) {
-      //     if (typeof result === 'object') { // it is a vector
-      //       const canvas = document.createElement('canvas');
-      //       canvas.width = opts.outputWidth - 1;
-      //       canvas.height = opts.outputHeight - 1;
-      //       canvas.classList.add('cell-type', 'canvas');
-      //
-      //       const ctx = canvas.getContext('2d');
-      //       const imageData = opts.decodeFn(result);
-      //       opts.drawFn(ctx, imageData);
-      //
-      //       let image = result.image;
-      //       td.appendChild(canvas);
-      //     } else {
-      //       td.innerText = result;
-      //     }
-      //   } else {
-      //     td.innerText = error || "#ERROR!";
-      //   }
-      // } catch (e) {
-      //   console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
-      // }
-      // td.innerText = 'Slider renderer';
     },
     editor: CustomTextEditor,
   };
