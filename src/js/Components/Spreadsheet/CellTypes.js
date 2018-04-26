@@ -117,12 +117,12 @@ const CellTypes = opts => {
           sliderContainer.appendChild(slider);
           td.appendChild(sliderContainer);
         }
-        const numDecimals = countDecimalPlaces(step);
-        valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
         slider.setAttribute('min', min);
         slider.setAttribute('max', max);
         slider.setAttribute('step', step);
         slider.setAttribute('title', slider.value || 0);
+        const numDecimals = countDecimalPlaces(step);
+        valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
       } else {
         td.innerHTML = '';
         td.innerText = error || result;
