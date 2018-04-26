@@ -1,6 +1,7 @@
 const { Parser } = require('hot-formula-parser');
 import * as dl from 'deeplearn';
 import Formulae from './Formulae.js';
+import { Regex } from './CellHelpers.js';
 
 const arrayContainsArray = arr => {
   for (let i = 0; i < arr.length; i++) {
@@ -27,7 +28,14 @@ const FormulaParser = (hotInstance, opts) => {
   parser.on('callCellValue', (cellCoord, done) => {
     const rowIndex = cellCoord.row.index;
     const columnIndex = cellCoord.column.index;
-    const newVal = hotInstance.getDataAtCell(rowIndex, columnIndex).replace('=', '');
+    const val = hotInstance.getDataAtCell(rowIndex, columnIndex);
+    let newVal;
+    if (new RegExp(Regex.slider).test(val)) {
+      const input = hotInstance.getCell(rowIndex, columnIndex).querySelector('input');
+      newVal = input.value;
+    } else {
+      newVal = val.replace('=', '');
+    }
     done(parser.parse(newVal).result);
   });
 

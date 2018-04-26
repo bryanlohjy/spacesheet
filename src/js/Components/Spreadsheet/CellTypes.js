@@ -37,6 +37,7 @@ const CellTypes = opts => {
         td.innerHTML = '';
         try {
           const compiled = opts.formulaParser.parse(data.replace('=', ''));
+          console.log('COMPILED', compiled, data)
           const { result, error } = compiled;
           if (result) {
             if (typeof result === 'object') { // it is a vector
@@ -76,8 +77,8 @@ const CellTypes = opts => {
       const compiled = opts.formulaParser.parse(data.replace('=', ''))
       console.log('SLIDER RENDERER', compiled)
       const { result, error } = compiled;
+      td.innerHTML = '';
       if (result) {
-        td.innerHTML = '';
         const { min, max, step } = result;
         const sliderContainer = document.createElement('div');
         sliderContainer.classList.add('slider-container');
@@ -91,8 +92,14 @@ const CellTypes = opts => {
         // slider.setAttribute('value', sliderValue);
         sliderContainer.appendChild(slider);
         td.appendChild(sliderContainer);
+        // HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
+        //   e.preventDefault();
+        // });
+        // HandsOnTable.dom.addEvent(slider, 'mousedown', function(e) {
+        //   e.stopPropagation();
+        // });
       } else {
-
+        td.innerText = error;
       }
       // try {
       //   const compiled = opts.formulaParser.parse(data.replace('=', ''));

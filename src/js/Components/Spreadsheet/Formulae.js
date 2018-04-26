@@ -138,6 +138,10 @@ export default class Formulae {
     const step = validParams.length === 3 ? validParams[2] : null;
     return { min, max, step };
   };
+  SLIDER_TENSOR(params) {
+    console.log('DOING THE SLIDER TING')
+    return '#N/A';    
+  };
   call(name, params, isTensorCalculation) {
     const aliases = {
       'ADD': 'SUM',
