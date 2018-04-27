@@ -30,7 +30,7 @@ const FormulaParser = (hotInstance, opts) => {
     const columnIndex = cellCoord.column.index;
     const val = hotInstance.getDataAtCell(rowIndex, columnIndex);
     let newVal;
-    if (Regex.SLIDER.test(val)) {
+    if (new RegExp(Regex.SLIDER).test(val)) {
       const input = hotInstance.getCell(rowIndex, columnIndex).querySelector('input');
       newVal = input.value;
     } else {

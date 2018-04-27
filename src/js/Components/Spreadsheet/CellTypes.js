@@ -1,5 +1,6 @@
 import HandsOnTable from 'handsontable';
-import { countDecimalPlaces } from '../../lib/helpers.js';
+import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
+import Regex from '../../lib/Regex.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
@@ -30,6 +31,7 @@ const CellTypes = opts => {
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
     this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   }
+
   // Formula ==============
   // A non editable cell which renders references from the Formula
   const Formula = {
@@ -138,10 +140,39 @@ const CellTypes = opts => {
     editor: CustomTextEditor,
   };
 
+  const RandFont = {
+    renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
+      if (data && data.trim().length) {
+        if (!new RegExp(Regex.RANDFONT.isValid).test(data)) { // if there is no argument, or is invalid, create random seed
+          data = `=RANDFONT(${ randomInt(0, 99999) })`;
+          hotInstance.setDataAtCell(row, col, data);
+        }
+        const compiled = opts.formulaParser.parse(data.replace('=', ''));
+        let { result, error } = compiled;
+        if (typeof result === 'object') { // it is a vector
+          td.innerHTML = '';
+          const canvas = document.createElement('canvas');
+          canvas.width = opts.outputWidth - 1;
+          canvas.height = opts.outputHeight - 1;
+          canvas.classList.add('cell-type', 'canvas');
+
+          const ctx = canvas.getContext('2d');
+          const imageData = opts.decodeFn(result);
+          opts.drawFn(ctx, imageData);
+          td.appendChild(canvas);
+        }
+
+        // console.log(result)
+      }
+    },
+    editor: CustomTextEditor,
+  };
+
   return {
     Formula,
     Text,
-    Slider
+    Slider,
+    RandFont,
   };
 }
 

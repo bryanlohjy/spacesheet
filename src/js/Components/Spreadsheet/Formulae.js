@@ -11,16 +11,10 @@ export default class Formulae {
   };
   RANDFONT(params) {
     return dl.tidy(() => {
-      let randomSeed = !isNaN(parseInt(params)) ? params : null;
-      if (randomSeed) {
+      let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
         // const res = this.model.randomFontEmbedding(0, randomSeed);
-        return dl.randomNormal([40], 0, 0.2, 'float32', randomSeed);
-      } else {
-        randomSeed = randomInt(0, 999999);
-        const result = dl.randomNormal([40], 0, 0.2, 'float32', randomSeed);
-        return { randomSeed, result };
-      }
-    });
+      return dl.randomNormal([40], 0, 0.2, 'float32', randomSeed);
+    }).getValues();
   };
   AVERAGE(params) {
     let result = 0;
