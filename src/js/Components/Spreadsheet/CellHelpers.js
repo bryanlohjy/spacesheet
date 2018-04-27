@@ -1,11 +1,9 @@
-const Regex = {
-  slider: /\s*slider/ig,
-};
+import Regex from '../../lib/Regex.js';
 
 const GetCellType = cellData => {
   if (!cellData) { return; }
   if (cellData.trim()[0] === '=') {
-    if (new RegExp(Regex.slider).test(cellData)) {
+    if (Regex.SLIDER.test(cellData)) {
       return 'SLIDER';
     }
     return 'FORMULA';
