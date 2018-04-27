@@ -54,6 +54,10 @@ export default class Spreadsheet extends React.Component {
             cellProperties.renderer = cellTypes.Slider.renderer;
             cellProperties.editor = cellTypes.Slider.editor;
             break;
+          case 'RANDFONT':
+            cellProperties.renderer = cellTypes.Formula.renderer;
+            cellProperties.editor = cellTypes.Formula.editor;
+            break;
           default:
             cellProperties.renderer = cellTypes.Text.renderer;
             cellProperties.editor = cellTypes.Text.editor;

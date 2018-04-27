@@ -6,6 +6,9 @@ const GetCellType = cellData => {
     if (Regex.SLIDER.test(cellData)) {
       return 'SLIDER';
     }
+    if (Regex.CELLS.RANDFONT.test(cellData)) {
+      return 'RANDFONT';
+    }
     return 'FORMULA';
   } else {
     return 'TEXT';
