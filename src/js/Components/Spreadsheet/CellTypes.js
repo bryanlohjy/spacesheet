@@ -149,20 +149,30 @@ const CellTypes = opts => {
         }
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
         let { result, error } = compiled;
-        if (typeof result === 'object') { // it is a vector
-          td.innerHTML = '';
-          const canvas = document.createElement('canvas');
-          canvas.width = opts.outputWidth - 1;
-          canvas.height = opts.outputHeight - 1;
-          canvas.classList.add('cell-type', 'canvas');
+        if (result) {
+          let canvasElement = td.querySelector('canvas');
+          if (!canvasElement) {
+            td.innerHTML = '';
+            canvasElement = document.createElement('canvas');
+            canvasElement.width = opts.outputWidth - 1;
+            canvasElement.height = opts.outputHeight - 1;
+            canvasElement.classList.add('cell-type', 'canvas');
 
-          const ctx = canvas.getContext('2d');
+            const randomiseButton = document.createElement('button');
+            randomiseButton.classList.add('randomise-button');
+            HandsOnTable.dom.addEvent(randomiseButton, 'click', function(e) {
+              const newValue = `=RANDFONT(${ randomInt(0, 99999) })`;
+              hotInstance.setDataAtCell(row, col, newValue);
+            });
+            td.appendChild(randomiseButton);
+            td.appendChild(canvasElement);
+          }
           const imageData = opts.decodeFn(result);
+          const ctx = canvasElement.getContext('2d');
           opts.drawFn(ctx, imageData);
-          td.appendChild(canvas);
+        } else {
+          td.innerHTML = error;
         }
-
-        // console.log(result)
       }
     },
     editor: CustomTextEditor,
