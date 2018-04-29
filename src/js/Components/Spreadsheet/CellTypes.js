@@ -155,19 +155,36 @@ const CellTypes = opts => {
           let canvasElement = td.querySelector('canvas');
           if (!canvasElement) {
             td.innerHTML = '';
+
+            const canvasContainer = document.createElement('div');
+            canvasContainer.classList.add('canvas-container');
+
             canvasElement = document.createElement('canvas');
             canvasElement.width = opts.outputWidth - 1;
             canvasElement.height = opts.outputHeight - 1;
-            canvasElement.classList.add('cell-type', 'canvas');
 
-            const randomiseButton = document.createElement('button');
+            const randomiseButton = document.createElement('div');
             randomiseButton.classList.add('randomise-button');
+
+            HandsOnTable.dom.addEvent(td, 'mousedown', function(e) {
+              if (e.target === randomiseButton) {
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                e.preventDefault();
+              }
+            });
+            
             HandsOnTable.dom.addEvent(randomiseButton, 'click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
               const newValue = `=RANDFONT(${ randomInt(0, 99999) })`;
               hotInstance.setDataAtCell(row, col, newValue);
             });
-            td.appendChild(randomiseButton);
-            td.appendChild(canvasElement);
+
+            canvasContainer.appendChild(randomiseButton);
+            canvasContainer.appendChild(canvasElement);
+            td.appendChild(canvasContainer);
           }
           const imageData = opts.decodeFn(result);
           const ctx = canvasElement.getContext('2d');

@@ -17,17 +17,35 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
-    .cell-type {
+    .canvas-container {
       display: flex;
       padding: 0;
       margin: 0;
       position: relative;
-    }
-    .randomise-button {
-      position: absolute;
-      z-index: 1;
-      height: 10px;
-      width: 10px;
+      align-items: center;
+      justify-content: center;
+      outline: 1px solid red;
+
+      .randomise-button {
+        border-radius: 100%;
+        &:active {
+          background-color: darkgreen;
+        }
+        cursor: pointer;
+        opacity: 0;
+        position: absolute;
+        background-color: teal;
+        z-index: 1;
+        height: 40px;
+        width: 40px;
+      }
+
+      &:hover {
+        .randomise-button {
+          opacity: 0.6;
+          visibility: visible;
+        }
+      }
     }
     .slider-container {
       display: flex;
