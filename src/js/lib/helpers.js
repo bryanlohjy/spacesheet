@@ -62,5 +62,23 @@ const helpers = {
       return 0;
     }
   },
+  getIndicesOf(searchFor, searchIn, caseSensitive) {
+    const searchForLen = searchFor.length;
+    if (searchForLen == 0) {
+      return [];
+    }
+    let startIndex = 0;
+    let index;
+    const indices = [];
+    if (!caseSensitive) {
+      searchIn = searchIn.toLowerCase();
+      searchFor = searchFor.toLowerCase();
+    }
+    while ((index = searchIn.indexOf(searchFor, startIndex)) > -1) {
+      indices.push(index);
+      startIndex = index + searchForLen;
+    }
+    return indices;
+  },
 };
 module.exports = helpers;

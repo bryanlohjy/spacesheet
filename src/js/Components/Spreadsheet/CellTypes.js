@@ -76,6 +76,7 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
+
       const compiled = opts.formulaParser.parse(data.replace('=', ''))
       const { result, error } = compiled;
 
@@ -143,7 +144,8 @@ const CellTypes = opts => {
   const RandFont = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
-        if (!new RegExp(Regex.RANDFONT.isValid).test(data)) { // if there is no argument, or is invalid, create random seed
+        const randArgs = opts.formulaParser.getArgumentsFromFunction(data);
+        if (randArgs.length === 0) { // if there are no arguments, create a random seed
           data = `=RANDFONT(${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
         }
