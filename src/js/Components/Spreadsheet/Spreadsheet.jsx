@@ -66,6 +66,7 @@ export default class Spreadsheet extends React.Component {
       },
       data: this.demoSheet.data,
     });
+    hotInstance.selectCell(0, 0);
   };
   setInputRef(el) {
     if (!this.inputBar) {
