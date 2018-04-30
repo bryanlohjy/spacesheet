@@ -11,7 +11,7 @@ export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setInputRef = this.setInputRef.bind(this);
+    // this.setInputRef = this.setInputRef.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
     this.updateInputBarValue = this.updateInputBarValue.bind(this);
     this.setCellValue = this.setCellValue.bind(this);
@@ -68,12 +68,12 @@ export default class Spreadsheet extends React.Component {
     });
     hotInstance.selectCell(0, 0);
   };
-  setInputRef(el) {
-    if (!this.inputBar) {
-      this.inputBar = el;
-      this.setState({ inputBarIsMounted : true });
-    }
-  };
+  // setInputRef(el) {
+  //   if (!this.inputBar) {
+  //     this.inputBar = el;
+  //     this.setState({ inputBarIsMounted : true });
+  //   }
+  // };
   updateInputBarValue(value) {
     this.inputBar.value = value;
   };
@@ -93,11 +93,24 @@ export default class Spreadsheet extends React.Component {
     const inputBarHeight = 21;
     return (
       <div className="spreadsheet-container">
-        <InputBar
-          setInputRef={ this.setInputRef }
-          updateInputBarValue={ this.updateInputBarValue }
-          setCellValue={ this.setCellValue }
-          height={ inputBarHeight }
+        <input className="input-bar" type="text"
+          ref={ el => {
+            if (!this.state.inputBarIsMounted) {
+              this.inputBar = el;
+              this.setState({ inputBarIsMounted : true });
+            }
+          }}
+          onChange={ e => {
+            this.updateInputBarValue(e.target.value);
+          }}
+          onKeyDown={ e => {
+            if (e.keyCode === 13) {
+              this.setCellValue(e.target.value);
+            }
+          }}
+          style={{
+            height: inputBarHeight || 21,
+          }}
         />
         {
           this.state.inputBarIsMounted ? (
@@ -177,36 +190,4 @@ Spreadsheet.propTypes = {
   model: PropTypes.object,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
-};
-
-class InputBar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <input className="input-bar" type="text"
-        ref={ el => {
-          this.props.setInputRef(el);
-        }}
-        onChange={ e => {
-          this.props.updateInputBarValue(e.target.value);
-        }}
-        onKeyDown={ e => {
-          if (e.keyCode === 13) {
-            this.props.setCellValue(e.target.value);
-          }
-        }}
-        style={{
-          height: this.props.height || 21,
-        }}
-      />
-    )
-  }
-}
-InputBar.propTypes = {
-  setInputRef: PropTypes.func,
-  setCellValue: PropTypes.func,
-  updateInputBarValue: PropTypes.func,
-  height: PropTypes.number,
 };
