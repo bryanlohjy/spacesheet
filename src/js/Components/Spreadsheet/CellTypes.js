@@ -46,7 +46,7 @@ const CellTypes = opts => {
               const canvas = document.createElement('canvas');
               canvas.width = opts.outputWidth - 1;
               canvas.height = opts.outputHeight - 1;
-              canvas.classList.add('cell-type', 'canvas');
+              canvas.classList.add('canvas-container');
 
               const ctx = canvas.getContext('2d');
               const imageData = opts.decodeFn(result);
@@ -166,6 +166,11 @@ const CellTypes = opts => {
             const randomiseButton = document.createElement('div');
             randomiseButton.classList.add('randomise-button');
 
+            const randomIcon = document.createElement('img');
+            randomIcon.classList.add('random-icon');
+            randomIcon.src = 'dist/assets/ic_autorenew_black_18px.svg';
+            randomiseButton.appendChild(randomIcon);
+
             HandsOnTable.dom.addEvent(td, 'mousedown', function(e) {
               if (e.target === randomiseButton) {
                 e.stopPropagation();
@@ -173,7 +178,7 @@ const CellTypes = opts => {
                 e.preventDefault();
               }
             });
-            
+
             HandsOnTable.dom.addEvent(randomiseButton, 'click', function(e) {
               e.preventDefault();
               e.stopPropagation();
