@@ -11,11 +11,8 @@ export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.setInputRef = this.setInputRef.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
-    this.updateInputBarValue = this.updateInputBarValue.bind(this);
     this.setCellValue = this.setCellValue.bind(this);
-    this.handleAfterSelection = this.handleAfterSelection.bind(this);
 
     this.state = {
       inputBarIsMounted: false,
@@ -38,7 +35,7 @@ export default class Spreadsheet extends React.Component {
         getCellFromDataPicker: this.props.getCellFromDataPicker,
         model: this.props.model,
       }),
-      updateInputBarValue: this.updateInputBarValue,
+      inputBar: this.inputBar,
     });
 
     hotInstance.updateSettings({
@@ -68,27 +65,10 @@ export default class Spreadsheet extends React.Component {
     });
     hotInstance.selectCell(0, 0);
   };
-  // setInputRef(el) {
-  //   if (!this.inputBar) {
-  //     this.inputBar = el;
-  //     this.setState({ inputBarIsMounted : true });
-  //   }
-  // };
-  updateInputBarValue(value) {
-    this.inputBar.value = value;
-  };
   setCellValue(value) {
     const selection = this.hotInstance.getSelected();
     this.hotInstance.setDataAtCell(selection[0], selection[1], value);
   };
-  handleAfterSelection(rowFrom, colFrom, rowTo, colTo) {
-    let currentSelection = [rowFrom, colFrom].toString();
-    if (this.previousSelection !== currentSelection) { // only update if the value is different
-      const cell = this.hotInstance.getDataAtCell(rowFrom, colFrom);
-      this.updateInputBarValue(cell);
-      this.previousSelection = currentSelection;
-    }
-  }
   render() {
     const inputBarHeight = 21;
     return (
@@ -101,7 +81,7 @@ export default class Spreadsheet extends React.Component {
             }
           }}
           onChange={ e => {
-            this.updateInputBarValue(e.target.value);
+            this.inputBar.value = e.target.value;
           }}
           onKeyDown={ e => {
             if (e.keyCode === 13) {
@@ -153,7 +133,7 @@ export default class Spreadsheet extends React.Component {
                   if (selection) {
                     const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
                     if (this.inputBar.innerText !== data) {
-                      this.updateInputBarValue(data);
+                      this.inputBar.value = e.target.value;
                     }
                   }
                 }}
@@ -162,13 +142,12 @@ export default class Spreadsheet extends React.Component {
                   if (selection) {
                     const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
                     if (this.inputBar.innerText !== data) {
-                      this.updateInputBarValue(data);
+                      this.inputBar.value = e.target.value;
                     }
                   }
                 }}
                 undo
                 redo
-                // afterSelection={ this.handleAfterSelection }
               />
             </div>) : ''
         }
