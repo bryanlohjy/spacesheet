@@ -90,12 +90,13 @@ const CellTypes = opts => {
 
         let slider;
         let valueSpan;
+        let sliderContainer;
         if (prevSlider) {
           slider = prevSlider;
           valueSpan = td.querySelector('span');
         } else {
           td.innerHTML = '';
-          const sliderContainer = document.createElement('div');
+          sliderContainer = document.createElement('div');
           sliderContainer.classList.add('slider-container');
 
           slider = document.createElement('input');
@@ -113,10 +114,6 @@ const CellTypes = opts => {
           });
 
           valueSpan = document.createElement('span');
-
-          sliderContainer.appendChild(valueSpan);
-          sliderContainer.appendChild(slider);
-          td.appendChild(sliderContainer);
         }
 
         if (min > max) {
@@ -131,8 +128,16 @@ const CellTypes = opts => {
         slider.setAttribute('max', max);
         slider.setAttribute('step', step);
         slider.setAttribute('title', slider.value || 0);
+        
         const numDecimals = countDecimalPlaces(step);
         valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
+
+        if (!prevSlider) {
+          sliderContainer.appendChild(valueSpan);
+          sliderContainer.appendChild(slider);
+          td.appendChild(sliderContainer);
+          hotInstance.render()
+        }
       } else {
         td.innerHTML = '';
         td.innerText = error || result;

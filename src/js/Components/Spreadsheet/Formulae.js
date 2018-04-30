@@ -166,6 +166,7 @@ export default class Formulae {
     }
 
     let formulaKey = `${name.toUpperCase()}${isTensorCalculation ? '_TENSOR' : ''}`;
+
     if (!this[formulaKey]) {
       return;
     } else {
