@@ -80,5 +80,17 @@ const helpers = {
     }
     return indices;
   },
+  getAllRegexMatches(regex, string) {
+    const matches = [];
+    var m;
+    do {
+      m = regex.exec(string);
+      if (m) {
+        m.endIndex = Number(m[0].length) + Number(m.index);
+        matches.push(m);
+      }
+    } while (m);
+    return matches;
+  },
 };
 module.exports = helpers;
