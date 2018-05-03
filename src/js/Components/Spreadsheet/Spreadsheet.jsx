@@ -115,22 +115,18 @@ export default class Spreadsheet extends React.Component {
 
                 contextMenu
                 // make sure input bar is in sync
-                afterUndo={ e => {
+                afterUndo={ changes => {
                   const selection = this.hotInstance.getSelected();
-                  if (selection) {
-                    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                    if (this.inputBar.innerText !== data) {
-                      this.inputBar.value = e.target.value;
-                    }
+                  const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+                  if (this.inputBar.innerText !== data) {
+                    this.inputBar.value = data;
                   }
                 }}
-                afterRedo={ e => {
+                afterRedo={ changes => {
                   const selection = this.hotInstance.getSelected();
-                  if (selection) {
-                    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                    if (this.inputBar.innerText !== data) {
-                      this.inputBar.value = e.target.value;
-                    }
+                  const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+                  if (this.inputBar.innerText !== data) {
+                    this.inputBar.value = data;
                   }
                 }}
                 undo
