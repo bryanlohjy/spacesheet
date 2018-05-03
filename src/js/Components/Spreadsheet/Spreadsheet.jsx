@@ -10,9 +10,7 @@ import { FormulaParser } from './FormulaParser.js';
 export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
-
     this.initHotTable = this.initHotTable.bind(this);
-    this.setCellValue = this.setCellValue.bind(this);
 
     this.state = {
       inputBarIsMounted: false,
@@ -65,27 +63,16 @@ export default class Spreadsheet extends React.Component {
     });
     hotInstance.selectCell(0, 0);
   };
-  setCellValue(value) {
-    const selection = this.hotInstance.getSelected();
-    this.hotInstance.setDataAtCell(selection[0], selection[1], value);
-  };
   render() {
     const inputBarHeight = 21;
     return (
       <div className="spreadsheet-container">
         <input className="input-bar" type="text"
+          disabled
           ref={ el => {
             if (!this.state.inputBarIsMounted) {
               this.inputBar = el;
               this.setState({ inputBarIsMounted : true });
-            }
-          }}
-          onChange={ e => {
-            this.inputBar.value = e.target.value;
-          }}
-          onKeyDown={ e => {
-            if (e.keyCode === 13) {
-              this.setCellValue(e.target.value);
             }
           }}
           style={{
