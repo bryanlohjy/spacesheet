@@ -6,6 +6,12 @@ import Regex from '../../lib/Regex.js';
 export default opts => {
   let CustomTextEditor =  HandsOnTable.editors.TextEditor.prototype.extend();
 
+  const removeHighlightedClasses = function() {
+    removeInstancesOfClassName('highlighted-reference');
+    for (let i = 0; i < 5; i++) { // colour class
+      removeInstancesOfClassName(`_${i.toString()}`);
+    }
+  };
   const highlightReferences = function(hotInstance, data) {
     if (!data || !isFormula(data)) {
       return;
@@ -25,10 +31,10 @@ export default opts => {
       for (let row = startRowIndex; row <= endRowIndex; row++) {
         for (let col = startColIndex; col <= endColIndex; col++) {
           if (!(row == startRowIndex && col == startColIndex) && !(row == endRowIndex && col == endColIndex)) {
-            if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
+            if (row < hotInstance.countRows() && col < hotInstance.countCols()) {
               const reference = hotInstance.getCell(row, col);
               if (reference) {
-                reference.classList.add('reference');
+                reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
               }
             }
           }
@@ -43,7 +49,7 @@ export default opts => {
       if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
         const reference = hotInstance.getCell(coords.row, coords.col);
         if (reference) {
-          reference.classList.add('reference');
+          reference.classList.add('highlighted-reference', `_${ (singleCount % 5) }`);
         }
       }
     }
@@ -53,7 +59,7 @@ export default opts => {
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
         opts.inputBar.value = e.target.value;
-        removeInstancesOfClassName('reference');
+        removeInstancesOfClassName('highlighted-reference');
         highlightReferences(this.instance, e.target.value);
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue
