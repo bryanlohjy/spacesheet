@@ -1,6 +1,6 @@
 import HandsOnTable from 'handsontable';
 import { cellLabelToCoords, isFormula, getCellFromLabel } from './CellHelpers.js';
-import { getAllRegexMatches, removeAllClasses } from '../../lib/helpers.js';
+import { getAllRegexMatches, removeInstancesOfClassName } from '../../lib/helpers.js';
 import Regex from '../../lib/Regex.js';
 
 export default opts => {
@@ -25,8 +25,12 @@ export default opts => {
       for (let row = startRowIndex; row <= endRowIndex; row++) {
         for (let col = startColIndex; col <= endColIndex; col++) {
           if (!(row == startRowIndex && col == startColIndex) && !(row == endRowIndex && col == endColIndex)) {
-            const reference = hotInstance.getCell(row, col);
-            reference.classList.add('reference');
+            if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
+              const reference = hotInstance.getCell(row, col);
+              if (reference) {
+                reference.classList.add('reference');
+              }
+            }
           }
         }
       }
@@ -36,8 +40,12 @@ export default opts => {
     for (let singleCount = 0; singleCount < singleMatches.length; singleCount++) {
       const match = singleMatches[singleCount];
       const coords = cellLabelToCoords(match[0]);
-      const reference = hotInstance.getCell(coords.row, coords.col);
-      reference.classList.add('reference');
+      if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
+        const reference = hotInstance.getCell(coords.row, coords.col);
+        if (reference) {
+          reference.classList.add('reference');
+        }
+      }
     }
   };
 
@@ -45,7 +53,7 @@ export default opts => {
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
         opts.inputBar.value = e.target.value;
-        removeAllClasses('reference');
+        removeInstancesOfClassName('reference');
         highlightReferences(this.instance, e.target.value);
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue

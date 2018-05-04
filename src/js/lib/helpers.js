@@ -95,11 +95,16 @@ const helpers = {
     }
     return matches;
   },
-  removeAllClasses(className) {
+  removeInstancesOfClassName(className) {
     if (!className) { return; }
     const elements = document.querySelectorAll(`.${className}`);
-    for (let i = 0; i < elements.length; i++ ) {
-      elements[i].classList.remove(className);
+    if (elements.length > 0) {
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        if (element && element.classList) {
+          elements[i].classList.remove(className);
+        }
+      }
     }
   }
 };
