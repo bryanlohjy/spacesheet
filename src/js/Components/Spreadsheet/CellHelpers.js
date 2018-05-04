@@ -1,6 +1,6 @@
 import Regex from '../../lib/Regex.js';
 
-module.exports = {
+const CellHelpers = {
   getCellType: cellData => {
     if (!cellData) { return; }
     if (cellData.trim()[0] === '=') {
@@ -28,6 +28,26 @@ module.exports = {
     }
     return res;
   },
+  // cellCoordsToLabel: coords => {
+  //   let res;
+  //   if (coords) {
+  //     if (coords.row && coords.col) {
+  //       const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  //       res = {
+  //         row: Number(coords.row) + 1,
+  //         col: alphabet[coords.col],
+  //       };
+  //     }
+  //   }
+  //   return res;
+  // },
+  getCellFromLabel: (hotInstance, label) => {
+    console.log(hotInstance, label)
+    const coords = CellHelpers.cellLabelToCoords(label);
+    if (coords) {
+      return hotInstance.getCell(coords.row, coords.col)
+    }
+  },
   isFormula: data => {
     if (data) {
       return data.trim()[0] === '=';
@@ -35,3 +55,5 @@ module.exports = {
     return false;
   },
 };
+
+module.exports = CellHelpers;
