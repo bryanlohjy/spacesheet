@@ -6,8 +6,8 @@ const helpers = {
 	},
 	randomInt: function(min, max, seed) { // max is non-inclusive
     let seededRandom;
-    if (!isNaN(seed)) {
-      const x = Math.sin(seed++) * 10000;
+    if (!isNaN(parseInt(seed))) {
+      const x = Math.sin(2231 - seed++) * 10000;
       seededRandom = x - Math.floor(x);
     }
 		min = Math.ceil(min);
@@ -55,5 +55,57 @@ const helpers = {
       return Math.max(Math.min(newval, start2), stop2);
     }
   },
+  countDecimalPlaces(number) {
+    if ((number - parseInt(number) > 0)) { // if it is not a whole number
+      return number.toString().split('.')[1].length;
+    } else {
+      return 0;
+    }
+  },
+  getIndicesOf(searchFor, searchIn, caseSensitive) {
+    const searchForLen = searchFor.length;
+    if (searchForLen == 0) {
+      return [];
+    }
+    let startIndex = 0;
+    let index;
+    const indices = [];
+    if (!caseSensitive) {
+      searchIn = searchIn.toLowerCase();
+      searchFor = searchFor.toLowerCase();
+    }
+    while ((index = searchIn.indexOf(searchFor, startIndex)) > -1) {
+      indices.push(index);
+      startIndex = index + searchForLen;
+    }
+    return indices;
+  },
+  getAllRegexMatches(regex, string) {
+    const matches = [];
+    var m;
+    const testRegex = new RegExp(regex);
+    if (testRegex.test(string)) {
+      do {
+        m = regex.exec(string);
+        if (m) {
+          m.endIndex = Number(m[0].length) + Number(m.index);
+          matches.push(m);
+        }
+      } while (m);
+    }
+    return matches;
+  },
+  removeInstancesOfClassName(className) {
+    if (!className) { return; }
+    const elements = document.querySelectorAll(`.${className}`);
+    if (elements.length > 0) {
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        if (element && element.classList) {
+          elements[i].classList.remove(className);
+        }
+      }
+    }
+  }
 };
 module.exports = helpers;

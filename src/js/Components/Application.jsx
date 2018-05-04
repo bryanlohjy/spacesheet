@@ -40,6 +40,7 @@ export default class Application extends React.Component {
           memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
         }
         this.memoryCtx.putImageData(memoryCtxData, 0, 0);
+        ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
         ctx.drawImage(this.memoryCtx.canvas, 0, 0);
       };
       this.decodeFn = vector => { // vector to output
@@ -59,7 +60,7 @@ export default class Application extends React.Component {
     if (selection) {
       const cellData = `=DATAPICKER('${dataKey}')`;
       this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-      this.refs.spreadsheet.updateInputBarValue(cellData);
+      this.refs.spreadsheet.inputBar.value = cellData;
     }
   };
   getCellFromDataPicker(dataKey) {
