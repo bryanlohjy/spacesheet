@@ -22,16 +22,13 @@ export default opts => {
   };
   CustomTextEditor.prototype.open = function() {
     if (this.originalValue && this.originalValue.trim()[0] === '=') {
-      const compiled = opts.formulaParser.parse(this.originalValue.replace('=', ''));
-      if (!compiled.error) { // is a valid formula
-        const matches = getAllRegexMatches(Regex.CELL_REFERENCE, this.originalValue)
-        for (let matchCount = 0; matchCount < matches.length; matchCount++) {
-          const match = matches[matchCount];
-          const coords = CellLabelToCoords(match[0]);
-          if (coords) {
-            const ref = this.instance.getCell(coords.row, coords.col);
-            ref.classList.add('reference');
-          }
+      const matches = getAllRegexMatches(Regex.CELL_REFERENCE, this.originalValue)
+      for (let matchCount = 0; matchCount < matches.length; matchCount++) {
+        const match = matches[matchCount];
+        const coords = CellLabelToCoords(match[0]);
+        if (coords) {
+          const ref = this.instance.getCell(coords.row, coords.col);
+          ref.classList.add('reference');
         }
       }
     }
