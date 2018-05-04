@@ -7,4 +7,5 @@ module.exports = {
     isValid: new RegExp(/RANDFONT\(\s*[\d]+\s*\)/ig),
   },
   SLIDER: new RegExp(/\s*slider/ig),
+  CELL_REFERENCE: /([a-z]\d+)/gi,
 };

@@ -15,5 +15,19 @@ const GetCellType = cellData => {
   }
 }
 
+const CellLabelToCoords = label => {
+  const letter = label.match(/[a-z]{1}/gi);
+  const number = label.match(/([0-9]+)/gi);
 
-module.exports = { GetCellType, Regex, };
+  let res;
+  if (letter && number) {
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    res = {
+      row: Number(number[0]) - 1,
+      col: alphabet.indexOf(letter[0].toUpperCase()),
+    };
+  }
+  return res;
+}
+
+module.exports = { GetCellType, CellLabelToCoords };

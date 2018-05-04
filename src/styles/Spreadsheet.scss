@@ -17,6 +17,9 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
+    .reference {
+      background-color: red;
+    }
     .canvas-container {
       display: flex;
       padding: 0;

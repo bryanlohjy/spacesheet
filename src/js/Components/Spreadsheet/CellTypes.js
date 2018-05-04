@@ -1,5 +1,6 @@
 import HandsOnTable from 'handsontable';
-import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
+import { countDecimalPlaces, randomInt, getAllRegexMatches } from '../../lib/helpers.js';
+import { CellLabelToCoords } from './CellHelpers.js';
 import Regex from '../../lib/Regex.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
@@ -21,6 +22,22 @@ const CellTypes = opts => {
     opts.inputBar.value = this.originalValue || '';
   };
   CustomTextEditor.prototype.open = function() {
+    if (this.originalValue && this.originalValue.trim()[0] === '=') {
+      const compiled = opts.formulaParser.parse(this.originalValue.replace('=', ''));
+      if (!compiled.error) { // is a valid formula
+        const matches = getAllRegexMatches(Regex.CELL_REFERENCE, this.originalValue)
+        for (let matchCount = 0; matchCount < matches.length; matchCount++) {
+          const match = matches[matchCount];
+          const coords = CellLabelToCoords(match[0]);
+          if (coords) {
+            const ref = this.instance.getCell(coords.row, coords.col);
+            console.log(ref, ref.classList)
+            ref.classList.add('reference');
+          }
+        }
+      }
+    }
+
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     setTimeout(() => {
       opts.inputBar.value = this.TEXTAREA.value || '';
@@ -28,6 +45,7 @@ const CellTypes = opts => {
     this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   };
   CustomTextEditor.prototype.close = function() {
+    console.log('STOP HIGHLIGHTING')
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
     this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   }
