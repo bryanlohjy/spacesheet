@@ -1,6 +1,7 @@
 import * as dl from 'deeplearn';
 import { lerp } from '../../lib/tensorUtils.js';
 import { map } from '../../lib/helpers.js';
+import { parseDataPickerKey } from './DataPickerHelpers.js';
 
 export default class DataPicker {
   constructor(ctx, gridData, opts) {
@@ -35,6 +36,13 @@ export default class DataPicker {
     */
     this.cells = {};
     this.draw();
+  };
+  updateReferences(references) {
+    for (let refCount = 0; refCount < references.length; refCount++) {
+      const reference = references[refCount];
+      const val = parseDataPickerKey(reference)
+      console.log('UDPATE witht hese references', val)
+    }
   };
   zoom(degree) {
     // scale around origin

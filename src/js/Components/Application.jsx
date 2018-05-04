@@ -99,6 +99,11 @@ export default class Application extends React.Component {
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
                 getCellFromDataPicker={ this.getCellFromDataPicker }
+                updateDataPickerReferences={ (references) => {
+                  if (this.refs.dataPicker) {
+                    this.refs.dataPicker.dataPicker.updateReferences(references)
+                  }
+                }}
                 ref='spreadsheet'
                 model={ this.model }
                 setTableRef={ ref => {

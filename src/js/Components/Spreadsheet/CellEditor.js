@@ -18,23 +18,25 @@ export default opts => {
     }
     // deal with cell ranges first
     const rangeMatches = getAllRegexMatches(Regex.CELL_RANGE, data);
-    for (let rangeCount = 0; rangeCount < rangeMatches.length; rangeCount++) {
-      const match = rangeMatches[rangeCount];
-      const references = getAllRegexMatches(Regex.CELL_REFERENCE, match[0]);
-      const from = cellLabelToCoords(references[0][0]);
-      const to = cellLabelToCoords(references[1][0]);
-      const startRowIndex = Math.min(from.row, to.row);
-      const endRowIndex = Math.max(from.row, to.row);
-      const startColIndex = Math.min(from.col, to.col);
-      const endColIndex = Math.max(from.col, to.col);
-      // highlight all cells within range, excluding the references themselves
-      for (let row = startRowIndex; row <= endRowIndex; row++) {
-        for (let col = startColIndex; col <= endColIndex; col++) {
-          if (!(row == startRowIndex && col == startColIndex) && !(row == endRowIndex && col == endColIndex)) {
-            if (row < hotInstance.countRows() && col < hotInstance.countCols()) {
-              const reference = hotInstance.getCell(row, col);
-              if (reference) {
-                reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
+    if (rangeMatches.length) {
+      for (let rangeCount = 0; rangeCount < rangeMatches.length; rangeCount++) {
+        const match = rangeMatches[rangeCount];
+        const references = getAllRegexMatches(Regex.CELL_REFERENCE, match[0]);
+        const from = cellLabelToCoords(references[0][0]);
+        const to = cellLabelToCoords(references[1][0]);
+        const startRowIndex = Math.min(from.row, to.row);
+        const endRowIndex = Math.max(from.row, to.row);
+        const startColIndex = Math.min(from.col, to.col);
+        const endColIndex = Math.max(from.col, to.col);
+        // highlight all cells within range, excluding the references themselves
+        for (let row = startRowIndex; row <= endRowIndex; row++) {
+          for (let col = startColIndex; col <= endColIndex; col++) {
+            if (!(row == startRowIndex && col == startColIndex) && !(row == endRowIndex && col == endColIndex)) {
+              if (row < hotInstance.countRows() && col < hotInstance.countCols()) {
+                const reference = hotInstance.getCell(row, col);
+                if (reference) {
+                  reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
+                }
               }
             }
           }
@@ -43,15 +45,22 @@ export default opts => {
     }
     // deal with single cell references
     const singleMatches = getAllRegexMatches(Regex.CELL_REFERENCE, data);
-    for (let singleCount = 0; singleCount < singleMatches.length; singleCount++) {
-      const match = singleMatches[singleCount];
-      const coords = cellLabelToCoords(match[0]);
-      if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
-        const reference = hotInstance.getCell(coords.row, coords.col);
-        if (reference) {
-          reference.classList.add('highlighted-reference', `_${ (singleCount % 5) }`);
+    if (singleMatches.length) {
+      for (let singleCount = 0; singleCount < singleMatches.length; singleCount++) {
+        const match = singleMatches[singleCount];
+        const coords = cellLabelToCoords(match[0]);
+        if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
+          const reference = hotInstance.getCell(coords.row, coords.col);
+          if (reference) {
+            reference.classList.add('highlighted-reference', `_${ (singleCount % 5) }`);
+          }
         }
       }
+    }
+    // datapicker references
+    let dataPickerMatches = getAllRegexMatches(Regex.DATAPICKER, data).map(val => opts.formulaParser.getArgumentsFromFunction(val[0])[0]);
+    if (dataPickerMatches.length) {
+      opts.updateDataPickerReferences(dataPickerMatches);
     }
   };
 

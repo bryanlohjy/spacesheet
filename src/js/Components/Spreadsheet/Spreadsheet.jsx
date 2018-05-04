@@ -34,6 +34,7 @@ export default class Spreadsheet extends React.Component {
         model: this.props.model,
       }),
       inputBar: this.inputBar,
+      updateDataPickerReferences: this.props.updateDataPickerReferences,
     });
 
     hotInstance.updateSettings({
@@ -150,6 +151,8 @@ Spreadsheet.propTypes = {
   dataPickerCellData: PropTypes.object,
   getCellFromDataPicker: PropTypes.func,
   model: PropTypes.object,
+
+  updateDataPickerReferences: PropTypes.func,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
 };
