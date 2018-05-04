@@ -9,7 +9,7 @@ const DemoSheet = (rows, cols) => {
       [ '', 'Explore a latent space of fonts by picking fonts and\noperating between them!\n=======================================',  '', '' , '', '' ],
       [ '', "Fill a cell using the grid on the left. You can zoom in to find intermediate fonts. Let's pick a couple of interesting fonts.", '', '', '', "=DATAPICKER('1-8-6-0-0')", "=DATAPICKER('1-8-2-0-0')" ],
       [ '', 'Reference cells by specifying their cell coordinate. e.g. "=F3".', '', '', '', "=F3"],
-      [ '', "Let's find the average of our two fonts. We can do so by using the \"AVERAGE\" operator.", '', '','', "=AVERAGE(F3:H3)" ],
+      [ '', "Let's find the average of our two fonts. We can do so by using the \"AVERAGE\" operator.", '', '','', "=AVERAGE(F3:G3)" ],
       [ '', "Nice. Let's build a serif operator. We can do this by finding two similar fonts - one with serifs and one without.", '', '','', "=DATAPICKER('1-6-9-0-0')", "=DATAPICKER('1-8-9-0-0')" ],
       [ '', "Let's isolate the serif operator by subtraction. We can do so by using the \"MINUS\" operator.", '', '', '' , '=MINUS(F6, G6)', '' ],
       [ '', 'We can now apply the difference to our averaged font by using the \"SUM\" operator.',  '', '' , '', '=SUM(F5, F7)' ],
