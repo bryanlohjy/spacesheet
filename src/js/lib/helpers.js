@@ -95,5 +95,12 @@ const helpers = {
     }
     return matches;
   },
+  removeAllClasses(className) {
+    if (!className) { return; }
+    const elements = document.querySelectorAll(`.${className}`);
+    for (let i = 0; i < elements.length; i++ ) {
+      elements[i].classList.remove(className);
+    }
+  }
 };
 module.exports = helpers;
