@@ -1,6 +1,6 @@
 import Regex from '../../lib/Regex.js';
 
-const GetCellType = cellData => {
+const getCellType = cellData => {
   if (!cellData) { return; }
   if (cellData.trim()[0] === '=') {
     if (new RegExp(Regex.CELLS.SLIDER).test(cellData)) {
@@ -15,10 +15,9 @@ const GetCellType = cellData => {
   }
 }
 
-const CellLabelToCoords = label => {
+const cellLabelToCoords = label => {
   const letter = label.match(/[a-z]{1}/gi);
   const number = label.match(/([0-9]+)/gi);
-
   let res;
   if (letter && number) {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -37,4 +36,4 @@ const isFormula = data => {
   return false;
 }
 
-module.exports = { GetCellType, CellLabelToCoords, isFormula };
+module.exports = { getCellType, cellLabelToCoords, isFormula };

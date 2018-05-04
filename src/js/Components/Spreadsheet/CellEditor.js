@@ -1,5 +1,5 @@
 import HandsOnTable from 'handsontable';
-import { CellLabelToCoords, isFormula } from './CellHelpers.js';
+import { cellLabelToCoords, isFormula } from './CellHelpers.js';
 import { getAllRegexMatches } from '../../lib/helpers.js';
 import Regex from '../../lib/Regex.js';
 
@@ -25,7 +25,7 @@ export default opts => {
       const matches = getAllRegexMatches(Regex.CELL_REFERENCE, this.originalValue)
       for (let matchCount = 0; matchCount < matches.length; matchCount++) {
         const match = matches[matchCount];
-        const coords = CellLabelToCoords(match[0]);
+        const coords = cellLabelToCoords(match[0]);
         if (coords) {
           const ref = this.instance.getCell(coords.row, coords.col);
           ref.classList.add('reference');

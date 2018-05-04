@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
-import { GetCellType } from './CellHelpers.js';
+import { getCellType } from './CellHelpers.js';
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
@@ -40,7 +40,7 @@ export default class Spreadsheet extends React.Component {
       cells: (row, col, prop) => {
         let cellProperties = {};
         const cellData = hotInstance.getDataAtRowProp(row, prop);
-        switch (GetCellType(cellData)) {
+        switch (getCellType(cellData)) {
           case 'FORMULA':
             cellProperties.renderer = cellTypes.Formula.renderer;
             cellProperties.editor = cellTypes.Formula.editor;
