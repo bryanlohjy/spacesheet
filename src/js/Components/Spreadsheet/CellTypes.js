@@ -1,55 +1,10 @@
 import HandsOnTable from 'handsontable';
-import { countDecimalPlaces, randomInt, getAllRegexMatches } from '../../lib/helpers.js';
-import { CellLabelToCoords } from './CellHelpers.js';
-import Regex from '../../lib/Regex.js';
+import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
+import CellEditor from './CellEditor';
+
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
-  let CustomTextEditor = HandsOnTable.editors.TextEditor.prototype.extend();
-
-  const onKeyDown = function(e) { // update input bar as cell is edited
-    if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
-      setTimeout(() => {
-        opts.inputBar.value = e.target.value;
-      }, 0);
-    } else if (e.keyCode === 27) { // if escape, then set to originalValue
-      setTimeout(() => {
-        opts.inputBar.value = this.originalValue;
-      }, 0);
-    }
-  };
-  CustomTextEditor.prototype.prepare = function() {
-    HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-    opts.inputBar.value = this.originalValue || '';
-  };
-  CustomTextEditor.prototype.open = function() {
-    if (this.originalValue && this.originalValue.trim()[0] === '=') {
-      const compiled = opts.formulaParser.parse(this.originalValue.replace('=', ''));
-      if (!compiled.error) { // is a valid formula
-        const matches = getAllRegexMatches(Regex.CELL_REFERENCE, this.originalValue)
-        for (let matchCount = 0; matchCount < matches.length; matchCount++) {
-          const match = matches[matchCount];
-          const coords = CellLabelToCoords(match[0]);
-          if (coords) {
-            const ref = this.instance.getCell(coords.row, coords.col);
-            console.log(ref, ref.classList)
-            ref.classList.add('reference');
-          }
-        }
-      }
-    }
-
-    HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
-    setTimeout(() => {
-      opts.inputBar.value = this.TEXTAREA.value || '';
-    }, 0);
-    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
-  };
-  CustomTextEditor.prototype.close = function() {
-    console.log('STOP HIGHLIGHTING')
-    HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
-    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
-  }
-
+  const CustomTextEditor = CellEditor(opts);
   // Formula ==============
   // A non editable cell which renders references from the Formula
   const Formula = {
@@ -94,7 +49,6 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
-
       const compiled = opts.formulaParser.parse(data.replace('=', ''))
       const { result, error } = compiled;
 
