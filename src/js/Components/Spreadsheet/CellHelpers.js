@@ -30,4 +30,11 @@ const CellLabelToCoords = label => {
   return res;
 }
 
-module.exports = { GetCellType, CellLabelToCoords };
+const isFormula = data => {
+  if (data) {
+    return data.trim()[0] === '=';
+  }
+  return false;
+}
+
+module.exports = { GetCellType, CellLabelToCoords, isFormula };

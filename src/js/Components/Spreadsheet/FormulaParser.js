@@ -3,6 +3,7 @@ import * as dl from 'deeplearn';
 import Formulae from './Formulae.js';
 import Regex from '../../lib/Regex.js';
 import { getIndicesOf } from '../../lib/helpers.js';
+import { isFormula } from './CellHelpers.js';
 
 const arrayContainsArray = arr => {
   for (let i = 0; i < arr.length; i++) {
@@ -82,7 +83,7 @@ const FormulaParser = (hotInstance, opts) => {
       const rowData = hotInstance.getDataAtRow(row);
       for (let col = startColIndex; col <= endColIndex; col++) {
         let value = rowData[col];
-        if (value.toString().trim()[0] === '=') {
+        if (isFormula(value.toString())) {
           value = parser.parse(rowData[col].slice(1)).result;
         }
         fragment.push(value);

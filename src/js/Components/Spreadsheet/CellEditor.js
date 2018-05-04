@@ -1,5 +1,5 @@
 import HandsOnTable from 'handsontable';
-import { CellLabelToCoords } from './CellHelpers.js';
+import { CellLabelToCoords, isFormula } from './CellHelpers.js';
 import { getAllRegexMatches } from '../../lib/helpers.js';
 import Regex from '../../lib/Regex.js';
 
@@ -21,7 +21,7 @@ export default opts => {
     opts.inputBar.value = this.originalValue || '';
   };
   CustomTextEditor.prototype.open = function() {
-    if (this.originalValue && this.originalValue.trim()[0] === '=') {
+    if (this.originalValue && isFormula(this.originalValue)) {
       const matches = getAllRegexMatches(Regex.CELL_REFERENCE, this.originalValue)
       for (let matchCount = 0; matchCount < matches.length; matchCount++) {
         const match = matches[matchCount];
