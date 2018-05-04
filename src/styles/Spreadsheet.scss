@@ -38,20 +38,28 @@
         box-shadow: inset 0 0 1px $shadow0;
       }
       &._1 {
-        background-color: $color1;
-        box-shadow: inset 0 0 1px $shadow1;
+        background-color: $color0;
+        box-shadow: inset 0 0 1px $shadow0;
+        // background-color: $color1;
+        // box-shadow: inset 0 0 1px $shadow1;
       }
       &._2 {
-        background-color: $color2;
-        box-shadow: inset 0 0 1px $shadow2;
+        background-color: $color0;
+        box-shadow: inset 0 0 1px $shadow0;
+        // background-color: $color2;
+        // box-shadow: inset 0 0 1px $shadow2;
       }
       &._3 {
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
+        background-color: $color0;
+        box-shadow: inset 0 0 1px $shadow0;
+        // background-color: $color3;
+        // box-shadow: inset 0 0 1px $shadow3;
       }
       &._4 {
-        background-color: $color4;
-        box-shadow: inset 0 0 1px $shadow4;
+        background-color: $color0;
+        box-shadow: inset 0 0 1px $shadow0;
+        // background-color: $color4;
+        // box-shadow: inset 0 0 1px $shadow4;
       }
     }
     .canvas-container {
