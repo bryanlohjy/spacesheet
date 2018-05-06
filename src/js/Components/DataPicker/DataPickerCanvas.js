@@ -222,12 +222,17 @@ export default class DataPicker {
                 }
               }
 
-              subCell.relativeX = mappedX;
-              subCell.relativeY = mappedY;
-              subCell.outputWidth = this.outputWidth;
-              subCell.outputHeight = this.outputHeight;
 
-              subCell = new Cell(this.ctx, this.drawFn, this.decodeFn, this.grid, subCell);
+              const cellParams = subCell;
+              cellParams.drawFn = this.drawFn;
+              cellParams.decodeFn = this.decodeFn;
+              cellParams.grid = this.grid;
+              cellParams.relativeX = mappedX;
+              cellParams.relativeY = mappedY;
+              cellParams.outputWidth = this.outputWidth;
+              cellParams.outputHeight = this.outputHeight;
+
+              subCell = new Cell(this.ctx, cellParams);
               this.cells[dataKey] = subCell;
             }
             subCell.draw();
@@ -261,22 +266,17 @@ export default class DataPicker {
         this.ctx.lineTo(cell.x, cell.y + cell.h);
         this.ctx.lineTo(cell.x + cornerSize, cell.y + cell.h);
         this.ctx.stroke();
-
-        // this.ctx.setLineDash([2, 4]);
-        // this.ctx.lineDashOffset = 4;
-        // this.ctx.strokeRect(cell.x, cell.y, cell.w, cell.h);
-        // }
       }
     }
   };
 }
 
 class Cell {
-  constructor(ctx, drawFn, decodeFn, grid, params) {
+  constructor(ctx, params) {
     this.ctx = ctx;
-    this.drawFn = drawFn;
-    this.decodeFn = decodeFn;
-    this.grid = grid;
+    this.drawFn = params.drawFn;
+    this.decodeFn = params.decodeFn;
+    this.grid = params.grid;
     this.outputWidth = params.outputWidth;
     this.outputHeight = params.outputHeight;
 
