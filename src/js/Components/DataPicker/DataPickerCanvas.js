@@ -208,23 +208,11 @@ export default class DataPicker {
             const prevCellKey =  `${ intermediates }-${ column }-${ row }-0-0`;
             const nextCellKey =  `${ intermediates }-${ (column + 1) % this.columns }-${ row }-0-0`;
 
+            // refer to original grid data instead, so it isn't reliant on drawn cells
             const fromAnchor = this.cells[prevCellKey];
             const toAnchor = this.cells[nextCellKey];
 
-
             const self = this;
-            //
-            if (!fromAnchor.vector || !toAnchor.vector ) {
-              console.log(prevCellKey, nextCellKey)
-            }
-
-            const vector = dl.tidy(() => {
-              const from = dl.tensor1d(fromAnchor.vector);
-              const to = dl.tensor1d(toAnchor.vector);
-              const lerpAmount = 1 / intermediates * subcolumn;
-              return lerp(from, to, lerpAmount)
-            }).getValues();
-
             const cellParams = {
               get x() {
                 return x * this.w;
@@ -238,9 +226,6 @@ export default class DataPicker {
               get h() {
                 return self.height / (self.rows * intermediates);
               },
-              // image: fromAnchor.image,
-              vector: vector,
-              // lerpVal: lerpAmount,
               drawFn: this.drawFn,
               decodeFn: this.decodeFn,
               outputWidth: this.outputWidth,
@@ -250,6 +235,68 @@ export default class DataPicker {
               subrow,
               subcolumn,
             };
+            // check to see if cell is within bounds, before computing and drawing
+            cellParams.vector = dl.tidy(() => {
+              const from = dl.tensor1d(fromAnchor.vector);
+              const to = dl.tensor1d(toAnchor.vector);
+              const lerpAmount = 1 / intermediates * subcolumn;
+              return lerp(from, to, lerpAmount)
+            }).getValues();
+            this.cells[cellKey] = new Cell(this.ctx, cellParams);
+          }
+          this.cells[cellKey].draw();
+        }
+      }
+    }
+
+    // interpolate vertically
+    for (let y = 0; y < totalRows; y++) {
+      for (let x = 0; x < totalColumns; x++) {
+        if (y % intermediates !== 0) {
+          const row = Math.floor(y / intermediates);
+          const column = Math.floor(x / intermediates);
+          const subrow = y % intermediates;
+          const subcolumn = x % intermediates;
+
+          const cellKey = `${ intermediates }-${ column }-${ row }-${ subcolumn }-${ subrow }`;
+
+          if (!this.cells[cellKey]) {
+            const prevCellKey = `${ intermediates }-${ column }-${ row }-${ subcolumn }-0`;
+            const nextCellKey =  `${ intermediates }-${ column }-${ (row + 1) % this.rows }-${ subcolumn }-0`;
+
+            const fromAnchor = this.cells[prevCellKey];
+            const toAnchor = this.cells[nextCellKey];
+
+            const self = this;
+            const cellParams = {
+              get x() {
+                return x * this.w;
+              },
+              get y() {
+                return y * this.h;
+              },
+              get w() {
+                return self.width / (self.columns * intermediates);
+              },
+              get h() {
+                return self.height / (self.rows * intermediates);
+              },
+              drawFn: this.drawFn,
+              decodeFn: this.decodeFn,
+              outputWidth: this.outputWidth,
+              outputHeight: this.outputHeight,
+              row,
+              column,
+              subrow,
+              subcolumn,
+            };
+            // check to see if cell is within bounds, before computing and drawing
+            cellParams.vector = dl.tidy(() => {
+              const from = dl.tensor1d(fromAnchor.vector);
+              const to = dl.tensor1d(toAnchor.vector);
+              const lerpAmount = 1 / intermediates * subrow;
+              return lerp(from, to, lerpAmount)
+            }).getValues();
             this.cells[cellKey] = new Cell(this.ctx, cellParams);
           }
           this.cells[cellKey].draw();
