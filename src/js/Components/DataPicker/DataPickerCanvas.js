@@ -91,6 +91,26 @@ export default class DataPicker {
     }
     return false;
   };
+  cellIsOutOfBounds(cellParams) {
+    const top = cellParams.y;
+    const right = cellParams.x + cellParams.w;
+    const bottom = cellParams.y + cellParams.h;
+    const left = cellParams.x;
+
+    if (right < -this.translateX/this.scale) {
+      return true;
+    }
+    if (left > (this.width - this.translateX)/this.scale) {
+      return true;
+    }
+    if (top > (this.height-this.translateY)/this.scale) {
+      return true;
+    }
+    if (bottom < -this.translateY/this.scale) {
+      return true;
+    }
+    return false;
+  };
   // get indicesToDraw() { // return an array of evenly distributed column indices to draw
   //   let indicesToDraw = [0];
   //   const minSize = this.minSize || this.columns;
@@ -205,12 +225,12 @@ export default class DataPicker {
           const cellKey = `${ intermediates }-${ column }-${ row }-${ subcolumn }-${ subrow }`;
 
           if (!this.cells[cellKey]) {
-            const prevCellKey =  `${ intermediates }-${ column }-${ row }-0-0`;
-            const nextCellKey =  `${ intermediates }-${ (column + 1) % this.columns }-${ row }-0-0`;
+            const prevAnchorKey = `${ column }-${ row }`;
+            const nextAnchorKey =  `${ (column + 1) % this.columns }-${ row }`;
 
             // refer to original grid data instead, so it isn't reliant on drawn cells
-            const fromAnchor = this.cells[prevCellKey];
-            const toAnchor = this.cells[nextCellKey];
+            const fromAnchor = this.grid[prevAnchorKey];
+            const toAnchor = this.grid[nextAnchorKey];
 
             const self = this;
             const cellParams = {
@@ -237,11 +257,12 @@ export default class DataPicker {
             };
             // check to see if cell is within bounds, before computing and drawing
             cellParams.vector = dl.tidy(() => {
-              const from = dl.tensor1d(fromAnchor.vector);
-              const to = dl.tensor1d(toAnchor.vector);
+              const from = dl.tensor1d(fromAnchor.data);
+              const to = dl.tensor1d(toAnchor.data);
               const lerpAmount = 1 / intermediates * subcolumn;
-              return lerp(from, to, lerpAmount)
+              return lerp(from, to, lerpAmount);
             }).getValues();
+
             this.cells[cellKey] = new Cell(this.ctx, cellParams);
           }
           this.cells[cellKey].draw();
@@ -290,6 +311,9 @@ export default class DataPicker {
               subrow,
               subcolumn,
             };
+            if (this.cellIsOutOfBounds(cellParams)) {
+              continue;
+            }
             // check to see if cell is within bounds, before computing and drawing
             cellParams.vector = dl.tidy(() => {
               const from = dl.tensor1d(fromAnchor.vector);
@@ -299,398 +323,13 @@ export default class DataPicker {
             }).getValues();
             this.cells[cellKey] = new Cell(this.ctx, cellParams);
           }
+          if (this.cellIsOutOfBounds(this.cells[cellKey])) {
+            continue;
+          }
           this.cells[cellKey].draw();
         }
       }
     }
-
-//         const row = y / intermediates;
-//         const column = x / intermediates;
-//         if (row % intermediates == 0 && column % intermediates == 0) {
-//           // draw anchors
-//           const anchorKey = `${ column }-${ row }`;
-//           const anchor = this.grid[anchorKey];
-//           const dataKey = `${ this.subdivisions }-${ column }-${ row }-0-0`;
-//           if (!this.cells[dataKey]) {
-//             const self = this;
-//             const cellParams = {
-//               get x() {
-//                 return x * this.w;
-//               },
-//               get y() {
-//                 return y * this.h;
-//               },
-//               get w() {
-//                 return self.width / (self.columns * intermediates);
-//               },
-//               get h() {
-//                 return self.height / (self.rows * intermediates);
-//               },
-//               image: anchor.image,
-//               vector: anchor.data,
-//               drawFn: this.drawFn,
-//               decodeFn: this.decodeFn,
-//               outputWidth: this.outputWidth,
-//               outputHeight: this.outputHeight,
-//             };
-//             // logic to draw only necessary interpolations ....
-//             // check to see if rendering is
-//             //         get top() {
-//             //           return this.y;
-//             //         },
-//             //         get right() {
-//             //           return this.x + this.w;
-//             //         },
-//             //         get bottom() {
-//             //           return this.y + this.h;
-//             //         },
-//             //         get left() {
-//             //           return this.x;
-//             //         },
-//
-//             //     if (subCell.right < -this.translateX/this.scale) {
-//             //       continue;
-//             //     }
-//             //     if (subCell.left > (this.width - this.translateX)/this.scale) {
-//             //       continue;
-//             //     }
-//             //     if (subCell.top > (this.height-this.translateY)/this.scale) {
-//             //       continue;
-//             //     }
-//             //     if (subCell.bottom < -this.translateY/this.scale) {
-//             //       continue;
-//             //     }
-//
-//             const cell = new Cell(this.ctx, cellParams);
-//             this.cells[dataKey] = cell;
-//           }
-//           this.cells[dataKey].draw();
-//         }
-//       }
-//     }
-//
-//     // iterate through grid, drawing horizontals between anchor points
-//     for (let y = 0; y < this.rows * intermediates; y++) {
-//       for (let x = 0; x < this.columns * intermediates; x++) {
-//         const row = y / intermediates;
-//         const column = x / intermediates;
-//         if (row % intermediates == 0 && column % intermediates != 0) {
-//           const dataKey = `${ this.subdivisions }-${ column }-${ row }-${y % intermediates}-${x % intermediates}`;
-//           if (!this.cells[dataKey]) {
-//             console.log(row, column)
-//             // const prevX = Math.floor(x)
-//             const lastX = Math.floor(x / intermediates);
-//             let nextX = (lastX + 1) % this.columns;
-//
-//             const lastXKey = `${ this.subdivisions }-${ lastX }-${ row }-0-0`;
-//             const lastXAnchor = this.cells[lastXKey];
-//
-//             const nextXKey = `${ this.subdivisions }-${ nextX }-${ row }-0-0`;
-//             const nextXAnchor = this.cells[nextXKey];
-//
-//             // if (!nextXAnchor) {
-//             //   console.log(nextXKey, 'doesnt exist', this.cells)
-//             // }
-//             // if (!lastXAnchor) {
-//             //   console.log(lastXKey, 'doesnt exist')
-//             // }
-//
-//
-//             const degree = (x - lastX) / intermediates;
-//             // if (lastXAnchor && nextXAnchor) {
-//             //   console.log(lastXKey, nextXKey)
-//             // const vector = dl.tidy(() => {
-//             //   return lerp(dl.tensor1d(lastXAnchor.vector), dl.tensor1d(nextXAnchor.vector), degree);
-//             // }).getValues();
-//               // console.log(vector)
-//             //
-//             // }
-//             // let vector;
-//             // work out fromX, toX, degreeX
-//             // calc interpolation and insert
-//             const self = this;
-//             const cellParams = {
-//               get x() {
-//                 return x * this.w;
-//               },
-//               get y() {
-//                 return y * this.h;
-//               },
-//               get w() {
-//                 return self.width / (self.columns * intermediates);
-//               },
-//               get h() {
-//                 return self.height / (self.rows * intermediates);
-//               },
-//               vector: null,
-//               // image: image,
-//               drawFn: this.drawFn,
-//               decodeFn: this.decodeFn,
-//               outputWidth: this.outputWidth,
-//               outputHeight: this.outputHeight,
-//             };
-//             const cell = new Cell(this.ctx, cellParams);
-//             this.cells[dataKey] = cell;
-//           }
-//           this.cells[dataKey].draw();
-//
-// //           lastX = space * (x // space)
-// //           nextX = lastX + space
-// //           fracX = (x - lastX) / float(space)
-// // #                 print("{} - {} - {}".format(lastX, nextX, fracX))
-// //           u_list[y,x,:] = lerpv(fracX, u_list[y, lastX, :], u_list[y, nextX, :])
-//         }
-//       }
-//     }
-    // for (let y = 0; y < this.rows * intermediates; y++) {
-    //   for (let x = 0; x < this.columns * intermediates; x++) {
-    //     if (y % intermediates == 0 && x % intermediates == 0) {
-    //       // draw anchors
-    //       const anchorKey = `${y}-${x}`;
-    //       const anchor = this.grid[anchorKey];
-    //     }
-    //   }
-    // }
-
-    // iterate through grid, drawing verticals between anchor points
-
-
-
-
-
-
-
-          // if (y % intermediates == 0 || x % intermediates != 0) {
-          //   const fromX =
-          //   // const fromX = intermediates * Math.floor(x / intermediates);
-          //   // const toX = fromX + intermediates;
-          //   // const
-          // }
-        //     // if y%space == 0 and x%space != 0:
-        //     //     lastX = space * (x // space)
-        //     //     nextX = lastX + space
-        //     //     fracX = (x - lastX) / float(space)
-        //     //       print("{} - {} - {}".format(lastX, nextX, fracX))
-        //     //     u_list[y,x,:] = lerpv(fracX, u_list[y, lastX, :], u_list[y, nextX, :])
-
-
-        // const cellParams = {
-        //   column
-        // };
-
-        //     const dataKey = `${subdivisions}-${cell.column}-${cell.row}-${xSub}-${ySub}`;
-        //     let subCell = this.cells[dataKey];
-        //     if (!subCell) {
-        //       subCell = {
-        //         w: cell.w / subdivisions,
-        //         h: cell.h / subdivisions,
-        //         get x() {
-        //           return cell.x + xSub * this.w;
-        //         },
-        //         get y() {
-        //           return cell.y + ySub * this.h;
-        //         },
-        //         get top() {
-        //           return this.y;
-        //         },
-        //         get right() {
-        //           return this.x + this.w;
-        //         },
-        //         get bottom() {
-        //           return this.y + this.h;
-        //         },
-        //         get left() {
-        //           return this.x;
-        //         },
-
-        //     if (subCell.right < -this.translateX/this.scale) {
-        //       continue;
-        //     }
-        //     if (subCell.left > (this.width - this.translateX)/this.scale) {
-        //       continue;
-        //     }
-        //     if (subCell.top > (this.height-this.translateY)/this.scale) {
-        //       continue;
-        //     }
-        //     if (subCell.bottom < -this.translateY/this.scale) {
-        //       continue;
-        //     }
-
-
-
-        // const cell = {
-        //   column,
-        //   row,
-        //   w: this.width / toDraw.length,
-        //   h: this.height / toDraw.length,
-        //   get x() {
-        //     return this.column * this.w;
-        //   },
-        //   get y() {
-        //     return this.row * this.h;
-        //   },
-        // };
-    // for (let y = 0; y < this.rows; y++) {
-    //   for (let x = 0; x < this.columns; x++) {
-    //     const anchorKey = `${y}-${x}`;
-    //     const cell = {
-    //       column: x,
-    //       row: y,
-    //       w: this.width / this.columns,
-    //       h: this.height / this.rows,
-    //       get x() {
-    //         return this.column * this.w;
-    //       },
-    //       get y() {
-    //         return this.row * this.h;
-    //       },
-    //     };
-    //
-    //     // console.log(x, y)
-    //     // if ()
-    //   }
-    // }
-
-
-    // find amount of spaces in between
-
-    // construct horizontals
-
-    // construct verticals
-
-
-
-
-    // for (let cellKey in this.grid) {
-    //   const data = this.grid[cellKey];
-    //   const column = toDraw.indexOf(data.column);
-    //   const row = toDraw.indexOf(data.row);
-    //   const shouldDraw = toDraw.indexOf(column) >= 0 && toDraw.indexOf(row) >= 0;
-    //
-    //   if (!shouldDraw) {
-    //     continue;
-    //   } else {
-    //
-
-
-        // const cell = {
-        //   column,
-        //   row,
-        //   w: this.width / toDraw.length,
-        //   h: this.height / toDraw.length,
-        //   get x() {
-        //     return this.column * this.w;
-        //   },
-        //   get y() {
-        //     return this.row * this.h;
-        //   },
-        // };
-        // const subdivisions = this.subdivisions;
-        // for (let ySub = 0; ySub < subdivisions; ySub++) {
-        //   for (let xSub = 0; xSub < subdivisions; xSub++) {
-        //     const dataKey = `${subdivisions}-${cell.column}-${cell.row}-${xSub}-${ySub}`;
-        //     let subCell = this.cells[dataKey];
-        //     if (!subCell) {
-        //       subCell = {
-        //         w: cell.w / subdivisions,
-        //         h: cell.h / subdivisions,
-        //         get x() {
-        //           return cell.x + xSub * this.w;
-        //         },
-        //         get y() {
-        //           return cell.y + ySub * this.h;
-        //         },
-        //         get top() {
-        //           return this.y;
-        //         },
-        //         get right() {
-        //           return this.x + this.w;
-        //         },
-        //         get bottom() {
-        //           return this.y + this.h;
-        //         },
-        //         get left() {
-        //           return this.x;
-        //         },
-        //       };
-        //     }
-        //     // ignore element if out of bounds
-        //     if (subCell.right < -this.translateX/this.scale) {
-        //       continue;
-        //     }
-        //     if (subCell.left > (this.width - this.translateX)/this.scale) {
-        //       continue;
-        //     }
-        //     if (subCell.top > (this.height-this.translateY)/this.scale) {
-        //       continue;
-        //     }
-        //     if (subCell.bottom < -this.translateY/this.scale) {
-        //       continue;
-        //     }
-        //
-        //     if (!this.cells[dataKey]) {
-        //       // default to closest known data point
-        //       let mappedX = data.column;
-        //       let mappedY = data.row;
-        //
-        //       // calculate position relative to grid
-        //       if (subdivisions > 0) {
-        //         if (!(xSub === 0 && ySub === 0)) {
-        //           const drawnIndexX = parseInt((cell.column * subdivisions + xSub));
-        //           const drawnIndexY = parseInt((cell.row * subdivisions + ySub));
-        //           const endColumn = toDraw[Math.min(cell.column + 1, this.minSize - 1)];
-        //           const endRow = toDraw[Math.min(cell.row + 1, this.minSize - 1)];
-        //           mappedX = map(drawnIndexX, cell.column * subdivisions, (cell.column + 1) * subdivisions, mappedX, endColumn).toFixed(2)
-        //           mappedY = map(drawnIndexY, cell.row * subdivisions, (cell.row + 1) * subdivisions, mappedY, endRow).toFixed(2)
-        //         }
-        //       }
-        //
-        //
-        //       const cellParams = subCell;
-        //       cellParams.drawFn = this.drawFn;
-        //       cellParams.decodeFn = this.decodeFn;
-        //       cellParams.grid = this.grid;
-        //       cellParams.relativeX = mappedX;
-        //       cellParams.relativeY = mappedY;
-        //       cellParams.outputWidth = this.outputWidth;
-        //       cellParams.outputHeight = this.outputHeight;
-        //
-        //       subCell = new Cell(this.ctx, cellParams);
-        //       this.cells[dataKey] = subCell;
-        //     }
-        //     subCell.draw();
-        //   }
-        // }
-        // draw data corners
-        // this.ctx.strokeStyle = '#C9C9C9';
-        // this.ctx.lineWidth = 2 / this.scale;
-        // const cornerSize = 3;
-        // // tl
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(cell.x, cell.y + cornerSize);
-        // this.ctx.lineTo(cell.x, cell.y);
-        // this.ctx.lineTo(cell.x + cornerSize, cell.y);
-        // this.ctx.stroke();
-        // // tr
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(cell.x + cell.w, cell.y + cornerSize);
-        // this.ctx.lineTo(cell.x + cell.w, cell.y);
-        // this.ctx.lineTo(cell.x  + cell.w - cornerSize, cell.y);
-        // this.ctx.stroke();
-        // // // br
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(cell.x + cell.w, cell.y + cell.h - cornerSize);
-        // this.ctx.lineTo(cell.x + cell.w, cell.y + cell.h);
-        // this.ctx.lineTo(cell.x  + cell.w - cornerSize, cell.y + cell.h);
-        // this.ctx.stroke();
-        // // bl
-        // this.ctx.beginPath();
-        // this.ctx.moveTo(cell.x, cell.y + cell.h - cornerSize);
-        // this.ctx.lineTo(cell.x, cell.y + cell.h);
-        // this.ctx.lineTo(cell.x + cornerSize, cell.y + cell.h);
-        // this.ctx.stroke();
-      // }
-    // }
   };
 }
 
