@@ -144,18 +144,24 @@ export default class DataPicker {
 
     // https://github.com/dribnet/plat/blob/master/plat/grid_layout.py#L71L106
     const intermediates = this.subdivisions;
+    const totalRows = intermediates * this.rows;
+    const totalColumns = intermediates * this.columns;
     // iterate through grid, drawing all anchors
-    for (let y = 0; y < this.rows * intermediates; y++) {
-      for (let x = 0; x < this.columns * intermediates; x++) {
-        const row = y / intermediates;
-        const column = x / intermediates;
-        if (row % intermediates == 0 && column % intermediates == 0) {
-          // draw anchors
-          const anchorKey = `${ column }-${ row }`;
-          const anchor = this.grid[anchorKey];
-          const dataKey = `${ this.subdivisions }-${ column }-${ row }-0-0`;
-          if (!this.cells[dataKey]) {
+    for (let y = 0; y < totalRows; y++) {
+      for (let x = 0; x < totalColumns; x++) {
+        if (y % intermediates === 0 && x % intermediates === 0) {
+          const row = Math.floor(y / intermediates);
+          const column = Math.floor(x / intermediates);
+          const subrow = y % intermediates;
+          const subcolumn = x % intermediates;
+
+          const cellKey = `${ intermediates }-${ column }-${ row }-${ subcolumn }-${ subrow }`;
+
+          if (!this.cells[cellKey]) {
+            const anchorKey = `${ column }-${ row }`;
+            const anchor = this.grid[anchorKey];
             const self = this;
+            // console.log(column, x, intermediates)
             const cellParams = {
               get x() {
                 return x * this.w;
@@ -175,46 +181,220 @@ export default class DataPicker {
               decodeFn: this.decodeFn,
               outputWidth: this.outputWidth,
               outputHeight: this.outputHeight,
+              row,
+              column,
+              subrow,
+              subcolumn,
             };
-            const cell = new Cell(this.ctx, cellParams);
-            this.cells[dataKey] = cell;
+            this.cells[cellKey] = new Cell(this.ctx, cellParams);
           }
-          this.cells[dataKey].draw();
-              //   w: this.width / toDraw.length,
-              //   h: this.height / toDraw.length,
-              //   get x() {
-              //     return this.column * this.w;
-              //   },
-              //   get y() {
-              //     return this.row * this.h;
-              //   },
-            //       subCell = {
-            //         w: cell.w / subdivisions,
-            //         h: cell.h / subdivisions,
-            //         get x() {
-            //           return cell.x + xSub * this.w;
-            //         },
-            //         get y() {
-            //           return cell.y + ySub * this.h;
-            //         },
-            //         get top() {
-            //           return this.y;
-            //         },
-            //         get right() {
-            //           return this.x + this.w;
-            //         },
-            //         get bottom() {
-            //           return this.y + this.h;
-            //         },
-            //         get left() {
-            //           return this.x;
-            //         },
-            //       };
-            //
+          this.cells[cellKey].draw();
         }
       }
     }
-    // iterate through grid, drawing horizontals between anchor points
+
+    // draw horizontals
+    for (let y = 0; y < totalRows; y++) {
+      for (let x = 0; x < totalColumns; x++) {
+        if (y % intermediates === 0 && x % intermediates !== 0) {
+          const row = Math.floor(y / intermediates);
+          const column = Math.floor(x / intermediates);
+          const subrow = y % intermediates;
+          const subcolumn = x % intermediates;
+
+          const cellKey = `${ intermediates }-${ column }-${ row }-${ subcolumn }-${ subrow }`;
+
+          if (!this.cells[cellKey]) {
+            const prevCellKey =  `${ intermediates }-${ column }-${ row }-0-0`;
+            const nextCellKey =  `${ intermediates }-${ (column + 1) % this.columns }-${ row }-0-0`;
+
+            const fromAnchor = this.cells[prevCellKey];
+            const toAnchor = this.cells[nextCellKey];
+
+
+            const self = this;
+            //
+            if (!fromAnchor.vector || !toAnchor.vector ) {
+              console.log(prevCellKey, nextCellKey)
+            }
+
+            const vector = dl.tidy(() => {
+              const from = dl.tensor1d(fromAnchor.vector);
+              const to = dl.tensor1d(toAnchor.vector);
+              const lerpAmount = 1 / intermediates * subcolumn;
+              return lerp(from, to, lerpAmount)
+            }).getValues();
+
+            const cellParams = {
+              get x() {
+                return x * this.w;
+              },
+              get y() {
+                return y * this.h;
+              },
+              get w() {
+                return self.width / (self.columns * intermediates);
+              },
+              get h() {
+                return self.height / (self.rows * intermediates);
+              },
+              // image: fromAnchor.image,
+              vector: vector,
+              // lerpVal: lerpAmount,
+              drawFn: this.drawFn,
+              decodeFn: this.decodeFn,
+              outputWidth: this.outputWidth,
+              outputHeight: this.outputHeight,
+              row,
+              column,
+              subrow,
+              subcolumn,
+            };
+            this.cells[cellKey] = new Cell(this.ctx, cellParams);
+          }
+          this.cells[cellKey].draw();
+        }
+      }
+    }
+
+//         const row = y / intermediates;
+//         const column = x / intermediates;
+//         if (row % intermediates == 0 && column % intermediates == 0) {
+//           // draw anchors
+//           const anchorKey = `${ column }-${ row }`;
+//           const anchor = this.grid[anchorKey];
+//           const dataKey = `${ this.subdivisions }-${ column }-${ row }-0-0`;
+//           if (!this.cells[dataKey]) {
+//             const self = this;
+//             const cellParams = {
+//               get x() {
+//                 return x * this.w;
+//               },
+//               get y() {
+//                 return y * this.h;
+//               },
+//               get w() {
+//                 return self.width / (self.columns * intermediates);
+//               },
+//               get h() {
+//                 return self.height / (self.rows * intermediates);
+//               },
+//               image: anchor.image,
+//               vector: anchor.data,
+//               drawFn: this.drawFn,
+//               decodeFn: this.decodeFn,
+//               outputWidth: this.outputWidth,
+//               outputHeight: this.outputHeight,
+//             };
+//             // logic to draw only necessary interpolations ....
+//             // check to see if rendering is
+//             //         get top() {
+//             //           return this.y;
+//             //         },
+//             //         get right() {
+//             //           return this.x + this.w;
+//             //         },
+//             //         get bottom() {
+//             //           return this.y + this.h;
+//             //         },
+//             //         get left() {
+//             //           return this.x;
+//             //         },
+//
+//             //     if (subCell.right < -this.translateX/this.scale) {
+//             //       continue;
+//             //     }
+//             //     if (subCell.left > (this.width - this.translateX)/this.scale) {
+//             //       continue;
+//             //     }
+//             //     if (subCell.top > (this.height-this.translateY)/this.scale) {
+//             //       continue;
+//             //     }
+//             //     if (subCell.bottom < -this.translateY/this.scale) {
+//             //       continue;
+//             //     }
+//
+//             const cell = new Cell(this.ctx, cellParams);
+//             this.cells[dataKey] = cell;
+//           }
+//           this.cells[dataKey].draw();
+//         }
+//       }
+//     }
+//
+//     // iterate through grid, drawing horizontals between anchor points
+//     for (let y = 0; y < this.rows * intermediates; y++) {
+//       for (let x = 0; x < this.columns * intermediates; x++) {
+//         const row = y / intermediates;
+//         const column = x / intermediates;
+//         if (row % intermediates == 0 && column % intermediates != 0) {
+//           const dataKey = `${ this.subdivisions }-${ column }-${ row }-${y % intermediates}-${x % intermediates}`;
+//           if (!this.cells[dataKey]) {
+//             console.log(row, column)
+//             // const prevX = Math.floor(x)
+//             const lastX = Math.floor(x / intermediates);
+//             let nextX = (lastX + 1) % this.columns;
+//
+//             const lastXKey = `${ this.subdivisions }-${ lastX }-${ row }-0-0`;
+//             const lastXAnchor = this.cells[lastXKey];
+//
+//             const nextXKey = `${ this.subdivisions }-${ nextX }-${ row }-0-0`;
+//             const nextXAnchor = this.cells[nextXKey];
+//
+//             // if (!nextXAnchor) {
+//             //   console.log(nextXKey, 'doesnt exist', this.cells)
+//             // }
+//             // if (!lastXAnchor) {
+//             //   console.log(lastXKey, 'doesnt exist')
+//             // }
+//
+//
+//             const degree = (x - lastX) / intermediates;
+//             // if (lastXAnchor && nextXAnchor) {
+//             //   console.log(lastXKey, nextXKey)
+//             // const vector = dl.tidy(() => {
+//             //   return lerp(dl.tensor1d(lastXAnchor.vector), dl.tensor1d(nextXAnchor.vector), degree);
+//             // }).getValues();
+//               // console.log(vector)
+//             //
+//             // }
+//             // let vector;
+//             // work out fromX, toX, degreeX
+//             // calc interpolation and insert
+//             const self = this;
+//             const cellParams = {
+//               get x() {
+//                 return x * this.w;
+//               },
+//               get y() {
+//                 return y * this.h;
+//               },
+//               get w() {
+//                 return self.width / (self.columns * intermediates);
+//               },
+//               get h() {
+//                 return self.height / (self.rows * intermediates);
+//               },
+//               vector: null,
+//               // image: image,
+//               drawFn: this.drawFn,
+//               decodeFn: this.decodeFn,
+//               outputWidth: this.outputWidth,
+//               outputHeight: this.outputHeight,
+//             };
+//             const cell = new Cell(this.ctx, cellParams);
+//             this.cells[dataKey] = cell;
+//           }
+//           this.cells[dataKey].draw();
+//
+// //           lastX = space * (x // space)
+// //           nextX = lastX + space
+// //           fracX = (x - lastX) / float(space)
+// // #                 print("{} - {} - {}".format(lastX, nextX, fracX))
+// //           u_list[y,x,:] = lerpv(fracX, u_list[y, lastX, :], u_list[y, nextX, :])
+//         }
+//       }
+//     }
     // for (let y = 0; y < this.rows * intermediates; y++) {
     //   for (let x = 0; x < this.columns * intermediates; x++) {
     //     if (y % intermediates == 0 && x % intermediates == 0) {
@@ -473,8 +653,19 @@ class Cell {
     this.drawFn = params.drawFn;
     this.decodeFn = params.decodeFn;
 
-    this.image = params.image || null;
     this.vector = params.vector;
+
+    this.row = params.row;
+    this.column = params.column;
+    this.subrow = params.subrow;
+    this.subcolumn = params.subcolumn;
+
+    if (!this.image && this.vector) {
+      this.image = this.decodeFn(this.vector);
+    } else {
+      this.image = params.image || null;
+    }
+    this.lerpVal = params.lerpVal;
 
     this.x = params.x;
     this.y = params.y;
@@ -492,7 +683,10 @@ class Cell {
     if (this.image) {
       this.drawFn(this.ctx, this.image);
     } else {
-      this.ctx.fillStyle = 'red'
+      this.ctx.strokeRect(0, 0, this.outputWidth, this.outputHeight);
+      this.ctx.fillStyle = 'black'
+      this.ctx.font = `${this.outputWidth/10}px Arial`;
+      this.ctx.fillText(`${this.lerpVal}`, this.outputWidth/2, this.outputHeight/2);
     }
     this.ctx.restore();
   };
