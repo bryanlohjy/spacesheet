@@ -6,13 +6,15 @@ import Regex from '../../lib/Regex.js';
 export default opts => {
   let CustomTextEditor =  HandsOnTable.editors.TextEditor.prototype.extend();
 
-  const removeHighlightedClasses = function() {
-    removeInstancesOfClassName('highlighted-reference');
-    for (let i = 0; i < 5; i++) { // colour class
-      removeInstancesOfClassName(`_${i.toString()}`);
-    }
-  };
-  const highlightReferences = function(hotInstance, data) {
+  CustomTextEditor.prototype.inputBar = opts.inputBar;
+
+  // CustomTextEditor.prototype.removeHighlightedClasses = function() {
+  //   removeInstancesOfClassName('highlighted-reference');
+  //   for (let i = 0; i < 5; i++) { // colour class
+  //     removeInstancesOfClassName(`_${i.toString()}`);
+  //   }
+  // };
+  CustomTextEditor.prototype.highlightReferences = function(hotInstance, data) {
     if (!data || !isFormula(data)) {
       return;
     }
@@ -60,7 +62,7 @@ export default opts => {
       setTimeout(() => {
         opts.inputBar.value = e.target.value;
         removeInstancesOfClassName('highlighted-reference');
-        highlightReferences(this.instance, e.target.value);
+        this.highlightReferences(this.instance, e.target.value);
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue
       setTimeout(() => {
@@ -73,7 +75,7 @@ export default opts => {
     opts.inputBar.value = this.originalValue || '';
   };
   CustomTextEditor.prototype.open = function() {
-    highlightReferences(this.instance, this.originalValue);
+    this.highlightReferences(this.instance, this.originalValue);
 
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     setTimeout(() => {
@@ -83,6 +85,7 @@ export default opts => {
   };
   CustomTextEditor.prototype.close = function() {
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
+    removeInstancesOfClassName('highlighted-reference');
     this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
   }
   return CustomTextEditor;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
-import { getCellType } from './CellHelpers.js';
+import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
@@ -112,6 +112,36 @@ export default class Spreadsheet extends React.Component {
                 viewportRowRenderingOffset={26}
 
                 outsideClickDeselects={false}
+
+                beforeOnCellMouseDown={ e => {
+                  const activeEditor = this.hotInstance.getActiveEditor();
+                  if (activeEditor.isOpened()) { // reference cells by clicking in editing mode
+                    const editorData = activeEditor.TEXTAREA.value;
+                    if (editorData && isFormula(editorData)) {
+                      const caretPosition = HandsOnTable.dom.getCaretPosition(activeEditor.TEXTAREA);
+                      const preCaretString = editorData.substring(0, caretPosition);
+                      let prevChar = preCaretString.trim();
+                      prevChar = prevChar[prevChar.length - 1];
+                      let captureCellClick = new RegExp(/[\(=,]/gi).test(prevChar);
+                      if (captureCellClick) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        const postCaretString = editorData.substring(caretPosition, editorData.length);
+                        const cellCoords = this.hotInstance.getCoords(e.target);
+                        const cellLabel = cellCoordsToLabel(cellCoords);
+                        const newString = `${preCaretString}${cellLabel}${postCaretString}`
+                        activeEditor.TEXTAREA.value = newString;
+                        if (activeEditor.highlightReferences && activeEditor.inputBar) {
+                          activeEditor.highlightReferences(this.hotInstance, newString);
+                          activeEditor.inputBar.value = newString;
+                        }
+                        HandsOnTable.dom.setCaretPosition(activeEditor.TEXTAREA, caretPosition + cellLabel.length);
+                      }
+                      return;
+                    }
+                  }
+                }}
 
                 contextMenu
                 // make sure input bar is in sync
