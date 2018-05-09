@@ -20,6 +20,7 @@ export default class DataPicker extends React.Component {
     this.elementBounds = null;
     this.dragStart = null;
     this.dragged = null;
+    this.mouseDownOnDataPicker = false;
 
     this.state = { // used to manage highlighter
       showHighlighter: false,
@@ -91,6 +92,8 @@ export default class DataPicker extends React.Component {
         });
         break;
       case 'mousedown':
+        e.preventDefault();
+        this.mouseDownOnDataPicker = true;
         this.dataPicker.originX = e.clientX;
         this.dataPicker.originY = e.clientY;
         this.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.originX, this.dataPicker.originY);
@@ -111,7 +114,8 @@ export default class DataPicker extends React.Component {
           const dataKey = `${subdivisions}-${column}-${row}-${subcolumn}-${subrow}`;
           const vector = this.dataPicker.cells[dataKey].vector;
           const image = this.dataPicker.cells[dataKey].image;
-          if (this.props.onChange) {
+          if (this.props.onChange && this.mouseDownOnDataPicker) {
+            this.mouseDownOnDataPicker = false;
             this.props.onChange(vector, dataKey);
           }
         }
