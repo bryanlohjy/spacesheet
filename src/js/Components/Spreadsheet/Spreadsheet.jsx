@@ -113,58 +113,6 @@ export default class Spreadsheet extends React.Component {
 
                 outsideClickDeselects={false}
 
-                beforeOnCellMouseDown={ e => {
-                  const activeEditor = this.hotInstance.getActiveEditor();
-                  if (activeEditor.isOpened()) { // reference cells by clicking in editing mode
-                    const editorData = activeEditor.TEXTAREA.value;
-                    if (editorData && isFormula(editorData)) {
-                      let caretPosition = HandsOnTable.dom.getCaretPosition(activeEditor.TEXTAREA);
-                      let preCaretString = editorData.substring(0, caretPosition);
-
-                      let prevChar = preCaretString.trim();
-                      prevChar = prevChar[prevChar.length - 1];
-                      const populateWithReference = new RegExp(/[\(=,:]/gi).test(prevChar);
-
-                      // replace ref if caret is after cell reference
-                      const afterReference = new RegExp(/[a-z]\d+$/gi).test(preCaretString);
-
-                      let postCaretString = editorData.substring(caretPosition, editorData.length);
-                      const betweenReference = new RegExp(/[a-z]\d?$/gi).test(preCaretString) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaretString);
-                      
-                      if (populateWithReference || afterReference || betweenReference) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-
-                        const cellCoords = this.hotInstance.getCoords(e.target);
-                        const cellLabel = cellCoordsToLabel(cellCoords);
-
-                        let newString;
-                        if (populateWithReference) {
-                          newString = `${preCaretString}${cellLabel}${postCaretString}`;
-                          caretPosition = Number(caretPosition) + Number(cellLabel.length);
-                        } else if (afterReference) {
-                          preCaretString = preCaretString.trim();
-                          const referenceToReplace = (preCaretString).match(new RegExp(/[a-z]\d+$/gi))[0];
-                          preCaretString = preCaretString.substring(0, preCaretString.length - referenceToReplace.length);
-                          newString = `${preCaretString}${cellLabel}${postCaretString}`;
-                        } else {
-                          preCaretString = preCaretString.replace(/[a-z]\d?$/gi, '');
-                          postCaretString = postCaretString.replace(/^[0-9]+/gi, '');
-                          newString = `${preCaretString}${cellLabel}${postCaretString}`;
-                        }
-                        activeEditor.TEXTAREA.value = newString;
-                        if (activeEditor.highlightReferences && activeEditor.inputBar) {
-                          activeEditor.clearHighlightedReferences();
-                          activeEditor.highlightReferences(this.hotInstance, newString);
-                          activeEditor.inputBar.value = newString;
-                        }
-                        HandsOnTable.dom.setCaretPosition(activeEditor.TEXTAREA, caretPosition);
-                      }
-                    }
-                  }
-                }}
-
                 contextMenu
                 // make sure input bar is in sync
                 afterUndo={ changes => {
