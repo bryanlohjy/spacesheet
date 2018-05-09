@@ -31,12 +31,8 @@ const CellHelpers = {
   cellCoordsToLabel: coords => {
     let res;
     if (coords) {
-      if (coords.row && coords.col) {
+      if (coords.row >= 0 && coords.col >= 0) {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        // res = {
-        //   row: Number(coords.row) + 1,
-        //   col: alphabet[coords.col],
-        // };
         const letter = alphabet[coords.col];
         const number = Number(coords.row) + 1;
         res = `${letter}${number}`;
