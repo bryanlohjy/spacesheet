@@ -129,8 +129,9 @@ const CellTypes = opts => {
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
         let { result, error } = compiled;
         if (result) {
+          let randomiseButton = td.querySelector('.randomise-button');
           let canvasElement = td.querySelector('canvas');
-          if (!canvasElement) {
+          if (!randomiseButton) {
             td.innerHTML = '';
 
             const canvasContainer = document.createElement('div');
@@ -140,7 +141,7 @@ const CellTypes = opts => {
             canvasElement.width = opts.outputWidth - 1;
             canvasElement.height = opts.outputHeight - 1;
 
-            const randomiseButton = document.createElement('div');
+            randomiseButton = document.createElement('div');
             randomiseButton.classList.add('randomise-button');
 
             const randomIcon = document.createElement('img');
