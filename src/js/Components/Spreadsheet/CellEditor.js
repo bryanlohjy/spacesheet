@@ -14,6 +14,9 @@ export default opts => {
   //     removeInstancesOfClassName(`_${i.toString()}`);
   //   }
   // };
+  CustomTextEditor.prototype.clearHighlightedReferences = function() {
+    removeInstancesOfClassName('highlighted-reference');
+  };
   CustomTextEditor.prototype.highlightReferences = function(hotInstance, data) {
     if (!data || !isFormula(data)) {
       return;
