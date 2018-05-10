@@ -82,6 +82,11 @@ export default opts => {
   CustomTextEditor.prototype.captureCellClick = function(e) { // reference cells by clicking in editing mode
     const capturePos = this.cellCapturePosition();
     if (capturePos) {
+      const cellCoords = this.instance.getCoords(e.target);
+      if (cellCoords.row < 0 || cellCoords.col < 0) {
+        return;
+      }
+
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
@@ -91,7 +96,6 @@ export default opts => {
       let preCaret = editorVal.substring(0, caretPosition);
       let postCaret = editorVal.substring(caretPosition, editorVal.length);
 
-      const cellCoords = this.instance.getCoords(e.target);
       const cellLabel = cellCoordsToLabel(cellCoords);
 
       let newString;
