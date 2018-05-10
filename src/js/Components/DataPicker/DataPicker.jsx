@@ -71,6 +71,12 @@ export default class DataPicker extends React.Component {
     e.stopPropagation();
     switch (e.type) {
       case 'mousemove':
+        if (this.dragStart) { // prevents mousemove from firing, if it hasn't moved at all - can sometimes be a problem
+          const coords = this.dataPicker.ctx.transformedPoint(e.clientX, e.clientY);
+          if (coords.x === this.dragStart.x && coords.y === this.dragStart.y) {
+            return;
+          }
+        }
         this.dataPicker.originX = e.clientX;
         this.dataPicker.originY = e.clientY;
         this.dragged = true;
