@@ -14,6 +14,9 @@
     height: 21px;
   }
   .table-container {
+    textarea.capture-cells {
+      cursor: pointer !important;
+    }
     .capture-cells {
       tbody td:hover {
         cursor: pointer;

@@ -143,8 +143,10 @@ export default opts => {
   CustomTextEditor.prototype.updateTableCellCaptureClass = function(override) {
     if (this.cellCapturePosition()) {
       this.instance.table.classList.add('capture-cells');
+      this.TEXTAREA.classList.add('capture-cells');
     } else {
       this.instance.table.classList.remove('capture-cells');
+      this.TEXTAREA.classList.remove('capture-cells');
     }
   };
 
@@ -183,6 +185,8 @@ export default opts => {
     this.clearHighlightedReferences('highlighted-reference');
 
     this.instance.table.classList.remove('capture-cells');
+    this.TEXTAREA.classList.remove('capture-cells');
+
     // Remove event listeners
     this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', this.onKeyDown);
     delete this.onKeyDown;
