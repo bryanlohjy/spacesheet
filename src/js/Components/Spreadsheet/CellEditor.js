@@ -74,23 +74,20 @@ export default opts => {
     const editorData = this.TEXTAREA.value;
     if (editorData && isFormula(editorData)) {
       let caretPosition = HandsOnTable.dom.getCaretPosition(this.TEXTAREA);
-      let preCaretString = editorData.substring(0, caretPosition);
-      let postCaretString = editorData.substring(caretPosition, editorData.length);
 
-      let prevChar = preCaretString.trim();
+      let preCaret = editorData.substring(0, caretPosition);
+      let prevChar = preCaret.trim();
       prevChar = prevChar.charAt(prevChar.length - 1);
-
-      const beforeRef = new RegExp(/[\(=,:]/gi).test(prevChar);
-      const afterRef = new RegExp(/[a-z]\d+$/gi).test(preCaretString);
-      const betweenRef = new RegExp(/[a-z]\d?$/gi).test(preCaretString) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaretString);
-
-      if (beforeRef) {
+      if (new RegExp(/[\(=,:]/gi).test(prevChar)) {
         return "BEFORE";
-      } else if (afterRef) {
+      }
+      let postCaret = editorData.substring(caretPosition, editorData.length);
+      if (new RegExp(/[a-z]\d+$/gi).test(preCaret)) {
         return "AFTER";
-      } else if (betweenRef) {
+      } else if (new RegExp(/[a-z]\d?$/gi).test(preCaret) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaret)) {
         return "BETWEEN";
       }
+
       return false;
     }
   };
@@ -102,13 +99,10 @@ export default opts => {
       e.stopPropagation();
       e.stopImmediatePropagation();
 
-      const editorData = this.TEXTAREA.value;
+      const editorVal = this.TEXTAREA.value;
       let caretPosition = HandsOnTable.dom.getCaretPosition(this.TEXTAREA);
-      let preCaretString = editorData.substring(0, caretPosition);
-      let postCaretString = editorData.substring(caretPosition, editorData.length);
-
-      let prevChar = preCaretString.trim();
-      prevChar = prevChar[prevChar.length - 1];
+      let preCaret = editorVal.substring(0, caretPosition);
+      let postCaret = editorVal.substring(caretPosition, editorVal.length);
 
       const cellCoords = this.instance.getCoords(e.target);
       const cellLabel = cellCoordsToLabel(cellCoords);
@@ -116,26 +110,27 @@ export default opts => {
       let newString;
       switch (capturePos) {
         case 'BEFORE':
-          newString = `${preCaretString}${cellLabel}${postCaretString}`;
+          newString = `${preCaret}${cellLabel}${postCaret}`;
           caretPosition = Number(caretPosition) + Number(cellLabel.length);
           break;
         case 'AFTER':
-          preCaretString = preCaretString.trim();
-          const referenceToReplace = (preCaretString).match(new RegExp(/[a-z]\d+$/gi))[0];
-          preCaretString = preCaretString.substring(0, preCaretString.length - referenceToReplace.length);
-          newString = `${preCaretString}${cellLabel}${postCaretString}`;
+          preCaret = preCaret.trim();
+          const referenceToReplace = (preCaret).match(new RegExp(/[a-z]\d+$/gi))[0];
+          preCaret = preCaret.substring(0, preCaret.length - referenceToReplace.length);
+          newString = `${preCaret}${cellLabel}${postCaret}`;
           break;
         case 'BETWEEN':
-          preCaretString = preCaretString.replace(/[a-z]\d?$/gi, '');
-          postCaretString = postCaretString.replace(/^[0-9]+/gi, '');
-          newString = `${preCaretString}${cellLabel}${postCaretString}`;
+          preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
+          postCaret = postCaret.replace(/^[0-9]+/gi, '');
+          newString = `${preCaret}${cellLabel}${postCaret}`;
       }
 
+      opts.inputBar.value = newString;
       this.TEXTAREA.value = newString;
+      HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
+
       this.clearHighlightedReferences();
       this.highlightReferences(this.instance, newString);
-      opts.inputBar.value = newString;
-      HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
     }
   };
 
