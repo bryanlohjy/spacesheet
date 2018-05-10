@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
-import { getCellType } from './CellHelpers.js';
+import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 

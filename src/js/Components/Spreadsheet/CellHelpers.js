@@ -28,19 +28,18 @@ const CellHelpers = {
     }
     return res;
   },
-  // cellCoordsToLabel: coords => {
-  //   let res;
-  //   if (coords) {
-  //     if (coords.row && coords.col) {
-  //       const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  //       res = {
-  //         row: Number(coords.row) + 1,
-  //         col: alphabet[coords.col],
-  //       };
-  //     }
-  //   }
-  //   return res;
-  // },
+  cellCoordsToLabel: coords => {
+    let res;
+    if (coords) {
+      if (coords.row >= 0 && coords.col >= 0) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const letter = alphabet[coords.col];
+        const number = Number(coords.row) + 1;
+        res = `${letter}${number}`;
+      }
+    }
+    return res;
+  },
   getCellFromLabel: (hotInstance, label) => {
     console.log(hotInstance, label)
     const coords = CellHelpers.cellLabelToCoords(label);
