@@ -122,6 +122,16 @@ export default opts => {
     }
   };
 
+  CustomTextEditor.prototype.updateTableCellCaptureClass = function(override) {
+    if (this.cellCapturePosition()) {
+      this.instance.table.classList.add('capture-cells');
+      this.TEXTAREA.classList.add('capture-cells');
+    } else {
+      this.instance.table.classList.remove('capture-cells');
+      this.TEXTAREA.classList.remove('capture-cells');
+    }
+  };
+
   const onKeyDown = function(e) { // update input bar as cell is edited
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
@@ -135,32 +145,20 @@ export default opts => {
       }, 0);
     }
   };
-
   const onKeyUp = function(e) {
     this.updateTableCellCaptureClass();
   };
-
-  CustomTextEditor.prototype.updateTableCellCaptureClass = function(override) {
-    if (this.cellCapturePosition()) {
-      this.instance.table.classList.add('capture-cells');
-      this.TEXTAREA.classList.add('capture-cells');
-    } else {
-      this.instance.table.classList.remove('capture-cells');
-      this.TEXTAREA.classList.remove('capture-cells');
-    }
+  const onTextAreaClick = function() {
+    this.updateTableCellCaptureClass();
   };
-
   const beforeOnCellMouseDown = function(e) {
     this.captureCellClick(e);
     this.updateTableCellCaptureClass();
   };
 
-  const onTextAreaClick = function() {
-    this.updateTableCellCaptureClass();
-  };
-
   CustomTextEditor.prototype.open = function() {
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
+    this.TEXTAREA.setAttribute('spellcheck', 'false');
     setTimeout(() => {
       opts.inputBar.value = this.TEXTAREA.value || '';
     }, 0);
