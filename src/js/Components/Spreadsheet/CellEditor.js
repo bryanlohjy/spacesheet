@@ -71,16 +71,16 @@ export default opts => {
         return "BEFORE";
       }
       let postCaret = editorData.substring(caretPosition, editorData.length);
-      if (new RegExp(/[a-z]\d+$/gi).test(preCaret)) {
-        return "AFTER";
-      } else if (new RegExp(/[a-z]\d?$/gi).test(preCaret) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaret)) {
+      if (new RegExp(/[a-z]\d?$/gi).test(preCaret) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaret)) {
         return "BETWEEN";
+      } else if (new RegExp(/[a-z]\d+$/gi).test(preCaret)) {
+        return "AFTER";
       }
     }
     return false;
   };
 
-  const captureCellClick = function(e) { // reference cells by clicking in editing mode
+  CustomTextEditor.prototype.captureCellClick = function(e) { // reference cells by clicking in editing mode
     const capturePos = this.cellCapturePosition();
     if (capturePos) {
       e.preventDefault();
@@ -101,15 +101,15 @@ export default opts => {
           newString = `${preCaret}${cellLabel}${postCaret}`;
           caretPosition = Number(caretPosition) + Number(cellLabel.length);
           break;
+        case 'BETWEEN':
+          preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
+          postCaret = postCaret.replace(/^[0-9]+/gi, '');
+          newString = `${preCaret}${cellLabel}${postCaret}`;
+          break;
         case 'AFTER':
           preCaret = preCaret.trim();
           const referenceToReplace = (preCaret).match(new RegExp(/[a-z]\d+$/gi))[0];
           preCaret = preCaret.substring(0, preCaret.length - referenceToReplace.length);
-          newString = `${preCaret}${cellLabel}${postCaret}`;
-          break;
-        case 'BETWEEN':
-          preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
-          postCaret = postCaret.replace(/^[0-9]+/gi, '');
           newString = `${preCaret}${cellLabel}${postCaret}`;
       }
 
@@ -136,28 +136,62 @@ export default opts => {
     }
   };
 
+  const onKeyUp = function(e) {
+    this.updateTableCellCaptureClass();
+  };
+
+  CustomTextEditor.prototype.updateTableCellCaptureClass = function(override) {
+    if (this.cellCapturePosition()) {
+      this.instance.table.classList.add('capture-cells');
+    } else {
+      this.instance.table.classList.remove('capture-cells');
+    }
+  };
+
+  const beforeOnCellMouseDown = function(e) {
+    this.captureCellClick(e);
+    this.updateTableCellCaptureClass();
+  };
+
+  const onTextAreaClick = function() {
+    this.updateTableCellCaptureClass();
+  };
+
   CustomTextEditor.prototype.open = function() {
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     setTimeout(() => {
       opts.inputBar.value = this.TEXTAREA.value || '';
     }, 0);
     this.highlightReferences(this.instance, this.originalValue);
+    this.updateTableCellCaptureClass();
 
     // Add event listeners
     this.onKeyDown = onKeyDown.bind(this);
     this.eventManager.addEventListener(this.TEXTAREA, 'keydown',this.onKeyDown);
-    this.captureCellClick = captureCellClick.bind(this);
-    this.instance.addHook('beforeOnCellMouseDown', this.captureCellClick);
+
+    this.onKeyUp = onKeyUp.bind(this);
+    this.eventManager.addEventListener(this.TEXTAREA, 'keyup',this.onKeyUp);
+
+    this.onTextAreaClick = onTextAreaClick.bind(this);
+    this.eventManager.addEventListener(this.TEXTAREA, 'click',this.onTextAreaClick);
+
+    this.beforeOnCellMouseDown = beforeOnCellMouseDown.bind(this);
+    this.instance.addHook('beforeOnCellMouseDown', this.beforeOnCellMouseDown);
   };
   CustomTextEditor.prototype.close = function() {
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
     this.clearHighlightedReferences('highlighted-reference');
 
+    this.instance.table.classList.remove('capture-cells');
     // Remove event listeners
     this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', this.onKeyDown);
     delete this.onKeyDown;
-    this.instance.removeHook('beforeOnCellMouseDown', this.captureCellClick);
-    delete this.captureCellClick;
+    this.eventManager.removeEventListener(this.TEXTAREA, 'keyup', this.onKeyUp);
+    delete this.onKeyUp;
+    this.eventManager.removeEventListener(this.TEXTAREA, 'click', this.onTextAreaClick);
+    delete this.onTextAreaClick;
+    this.instance.removeHook('beforeOnCellMouseDown', this.beforeOnCellMouseDown);
+    delete this.beforeOnCellMouseDown;
   }
   return CustomTextEditor;
 };

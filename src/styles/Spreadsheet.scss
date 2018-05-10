@@ -14,6 +14,12 @@
     height: 21px;
   }
   .table-container {
+    .capture-cells {
+      tbody td:hover {
+        cursor: pointer;
+        box-shadow: inset 0 0 0 1px rgb(255, 184, 111);
+      }
+    }
     overflow: hidden;
     height: 100%;
     width: 100%;
