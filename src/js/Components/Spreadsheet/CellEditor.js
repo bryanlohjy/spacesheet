@@ -29,12 +29,11 @@ export default opts => {
       const numCols = hotInstance.countCols();
       for (let row = startRowIndex; row <= endRowIndex; row++) {
         for (let col = startColIndex; col <= endColIndex; col++) {
-          if (!(row == startRowIndex && col == startColIndex) && !(row == endRowIndex && col == endColIndex)) {
-            if (row < numRows && col < numCols) {
-              const reference = hotInstance.getCell(row, col);
-              if (reference) {
-                reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
-              }
+          if (row < numRows && col < numCols) {
+            const reference = hotInstance.getCell(row, col);
+            console.log(row, col)
+            if (reference) {
+              reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
             }
           }
         }
