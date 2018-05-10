@@ -49,6 +49,12 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
+      const randArgs = opts.formulaParser.getArgumentsFromFunction(data);
+      if (randArgs.length === 0) { // if there are no arguments, use a smart default
+        data = `=SLIDER(0, 1, 0.05)`;
+        hotInstance.setDataAtCell(row, col, data);
+      }
+
       const compiled = opts.formulaParser.parse(data.replace('=', ''))
       const { result, error } = compiled;
 
