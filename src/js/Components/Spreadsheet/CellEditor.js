@@ -25,10 +25,12 @@ export default opts => {
       const startColIndex = Math.min(from.col, to.col);
       const endColIndex = Math.max(from.col, to.col);
       // highlight all cells within range, excluding the references themselves
+      const numRows = hotInstance.countRows();
+      const numCols = hotInstance.countCols();
       for (let row = startRowIndex; row <= endRowIndex; row++) {
         for (let col = startColIndex; col <= endColIndex; col++) {
           if (!(row == startRowIndex && col == startColIndex) && !(row == endRowIndex && col == endColIndex)) {
-            if (row < hotInstance.countRows() && col < hotInstance.countCols()) {
+            if (row < numRows && col < numCols) {
               const reference = hotInstance.getCell(row, col);
               if (reference) {
                 reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
@@ -52,19 +54,6 @@ export default opts => {
     }
   };
 
-  const onKeyDown = function(e) { // update input bar as cell is edited
-    if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
-      setTimeout(() => {
-        opts.inputBar.value = e.target.value;
-        removeInstancesOfClassName('highlighted-reference');
-        this.highlightReferences(this.instance, e.target.value);
-      }, 0);
-    } else if (e.keyCode === 27) { // if escape, then set to originalValue
-      setTimeout(() => {
-        opts.inputBar.value = this.originalValue;
-      }, 0);
-    }
-  };
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
     opts.inputBar.value = this.originalValue || '';
@@ -87,12 +76,11 @@ export default opts => {
       } else if (new RegExp(/[a-z]\d?$/gi).test(preCaret) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaret)) {
         return "BETWEEN";
       }
-
-      return false;
     }
+    return false;
   };
 
-  const beforeOnCellMouseDown = function(e) { // reference cells by clicking in editing mode
+  const captureCellClick = function(e) { // reference cells by clicking in editing mode
     const capturePos = this.cellCapturePosition();
     if (capturePos) {
       e.preventDefault();
@@ -134,23 +122,42 @@ export default opts => {
     }
   };
 
+  const onKeyDown = function(e) { // update input bar as cell is edited
+    if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
+      setTimeout(() => {
+        opts.inputBar.value = e.target.value;
+        this.clearHighlightedReferences();
+        this.highlightReferences(this.instance, e.target.value);
+      }, 0);
+    } else if (e.keyCode === 27) { // if escape, then set to originalValue
+      setTimeout(() => {
+        opts.inputBar.value = this.originalValue;
+      }, 0);
+    }
+  };
+
   CustomTextEditor.prototype.open = function() {
-    this.highlightReferences(this.instance, this.originalValue);
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     setTimeout(() => {
       opts.inputBar.value = this.TEXTAREA.value || '';
     }, 0);
-    this.eventManager.addEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
+    this.highlightReferences(this.instance, this.originalValue);
 
-    this.beforeOnCellMouseDown = beforeOnCellMouseDown.bind(this);
-    this.instance.addHook('beforeOnCellMouseDown', this.beforeOnCellMouseDown);
+    // Add event listeners
+    this.onKeyDown = onKeyDown.bind(this);
+    this.eventManager.addEventListener(this.TEXTAREA, 'keydown',this.onKeyDown);
+    this.captureCellClick = captureCellClick.bind(this);
+    this.instance.addHook('beforeOnCellMouseDown', this.captureCellClick);
   };
   CustomTextEditor.prototype.close = function() {
     HandsOnTable.editors.TextEditor.prototype.close.apply(this, arguments);
-    removeInstancesOfClassName('highlighted-reference');
-    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', onKeyDown.bind(this));
-    this.instance.removeHook('beforeOnCellMouseDown', this.beforeOnCellMouseDown);
-    delete this.beforeOnCellMouseDown;
+    this.clearHighlightedReferences('highlighted-reference');
+
+    // Remove event listeners
+    this.eventManager.removeEventListener(this.TEXTAREA, 'keydown', this.onKeyDown);
+    delete this.onKeyDown;
+    this.instance.removeHook('beforeOnCellMouseDown', this.captureCellClick);
+    delete this.captureCellClick;
   }
   return CustomTextEditor;
 };
