@@ -6,34 +6,6 @@ import Regex from '../../lib/Regex.js';
 export default opts => {
   let CustomTextEditor =  HandsOnTable.editors.TextEditor.prototype.extend();
 
-
-  // CustomTextEditor.prototype.removeHighlightedClasses = function() {
-  //   removeInstancesOfClassName('highlighted-reference');
-  //   for (let i = 0; i < 5; i++) { // colour class
-  //     removeInstancesOfClassName(`_${i.toString()}`);
-  //   }
-  // };
-
-  // CustomTextEditor.prototype.shouldCaptureCellClick = function() {
-  //   const editorData = this.TEXTAREA.value;
-  //
-  //   if (editorData && isFormula(editorData)) {
-  //     let caretPosition = HandsOnTable.dom.getCaretPosition(this.TEXTAREA);
-  //     let preCaretString = editorData.substring(0, caretPosition);
-  //     let postCaretString = editorData.substring(caretPosition, editorData.length);
-  //
-  //     let prevChar = preCaretString.trim();
-  //     prevChar = prevChar[prevChar.length - 1];
-  //     const populateWithReference = new RegExp(/[\(=,:]/gi).test(prevChar);
-  //
-  //     // replace ref if caret is after cell reference
-  //     const afterReference = new RegExp(/[a-z]\d+$/gi).test(preCaretString);
-  //
-  //     const betweenReference = new RegExp(/[a-z]\d?$/gi).test(preCaretString) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaretString);
-  //   }
-  //
-  // };
-
   CustomTextEditor.prototype.clearHighlightedReferences = function() {
     removeInstancesOfClassName('highlighted-reference');
   };
@@ -98,51 +70,72 @@ export default opts => {
     opts.inputBar.value = this.originalValue || '';
   };
 
-  const beforeOnCellMouseDown = function(e) {
+  CustomTextEditor.prototype.cellCapturePosition = function() { // returns caret position relative to where the captured cell should be
     const editorData = this.TEXTAREA.value;
-    // reference cells by clicking in editing mode
     if (editorData && isFormula(editorData)) {
       let caretPosition = HandsOnTable.dom.getCaretPosition(this.TEXTAREA);
       let preCaretString = editorData.substring(0, caretPosition);
       let postCaretString = editorData.substring(caretPosition, editorData.length);
 
       let prevChar = preCaretString.trim();
+      prevChar = prevChar.charAt(prevChar.length - 1);
+
+      const beforeRef = new RegExp(/[\(=,:]/gi).test(prevChar);
+      const afterRef = new RegExp(/[a-z]\d+$/gi).test(preCaretString);
+      const betweenRef = new RegExp(/[a-z]\d?$/gi).test(preCaretString) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaretString);
+
+      if (beforeRef) {
+        return "BEFORE";
+      } else if (afterRef) {
+        return "AFTER";
+      } else if (betweenRef) {
+        return "BETWEEN";
+      }
+      return false;
+    }
+  };
+
+  const beforeOnCellMouseDown = function(e) { // reference cells by clicking in editing mode
+    const capturePos = this.cellCapturePosition();
+    if (capturePos) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      const editorData = this.TEXTAREA.value;
+      let caretPosition = HandsOnTable.dom.getCaretPosition(this.TEXTAREA);
+      let preCaretString = editorData.substring(0, caretPosition);
+      let postCaretString = editorData.substring(caretPosition, editorData.length);
+
+      let prevChar = preCaretString.trim();
       prevChar = prevChar[prevChar.length - 1];
-      const populateWithReference = new RegExp(/[\(=,:]/gi).test(prevChar);
 
-      // replace ref if caret is after cell reference
-      const afterReference = new RegExp(/[a-z]\d+$/gi).test(preCaretString);
-      const betweenReference = new RegExp(/[a-z]\d?$/gi).test(preCaretString) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaretString);
+      const cellCoords = this.instance.getCoords(e.target);
+      const cellLabel = cellCoordsToLabel(cellCoords);
 
-      if (populateWithReference || afterReference || betweenReference) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-
-        const cellCoords = this.instance.getCoords(e.target);
-        const cellLabel = cellCoordsToLabel(cellCoords);
-
-        let newString;
-        if (populateWithReference) {
+      let newString;
+      switch (capturePos) {
+        case 'BEFORE':
           newString = `${preCaretString}${cellLabel}${postCaretString}`;
           caretPosition = Number(caretPosition) + Number(cellLabel.length);
-        } else if (afterReference) {
+          break;
+        case 'AFTER':
           preCaretString = preCaretString.trim();
           const referenceToReplace = (preCaretString).match(new RegExp(/[a-z]\d+$/gi))[0];
           preCaretString = preCaretString.substring(0, preCaretString.length - referenceToReplace.length);
           newString = `${preCaretString}${cellLabel}${postCaretString}`;
-        } else {
+          break;
+        case 'BETWEEN':
           preCaretString = preCaretString.replace(/[a-z]\d?$/gi, '');
           postCaretString = postCaretString.replace(/^[0-9]+/gi, '');
           newString = `${preCaretString}${cellLabel}${postCaretString}`;
-        }
-
-        this.TEXTAREA.value = newString;
-        this.clearHighlightedReferences();
-        this.highlightReferences(this.instance, newString);
-        opts.inputBar.value = newString;
-        HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
       }
+
+      this.TEXTAREA.value = newString;
+      this.clearHighlightedReferences();
+      this.highlightReferences(this.instance, newString);
+      opts.inputBar.value = newString;
+      HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
     }
   };
 
