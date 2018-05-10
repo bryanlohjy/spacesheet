@@ -31,7 +31,6 @@ export default opts => {
         for (let col = startColIndex; col <= endColIndex; col++) {
           if (row < numRows && col < numCols) {
             const reference = hotInstance.getCell(row, col);
-            console.log(row, col)
             if (reference) {
               reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
             }
