@@ -122,7 +122,7 @@ export default class Application extends React.Component {
               saveJSON(cellData, `fs-data-${dateString}`);
               saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
             }}
-          >Save</button>
+          >SAVE</button>
         </nav>
       </div>
     );
