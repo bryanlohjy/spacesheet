@@ -4,7 +4,9 @@ import DataPicker from './DataPicker/DataPicker.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
-import { getData } from '../lib/helpers.js';
+import { getData, formatDate } from '../lib/helpers.js';
+
+import { saveJSON } from './Application.js';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -19,7 +21,7 @@ export default class Application extends React.Component {
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
   };
   componentWillMount() {
-    getData('./dist/data/DataPicker/font_grid_vectors_10x10_min.json').then(res => {
+    getData('./dist/data/DataPicker/datapicker-09.json').then(res => {
       this.setState({
         gridData: JSON.parse(res),
       });
@@ -111,7 +113,17 @@ export default class Application extends React.Component {
               <span className="loading-message">Loading model ...</span>
             </div>
         }
-        <nav ref="bottomNav" className="bottom-nav"/>
+        <nav ref="bottomNav" className="bottom-nav">
+          <button
+            onClick={ e => {
+              const dateString = formatDate(new Date());
+              const cellData = JSON.stringify(this.hotInstance.getData());
+              const mergedCellData = JSON.stringify(this.hotInstance.mergeCells.mergedCellInfoCollection);
+              saveJSON(cellData, `fs-data-${dateString}`);
+              saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
+            }}
+          >SAVE</button>
+        </nav>
       </div>
     );
   }

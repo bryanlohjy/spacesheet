@@ -246,7 +246,7 @@ class Cell {
       const anchorKey = `${this.column}-${this.row}`;
       const anchor = this.dataPicker.grid[anchorKey];
       this.vector = anchor.vector;
-      this.image = anchor.image;
+      this.image = this.decodeFn(this.vector);
       return;
     }
 
