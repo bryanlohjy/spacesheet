@@ -1,6 +1,9 @@
 const DemoSheet = (rows, cols) => {
   const emptyRow = [];
-  for (let col = 0; col < (cols || 10); col++) {
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
     emptyRow.push('');
   }
   let data = {
@@ -29,11 +32,20 @@ const DemoSheet = (rows, cols) => {
       { row: 8, col: 1, rowspan: 1, colspan: 6 },
       { row: 10, col: 1, rowspan: 1, colspan: 6 },
     ],
-  }
-  if (data.data.length < (rows || 17)) {
-    const rowsToAdd = rows -  data.data.length;
-    for (let row = 0; row < rowsToAdd; row++) {
+  };
+
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
       data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
     }
   }
   return data;
