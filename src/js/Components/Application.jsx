@@ -4,7 +4,9 @@ import DataPicker from './DataPicker/DataPicker.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
-import { getData } from '../lib/helpers.js';
+import { getData, formatDate } from '../lib/helpers.js';
+
+import { saveJSON } from './Application.js';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -111,7 +113,17 @@ export default class Application extends React.Component {
               <span className="loading-message">Loading model ...</span>
             </div>
         }
-        <nav ref="bottomNav" className="bottom-nav"/>
+        <nav ref="bottomNav" className="bottom-nav">
+          <button
+            onClick={ e => {
+              const dateString = formatDate(new Date());
+              const cellData = JSON.stringify(this.hotInstance.getData());
+              const mergedCellData = JSON.stringify(this.hotInstance.mergeCells.mergedCellInfoCollection);
+              saveJSON(cellData, `fs-data-${dateString}`);
+              saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
+            }}
+          >Save</button>
+        </nav>
       </div>
     );
   }

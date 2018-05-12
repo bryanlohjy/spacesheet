@@ -106,6 +106,15 @@ const helpers = {
         }
       }
     }
+  },
+  formatDate(dateObj) {
+    const DD = String(dateObj.getDate()).padStart(2, '0');
+    const MM = String(Number(dateObj.getMonth()) + 1).padStart(2, '0');
+    const YYYY = String(dateObj.getFullYear()).padStart(4, '0');
+    const hh = String(dateObj.getHours()).padStart(2, '0');
+    const mm = String(dateObj.getMinutes()).padStart(2, '0');
+
+    return `${DD}-${MM}-${YYYY}_${hh}-${mm}` || dateObj.toDateString().replace(/\s/gi, '-');
   }
 };
 module.exports = helpers;
