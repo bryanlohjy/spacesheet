@@ -21,7 +21,7 @@ export default class Application extends React.Component {
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
   };
   componentWillMount() {
-    getData('./dist/data/DataPicker/font_grid_vectors_10x10_min.json').then(res => {
+    getData('./dist/data/DataPicker/datapicker-09.json').then(res => {
       this.setState({
         gridData: JSON.parse(res),
       });
