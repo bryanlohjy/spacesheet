@@ -118,14 +118,14 @@ export default class Spreadsheet extends React.Component {
                 afterUndo={ changes => {
                   const selection = this.hotInstance.getSelected();
                   const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  if (this.inputBar.innerText !== data) {
+                  if (this.inputBar.value !== data) {
                     this.inputBar.value = data;
                   }
                 }}
                 afterRedo={ changes => {
                   const selection = this.hotInstance.getSelected();
                   const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  if (this.inputBar.innerText !== data) {
+                  if (this.inputBar.value !== data) {
                     this.inputBar.value = data;
                   }
                 }}
