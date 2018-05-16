@@ -60,6 +60,21 @@ export default class Spreadsheet extends React.Component {
         return cellProperties;
       },
       data: this.demoSheet.data,
+      contextMenu: {
+        items: {
+          "undo": {
+            // disabled: true,
+          },
+          "redo": {},
+          "hsep1": "---------",
+          "borders": {},
+          "alignment": {},
+          "mergeCells": {},
+          "hsep2": "---------",
+          "commentsAddEdit": {},
+          "commentsRemove": {},
+        }
+      }
     });
     hotInstance.selectCell(0, 0);
   };
@@ -112,8 +127,6 @@ export default class Spreadsheet extends React.Component {
                 viewportRowRenderingOffset={26}
 
                 outsideClickDeselects={false}
-
-                contextMenu
                 // make sure input bar is in sync
                 afterUndo={ changes => {
                   const selection = this.hotInstance.getSelected();
@@ -129,6 +142,10 @@ export default class Spreadsheet extends React.Component {
                     this.inputBar.value = data;
                   }
                 }}
+
+                comments={true}
+                customBorders={true}
+
                 undo
                 redo
               />
