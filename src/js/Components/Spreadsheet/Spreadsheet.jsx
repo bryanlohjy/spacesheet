@@ -61,27 +61,23 @@ export default class Spreadsheet extends React.Component {
       },
       data: this.demoSheet.data,
       contextMenu: {
-        callback: function (key, options) {
-          console.log(key)
-          // if (key === 'about') {
-          //   setTimeout(function () {
-          //     // timeout is used to make sure the menu collapsed before alert is shown
-          //     alert("This is a context menu with default and custom options mixed");
-          //   }, 100);
-          // }
-        },
         items: {
           "undo": {
-            // disabled: true,
+            name: "Undo (Ctrl + Z)",
           },
-          "redo": {},
+          "redo": {
+            name: "Redo (Ctrl + Y)",
+          },
           "hsep1": "---------",
           "borders": {},
           "alignment": {},
-          "mergeCells": {},
           "hsep2": "---------",
+          "mergeCells": {},
+          "hsep3": "---------",
           "commentsAddEdit": {},
           "commentsRemove": {},
+          "hsep4": "---------",
+          "make_read_only": {},
         }
       }
     });
