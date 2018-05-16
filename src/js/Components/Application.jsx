@@ -4,7 +4,7 @@ import DataPicker from './DataPicker/DataPicker.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
-import { getData, formatDate } from '../lib/helpers.js';
+import { getData, formatDate, map } from '../lib/helpers.js';
 
 import { saveJSON } from './Application.js';
 
@@ -32,20 +32,28 @@ export default class Application extends React.Component {
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d');
     new FontModel(model => {
       this.drawFn = (ctx, decodedData) => { // decoded vector => canvas rendering logic
-        const memoryCtxData = this.memoryCtx.getImageData(0, 0, model.outputWidth, model.outputHeight);
-        const memoryCtxDataLength = memoryCtxData.data.length;
-        for (let i = 0; i < memoryCtxDataLength/4; i++) {
-          const val = (1 - decodedData[i]) * 255;
-          memoryCtxData.data[4*i] = val;    // RED (0-255)
-          memoryCtxData.data[4*i+1] = val;    // GREEN (0-255)
-          memoryCtxData.data[4*i+2] = val;    // BLUE (0-255)
-          memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
-        }
-        this.memoryCtx.putImageData(memoryCtxData, 0, 0);
+        // const memoryCtxData = this.memoryCtx.getImageData(0, 0, model.outputWidth, model.outputHeight);
+        // const memoryCtxDataLength = memoryCtxData.data.length;
+        // for (let i = 0; i < memoryCtxDataLength/4; i++) {
+        //   const val = (1 - decodedData[i]) * 255;
+        //   memoryCtxData.data[4*i] = val;    // RED (0-255)
+        //   memoryCtxData.data[4*i+1] = val;    // GREEN (0-255)
+        //   memoryCtxData.data[4*i+2] = val;    // BLUE (0-255)
+        //   memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
+        // }
+        // this.memoryCtx.putImageData(memoryCtxData, 0, 0);
+        // // ctx.drawImage(this.memoryCtx.canvas, 0, 0);
+        // const valOne = map(decodedData[0], 0, 0.0000001, 0, 1);
+        // console.log(valOne)
+        // ctx.fillRect(valOne, valOne, model.outputWidth, model.outputHeight);
+        const val = map(decodedData, -0.25, 0.25, 0, model.outputWidth);
         ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
-        ctx.drawImage(this.memoryCtx.canvas, 0, 0);
+        ctx.fillStyle = 'rgba(0, 200, 200, 0.5)';
+        ctx.fillRect(val, model.outputHeight/2, val/2, val/2);
+        console.log(val)
       };
       this.decodeFn = vector => { // vector to output
+        return (vector[0])
         return model.decode(vector, 0);
       };
       this.model = model;
