@@ -1,19 +1,19 @@
 .handsontable {
   font-size: 12px;
+  .htContextMenu {
+    .htItemWrapper {
+      &:after { // sizing arrrows
+        transform: scale(0.8);
+      }
+    }
+    .htDisabled {
+      div {
+        color: lightgrey;
+      }
+    }
+  }
 }
 
-.htContextMenu {
-  .htItemWrapper {
-    &:after { // sizing arrrows
-      transform: scale(0.8);
-    }
-  }
-  .htDisabled {
-    div {
-      color: lightgrey;
-    }
-  }
-}
 
 .spreadsheet-container {
   width: 100%;

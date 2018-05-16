@@ -76,8 +76,6 @@ export default class Spreadsheet extends React.Component {
           "hsep3": "---------",
           "commentsAddEdit": {},
           "commentsRemove": {},
-          "hsep4": "---------",
-          "make_read_only": {},
         }
       }
     });
@@ -147,7 +145,6 @@ export default class Spreadsheet extends React.Component {
                     this.inputBar.value = data;
                   }
                 }}
-
                 comments={true}
                 customBorders={true}
 
