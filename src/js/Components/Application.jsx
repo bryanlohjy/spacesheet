@@ -39,21 +39,39 @@ export default class Application extends React.Component {
         // ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
 
         // 3 lines
-        for (let i in decodedData) {
-          const spacing = model.outputWidth / (decodedData.length + 1);
-          const x = spacing * i + spacing;
-          const height = map(decodedData[i], -0.25, 0.25, 2, model.outputHeight - 10);
-          const y1 = (model.outputHeight - height) / 2;
-          const y2 = y1 + height;
-          const lineWidth = map(decodedData[i], -0.25, 0.25, 2, 10);
+        // for (let i in decodedData) {
+        //   const spacing = model.outputWidth / (decodedData.length + 1);
+        //   const x = spacing * i + spacing;
+        //   const height = map(decodedData[i], -0.25, 0.25, 2, model.outputHeight - 10);
+        //   const y1 = (model.outputHeight - height) / 2;
+        //   const y2 = y1 + height;
+        //   const lineWidth = map(decodedData[i], -0.25, 0.25, 2, 10);
+        //
+        //   ctx.beginPath();
+        //   ctx.moveTo(x, y1);
+        //   ctx.lineTo(x, y2);
+        //   ctx.lineWidth = lineWidth;
+        //   ctx.strokeStyle = `rgba(0, 0, 0, ${1})`;
+        //   ctx.stroke();
+        // }
+        // ctx.lineWidth = 1;
+        // ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
+        // ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
 
-          ctx.beginPath();
-          ctx.moveTo(x, y1);
-          ctx.lineTo(x, y2);
-          ctx.lineWidth = lineWidth;
-          ctx.strokeStyle = `rgba(0, 0, 0, ${1})`;
-          ctx.stroke();
-        }
+        const w = map(decodedData[0], -0.25, 0.25, 2, model.outputHeight - 10);
+        const h = map(decodedData[1], -0.25, 0.25, 2, model.outputHeight - 10);
+
+        const rotate = map(decodedData[2], -0.25, 0.25, 0, 2);
+
+        ctx.save();
+        ctx.translate(model.outputWidth/2, 0);
+        ctx.rotate(rotate);
+        const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
+        const [ r, g, b ] = [ ...rgb ]
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+
         ctx.lineWidth = 1;
         ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
         ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
