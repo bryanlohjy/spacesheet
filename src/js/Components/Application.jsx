@@ -32,29 +32,34 @@ export default class Application extends React.Component {
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d');
     new FontModel(model => {
       this.drawFn = (ctx, decodedData) => { // decoded vector => canvas rendering logic
-        // const memoryCtxData = this.memoryCtx.getImageData(0, 0, model.outputWidth, model.outputHeight);
-        // const memoryCtxDataLength = memoryCtxData.data.length;
-        // for (let i = 0; i < memoryCtxDataLength/4; i++) {
-        //   const val = (1 - decodedData[i]) * 255;
-        //   memoryCtxData.data[4*i] = val;    // RED (0-255)
-        //   memoryCtxData.data[4*i+1] = val;    // GREEN (0-255)
-        //   memoryCtxData.data[4*i+2] = val;    // BLUE (0-255)
-        //   memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
-        // }
-        // this.memoryCtx.putImageData(memoryCtxData, 0, 0);
-        // // ctx.drawImage(this.memoryCtx.canvas, 0, 0);
-        // const valOne = map(decodedData[0], 0, 0.0000001, 0, 1);
-        // console.log(valOne)
-        // ctx.fillRect(valOne, valOne, model.outputWidth, model.outputHeight);
-        const val = map(decodedData, -0.25, 0.25, 0, model.outputWidth);
-        ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
-        ctx.fillStyle = 'rgba(0, 200, 200, 0.5)';
-        ctx.fillRect(val, model.outputHeight/2, val/2, val/2);
-        console.log(val)
+        // colors
+        // const rgb = decodedData.map(v => map(v, -0.25, 0.25, 0, 255));
+        // const [ r, g, b ] = [ ...rgb ]
+        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        // ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
+
+        // 3 lines
+        for (let i in decodedData) {
+          const spacing = model.outputWidth / (decodedData.length + 1);
+          const x = spacing * i + spacing;
+          const height = map(decodedData[i], -0.25, 0.25, 2, model.outputHeight - 10);
+          const y1 = (model.outputHeight - height) / 2;
+          const y2 = y1 + height;
+          const lineWidth = map(decodedData[i], -0.25, 0.25, 2, 10);
+
+          ctx.beginPath();
+          ctx.moveTo(x, y1);
+          ctx.lineTo(x, y2);
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = `rgba(0, 0, 0, ${1})`;
+          ctx.stroke();
+        }
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
+        ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
       };
       this.decodeFn = vector => { // vector to output
-        return (vector[0])
-        return model.decode(vector, 0);
+        return ([vector[0], vector[1], vector[2]])
       };
       this.model = model;
       this.setState({
