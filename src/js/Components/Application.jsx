@@ -77,59 +77,60 @@ export default class Application extends React.Component {
         // context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 
         // CONCENTRIC CIRCLES
-        // const x = model.outputWidth / 2;
-        // const y = model.outputHeight / 2;
-        //
-        // const numCircs = Math.floor(map(decodedData[0], -0.25, 0.25, 1, 5));
-        // const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
-        // const [ r, g, b ] = [ ...rgb ]
-        //
-        // for (let i = 0; i < numCircs; i++) {
-        //   const rad = map(decodedData[0], -0.25, 0.25, 2, 25);
-        //   ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
-        //   ctx.beginPath();
-        //   ctx.arc(x, y, rad / i,0,2*Math.PI);
-        //   ctx.fill();
-        //   ctx.strokeStyle = `rgba(${r - 20}, ${g - 20}, ${b - 20}, 1)`;
-        //   ctx.stroke();
-        // }
-        const circle = (ctx, x, y, r) => {
-          ctx.arc(x, y, r, 0, 2*Math.PI);
-        }
-        // CONSTELLATIONS
-        const points = [];
-        // create points
-        ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
-        ctx.save();
-        decodedData.forEach((d, i) => {
-          const pointIndex = Math.floor(i / 2);
-          const val = map(d, -0.25, 0.25, 0, model.outputWidth);
-          if (!points[pointIndex]) {
-            points.push({ x: val, y: null });
-          } else {
-            points[pointIndex].y = val;
-          }
-        });
-        // draw points
-        points.forEach((pt, i) => {
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(0, 0, 0, 0.5)`;
-          circle(ctx, pt.x, pt.y, 1.5);
-          ctx.fill();
-        });
-        // draw lines between points
-        points.forEach((pt, i) => {
-          const toIndex = (i + 1) % points.length;
-          const to = points[toIndex];
-          ctx.beginPath();
-          ctx.lineWidth = 1;
-          ctx.strokeStyle = `rgba(0, 0, 0, 0.4)`;
-          ctx.moveTo(pt.x, pt.y);
-          ctx.lineTo(to.x, to.y);
-          ctx.stroke();
-        });
-        ctx.restore();
+        const x = model.outputWidth / 2;
+        const y = model.outputHeight / 2;
 
+        const numCircs = Math.floor(map(decodedData[0], -0.25, 0.25, 1, 5));
+        const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
+        const [ r, g, b ] = [ ...rgb ]
+
+        for (let i = 0; i < numCircs; i++) {
+          const rad = map(decodedData[0], -0.25, 0.25, 2, 25);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
+          ctx.beginPath();
+          ctx.arc(x, y, rad / i,0,2*Math.PI);
+          ctx.fill();
+          ctx.strokeStyle = `rgba(${r - 20}, ${g - 20}, ${b - 20}, 1)`;
+          ctx.stroke();
+        }
+        // const circle = (ctx, x, y, r) => {
+        //   ctx.arc(x, y, r, 0, 2*Math.PI);
+        // }
+        // // CONSTELLATIONS
+        // const points = [];
+        // // create points
+        // ctx.fillStyle = `rgb(0, 0, 50)`;
+        // ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
+        // ctx.save();
+        // decodedData.forEach((d, i) => {
+        //   const pointIndex = Math.floor(i / 2);
+        //   const val = map(d, -0.25, 0.25, 0, model.outputWidth);
+        //   if (!points[pointIndex]) {
+        //     points.push({ x: val, y: null });
+        //   } else {
+        //     points[pointIndex].y = val;
+        //   }
+        // });
+        // // draw points
+        // points.forEach((pt, i) => {
+        //   ctx.beginPath();
+        //   ctx.fillStyle = `rgba(255, 255, 255, 1)`;
+        //   circle(ctx, pt.x, pt.y, 3);
+        //   ctx.fill();
+        // });
+        // // draw lines between points
+        // points.forEach((pt, i) => {
+        //   const toIndex = (i + 1) % points.length;
+        //   const to = points[toIndex];
+        //   ctx.beginPath();
+        //   ctx.lineWidth = 2;
+        //   ctx.strokeStyle = `rgba(255, 255, 255, 0.8)`;
+        //   ctx.moveTo(pt.x, pt.y);
+        //   ctx.lineTo(to.x, to.y);
+        //   ctx.stroke();
+        // });
+        // ctx.restore();
+        //
         ctx.lineWidth = 0.5;
         ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
         ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);

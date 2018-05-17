@@ -10,8 +10,8 @@ export default class FontModel {
     this.init(loadedCallback);
     this.modelVars = {};
     // Output dimensions in pixels
-    this.outputWidth = 64;
-    this.outputHeight = 64;
+    this.outputWidth = 128;
+    this.outputHeight = 128;
   };
   init(loadedCallback) {
     const varLoader = new dl.CheckpointLoader(`./dist/data/Model`);
