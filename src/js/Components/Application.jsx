@@ -58,21 +58,42 @@ export default class Application extends React.Component {
         // ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
         // ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
 
-        const w = map(decodedData[0], -0.25, 0.25, 2, model.outputHeight - 10);
-        const h = map(decodedData[1], -0.25, 0.25, 2, model.outputHeight - 10);
+        // const w = map(decodedData[0], -0.25, 0.25, 2, model.outputHeight - 10);
+        // const h = map(decodedData[1], -0.25, 0.25, 2, model.outputHeight - 10);
+        //
+        // const rotate = map(decodedData[2], -0.25, 0.25, 0, 2);
+        //
+        // ctx.save();
+        // ctx.translate(model.outputWidth/2, 0);
+        // ctx.rotate(rotate);
+        // const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
+        // const [ r, g, b ] = [ ...rgb ]
+        // ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        // ctx.fillRect(0, 0, w, h);
+        // ctx.restore();
+        //
 
-        const rotate = map(decodedData[2], -0.25, 0.25, 0, 2);
+        // context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 
-        ctx.save();
-        ctx.translate(model.outputWidth/2, 0);
-        ctx.rotate(rotate);
+
+        const x = model.outputWidth / 2;
+        const y = model.outputHeight / 2;
+
+        const numCircs = Math.floor(map(decodedData[0], -0.25, 0.25, 1, 5));
         const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
         const [ r, g, b ] = [ ...rgb ]
-        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-        ctx.fillRect(0, 0, w, h);
-        ctx.restore();
 
-        ctx.lineWidth = 1;
+        for (let i = 0; i < numCircs; i++) {
+          const rad = map(decodedData[0], -0.25, 0.25, 2, 25);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
+          ctx.beginPath();
+          ctx.arc(x, y, rad / i,0,2*Math.PI);
+          ctx.fill();
+          ctx.strokeStyle = `rgba(${r - 20}, ${g - 20}, ${b - 20}, 1)`;
+          ctx.stroke();
+        }
+
+        ctx.lineWidth = 0.5;
         ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
         ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
       };
