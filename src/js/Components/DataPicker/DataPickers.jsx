@@ -51,6 +51,7 @@ export default class DataPickers extends React.Component {
     });
   };
   render() {
+    const selectorHeight = 48;
     return (
       <div>
         <DataPickerSelector
@@ -61,8 +62,9 @@ export default class DataPickers extends React.Component {
             }
           }}
           selectedGrid={this.state.selectedGrid}
+          height={selectorHeight}
         />
-        <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height }}>
+        <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height - selectorHeight}}>
           { this.state.loaded ?
             Object.keys(this.grids).map(key => {
               return (
@@ -70,7 +72,7 @@ export default class DataPickers extends React.Component {
                   key={key}
                   visible={key === this.state.selectedGrid}
                   width={this.props.width}
-                  height={this.props.height}
+                  height={this.props.height - selectorHeight}
                   data={this.grids[key].data}
                   dataPickerLabel={key}
                   outputWidth={this.props.outputWidth}
@@ -104,7 +106,7 @@ class DataPickerSelector extends React.Component {
   };
   render() {
     return (
-      <div className="datapicker-selector">
+      <div className="datapicker-selector" style={{ height: this.props.height }}>
         <ul>
           {
             Object.keys(this.props.grids).map(key => {
@@ -130,4 +132,5 @@ DataPickerSelector.propTypes = {
   grids: PropTypes.object,
   onSelectGrid: PropTypes.func,
   selectedGrid: PropTypes.string,
+  height: PropTypes.number,
 };

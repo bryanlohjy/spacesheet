@@ -51,14 +51,12 @@ export default class DataPicker extends React.Component {
     // takes in mouse coords and returns row and col index
     let { a: scale, b, c, d, e: translateX, f: translateY } = dataPicker.ctx.getTransform();
 
-    const el = this.refs.dataPickerCanvas;
-
-    const drawnScaleX = el.clientWidth / (dataPicker.outputWidth * dataPicker.columns);
+    const drawnScaleX = canvasEl.width / (dataPicker.outputWidth * dataPicker.columns);
     const subdivisionWidth = dataPicker.outputWidth / dataPicker.subdivisions * scale * drawnScaleX;
 
     const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
 
-    const drawnScaleY = el.clientHeight / (dataPicker.outputHeight * dataPicker.rows);
+    const drawnScaleY = canvasEl.height / (dataPicker.outputHeight * dataPicker.rows);
     const subdivisionHeight = dataPicker.outputHeight / dataPicker.subdivisions * scale * drawnScaleY;
     const row = Math.floor(((mouseY - translateY)) / subdivisionHeight);
 
@@ -255,7 +253,6 @@ ZoomButtons.propTypes = {
   visible: PropTypes.bool,
 };
 
-
 class DataPickerHighlighter extends React.Component {
   constructor(props) {
     super(props);
@@ -263,8 +260,8 @@ class DataPickerHighlighter extends React.Component {
   };
   computeStyle() {
     const { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
-    const top = `${translateY + this.props.highlighterRow * this.props.drawnWidth}px`;
-    const left = `${translateX + this.props.highlighterColumn * this.props.drawnHeight}px`;
+    const top = `${translateY + this.props.highlighterRow * this.props.drawnHeight}px`;
+    const left = `${translateX + this.props.highlighterColumn * this.props.drawnWidth}px`;
     const width = `${this.props.drawnWidth}px`;
     const height = `${this.props.drawnHeight}px`;
 
