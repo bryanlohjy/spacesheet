@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DataPicker from './DataPicker/DataPicker.jsx';
+import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
@@ -75,7 +75,7 @@ export default class Application extends React.Component {
         {
           this.state.modelIsLoaded ?
             <div className="spreadsheet-datapicker-container">
-              <DataPicker
+              <DataPickers
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
                 outputWidth={ this.state.outputWidth }

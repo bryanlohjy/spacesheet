@@ -3,15 +3,15 @@ import { lerp } from '../../lib/tensorUtils.js';
 import { map } from '../../lib/helpers.js';
 
 export default class DataPicker {
-  constructor(ctx, gridData, opts) {
+  constructor(ctx, opts) {
     this.ctx = ctx;
-
     this.width = this.ctx.canvas.width;
     this.height = this.ctx.canvas.height;
 
     this.outputWidth = opts.outputWidth;
     this.outputHeight = opts.outputHeight;
 
+    const gridData = opts.gridData;
     this.grid = gridData.data; // keys are [ column-row ]
     this.rows = gridData.grid.rows;
     this.columns = gridData.grid.columns;
