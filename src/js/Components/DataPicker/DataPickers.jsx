@@ -7,48 +7,35 @@ import { lerp, slerp } from '../../lib/tensorUtils.js';
 
 import DataPicker from './DataPicker.jsx';
 
+import V1 from '../../Data/variety_1.json';
+import V2 from '../../Data/variety_2.json';
+import STD from '../../Data/family.json';
+import NOVEL from '../../Data/novelty.json';
+
 export default class DataPickers extends React.Component {
   constructor(props) {
     super(props);
-    this.loadGridData = this.loadGridData.bind(this);
-
     this.state = { // used to manage highlighter
-      loaded: false,
       selectedGrid: 'V1',
     };
     this.grids = {
       V1: {
         label: 'Variety 1',
-        src: './dist/data/DataPicker/variety_1.json',
+        data: V1,
       },
       V2: {
         label: 'Variety 2',
-        src: './dist/data/DataPicker/variety_2.json',
+        data: V2,
       },
       STD: {
         label: 'Standard',
-        src: './dist/data/DataPicker/family.json',
+        data: STD,
       },
       NOVEL: {
         label: 'Novel',
-        src: './dist/data/DataPicker/novelty.json',
+        data: NOVEL,
       },
     };
-  };
-  componentWillMount() {
-    this.loadGridData();
-  };
-  loadGridData(loadedCallback) {
-    const gridKeys = Object.keys(this.grids);
-    const gridPromises = gridKeys.map(key => getData(this.grids[key].src));
-    Promise.all(gridPromises).then(res => {
-      for (let i = 0; i < res.length; i++) {
-        const gridKey = gridKeys[i];
-        const data = JSON.parse(res[i]);
-        this.grids[gridKey].data = data;
-      }
-      this.setState({ loaded: true });
-    });
   };
   render() {
     const selectorHeight = 48;
@@ -65,7 +52,7 @@ export default class DataPickers extends React.Component {
           height={selectorHeight}
         />
         <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height - selectorHeight}}>
-          { this.state.loaded ?
+          {
             Object.keys(this.grids).map(key => {
               return (
                 <DataPicker
@@ -85,7 +72,7 @@ export default class DataPickers extends React.Component {
                   onCellClick={ this.props.onCellClick }
                 />
               )
-            }) : "Loading grids."
+            })
           }
         </div>
       </div>
