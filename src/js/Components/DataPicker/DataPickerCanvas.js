@@ -34,7 +34,6 @@ export default class DataPicker {
       [subdivision]-[columnIndex]-[rowIndex]-[subcolumnIndex]-[subrowIndex]
     */
     this.cells = {};
-    // this.draw();
   };
   zoom(degree) {
     // scale around origin

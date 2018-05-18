@@ -26,7 +26,14 @@ export default class DataPicker extends React.Component {
   };
   componentDidMount() {
     this.initDataPicker();
-    this.dataPicker.draw();
+    if (this.props.visible) {
+      this.dataPicker.draw();
+    }
+  };
+  componentWillReceiveProps(newProps) {
+    if (!this.props.visible && newProps.visible) {
+      this.dataPicker.draw();
+    }
   };
   initDataPicker() {
     this.dataPicker = new DataPickerCanvas(
