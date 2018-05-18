@@ -33,11 +33,11 @@ export default class DataPicker extends React.Component {
       drawnWidth: 0,
       drawnHeight: 0,
       gridData: null,
-      selectedGrid: null,
+      selectedGrid: 'variety',
     };
     this.grids = {
-      variety_pack: {
-        label: 'Variety Pack',
+      variety: {
+        label: 'Variety',
         src: './dist/data/DataPicker/datapicker-09.json',
       },
       family: {
@@ -328,6 +328,7 @@ class DataPickerSelector extends React.Component {
                   onClick={() => {
                     this.props.onSelectGrid(key);
                   }}
+                  className={`${key === this.props.selectedGrid ? 'active' : ''}`}
                 >
                   {label}
                 </li>
