@@ -14,6 +14,7 @@ export default class DataPicker extends React.Component {
     super(props);
 
     this.initDataPicker = this.initDataPicker.bind(this);
+    this.loadGridData = this.loadGridData.bind(this);
 
     this.handleMouse = this.handleMouse.bind(this);
     this.handleMouseWheel = this.handleMouseWheel.bind(this);
@@ -33,65 +34,78 @@ export default class DataPicker extends React.Component {
       drawnWidth: 0,
       drawnHeight: 0,
       gridData: null,
-      selectedGrid: 'variety',
+      selectedGrid: 'variety1',
     };
     this.grids = {
-      variety: {
-        label: 'Variety',
-        src: './dist/data/DataPicker/datapicker-09.json',
+      variety1: {
+        label: 'Variety 1',
+        src: './dist/data/DataPicker/variety_1.json',
+      },
+      variety2: {
+        label: 'Variety 2',
+        src: './dist/data/DataPicker/variety_2.json',
       },
       family: {
         label: 'Family',
-        src: './dist/data/DataPicker/datapicker-09.json',
+        src: './dist/data/DataPicker/family.json',
       },
       novelty: {
         label: 'Novelty',
-        src: './dist/data/DataPicker/datapicker-09.json',
+        src: './dist/data/DataPicker/novelty.json',
       },
     };
   };
-  componentWillMount() {
-    getData('./dist/data/DataPicker/datapicker-09.json').then(res => {
-      this.setState({
-        gridData: JSON.parse(res),
-      });
-      this.initDataPicker();
+  componentDidMount() {
+    this.loadGridData(() => {
+      this.grids[this.state.selectedGrid].dataPicker.draw();
     });
   };
-  initDataPicker() {
-    const { rows, columns } = this.state.gridData.grid;
+  loadGridData(loadedCallback) {
+    const gridKeys = Object.keys(this.grids);
+    const gridPromises = gridKeys.map(key => getData(this.grids[key].src));
+    Promise.all(gridPromises).then(res => {
+      for (let i = 0; i < res.length; i++) {
+        const gridKey = gridKeys[i];
+        const data = JSON.parse(res[i]);
+        this.grids[gridKey].data = data;
+        this.grids[gridKey].dataPicker = this.initDataPicker(data);
+      }
+      loadedCallback();
+    });
+  };
+  initDataPicker(data) {
+    const { rows, columns } = data.grid;
     this.refs.dataPickerCanvas.width =  this.props.width;
     this.refs.dataPickerCanvas.height = this.props.height;
 
     const el = this.refs.dataPickerCanvas;
-    this.dataPicker = new DataPickerCanvas(el.getContext('2d'), this.state.gridData, {
+    const dataPicker = new DataPickerCanvas(el.getContext('2d'), data, {
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
     });
-    this.dataPicker.draw();
+    return dataPicker;
   };
   mouseToDataCoordinates(mouseX, mouseY) {
-    if (!this.dataPicker) { return; }
+    const dataPicker = this.grids[this.state.selectedGrid].dataPicker;
+    if (!dataPicker) { return; }
     const canvasEl = this.refs.dataPickerCanvas.getBoundingClientRect();
     mouseX -= canvasEl.left;
     mouseY -= canvasEl.top;
 
     // takes in mouse coords and returns row and col index
-    let { a: scale, b, c, d, e: translateX, f: translateY } = this.dataPicker.ctx.getTransform();
+    let { a: scale, b, c, d, e: translateX, f: translateY } = dataPicker.ctx.getTransform();
 
     const el = this.refs.dataPickerCanvas;
 
-    const drawnScaleX = el.clientWidth / (this.dataPicker.outputWidth * this.dataPicker.columns);
-    const subdivisionWidth = this.dataPicker.outputWidth / this.dataPicker.subdivisions * scale * drawnScaleX;
-
-    // mouseX -= this.refs.canvas.client
+    const drawnScaleX = el.clientWidth / (dataPicker.outputWidth * dataPicker.columns);
+    const subdivisionWidth = dataPicker.outputWidth / dataPicker.subdivisions * scale * drawnScaleX;
 
     const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
 
-    const drawnScaleY = el.clientHeight / (this.dataPicker.outputHeight * this.dataPicker.rows);
-    const subdivisionHeight = this.dataPicker.outputHeight / this.dataPicker.subdivisions * scale * drawnScaleY;
+    const drawnScaleY = el.clientHeight / (dataPicker.outputHeight * dataPicker.rows);
+    const subdivisionHeight = dataPicker.outputHeight / dataPicker.subdivisions * scale * drawnScaleY;
     const row = Math.floor(((mouseY - translateY)) / subdivisionHeight);
 
     this.setState({
@@ -103,24 +117,25 @@ export default class DataPicker extends React.Component {
   };
   handleMouse(e) {
     e.stopPropagation();
-    if (!this.dataPicker) { return; }
+    const dataPicker = this.grids[this.state.selectedGrid].dataPicker;
+    if (!dataPicker) { return; }
     switch (e.type) {
       case 'mousemove':
         if (this.dragStart) { // prevents mousemove from firing, if it hasn't moved at all - can sometimes be a problem
-          const coords = this.dataPicker.ctx.transformedPoint(e.clientX, e.clientY);
+          const coords = dataPicker.ctx.transformedPoint(e.clientX, e.clientY);
           if (coords.x === this.dragStart.x && coords.y === this.dragStart.y) {
             return;
           }
         }
-        this.dataPicker.originX = e.clientX;
-        this.dataPicker.originY = e.clientY;
+        dataPicker.originX = e.clientX;
+        dataPicker.originY = e.clientY;
         this.dragged = true;
         let showHighlighter = false;
 
         if (this.dragStart) {
-          const pt = this.dataPicker.ctx.transformedPoint(this.dataPicker.originX, this.dataPicker.originY);
-          this.dataPicker.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
-          this.dataPicker.draw();
+          const pt = dataPicker.ctx.transformedPoint(dataPicker.originX, dataPicker.originY);
+          dataPicker.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
+          dataPicker.draw();
         } else {
           showHighlighter = true;
         }
@@ -135,26 +150,26 @@ export default class DataPicker extends React.Component {
       case 'mousedown':
         e.preventDefault();
         this.mouseDownOnDataPicker = true;
-        this.dataPicker.originX = e.clientX;
-        this.dataPicker.originY = e.clientY;
-        this.dragStart = this.dataPicker.ctx.transformedPoint(this.dataPicker.originX, this.dataPicker.originY);
+        dataPicker.originX = e.clientX;
+        dataPicker.originY = e.clientY;
+        this.dragStart = dataPicker.ctx.transformedPoint(dataPicker.originX, dataPicker.originY);
         this.dragged = false;
         break;
       case 'mouseup':
         this.dragStart = null;
         if (this.state.showHighlighter) {
-          const subdivisions = this.dataPicker.subdivisions;
-          const totalRows = this.dataPicker.rows * subdivisions;
+          const subdivisions = dataPicker.subdivisions;
+          const totalRows = dataPicker.rows * subdivisions;
           const row = Math.floor(this.state.highlighterRow / subdivisions);
           const subrow = this.state.highlighterRow - (row * subdivisions);
 
-          const totalColumns = this.dataPicker.columns * subdivisions;
+          const totalColumns = dataPicker.columns * subdivisions;
           const column = Math.floor(this.state.highlighterColumn / subdivisions);
           const subcolumn = this.state.highlighterColumn - (column * subdivisions);
 
           const dataKey = `${subdivisions}-${column}-${row}-${subcolumn}-${subrow}`;
-          const vector = this.dataPicker.cells[dataKey].vector;
-          const image = this.dataPicker.cells[dataKey].image;
+          const vector = dataPicker.cells[dataKey].vector;
+          const image = dataPicker.cells[dataKey].image;
           if (this.props.onChange && this.mouseDownOnDataPicker) {
             this.mouseDownOnDataPicker = false;
             this.props.onChange(vector, dataKey);
@@ -173,13 +188,14 @@ export default class DataPicker extends React.Component {
   };
   handleMouseWheel(e) {
     e.preventDefault();
-    if (!this.dataPicker) { return; }
+    const dataPicker = this.grids[this.state.selectedGrid].dataPicker;
+    if (!dataPicker) { return; }
     const delta = e.deltaY;
     if (delta) {
       if (delta < 0) {
-        this.dataPicker.zoom(1);
+        dataPicker.zoom(1);
       } else {
-        this.dataPicker.zoom(-1);
+        dataPicker.zoom(-1);
       }
       const { row, column } = this.mouseToDataCoordinates(e.clientX, e.clientY);
       this.setState({
@@ -189,31 +205,21 @@ export default class DataPicker extends React.Component {
     }
   };
   handleZoomClick(direction) {
-    if (!this.dataPicker) { return; }
+    const dataPicker = this.grids[this.state.selectedGrid].dataPicker;
+    if (!dataPicker) { return; }
     // zoom towards center
     const centerX = this.refs.dataPickerCanvas.width / 2;
     const centerY = this.refs.dataPickerCanvas.height / 2;
-    this.dataPicker.originX = centerX;
-    this.dataPicker.originY = centerY;
+    dataPicker.originX = centerX;
+    dataPicker.originY = centerY;
 
-    this.dataPicker.zoom(direction)
+    dataPicker.zoom(direction)
     const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
 
     this.setState({
       highlighterColumn: column,
       highlighterRow: row,
     });
-  };
-  shouldComponentUpdate(newProps, newState) {
-    return true;
-    // const showHighlighter = newState.showHighlighter !== this.state.showHighlighter;
-    // const highlighterColumn = newState.highlighterColumn !== this.state.highlighterColumn;
-    // const highlighterRow = newState.highlighterRow !== this.state.highlighterRow;
-    // const drawnWidth = newState.drawnWidth !== this.state.drawnWidth;
-    // const drawnHeight = newState.drawnHeight !== this.state.drawnHeight;
-    // if (showHighlighter || highlighterColumn || highlighterRow || drawnWidth || drawnHeight) {
-    // }
-    // return false;
   };
   onSelectGrid(gridName) {
     console.log(`Select ${gridName}`)
@@ -233,7 +239,7 @@ export default class DataPicker extends React.Component {
             <div>
               { this.state.showHighlighter ?
                 <DataPickerHighlighter
-                  dataPicker={ this.dataPicker }
+                  dataPicker={ this.grids[this.state.selectedGrid].dataPicker }
                   highlighterColumn={ this.state.highlighterColumn }
                   highlighterRow={ this.state.highlighterRow }
                   drawnWidth={ this.state.drawnWidth }
