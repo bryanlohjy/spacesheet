@@ -65,60 +65,25 @@ export default class DataPickers extends React.Component {
         />
         <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height }}>
           { this.state.loaded ?
-              Object.keys(this.grids).map(key => {
-                return (
-                  <DataPicker
-                    key={key}
-                    visible={key === this.state.selectedGrid}
-                    width={this.props.width}
-                    height={this.props.height}
-                    data={this.grids[key].data}
-                    outputWidth={this.props.outputWidth}
-                    outputHeight={this.props.outputHeight}
-                    drawFn={this.props.drawFn}
-                    decodeFn={this.props.decodeFn}
-                    onCellSelect={(e, dataKey) => {
-                      console.log(e, dataKey)
-                    }}
-                  />
-                )
-              }) : "Loading grids."
+            Object.keys(this.grids).map(key => {
+              return (
+                <DataPicker
+                  key={key}
+                  visible={key === this.state.selectedGrid}
+                  width={this.props.width}
+                  height={this.props.height}
+                  data={this.grids[key].data}
+                  outputWidth={this.props.outputWidth}
+                  outputHeight={this.props.outputHeight}
+                  drawFn={this.props.drawFn}
+                  decodeFn={this.props.decodeFn}
+                  onCellSelect={(e, dataKey) => {
+                    console.log(e, dataKey)
+                  }}
+                />
+              )
+            }) : "Loading grids."
           }
-          {/* {
-            this.state.gridData ?
-            <div>
-              { this.state.showHighlighter ?
-                <DataPickerHighlighter
-                  dataPicker={ this.grids[this.state.selectedGrid].dataPicker }
-                  highlighterColumn={ this.state.highlighterColumn }
-                  highlighterRow={ this.state.highlighterRow }
-                  drawnWidth={ this.state.drawnWidth }
-                  drawnHeight={ this.state.drawnHeight }
-                /> : "" }
-                <div className="scale-buttons">
-                  <span onClick={() => {
-                    this.handleZoomClick(1);
-                  }}>
-                  +
-                </span>
-                <span onClick={() => {
-                  this.handleZoomClick(-1);
-                }}>
-                  -
-                </span>
-              </div>
-            </div> : ''
-          }
-          <canvas
-            ref='dataPickerCanvas'
-            onMouseMove={ this.handleMouse }
-            onMouseDown={ this.handleMouse }
-            onMouseOut={ this.handleMouse }
-            onMouseUp={ this.handleMouse }
-            onWheel={ this.handleMouseWheel }
-            width={ this.props.width }
-            height={ this.props.height }
-          /> */}
         </div>
       </div>
     );
@@ -129,7 +94,6 @@ DataPickers.propTypes = {
   outputHeight: PropTypes.number.isRequired,
   drawFn: PropTypes.func.isRequired,
   decodeFn: PropTypes.func.isRequired,
-  isColorTest: PropTypes.bool,
   onChange: PropTypes.func,
 };
 
