@@ -24,6 +24,8 @@ export default class DataPicker extends React.Component {
     this.dragged = null;
     this.mouseDownOnDataPicker = false;
 
+    this.onSelectGrid = this.onSelectGrid.bind(this);
+
     this.state = { // used to manage highlighter
       showHighlighter: false,
       highlighterColumn: 0,
@@ -31,6 +33,21 @@ export default class DataPicker extends React.Component {
       drawnWidth: 0,
       drawnHeight: 0,
       gridData: null,
+      selectedGrid: null,
+    };
+    this.grids = {
+      variety_pack: {
+        label: 'Variety Pack',
+        src: './dist/data/DataPicker/datapicker-09.json',
+      },
+      family: {
+        label: 'Family',
+        src: './dist/data/DataPicker/datapicker-09.json',
+      },
+      novelty: {
+        label: 'Novelty',
+        src: './dist/data/DataPicker/datapicker-09.json',
+      },
     };
   };
   componentWillMount() {
@@ -56,6 +73,7 @@ export default class DataPicker extends React.Component {
     this.dataPicker.draw();
   };
   mouseToDataCoordinates(mouseX, mouseY) {
+    if (!this.dataPicker) { return; }
     // takes in mouse coords and returns row and col index
     let { a: scale, b, c, d, e: translateX, f: translateY } = this.dataPicker.ctx.getTransform();
 
@@ -78,9 +96,7 @@ export default class DataPicker extends React.Component {
   };
   handleMouse(e) {
     e.stopPropagation();
-    if (!this.dataPicker) {
-      return;
-    }
+    if (!this.dataPicker) { return; }
     switch (e.type) {
       case 'mousemove':
         if (this.dragStart) { // prevents mousemove from firing, if it hasn't moved at all - can sometimes be a problem
@@ -150,9 +166,7 @@ export default class DataPicker extends React.Component {
   };
   handleMouseWheel(e) {
     e.preventDefault();
-    if (!this.dataPicker) {
-      return;
-    }
+    if (!this.dataPicker) { return; }
     const delta = e.deltaY;
     if (delta) {
       if (delta < 0) {
@@ -168,9 +182,7 @@ export default class DataPicker extends React.Component {
     }
   };
   handleZoomClick(direction) {
-    if (!this.dataPicker) {
-      return;
-    }
+    if (!this.dataPicker) { return; }
     // zoom towards center
     const centerX = this.refs.dataPickerCanvas.width / 2;
     const centerY = this.refs.dataPickerCanvas.height / 2;
@@ -186,21 +198,31 @@ export default class DataPicker extends React.Component {
     });
   };
   shouldComponentUpdate(newProps, newState) {
-    const showHighlighter = newState.showHighlighter !== this.state.showHighlighter;
-    const highlighterColumn = newState.highlighterColumn !== this.state.highlighterColumn;
-    const highlighterRow = newState.highlighterRow !== this.state.highlighterRow;
-    const drawnWidth = newState.drawnWidth !== this.state.drawnWidth;
-    const drawnHeight = newState.drawnHeight !== this.state.drawnHeight;
-    if (showHighlighter || highlighterColumn || highlighterRow || drawnWidth || drawnHeight) {
-      return true;
-    }
-    return false;
+    return true;
+    // const showHighlighter = newState.showHighlighter !== this.state.showHighlighter;
+    // const highlighterColumn = newState.highlighterColumn !== this.state.highlighterColumn;
+    // const highlighterRow = newState.highlighterRow !== this.state.highlighterRow;
+    // const drawnWidth = newState.drawnWidth !== this.state.drawnWidth;
+    // const drawnHeight = newState.drawnHeight !== this.state.drawnHeight;
+    // if (showHighlighter || highlighterColumn || highlighterRow || drawnWidth || drawnHeight) {
+    // }
+    // return false;
+  };
+  onSelectGrid(gridName) {
+    console.log(`Select ${gridName}`)
+    this.setState({ selectedGrid: gridName });
   };
   render() {
     return (
-      <div className="datapicker-container">
-        {
-          this.state.gridData ?
+      <div>
+        <DataPickerSelector
+          grids={this.grids}
+          onSelectGrid={this.onSelectGrid}
+          selectedGrid={this.state.selectedGrid}
+        />
+        <div className="datapicker-container">
+          {
+            this.state.gridData ?
             <div>
               { this.state.showHighlighter ?
                 <DataPickerHighlighter
@@ -210,30 +232,31 @@ export default class DataPicker extends React.Component {
                   drawnWidth={ this.state.drawnWidth }
                   drawnHeight={ this.state.drawnHeight }
                 /> : "" }
-              <div className="scale-buttons">
-                <span onClick={() => {
-                  this.handleZoomClick(1);
-                }}>
+                <div className="scale-buttons">
+                  <span onClick={() => {
+                    this.handleZoomClick(1);
+                  }}>
                   +
                 </span>
                 <span onClick={() => {
                   this.handleZoomClick(-1);
                 }}>
-                -
-              </span>
-            </div>
-          </div> : ''
-        }
-        <canvas
-          ref='dataPickerCanvas'
-          onMouseMove={ this.handleMouse }
-          onMouseDown={ this.handleMouse }
-          onMouseOut={ this.handleMouse }
-          onMouseUp={ this.handleMouse }
-          onWheel={ this.handleMouseWheel }
-          width={ this.props.width }
-          height={ this.props.height }
-        />
+                  -
+                </span>
+              </div>
+            </div> : ''
+          }
+          <canvas
+            ref='dataPickerCanvas'
+            onMouseMove={ this.handleMouse }
+            onMouseDown={ this.handleMouse }
+            onMouseOut={ this.handleMouse }
+            onMouseUp={ this.handleMouse }
+            onWheel={ this.handleMouseWheel }
+            width={ this.props.width }
+            height={ this.props.height }
+          />
+        </div>
       </div>
     );
   }
@@ -287,4 +310,37 @@ DataPickerHighlighter.propTypes = {
   highlighterRow: PropTypes.number,
   drawnWidth: PropTypes.number,
   drawnHeight: PropTypes.number,
+};
+
+class DataPickerSelector extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+  render() {
+    return (
+      <div className="datapicker-selector">
+        <ul>
+          {
+            Object.keys(this.props.grids).map(key => {
+              const label = this.props.grids[key].label;
+              return (
+                <li key={label}
+                  onClick={() => {
+                    this.props.onSelectGrid(key);
+                  }}
+                >
+                  {label}
+                </li>
+              )
+            })
+          }
+        </ul>
+      </div>
+    )
+  };
+}
+DataPickerSelector.propTypes = {
+  grids: PropTypes.object,
+  onSelectGrid: PropTypes.func,
+  selectedGrid: PropTypes.string,
 };
