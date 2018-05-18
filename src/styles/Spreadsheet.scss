@@ -1,3 +1,20 @@
+.handsontable {
+  font-size: 12px;
+  .htContextMenu {
+    .htItemWrapper {
+      &:after { // sizing arrrows
+        transform: scale(0.8);
+      }
+    }
+    .htDisabled {
+      div {
+        color: lightgrey;
+      }
+    }
+  }
+}
+
+
 .spreadsheet-container {
   width: 100%;
   height: 100%;
@@ -7,7 +24,6 @@
   overflow: hidden;
   z-index: 1;
   background-color: white;
-  font-size: 12px;
   .input-bar {
     box-sizing: border-box;
     width: 100%;

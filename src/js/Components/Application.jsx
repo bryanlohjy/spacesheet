@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DataPicker from './DataPicker/DataPicker.jsx';
+import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
-import { getData, formatDate } from '../lib/helpers.js';
+import { formatDate } from '../lib/helpers.js';
 
 import { saveJSON } from './Application.js';
 
@@ -13,19 +13,11 @@ export default class Application extends React.Component {
     super(props);
     this.state = {
       modelIsLoaded: false,
-      gridData: null,
       outputWidth: 0,
       outputHeight: 0,
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
-  };
-  componentWillMount() {
-    getData('./dist/data/DataPicker/datapicker-09.json').then(res => {
-      this.setState({
-        gridData: JSON.parse(res),
-      });
-    });
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
@@ -56,17 +48,19 @@ export default class Application extends React.Component {
       });
     });
   };
-  setSpreadsheetCellFromDataPicker(vector, dataKey) {
-    const data = this.getCellFromDataPicker(dataKey); // to do: move this step to cell renderer
+  setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
-    if (selection) {
-      const cellData = `=DATAPICKER('${dataKey}')`;
-      this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-      this.refs.spreadsheet.inputBar.value = cellData;
-    }
+    const cellData = `=DATAPICKER('${dataKey}')`;
+    this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+    this.refs.spreadsheet.inputBar.value = cellData;
   };
   getCellFromDataPicker(dataKey) {
-    const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
+    dataKey = dataKey.trim().replace(/["']/gi, "");
+    const firstHyphen = dataKey.indexOf('-');
+    const dataPickerKey = dataKey.substring(0, firstHyphen);
+    const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
+    
+    const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
   render () {
@@ -80,17 +74,16 @@ export default class Application extends React.Component {
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
-          this.state.modelIsLoaded && this.state.gridData ?
+          this.state.modelIsLoaded ?
             <div className="spreadsheet-datapicker-container">
-              <DataPicker
+              <DataPickers
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
-                gridData= { this.state.gridData }
-                onChange={ this.setSpreadsheetCellFromDataPicker }
+                onCellClick={ this.setSpreadsheetCellFromDataPicker }
                 ref='dataPicker'
               />
               <Spreadsheet
