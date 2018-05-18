@@ -4,7 +4,7 @@ import DataPicker from './DataPicker/DataPicker.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
-import { getData, formatDate } from '../lib/helpers.js';
+import { formatDate } from '../lib/helpers.js';
 
 import { saveJSON } from './Application.js';
 
@@ -13,19 +13,12 @@ export default class Application extends React.Component {
     super(props);
     this.state = {
       modelIsLoaded: false,
-      gridData: null,
+      // gridData: null,
       outputWidth: 0,
       outputHeight: 0,
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
-  };
-  componentWillMount() {
-    getData('./dist/data/DataPicker/datapicker-09.json').then(res => {
-      this.setState({
-        gridData: JSON.parse(res),
-      });
-    });
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
@@ -80,7 +73,7 @@ export default class Application extends React.Component {
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
-          this.state.modelIsLoaded && this.state.gridData ?
+          this.state.modelIsLoaded ?
             <div className="spreadsheet-datapicker-container">
               <DataPicker
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
@@ -89,7 +82,7 @@ export default class Application extends React.Component {
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
-                gridData= { this.state.gridData }
+                // gridData= { this.state.gridData }
                 onChange={ this.setSpreadsheetCellFromDataPicker }
                 ref='dataPicker'
               />
