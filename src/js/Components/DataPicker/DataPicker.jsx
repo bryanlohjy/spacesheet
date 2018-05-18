@@ -74,6 +74,10 @@ export default class DataPicker extends React.Component {
   };
   mouseToDataCoordinates(mouseX, mouseY) {
     if (!this.dataPicker) { return; }
+    const canvasEl = this.refs.dataPickerCanvas.getBoundingClientRect();
+    mouseX -= canvasEl.left;
+    mouseY -= canvasEl.top;
+
     // takes in mouse coords and returns row and col index
     let { a: scale, b, c, d, e: translateX, f: translateY } = this.dataPicker.ctx.getTransform();
 
@@ -81,6 +85,9 @@ export default class DataPicker extends React.Component {
 
     const drawnScaleX = el.clientWidth / (this.dataPicker.outputWidth * this.dataPicker.columns);
     const subdivisionWidth = this.dataPicker.outputWidth / this.dataPicker.subdivisions * scale * drawnScaleX;
+
+    // mouseX -= this.refs.canvas.client
+
     const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
 
     const drawnScaleY = el.clientHeight / (this.dataPicker.outputHeight * this.dataPicker.rows);
