@@ -58,6 +58,22 @@ export default class Application extends React.Component {
         // ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
         // ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
 
+        // TWO COLORS
+        const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
+        const [ r1, g1, b1, r2, g2, b2, ] = [ ...rgb ]
+
+        const rotate = map(decodedData[2], -0.25, 0.25, 0, 2);
+
+        ctx.save();
+        ctx.fillStyle = `rgb(${r1}, ${g1}, ${b1})`;
+        ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
+        // ctx.fillStyle = `rgb(${r1}, ${g1}, ${b1})`;
+        // ctx.fillRect(0, 0, model.outputWidth/2, model.outputHeight);
+        // ctx.fillStyle = `rgb(${r2}, ${g2}, ${b2})`;
+        // ctx.fillRect(model.outputWidth/2, 0, model.outputWidth, model.outputHeight);
+        ctx.restore();
+
+
         // CONFETTI
         // const w = map(decodedData[0], -0.25, 0.25, 2, model.outputHeight - 10);
         // const h = map(decodedData[1], -0.25, 0.25, 2, model.outputHeight - 10);
@@ -77,22 +93,22 @@ export default class Application extends React.Component {
         // context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 
         // CONCENTRIC CIRCLES
-        const x = model.outputWidth / 2;
-        const y = model.outputHeight / 2;
-
-        const numCircs = Math.floor(map(decodedData[0], -0.25, 0.25, 1, 5));
-        const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
-        const [ r, g, b ] = [ ...rgb ]
-
-        for (let i = 0; i < numCircs; i++) {
-          const rad = map(decodedData[0], -0.25, 0.25, 2, 25);
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
-          ctx.beginPath();
-          ctx.arc(x, y, rad / i,0,2*Math.PI);
-          ctx.fill();
-          ctx.strokeStyle = `rgba(${r - 20}, ${g - 20}, ${b - 20}, 1)`;
-          ctx.stroke();
-        }
+        // const x = model.outputWidth / 2;
+        // const y = model.outputHeight / 2;
+        //
+        // const numCircs = Math.floor(map(decodedData[0], -0.25, 0.25, 1, 5));
+        // const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
+        // const [ r, g, b ] = [ ...rgb ]
+        //
+        // for (let i = 0; i < numCircs; i++) {
+        //   const rad = map(decodedData[0], -0.25, 0.25, 2, 25);
+        //   ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.7)`;
+        //   ctx.beginPath();
+        //   ctx.arc(x, y, rad / i,0,2*Math.PI);
+        //   ctx.fill();
+        //   ctx.strokeStyle = `rgba(${r - 20}, ${g - 20}, ${b - 20}, 1)`;
+        //   ctx.stroke();
+        // }
         // const circle = (ctx, x, y, r) => {
         //   ctx.arc(x, y, r, 0, 2*Math.PI);
         // }
@@ -132,7 +148,7 @@ export default class Application extends React.Component {
         // ctx.restore();
         //
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = `rgba(0, 0, 0, 0.1)`;
+        ctx.strokeStyle = `rgba(255, 255, 255, 0.9)`;
         ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
       };
       this.decodeFn = vector => { // vector to output
