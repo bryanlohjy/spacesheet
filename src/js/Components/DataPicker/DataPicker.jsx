@@ -39,6 +39,7 @@ export default class DataPicker extends React.Component {
         decodeFn: this.props.decodeFn,
       }
     );
+    this.props.onDataPickerInit(this.dataPicker);
   };
   mouseToDataCoordinates(mouseX, mouseY) {
     const dataPicker = this.dataPicker;
@@ -156,11 +157,10 @@ export default class DataPicker extends React.Component {
           const subcolumn = this.state.highlighterColumn - (column * subdivisions);
 
           const dataKey = `${subdivisions}-${column}-${row}-${subcolumn}-${subrow}`;
-          const vector = dataPicker.cells[dataKey].vector;
           const image = dataPicker.cells[dataKey].image;
-          if (this.props.onCellSelect && this.mouseDownOnDataPicker) {
+          if (this.props.onCellClick && this.mouseDownOnDataPicker) {
             this.mouseDownOnDataPicker = false;
-            this.props.onCellSelect(vector, dataKey);
+            this.props.onCellClick(this.props.dataPickerLabel, dataKey);
           }
         }
         break;
@@ -220,7 +220,9 @@ DataPicker.propTypes = {
   drawFn: PropTypes.func.isRequired,
   decodeFn: PropTypes.func.isRequired,
   data: PropTypes.object,
-  onCellSelect: PropTypes.func,
+  dataPickerLabel: PropTypes.string,
+  onCellClick: PropTypes.func,
+  onDataPickerInit: PropTypes.func,
 };
 
 class ZoomButtons extends React.Component {
@@ -250,7 +252,7 @@ ZoomButtons.propTypes = {
   zoomIn: PropTypes.func,
   zoomOut: PropTypes.func,
   visible: PropTypes.bool,
-}
+};
 
 
 class DataPickerHighlighter extends React.Component {

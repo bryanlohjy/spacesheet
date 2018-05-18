@@ -13,7 +13,6 @@ export default class Application extends React.Component {
     super(props);
     this.state = {
       modelIsLoaded: false,
-      // gridData: null,
       outputWidth: 0,
       outputHeight: 0,
     };
@@ -49,17 +48,15 @@ export default class Application extends React.Component {
       });
     });
   };
-  setSpreadsheetCellFromDataPicker(vector, dataKey) {
-    const data = this.getCellFromDataPicker(dataKey); // to do: move this step to cell renderer
+  setSpreadsheetCellFromDataPicker(dataPickerKey, dataKey) {
+    const data = this.getCellFromDataPicker(dataPickerKey, dataKey); // to do: move this step to cell renderer
     const selection = this.hotInstance.getSelected();
-    if (selection) {
-      const cellData = `=DATAPICKER('${dataKey}')`;
-      this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-      this.refs.spreadsheet.inputBar.value = cellData;
-    }
+    const cellData = `=DATAPICKER('${dataPickerKey}-${dataKey}')`;
+    this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+    this.refs.spreadsheet.inputBar.value = cellData;
   };
-  getCellFromDataPicker(dataKey) {
-    const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
+  getCellFromDataPicker(dataPickerKey, dataKey) {
+    const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[dataKey];
     return cell.vector;
   };
   render () {
@@ -82,8 +79,7 @@ export default class Application extends React.Component {
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
-                // gridData= { this.state.gridData }
-                onChange={ this.setSpreadsheetCellFromDataPicker }
+                onCellClick={ this.setSpreadsheetCellFromDataPicker }
                 ref='dataPicker'
               />
               <Spreadsheet
