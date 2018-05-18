@@ -57,7 +57,6 @@ export default class DataPickers extends React.Component {
           grids={this.grids}
           onSelectGrid={gridName => {
             if (gridName !== this.state.selectedGrid) {
-              console.log(`Select ${gridName}`)
               this.setState({ selectedGrid: gridName });
             }
           }}

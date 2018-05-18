@@ -160,7 +160,8 @@ export default class DataPicker extends React.Component {
           const image = dataPicker.cells[dataKey].image;
           if (this.props.onCellClick && this.mouseDownOnDataPicker) {
             this.mouseDownOnDataPicker = false;
-            this.props.onCellClick(this.props.dataPickerLabel, dataKey);
+            const dataPickerKey = `${this.props.dataPickerLabel}-${dataKey}`;
+            this.props.onCellClick(dataPickerKey);
           }
         }
         break;

@@ -28,7 +28,6 @@ export default class Spreadsheet extends React.Component {
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
-      getCellFromDataPicker: this.props.getCellFromDataPicker,
       formulaParser: new FormulaParser(this.hotInstance, {
         getCellFromDataPicker: this.props.getCellFromDataPicker,
         model: this.props.model,
