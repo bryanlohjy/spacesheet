@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DataPicker from './DataPicker/DataPicker.jsx';
+import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import FontModel from '../Models/FontModel.js';
-import { getData, formatDate, map } from '../lib/helpers.js';
+import { formatDate, map } from '../lib/helpers.js';
 
 import { saveJSON } from './Application.js';
 
@@ -13,19 +13,11 @@ export default class Application extends React.Component {
     super(props);
     this.state = {
       modelIsLoaded: false,
-      gridData: null,
       outputWidth: 0,
       outputHeight: 0,
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
-  };
-  componentWillMount() {
-    getData('./dist/data/DataPicker/datapicker-09.json').then(res => {
-      this.setState({
-        gridData: JSON.parse(res),
-      });
-    });
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
@@ -59,19 +51,19 @@ export default class Application extends React.Component {
         // ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
 
         // TWO COLORS
-        const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
-        const [ r1, g1, b1, r2, g2, b2, ] = [ ...rgb ]
-
-        const rotate = map(decodedData[2], -0.25, 0.25, 0, 2);
-
-        ctx.save();
-        ctx.fillStyle = `rgb(${r1}, ${g1}, ${b1})`;
-        ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
+        // const rgb = decodedData.map(v => parseInt(map(v, -0.25, 0.25, 0, 255)));
+        // const [ r1, g1, b1, r2, g2, b2, ] = [ ...rgb ]
+        //
+        // const rotate = map(decodedData[2], -0.25, 0.25, 0, 2);
+        //
+        // ctx.save();
         // ctx.fillStyle = `rgb(${r1}, ${g1}, ${b1})`;
-        // ctx.fillRect(0, 0, model.outputWidth/2, model.outputHeight);
-        // ctx.fillStyle = `rgb(${r2}, ${g2}, ${b2})`;
-        // ctx.fillRect(model.outputWidth/2, 0, model.outputWidth, model.outputHeight);
-        ctx.restore();
+        // ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
+        // // ctx.fillStyle = `rgb(${r1}, ${g1}, ${b1})`;
+        // // ctx.fillRect(0, 0, model.outputWidth/2, model.outputHeight);
+        // // ctx.fillStyle = `rgb(${r2}, ${g2}, ${b2})`;
+        // // ctx.fillRect(model.outputWidth/2, 0, model.outputWidth, model.outputHeight);
+        // ctx.restore();
 
 
         // CONFETTI
@@ -109,10 +101,10 @@ export default class Application extends React.Component {
         //   ctx.strokeStyle = `rgba(${r - 20}, ${g - 20}, ${b - 20}, 1)`;
         //   ctx.stroke();
         // }
-        // const circle = (ctx, x, y, r) => {
-        //   ctx.arc(x, y, r, 0, 2*Math.PI);
-        // }
         // // CONSTELLATIONS
+        const circle = (ctx, x, y, r) => {
+          ctx.arc(x, y, r, 0, 2*Math.PI);
+        }
         // const points = [];
         // // create points
         // ctx.fillStyle = `rgb(0, 0, 50)`;
@@ -146,13 +138,106 @@ export default class Application extends React.Component {
         //   ctx.stroke();
         // });
         // ctx.restore();
-        //
+
+
+        // PHOTO MANIP
+        // ctx.save();
+        // const brightness = map(decodedData[1], -0.25, 0.25, 100, 200);
+        // const contrast = map(decodedData[2], -0.25, 0.25, 0, 200);
+        // const saturate = map(decodedData[3], -0.25, 0.25, 0, 200);
+        // const cssString = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`;
+        // ctx.filter = cssString;
+        // const base_image = new Image();
+        // base_image.src = 'dist/test_image.png';
+        // ctx.drawImage(base_image, 0, 0, model.outputWidth, model.outputHeight);
+        // ctx.restore();
+
+        // calculate filter strings
+
+        // FACES ?
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = `rgba(255, 255, 255, 0.9)`;
+        ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
+
+        ctx.fillStyle = 'rgba(255, 255, 0, 0.05)';
+        ctx.fillRect(0, 0, model.outputWidth, model.outputHeight);
+        ctx.strokeStyle = `rgba(180, 120, 10, 0.5)`;
         ctx.strokeRect(0, 0, model.outputWidth, model.outputHeight);
+        ctx.save();
+        // eyebrow
+        const eyebrowBaseY = model.outputHeight / 3;
+
+        const eyebrowLeftHeight = map(decodedData[0], -0.25, 0.25, eyebrowBaseY - 6, eyebrowBaseY + 4);
+        const eyebrowRightHeight = map(decodedData[1], -0.25, 0.25, eyebrowBaseY - 6, eyebrowBaseY + 4);
+
+        const eyeXLeft = (model.outputWidth / 6) * 2;
+        const eyebrowAngle = map(decodedData[2], -0.25, 0.25, -3, 3);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'black';
+
+        ctx.beginPath();
+        ctx.moveTo(eyeXLeft - 6, eyebrowLeftHeight + eyebrowAngle);
+        ctx.lineTo(eyeXLeft + 6, eyebrowLeftHeight - eyebrowAngle);
+        ctx.stroke();
+
+        const eyeXRight = (model.outputWidth / 6) * 4;
+        ctx.beginPath();
+        ctx.moveTo(eyeXRight - 6, eyebrowRightHeight - eyebrowAngle);
+        ctx.lineTo(eyeXRight + 6, eyebrowRightHeight + eyebrowAngle);
+        ctx.stroke();
+
+        const eyeSize = Math.max(1, map(decodedData[3], -0.25, 0.25, 1, 5));
+        // Left Eye
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(eyeXLeft + 2, eyebrowBaseY + 6, eyeSize, 0, 2*Math.PI);
+        ctx.stroke();
+
+        // Right Eye
+        ctx.beginPath();
+        ctx.arc(eyeXRight - 2, eyebrowBaseY + 6, eyeSize, 0, 2*Math.PI);
+        ctx.stroke();
+
+        // Mouth - comprised of 3 points
+        const mouthYBase = model.outputHeight/2 + 8;
+        const mouthHeight = map(decodedData[4], -0.25, 0.25, mouthYBase - 2, mouthYBase + 5);
+        const mouthWidth = map(decodedData[5], -0.25, 0.25, model.outputWidth / 20, model.outputWidth / 3);
+
+        const centerX = model.outputWidth / 2;
+        const mouthAsymmetry = map(decodedData[6], -0.25, 0.25, -5, 5);
+
+        const mouth1Y = mouthHeight + map(decodedData[7], -0.25, 0.25, -5, 5);
+        const mouth2Y = mouthHeight + map(decodedData[8], -0.25, 0.25, -5, 5);
+        const mouth3Y = mouthHeight + map(decodedData[9], -0.25, 0.25, -5, 5);
+
+        const mouthPoints = [
+          {
+            x: centerX - mouthWidth / 2 + mouthAsymmetry,
+            y: mouth1Y
+          },
+          {
+            x: centerX + mouthAsymmetry,
+            y: mouth2Y
+          },
+          {
+            x: centerX + mouthWidth / 2 + mouthAsymmetry,
+            y: mouth3Y
+          },
+        ];
+        ctx.beginPath();
+        ctx.lineCap = "round"
+        for (let pointIndex = 0; pointIndex < mouthPoints.length; pointIndex++) {
+          const point = mouthPoints[pointIndex];
+          if (pointIndex === 0) {
+            ctx.moveTo(point.x, point.y);
+          } else {
+            ctx.lineTo(point.x, point.y);
+          }
+        }
+        ctx.stroke();
+        ctx.restore();
       };
       this.decodeFn = vector => { // vector to output
-        return ([vector[0], vector[1], vector[2], vector[3], vector[4], vector[5], vector[6], vector[7]])
+        return ([vector[0], vector[1], vector[2], vector[3], vector[4], vector[5], vector[6], vector[7], vector[8], vector[9]]);
       };
       this.model = model;
       this.setState({
@@ -162,17 +247,19 @@ export default class Application extends React.Component {
       });
     });
   };
-  setSpreadsheetCellFromDataPicker(vector, dataKey) {
-    const data = this.getCellFromDataPicker(dataKey); // to do: move this step to cell renderer
+  setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
-    if (selection) {
-      const cellData = `=DATAPICKER('${dataKey}')`;
-      this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-      this.refs.spreadsheet.inputBar.value = cellData;
-    }
+    const cellData = `=DATAPICKER('${dataKey}')`;
+    this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+    this.refs.spreadsheet.inputBar.value = cellData;
   };
   getCellFromDataPicker(dataKey) {
-    const cell = this.refs.dataPicker.dataPicker.cells[dataKey];
+    dataKey = dataKey.trim().replace(/["']/gi, "");
+    const firstHyphen = dataKey.indexOf('-');
+    const dataPickerKey = dataKey.substring(0, firstHyphen);
+    const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
+
+    const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
   render () {
@@ -186,17 +273,16 @@ export default class Application extends React.Component {
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
-          this.state.modelIsLoaded && this.state.gridData ?
+          this.state.modelIsLoaded ?
             <div className="spreadsheet-datapicker-container">
-              <DataPicker
+              <DataPickers
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
                 outputWidth={ this.state.outputWidth }
                 outputHeight={ this.state.outputHeight }
                 drawFn={ this.drawFn }
                 decodeFn={ this.decodeFn }
-                gridData= { this.state.gridData }
-                onChange={ this.setSpreadsheetCellFromDataPicker }
+                onCellClick={ this.setSpreadsheetCellFromDataPicker }
                 ref='dataPicker'
               />
               <Spreadsheet

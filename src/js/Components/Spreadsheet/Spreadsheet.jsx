@@ -28,7 +28,6 @@ export default class Spreadsheet extends React.Component {
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
-      getCellFromDataPicker: this.props.getCellFromDataPicker,
       formulaParser: new FormulaParser(this.hotInstance, {
         getCellFromDataPicker: this.props.getCellFromDataPicker,
         model: this.props.model,
@@ -134,14 +133,14 @@ export default class Spreadsheet extends React.Component {
                 afterUndo={ changes => {
                   const selection = this.hotInstance.getSelected();
                   const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  if (this.inputBar.innerText !== data) {
+                  if (this.inputBar.value !== data) {
                     this.inputBar.value = data;
                   }
                 }}
                 afterRedo={ changes => {
                   const selection = this.hotInstance.getSelected();
                   const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  if (this.inputBar.innerText !== data) {
+                  if (this.inputBar.value !== data) {
                     this.inputBar.value = data;
                   }
                 }}
