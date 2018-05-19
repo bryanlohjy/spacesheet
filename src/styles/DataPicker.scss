@@ -44,27 +44,57 @@
   z-index: 1;
   cursor: pointer;
   user-select: none;
-  .scale-buttons {
+  .datapicker-ui {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid grey;
-    background-color: whitesmoke;
-    span {
-      color: grey;
+    background-color: rgba(255, 255, 255, 0.8);
+    margin: 20px;
+    right: 0;
+    bottom: 0;
+    .datapicker-minimap {
+      cursor: default;
+      z-index: 0;
       display: flex;
-      align-items: center;
-      padding: 5px 8px;
-      &:hover {
-        background-color: white;
+      .whole {
+        display: flex;
+        width: 200px;
+        height: 200px;
+        outline: 2px solid grey;
+        position: relative;
+        .window {
+          cursor: pointer;
+          position: absolute;
+          left: 0px;
+          outline: 1px solid darkorange;
+          background-color: rgba(220, 100, 0, 0.5);
+          width: 20px;
+          height: 10px;
+        }
       }
-      &:first-child {
-        border-radius: 5px 5px 0 0;
-        border-bottom: 1px solid grey;
-      }
-      &:nth-child(2) {
-        border-radius: 0 0 5px 5px;
+    }
+    .scale-buttons {
+      z-index: 1;
+
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid grey;
+      background-color: whitesmoke;
+      span {
+        color: grey;
+        display: flex;
+        align-items: center;
+        padding: 5px 8px;
+        &:hover {
+          background-color: white;
+        }
+        &:first-child {
+          border-radius: 5px 5px 0 0;
+          border-bottom: 1px solid grey;
+        }
+        &:nth-child(2) {
+          border-radius: 0 0 5px 5px;
+        }
       }
     }
   }

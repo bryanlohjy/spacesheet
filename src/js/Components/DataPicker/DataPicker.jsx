@@ -203,14 +203,17 @@ export default class DataPicker extends React.Component {
             drawnHeight={ this.state.drawnHeight }
           /> : "" }
         { this.props.visible ?
-          <ZoomButtons
-            zoomIn={ () => {
-              this.handleZoomClick(1);
-            }}
-            zoomOut={ () => {
-              this.handleZoomClick(-1);
-            }}
-          />
+          <div className="datapicker-ui">
+            <ZoomButtons
+              zoomIn={ () => {
+                this.handleZoomClick(1);
+              }}
+              zoomOut={ () => {
+                this.handleZoomClick(-1);
+              }}
+            />
+            <MiniMap/>
+          </div>
           : ""
         }
       </div>
@@ -254,6 +257,22 @@ class ZoomButtons extends React.Component {
     );
   };
 }
+
+class MiniMap extends React.Component {
+  constructor(props) {
+    super(props);
+  };
+  render() {
+    return (
+      <div className="datapicker-minimap">
+        <div className="whole">
+          <div className="window"/>
+        </div>
+      </div>
+    );
+  }
+}
+
 ZoomButtons.propTypes = {
   zoomIn: PropTypes.func,
   zoomOut: PropTypes.func,
