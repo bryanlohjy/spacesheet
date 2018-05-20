@@ -16,6 +16,7 @@ export default class DataPicker extends React.Component {
       highlighterRow: 0,
       drawnWidth: 0,
       drawnHeight: 0,
+      isLoaded: false,
     };
 
     this.initDataPicker = this.initDataPicker.bind(this);
@@ -48,6 +49,7 @@ export default class DataPicker extends React.Component {
       }
     );
     this.props.onDataPickerInit(this.dataPicker);
+    this.setState({ isLoaded: true })
   };
   mouseToDataCoordinates(mouseX, mouseY) {
     const dataPicker = this.dataPicker;
@@ -216,7 +218,7 @@ export default class DataPicker extends React.Component {
             drawnWidth={ this.state.drawnWidth }
             drawnHeight={ this.state.drawnHeight }
           /> : "" }
-        { this.props.visible && this.dataPicker ?
+        { this.props.visible && this.state.isLoaded ?
           <div className="datapicker-ui">
             <ZoomButtons
               zoomIn={() => {
