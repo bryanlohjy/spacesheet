@@ -220,6 +220,7 @@ export default class DataPicker extends React.Component {
               viewportX={Math.floor(-this.dataPicker.translateX / this.dataPicker.scale)}
               viewportY={Math.floor(-this.dataPicker.translateY / this.dataPicker.scale)}
             />
+            <span className="scale-indicator">{Math.round(this.dataPicker.scale * 100)}%</span>
           </div>
           : ""
         }
