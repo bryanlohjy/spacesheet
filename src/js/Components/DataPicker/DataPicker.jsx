@@ -23,6 +23,7 @@ export default class DataPicker extends React.Component {
     this.handleMouseWheel = this.handleMouseWheel.bind(this);
     this.mouseToDataCoordinates = this.mouseToDataCoordinates.bind(this);
     this.handleZoomClick = this.handleZoomClick.bind(this);
+    this.resetZoom = this.resetZoom.bind(this);
   };
   componentDidMount() {
     this.initDataPicker();
@@ -104,6 +105,19 @@ export default class DataPicker extends React.Component {
     dataPicker.zoom(direction)
     const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
 
+    this.setState({
+      highlighterColumn: column,
+      highlighterRow: row,
+    });
+  };
+  resetZoom() {
+    const dataPicker = this.dataPicker;
+    if (!dataPicker) { return; }
+    // zoom towards center
+    dataPicker.resetZoom();
+    const centerX = this.refs.dataPickerCanvas.width / 2;
+    const centerY = this.refs.dataPickerCanvas.height / 2;
+    const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
     this.setState({
       highlighterColumn: column,
       highlighterRow: row,
@@ -205,12 +219,13 @@ export default class DataPicker extends React.Component {
         { this.props.visible && this.dataPicker ?
           <div className="datapicker-ui">
             <ZoomButtons
-              zoomIn={ () => {
+              zoomIn={() => {
                 this.handleZoomClick(1);
               }}
-              zoomOut={ () => {
+              zoomOut={() => {
                 this.handleZoomClick(-1);
               }}
+              resetZoom={this.resetZoom}
             />
             <MiniMap
               width={this.props.width}
@@ -261,10 +276,20 @@ class ZoomButtons extends React.Component {
         }}>
           -
         </span>
+        <span onClick={() => {
+          this.props.resetZoom();
+        }}>
+        100%
+        </span>
       </div>
     );
   };
 }
+ZoomButtons.propTypes = {
+  zoomIn: PropTypes.func,
+  zoomOut: PropTypes.func,
+  resetZoom: PropTypes.func,
+};
 
 class MiniMap extends React.Component {
   constructor(props) {

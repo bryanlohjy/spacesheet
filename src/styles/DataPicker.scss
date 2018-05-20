@@ -42,8 +42,10 @@
   position: relative;
   background-color: white;
   z-index: 1;
-  cursor: pointer;
   user-select: none;
+  canvas {
+    cursor: pointer;
+  }
   .datapicker-ui {
     position: absolute;
     margin: 20px;
@@ -69,7 +71,6 @@
         outline: 2px solid grey;
         position: relative;
         .window {
-          cursor: pointer;
           position: absolute;
           left: 10px;
           outline: 1px solid grey;
@@ -80,27 +81,28 @@
       }
     }
     .scale-buttons {
+      cursor: pointer;
       z-index: 1;
 
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
       border-radius: 5px;
       border: 1px solid grey;
       background-color: whitesmoke;
       span {
+        text-align: center;
         color: grey;
         display: flex;
         align-items: center;
+        justify-content: center;
         padding: 5px 8px;
         &:hover {
           background-color: white;
         }
-        &:first-child {
+        &:not(:last-child) {
           border-radius: 5px 5px 0 0;
           border-bottom: 1px solid grey;
         }
-        &:nth-child(2) {
+        &:last-child {
+          font-size: 12px;
           border-radius: 0 0 5px 5px;
         }
       }
