@@ -202,7 +202,7 @@ export default class DataPicker extends React.Component {
             drawnWidth={ this.state.drawnWidth }
             drawnHeight={ this.state.drawnHeight }
           /> : "" }
-        { this.props.visible ?
+        { this.props.visible && this.dataPicker ?
           <div className="datapicker-ui">
             <ZoomButtons
               zoomIn={ () => {
@@ -212,7 +212,14 @@ export default class DataPicker extends React.Component {
                 this.handleZoomClick(-1);
               }}
             />
-            <MiniMap/>
+            <MiniMap
+              width={this.props.width}
+              height={this.props.height}
+              viewportWidth={Math.floor(this.props.width / this.dataPicker.scale)}
+              viewportHeight={Math.floor(this.props.height / this.dataPicker.scale)}
+              viewportX={Math.floor(-this.dataPicker.translateX / this.dataPicker.scale)}
+              viewportY={Math.floor(-this.dataPicker.translateY / this.dataPicker.scale)}
+            />
           </div>
           : ""
         }
@@ -261,22 +268,40 @@ class ZoomButtons extends React.Component {
 class MiniMap extends React.Component {
   constructor(props) {
     super(props);
+    this.drawScale = 1/10;
   };
   render() {
     return (
       <div className="datapicker-minimap">
-        <div className="whole">
-          <div className="window"/>
+        <div
+          className="whole"
+          style={{
+            width: this.props.width * this.drawScale,
+            height: this.props.height * this.drawScale,
+          }}
+        >
+          <div
+            className="window"
+            style={{
+              width: this.props.viewportWidth * this.drawScale,
+              height: this.props.viewportHeight * this.drawScale,
+              left: this.props.viewportX * this.drawScale,
+              top: this.props.viewportY * this.drawScale,
+            }}
+          />
         </div>
       </div>
     );
   }
 }
 
-ZoomButtons.propTypes = {
-  zoomIn: PropTypes.func,
-  zoomOut: PropTypes.func,
-  visible: PropTypes.bool,
+MiniMap.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  viewportWidth: PropTypes.number,
+  viewportHeight: PropTypes.number,
+  viewportX: PropTypes.number,
+  viewportY: PropTypes.number,
 };
 
 class DataPickerHighlighter extends React.Component {
