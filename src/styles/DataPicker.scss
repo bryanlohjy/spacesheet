@@ -65,11 +65,17 @@
       z-index: 0;
       display: flex;
       .whole {
+        align-items: center;
+        justify-content: center;
         display: flex;
-        width: 200px;
-        height: 200px;
-        outline: 2px solid grey;
+        outline: 1px solid grey;
         position: relative;
+        span {
+          font-weight: 700;
+          color: #7f7f7f;
+          z-index: 1;
+          text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+        }
         .window {
           position: absolute;
           left: 10px;
@@ -83,23 +89,26 @@
     .scale-buttons {
       cursor: pointer;
       z-index: 1;
-
       border-radius: 5px;
       border: 1px solid grey;
       background-color: whitesmoke;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-left: 10px;
       span {
-        text-align: center;
-        color: grey;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 5px 2px;
+        flex-grow: 1;
+        &:not(:first-child) {
+          border-top: 1px solid grey;
+        }
         &:hover {
           background-color: white;
         }
-        &:not(:last-child) {
+        &:first-child {
           border-radius: 5px 5px 0 0;
-          border-bottom: 1px solid grey;
         }
         &:last-child {
           font-size: 12px;
@@ -116,5 +125,4 @@
     box-shadow: 0px 3px 10px grey;
     border: 3px solid rgb(238, 132, 52);
   }
-  canvas {}
 }

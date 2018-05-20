@@ -220,6 +220,15 @@ export default class DataPicker extends React.Component {
           /> : "" }
         { this.props.visible && this.state.isLoaded ?
           <div className="datapicker-ui">
+            <MiniMap
+              width={this.props.width}
+              height={this.props.height}
+              viewportWidth={Math.floor(this.props.width / this.dataPicker.scale)}
+              viewportHeight={Math.floor(this.props.height / this.dataPicker.scale)}
+              viewportX={Math.floor(-this.dataPicker.translateX / this.dataPicker.scale)}
+              viewportY={Math.floor(-this.dataPicker.translateY / this.dataPicker.scale)}
+              displayScale={Math.round(this.dataPicker.scale * 100)}
+            />
             <ZoomButtons
               zoomIn={() => {
                 this.handleZoomClick(1);
@@ -229,15 +238,6 @@ export default class DataPicker extends React.Component {
               }}
               resetZoom={this.resetZoom}
             />
-            <MiniMap
-              width={this.props.width}
-              height={this.props.height}
-              viewportWidth={Math.floor(this.props.width / this.dataPicker.scale)}
-              viewportHeight={Math.floor(this.props.height / this.dataPicker.scale)}
-              viewportX={Math.floor(-this.dataPicker.translateX / this.dataPicker.scale)}
-              viewportY={Math.floor(-this.dataPicker.translateY / this.dataPicker.scale)}
-            />
-            <span className="scale-indicator">{Math.round(this.dataPicker.scale * 100)}%</span>
           </div>
           : ""
         }
@@ -308,6 +308,7 @@ class MiniMap extends React.Component {
             height: this.props.height * this.drawScale,
           }}
         >
+          <span>{this.props.displayScale}%</span>
           <div
             className="window"
             style={{
@@ -330,6 +331,7 @@ MiniMap.propTypes = {
   viewportHeight: PropTypes.number,
   viewportX: PropTypes.number,
   viewportY: PropTypes.number,
+  displayScale: PropTypes.number,
 };
 
 class DataPickerHighlighter extends React.Component {
