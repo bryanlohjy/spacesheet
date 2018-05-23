@@ -130,25 +130,31 @@ export default opts => {
         case 'BEFORE':
           const replace = this.shouldCloseOff();
           if (replace) {
+            console.log('before, replace');
             postCaret = postCaret.trim();
             const referenceToReplace = (postCaret).match(new RegExp(/^[a-z]\d+/gi))[0];
-            postCaret = postCaret.substring(0, postCaret.length - referenceToReplace.length);
-            newString = `${preCaret}${cellLabel}, ${postCaret}`;
+            postCaret = postCaret.substring(referenceToReplace.length, postCaret.length);
+            newString = `${preCaret}${cellLabel}${postCaret}`;
           } else { // add to string
+            console.log('before, add');
             newString = `${preCaret}${cellLabel}, ${postCaret}`;
             if (this.shouldCloseOff(newString)) {
               const endsWithBracket = postCaret.trim()[postCaret.trim().length - 1] === ")";
               newString = `${preCaret}${cellLabel}${postCaret}${!endsWithBracket ? ')' : ''}`;
+              caretPosition = Number(caretPosition) + Number(cellLabel.length);
+            } else {
+              caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
             }
-            caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
           }
           break;
         case 'BETWEEN':
+          console.log('between');
           preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
           postCaret = postCaret.replace(/^[0-9]+/gi, '');
           newString = `${preCaret}${cellLabel}${postCaret}`;
           break;
         case 'AFTER':
+          console.log('after');
           preCaret = preCaret.trim();
           const referenceToReplace = (preCaret).match(new RegExp(/[a-z]\d+$/gi))[0];
           preCaret = preCaret.substring(0, preCaret.length - referenceToReplace.length);
