@@ -85,10 +85,18 @@ export default class Spreadsheet extends React.Component {
     });
     hotInstance.selectCell(0, 0);
   };
-  setSelectedCellData(operation) {
-    const selection = this.hotInstance.getSelected();
-    this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
-    this.inputBar.value = operation;
+  setSelectedCellData(operation, closeAfterSetting) {
+    if (closeAfterSetting) {
+      const selection = this.hotInstance.getSelected();
+      this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
+      this.inputBar.value = operation;
+      return;
+    }
+    const editor = this.hotInstance.getActiveEditor();
+    editor.beginEditing();
+    editor.TEXTAREA.value = operation;
+    editor.eventManager.fireEvent(editor.TEXTAREA, 'keydown');
+    editor.updateTableCellCaptureClass();
   };
   render() {
     console.warn('SPREADSHEET COMPOONENT RENDER')
@@ -189,13 +197,13 @@ class OperationDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.operations = [
-      { name: 'ADD', populateString: '=ADD()' },
-      { name: 'MINUS', populateString: '=MINUS()' },
-      { name: 'AVERAGE', populateString: '=AVERAGE()' },
-      { name: 'LERP', populateString: '=LERP()' },
-      { name: 'SLIDER', populateString: '=SLIDER()' },
-      { name: 'DIST', populateString: '=DIST()' },
+      { name: 'AVERAGE', populateString: '=AVERAGE(' },
+      { name: 'LERP', populateString: '=LERP(' },
+      { name: 'MINUS', populateString: '=MINUS(' },
+      { name: 'ADD', populateString: '=ADD(' },
+      { name: 'SLIDER', populateString: '=SLIDER(0, 1, 0.05)' },
       { name: 'RANDFONT', populateString: `=RANDFONT()` },
+      { name: 'DIST', populateString: '=DIST(' },
     ];
   };
   render() {
@@ -208,7 +216,8 @@ class OperationDrawer extends React.Component {
                 className='operation-button'
                 onClick={ e => {
                   const string = operation.name === 'RANDFONT' ? `=RANDFONT(${randomInt(0, 9999)})` : operation.populateString;
-                  this.props.setSelectedCellData(string);
+                  const closeAfterSetting = operation.name === 'SLIDER' || operation.name === 'RANDFONT';
+                  this.props.setSelectedCellData(string, closeAfterSetting);
                 }}
               >{operation.name}</div>
             );

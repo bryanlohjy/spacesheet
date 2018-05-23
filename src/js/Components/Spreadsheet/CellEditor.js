@@ -135,6 +135,7 @@ export default opts => {
   };
 
   const onKeyDown = function(e) { // update input bar as cell is edited
+    if (!e.key) { return; }
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
         opts.inputBar.value = e.target.value;
