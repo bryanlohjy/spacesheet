@@ -100,8 +100,8 @@ export default opts => {
       let newString;
       switch (capturePos) {
         case 'BEFORE':
-          newString = `${preCaret}${cellLabel}${postCaret}`;
-          caretPosition = Number(caretPosition) + Number(cellLabel.length);
+          newString = `${preCaret}${cellLabel}, ${postCaret}`;
+          caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
           break;
         case 'BETWEEN':
           preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
@@ -112,7 +112,8 @@ export default opts => {
           preCaret = preCaret.trim();
           const referenceToReplace = (preCaret).match(new RegExp(/[a-z]\d+$/gi))[0];
           preCaret = preCaret.substring(0, preCaret.length - referenceToReplace.length);
-          newString = `${preCaret}${cellLabel}${postCaret}`;
+          newString = `${preCaret}${cellLabel}, ${postCaret}`;
+          caretPosition += 2;
       }
 
       opts.inputBar.value = newString;

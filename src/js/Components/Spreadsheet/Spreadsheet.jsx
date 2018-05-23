@@ -94,6 +94,7 @@ export default class Spreadsheet extends React.Component {
     }
     const editor = this.hotInstance.getActiveEditor();
     editor.beginEditing();
+    editor.clearHighlightedReferences();
     editor.TEXTAREA.value = operation;
     editor.eventManager.fireEvent(editor.TEXTAREA, 'keydown');
     editor.updateTableCellCaptureClass();
