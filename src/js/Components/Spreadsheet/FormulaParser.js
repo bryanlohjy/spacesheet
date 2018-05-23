@@ -20,42 +20,46 @@ const arrayIsARangeFragment = arr => {
   };
 }
 
+const getArgumentsFromFunction = (string) => {
+  let res = [];
+  const openBracketIndices = getIndicesOf('(', string);
+  const closeBracketIndices = getIndicesOf(')', string);
+  if (openBracketIndices.length && closeBracketIndices.length) {
+    const startIndex = openBracketIndices[0];
+    const endIndex = closeBracketIndices[closeBracketIndices.length - 1];
+    let betweenBrackets = (/\((.*)\)/gi).exec(string.substr(startIndex, endIndex));
+    betweenBrackets = betweenBrackets ? betweenBrackets[1] : null;
+
+    let args = [];
+    if (betweenBrackets && betweenBrackets.trim().length > 0) {
+      const split = betweenBrackets.split(',');
+      let concat = false;
+      for (let index = 0; index < split.length; index++) {
+        const argFragment = split[index];
+        if (concat && args.length > 0) {
+          args[args.length - 1] += `,${argFragment}`;
+        } else {
+          args.push(argFragment);
+        }
+        concat = (/\(/gi).test(argFragment) && !(/\)/gi).test(argFragment);
+      }
+    }
+    for (let argIndex = 0; argIndex < args.length; argIndex++) {
+      const arg = args[argIndex];
+      if (arg && arg.trim().length) {
+        res.push(arg.trim());
+      }
+    }
+  }
+  return res;
+};
+
 const FormulaParser = (hotInstance, opts) => {
   const parser = new Parser();
   const CustomFormula = new Formulae({
     getCellFromDataPicker: opts.getCellFromDataPicker,
     model: opts.model,
   });
-
-  parser.getArgumentsFromFunction = (string) => {
-    let args = [];
-    const openBracketIndices = getIndicesOf('(', string);
-    const closeBracketIndices = getIndicesOf(')', string);
-    if (openBracketIndices.length && closeBracketIndices.length) {
-      const startIndex = openBracketIndices[0];
-      const endIndex = closeBracketIndices[closeBracketIndices.length - 1];
-      let betweenBrackets = (/\((.*)\)/gi).exec(string.substr(startIndex, endIndex));
-      betweenBrackets = betweenBrackets ? betweenBrackets[1] : null;
-
-      if (betweenBrackets && betweenBrackets.trim().length > 0) {
-        const split = betweenBrackets.split(',');
-        let concat = false;
-        for (let index = 0; index < split.length; index++) {
-          const argFragment = split[index];
-          if (concat && args.length > 0) {
-            args[args.length - 1] += `,${argFragment}`;
-          } else {
-            args.push(argFragment);
-          }
-          concat = (/\(/gi).test(argFragment) && !(/\)/gi).test(argFragment);
-        }
-      }
-      args = args.map(arg => {
-        return arg.trim();
-      });
-    }
-    return args;
-  };
 
   parser.on('callCellValue', (cellCoord, done) => {
     const rowIndex = cellCoord.row.index;
@@ -105,4 +109,4 @@ const FormulaParser = (hotInstance, opts) => {
   return parser;
 };
 
-module.exports = { FormulaParser };
+module.exports = { FormulaParser, getArgumentsFromFunction };

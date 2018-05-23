@@ -2,6 +2,7 @@ import HandsOnTable from 'handsontable';
 import { cellLabelToCoords, cellCoordsToLabel, isFormula, getCellFromLabel } from './CellHelpers.js';
 import { getAllRegexMatches, removeInstancesOfClassName } from '../../lib/helpers.js';
 import Regex from '../../lib/Regex.js';
+import { getArgumentsFromFunction } from './FormulaParser.js';
 
 export default opts => {
   let CustomTextEditor =  HandsOnTable.editors.TextEditor.prototype.extend();
@@ -98,6 +99,7 @@ export default opts => {
       const cellLabel = cellCoordsToLabel(cellCoords);
 
       let newString;
+
       switch (capturePos) {
         case 'BEFORE':
           newString = `${preCaret}${cellLabel}, ${postCaret}`;
@@ -116,6 +118,22 @@ export default opts => {
           caretPosition += 2;
       }
 
+      // if not the average function, check if enough args are specified - close off if so
+      if (newString.trim()[newString.trim().length - 1] !== ')' && !(new RegExp(/^\s*=\s*average\s*\(/gi)).test(newString)) {
+        // replace last comma with )
+        const lastCommaIndex = newString.lastIndexOf(',');
+        const preLastComma = newString.substring(0, lastCommaIndex);
+        const closedOff = preLastComma + ')';
+        // check if operation should be closed off
+        const args = getArgumentsFromFunction(closedOff);
+        if (args.length) {
+          // if the operation is lerp, and there are 3 arguments, or if there are 2 arguments
+          const isLerpOperation = (new RegExp(/^\s*=\s*lerp\s*\(/gi)).test(closedOff);
+          if ((isLerpOperation && args.length === 3) || (!isLerpOperation && args.length === 2)) {
+            newString = closedOff;
+          }
+        }
+      }
       opts.inputBar.value = newString;
       this.TEXTAREA.value = newString;
       HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);

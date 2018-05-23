@@ -1,7 +1,7 @@
 import HandsOnTable from 'handsontable';
 import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
-
+import { getArgumentsFromFunction } from './FormulaParser.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   const CustomTextEditor = CellEditor(opts);
@@ -49,7 +49,7 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
-      const randArgs = opts.formulaParser.getArgumentsFromFunction(data);
+      const randArgs = getArgumentsFromFunction(data);
       if (randArgs.length === 0) { // if there are no arguments, use a smart default
         data = `=SLIDER(0, 1, 0.05)`;
         hotInstance.setDataAtCell(row, col, data);
@@ -127,7 +127,7 @@ const CellTypes = opts => {
   const RandFont = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
-        const randArgs = opts.formulaParser.getArgumentsFromFunction(data);
+        const randArgs = getArgumentsFromFunction(data);
         if (randArgs.length === 0) { // if there are no arguments, create a random seed
           data = `=RANDFONT(${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
