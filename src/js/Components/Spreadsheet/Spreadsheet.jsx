@@ -4,6 +4,8 @@ import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
+import { randomInt } from '../../lib/helpers.js';
+
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
@@ -14,11 +16,14 @@ export default class Spreadsheet extends React.Component {
 
     this.state = {
       inputBarIsMounted: false,
+      hotTableIsLoaded: false,
     };
 
     this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
     this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
+
+    this.setSelectedCellData = this.setSelectedCellData.bind(this);
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
@@ -80,8 +85,13 @@ export default class Spreadsheet extends React.Component {
     });
     hotInstance.selectCell(0, 0);
   };
+  setSelectedCellData(operation) {
+    const selection = this.hotInstance.getSelected();
+    this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
+    this.inputBar.value = operation;
+  };
   render() {
-    const inputBarHeight = 21;
+    console.warn('SPREADSHEET COMPOONENT RENDER')
     return (
       <div className="spreadsheet-container">
         <input className="input-bar" type="text"
@@ -92,9 +102,9 @@ export default class Spreadsheet extends React.Component {
               this.setState({ inputBarIsMounted : true });
             }
           }}
-          style={{
-            height: inputBarHeight || 21,
-          }}
+        />
+        <OperationDrawer
+          setSelectedCellData={this.setSelectedCellData}
         />
         {
           this.state.inputBarIsMounted ? (
@@ -102,9 +112,12 @@ export default class Spreadsheet extends React.Component {
               <HotTable
                 className="table"
                 ref={ ref => {
-                  this.props.setTableRef(ref);
-                  this.hotInstance = ref.hotInstance;
-                  this.initHotTable();
+                  if (ref && !this.hotInstance) {
+                    this.props.setTableRef(ref);
+                    this.hotInstance = ref.hotInstance;
+                    this.initHotTable();
+                    this.setState({ hotTableIsLoaded: true });
+                  }
                 }}
                 root='hot'
 
@@ -119,8 +132,8 @@ export default class Spreadsheet extends React.Component {
                 rowHeights={this.props.outputHeight}
                 colWidths={this.props.outputWidth}
 
-                width={ this.props.width }
-                height={ this.props.height - inputBarHeight }
+                // width={ this.props.width }
+                // height={ this.props.height - inputBarHeight - this.drawerHeight }
 
                 maxCols={ this.maxCols }
                 maxRows={ this.maxRows }
@@ -170,4 +183,41 @@ Spreadsheet.propTypes = {
   model: PropTypes.object,
   // beforeChange: PropTypes.func,
   // setCurrentColor: PropTypes.func,
+};
+
+class OperationDrawer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.operations = [
+      { name: 'ADD', populateString: '=ADD()' },
+      { name: 'MINUS', populateString: '=MINUS()' },
+      { name: 'AVERAGE', populateString: '=AVERAGE()' },
+      { name: 'LERP', populateString: '=LERP()' },
+      { name: 'SLIDER', populateString: '=SLIDER()' },
+      { name: 'DIST', populateString: '=DIST()' },
+      { name: 'RANDFONT', populateString: `=RANDFONT()` },
+    ];
+  };
+  render() {
+    return (
+      <div className='operation-drawer'>
+        { this.operations.map(operation => {
+            return (
+              <div
+                key={operation.name}
+                className='operation-button'
+                onClick={ e => {
+                  const string = operation.name === 'RANDFONT' ? `=RANDFONT(${randomInt(0, 9999)})` : operation.populateString;
+                  this.props.setSelectedCellData(string);
+                }}
+              >{operation.name}</div>
+            );
+          }) }
+      </div>
+    );
+  };
+};
+OperationDrawer.propTypes = {
+  // hotInstance: PropTypes.object,
+  setSelectedCellData: PropTypes.func,
 };
