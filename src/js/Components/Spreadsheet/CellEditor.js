@@ -79,6 +79,32 @@ export default opts => {
     return false;
   };
 
+  CustomTextEditor.prototype.shouldCloseOff = function(str) {
+    if (!str) {
+      str = this.TEXTAREA.value;
+    }
+
+    if ((new RegExp(/^\s*=\s*average\s*\(/gi)).test(str)) {
+      return false;
+    }
+
+    if (str.trim()[str.trim().length - 1] !== ')') { // close of string if not
+      const lastCommaIndex = str.lastIndexOf(',');
+      const preLastComma = str.substring(0, lastCommaIndex);
+      str = preLastComma + ')';
+    }
+    // check if operation should be closed off
+    const args = getArgumentsFromFunction(str);
+    if (args && args.length) {
+      const isLerpOperation = (new RegExp(/^\s*=\s*lerp\s*\(/gi)).test(str);
+      // if lerp, return true if it has 3 args
+      if ((isLerpOperation && args.length >= 3) || (!isLerpOperation && args.length >= 2)) {
+        return str;
+      }
+    }
+    return false;
+  };
+
   CustomTextEditor.prototype.captureCellClick = function(e) { // reference cells by clicking in editing mode
     const capturePos = this.cellCapturePosition();
     if (capturePos) {
@@ -102,8 +128,20 @@ export default opts => {
 
       switch (capturePos) {
         case 'BEFORE':
-          newString = `${preCaret}${cellLabel}, ${postCaret}`;
-          caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
+          const replace = this.shouldCloseOff();
+          if (replace) {
+            postCaret = postCaret.trim();
+            const referenceToReplace = (postCaret).match(new RegExp(/^[a-z]\d+/gi))[0];
+            postCaret = postCaret.substring(0, postCaret.length - referenceToReplace.length);
+            newString = `${preCaret}${cellLabel}, ${postCaret}`;
+          } else { // add to string
+            newString = `${preCaret}${cellLabel}, ${postCaret}`;
+            if (this.shouldCloseOff(newString)) {
+              const endsWithBracket = postCaret.trim()[postCaret.trim().length - 1] === ")";
+              newString = `${preCaret}${cellLabel}${postCaret}${!endsWithBracket ? ')' : ''}`;
+            }
+            caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
+          }
           break;
         case 'BETWEEN':
           preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
@@ -119,19 +157,10 @@ export default opts => {
       }
 
       // if not the average function, check if enough args are specified - close off if so
-      if (newString.trim()[newString.trim().length - 1] !== ')' && !(new RegExp(/^\s*=\s*average\s*\(/gi)).test(newString)) {
-        // replace last comma with )
-        const lastCommaIndex = newString.lastIndexOf(',');
-        const preLastComma = newString.substring(0, lastCommaIndex);
-        const closedOff = preLastComma + ')';
-        // check if operation should be closed off
-        const args = getArgumentsFromFunction(closedOff);
-        if (args.length) {
-          // if the operation is lerp, and there are 3 arguments, or if there are 2 arguments
-          const isLerpOperation = (new RegExp(/^\s*=\s*lerp\s*\(/gi)).test(closedOff);
-          if ((isLerpOperation && args.length === 3) || (!isLerpOperation && args.length === 2)) {
-            newString = closedOff;
-          }
+      if (!(new RegExp(/^\s*=\s*average\s*\(/gi)).test(newString)) {
+        const shouldClose = this.shouldCloseOff(newString);
+        if (shouldClose) {
+          newString = shouldClose;
         }
       }
       opts.inputBar.value = newString;
