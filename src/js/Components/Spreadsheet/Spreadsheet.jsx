@@ -22,8 +22,11 @@ export default class Spreadsheet extends React.Component {
   setSelectedCellData(operation, closeAfterSetting) {
     if (closeAfterSetting) {
       const selection = this.hotInstance.getSelected();
-      this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
-      this.props.setInputBarValue(operation);
+      const prevData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+      if (prevData !== operation) {
+        this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
+        this.props.setInputBarValue(operation);
+      }
       return;
     }
     const editor = this.hotInstance.getActiveEditor();
