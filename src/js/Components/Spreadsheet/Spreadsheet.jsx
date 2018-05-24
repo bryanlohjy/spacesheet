@@ -79,17 +79,16 @@ export default class Spreadsheet extends React.Component {
   }
 }
 Spreadsheet.propTypes = {
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
   width: PropTypes.number,
   height: PropTypes.number,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
   drawFn: PropTypes.func,
   decodeFn: PropTypes.func,
-
-  setTableRef: PropTypes.func,
-  dataPickerCellData: PropTypes.object,
   getCellFromDataPicker: PropTypes.func,
   model: PropTypes.object,
+  inputBarValue: PropTypes.string,
+  setTableRef: PropTypes.func,
 };
 
 class HotTableContainer extends React.Component {
@@ -189,13 +188,13 @@ class HotTableContainer extends React.Component {
         maxCols={ this.maxCols }
         maxRows={ this.maxRows }
 
-        afterRender={ e => { console.warn('HotTable Render')}}
+        // afterRender={ e => { console.warn('HotTable Render')}}
 
         viewportColumnRenderingOffset={26}
         viewportRowRenderingOffset={26}
 
         outsideClickDeselects={false}
-        // make sure input bar is in sync
+
         afterUndo={ changes => {
           const selection = this.hotInstance.getSelected();
           const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
@@ -219,6 +218,20 @@ class HotTableContainer extends React.Component {
     );
   }
 }
+HotTableContainer.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
+  drawFn: PropTypes.func,
+  decodeFn: PropTypes.func,
+  getCellFromDataPicker: PropTypes.func,
+  model: PropTypes.object,
+  inputBarValue: PropTypes.string,
+  afterSelection: PropTypes.func,
+  setInputBarValue: PropTypes.func,
+  setTableRef: PropTypes.func,
+};
 
 class OperationDrawer extends React.Component {
   constructor(props) {
@@ -254,7 +267,6 @@ class OperationDrawer extends React.Component {
   };
 };
 OperationDrawer.propTypes = {
-  // hotInstance: PropTypes.object,
   currentSelection: PropTypes.array,
   setSelectedCellData: PropTypes.func,
 };

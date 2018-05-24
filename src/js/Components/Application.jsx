@@ -53,8 +53,11 @@ export default class Application extends React.Component {
   setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
     const cellData = `=DATAPICKER('${dataKey}')`;
-    this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-    this.setInputBarValue(cellData);
+    const prevData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+    if (prevData !== cellData) {
+      this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+      this.setInputBarValue(cellData);
+    }
   };
   setInputBarValue(value) {
     this.setState({ inputBarValue: value });
