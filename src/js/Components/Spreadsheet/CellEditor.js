@@ -55,7 +55,7 @@ export default opts => {
 
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-    opts.inputBar.value = this.originalValue || '';
+    opts.setInputBarValue(this.originalValue || '');
   };
 
   CustomTextEditor.prototype.cellCapturePosition = function() { // returns caret position relative to where the captured cell should be
@@ -164,7 +164,7 @@ export default opts => {
           newString = shouldClose;
         }
       }
-      opts.inputBar.value = newString;
+      opts.setInputBarValue(newString);
       this.TEXTAREA.value = newString;
       HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
 
@@ -187,13 +187,13 @@ export default opts => {
     if (!e.key) { return; }
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
-        opts.inputBar.value = e.target.value;
+        opts.setInputBarValue(e.target.value);
         this.clearHighlightedReferences();
         this.highlightReferences(this.instance, e.target.value);
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue
       setTimeout(() => {
-        opts.inputBar.value = this.originalValue;
+        opts.setInputBarValue(this.originalValue);
       }, 0);
     }
   };
@@ -212,7 +212,7 @@ export default opts => {
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     this.TEXTAREA.setAttribute('spellcheck', 'false');
     setTimeout(() => {
-      opts.inputBar.value = this.TEXTAREA.value || '';
+      opts.setInputBarValue(this.TEXTAREA.value || '');
     }, 0);
     this.highlightReferences(this.instance, this.originalValue);
     this.updateTableCellCaptureClass();

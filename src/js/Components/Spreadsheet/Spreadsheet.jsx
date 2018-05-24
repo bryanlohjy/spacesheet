@@ -14,7 +14,7 @@ export default class Spreadsheet extends React.Component {
     super(props);
     this.state = { // updated using refs to prevent unnecessary table rendering
       inputBarIsMounted: false,
-      // inputBarValue: "",
+      inputBarValue: "",
       currentSelection: [0, 0, 0, 0],
     };
     this.setSelectedCellData = this.setSelectedCellData.bind(this);
@@ -23,7 +23,7 @@ export default class Spreadsheet extends React.Component {
     if (closeAfterSetting) {
       const selection = this.hotInstance.getSelected();
       this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
-      this.inputBar.value = operation;
+      this.props.setInputBarValue(operation);
       return;
     }
     const editor = this.hotInstance.getActiveEditor();
@@ -33,17 +33,14 @@ export default class Spreadsheet extends React.Component {
     editor.eventManager.fireEvent(editor.TEXTAREA, 'keydown');
     editor.updateTableCellCaptureClass();
   };
-  // setInputBarValue(value) {
-  //   this.setState({ inputBarValue: value });
-  // };
   render() {
     return (
       <div className="spreadsheet-container">
         <input className="input-bar" type="text"
           disabled
+          value={this.props.inputBarValue}
           ref={ el => {
             if (!this.state.inputBarIsMounted) {
-              this.inputBar = el;
               this.setState({ inputBarIsMounted : true });
             }
           }}
@@ -64,7 +61,7 @@ export default class Spreadsheet extends React.Component {
                 }}
                 width={this.props.width}
                 height={this.props.height}
-                inputBar={this.inputBar}
+                setInputBarValue={this.props.setInputBarValue}
                 getCellFromDataPicker={this.props.getCellFromDataPicker}
                 model={this.props.model}
                 drawFn={this.props.drawFn}
@@ -114,7 +111,7 @@ class HotTableContainer extends React.Component {
         getCellFromDataPicker: this.props.getCellFromDataPicker,
         model: this.props.model,
       }),
-      inputBar: this.props.inputBar,
+      setInputBarValue: this.props.setInputBarValue,
     });
 
     hotInstance.updateSettings({
@@ -192,7 +189,7 @@ class HotTableContainer extends React.Component {
         maxCols={ this.maxCols }
         maxRows={ this.maxRows }
 
-        afterRender={ e => { console.log('HotTable Render')}}
+        afterRender={ e => { console.warn('HotTable Render')}}
 
         viewportColumnRenderingOffset={26}
         viewportRowRenderingOffset={26}
@@ -202,16 +199,12 @@ class HotTableContainer extends React.Component {
         afterUndo={ changes => {
           const selection = this.hotInstance.getSelected();
           const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-          if (this.props.inputBar.value !== data) {
-            this.props.inputBar.value = data;
-          }
+          this.props.setInputBarValue(data)
         }}
         afterRedo={ changes => {
           const selection = this.hotInstance.getSelected();
           const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-          if (this.props.inputBar.value !== data) {
-            this.props.inputBar.value = data;
-          }
+          this.props.setInputBarValue(data);
         }}
         afterSelection={ (r, c, r2, c2) => {
           this.props.afterSelection(r, c, r2, c2);

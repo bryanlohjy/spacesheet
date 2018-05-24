@@ -168,7 +168,7 @@ const CellTypes = opts => {
               e.stopPropagation();
               e.stopImmediatePropagation();
               const newValue = `=RANDFONT(${ randomInt(0, 99999) })`;
-              opts.inputBar.value= newValue;
+              opts.setInputBarValue(newValue);
               hotInstance.setDataAtCell(row, col, newValue);
             });
 
