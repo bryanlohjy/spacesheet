@@ -111,6 +111,8 @@ const CellTypes = opts => {
         valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
 
         if (!prevSlider) {
+          // set value to halfway by default
+          slider.setAttribute('value', (min + max)/2);
           sliderContainer.appendChild(valueSpan);
           sliderContainer.appendChild(slider);
           td.appendChild(sliderContainer);
