@@ -201,7 +201,7 @@ class OperationDrawer extends React.Component {
       { name: 'AVERAGE', populateString: '=AVERAGE(' },
       { name: 'LERP', populateString: '=LERP(' },
       { name: 'MINUS', populateString: '=MINUS(' },
-      { name: 'ADD', populateString: '=ADD(' },
+      { name: 'SUM', populateString: '=SUM(' },
       { name: 'SLIDER', populateString: '=SLIDER(0, 1, 0.05)' },
       { name: 'RANDFONT', populateString: `=RANDFONT()` },
       { name: 'DIST', populateString: '=DIST(' },
