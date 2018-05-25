@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula, cellCoordsToLabel } from './CellHelpers.js';
-import { removeInstancesOfClassName, randomInt } from '../../lib/helpers.js';
+import { removeInstancesOfClassName, randomInt, getAllIndicesInArray } from '../../lib/helpers.js';
 
 export default class OperationDrawer extends React.Component {
   constructor(props) {
@@ -140,7 +140,6 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.length > 0;
         },
         get smartFillCells() {
-          if (!self.props || !self.props.currentSelection || !self.props.hotInstance) { return; }
           const selection = self.props.currentSelection;
           const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const rows = selectedCells.length;
@@ -183,12 +182,55 @@ export default class OperationDrawer extends React.Component {
       },
       MINUS: {
         onMouseOver: e => {
+          const smartFill = self.operations.MINUS.smartFillCells;
+          if (smartFill && smartFill.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill);
+          } else {
+            const selection = self.props.hotInstance.getSelected();
+            highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+          }
         },
         onClick: e => {
+          const smartFill = self.operations.MINUS.smartFillCells;
+          if (smartFill.length > 0) {
+            const smartFillCell = smartFill[0];
+            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFillCell[2]);
+          } else {
+            self.props.setSelectedCellData('=MINUS(');
+          }
         },
         shouldHighlight: () => {
+          const smartFill = self.operations.MINUS.smartFillCells;
+          return smartFill && smartFill.length > 0;
         },
         get smartFillCells() {
+          const cells = [];
+          const selection = self.props.currentSelection;
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const endRow = Math.max(selection[0], selection[2]);
+          const endCol = Math.max(selection[1], selection[3]);
+
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+          const rows = selectedCells.length;
+          const cols = selectedCells[0].length;
+          const validMatrix = getValidMatrix(selectedCells);
+          const verticalStrip = rows > 2 && cols === 1;
+          const horizontalStrip = cols > 2 && rows === 1;
+
+          if (horizontalStrip) {
+            const row = validMatrix[0];
+            const valids = getAllIndicesInArray(row, true);
+            const firstEmpty = row.indexOf(false);
+            if (valids.length !== 2) { return cells };
+            if (firstEmpty < 0) { return cells };
+
+            const firstValidLabel = cellCoordsToLabel({ row: startRow, col: valids[0] + startCol });
+            const secondValidLabel = cellCoordsToLabel({ row: startRow, col: valids[1] + startCol });
+
+            cells.push([startRow, startCol + firstEmpty, `=MINUS(${firstValidLabel}, ${secondValidLabel})`])
+          }
+          return cells;
         },
       },
       SUM: {

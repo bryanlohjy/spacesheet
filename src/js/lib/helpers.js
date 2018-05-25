@@ -80,6 +80,15 @@ const helpers = {
     }
     return indices;
   },
+  getAllIndicesInArray(arr, val) {
+    const indexes = []
+    for(let i = 0; i < arr.length; i++) {
+      if (arr[i] === val) {
+        indexes.push(i);
+      }
+    };
+    return indexes;
+  },
   getAllRegexMatches(regex, string) {
     const matches = [];
     var m;
