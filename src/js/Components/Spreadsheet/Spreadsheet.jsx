@@ -280,8 +280,9 @@ class OperationDrawer extends React.Component {
             if (horizontalStrip) {
               const hasValuesAtEnds = validMatrix[0][0] && validMatrix[0][cols - 1];
               let hasNoValuesInBetween = true;
-              for (let col = 0; col < cols; col++) {
+              for (let col = 1; col < cols - 1; col++) {
                 if (validMatrix[0][col]) {
+                  hasNoValuesInBetween = false;
                   break;
                 }
               }
@@ -380,12 +381,12 @@ class OperationDrawer extends React.Component {
         DIST: false,
       }
     };
-    this.interpretSelection = this.interpretSelection.bind(this);
+    this.updateHighlights = this.updateHighlights.bind(this);
   };
   componentWillReceiveProps(props) {
-    this.interpretSelection();
+    this.updateHighlights();
   };
-  interpretSelection() {
+  updateHighlights() {
     // if one cell is selected
       // and it doesnt have a value, highlight all
     // if two cells are selected
@@ -410,21 +411,6 @@ class OperationDrawer extends React.Component {
         const operation = this.operations[opIndex];
         highlight[operation.name] = operation.shouldHighlight();
       }
-
-      // if (selectedCells && selectedCells.length === 1) { // one row
-      //   const row = selectedCells[0];
-      //   if (row.length > 2) {
-      //     highlight.AVERAGE = true;
-      //     highlight.MINUS = true;
-      //     highlight.SUM = true;
-      //     highlight.DIST = true;
-      //   }
-      // }
-      // if (this.props.currentSelection[0] === 0 && this.props.currentSelection[1] === 0) {
-      //   highlight.AVERAGE = true;
-      // } else {
-      //   this.setState({ highlighted: highlight });
-      // }
       this.setState({ highlighted: highlight });
     }
   };
@@ -442,9 +428,10 @@ class OperationDrawer extends React.Component {
                   const closeAfterSetting = operation.name === 'SLIDER' || operation.name === 'RANDFONT';
                   if (highlighted) {
                     operation.highlightedFunction();
-                    return;
+                  } else {
+                    this.props.setSelectedCellData(string, closeAfterSetting);
                   }
-                  this.props.setSelectedCellData(string, closeAfterSetting);
+                  this.updateHighlights();
                 }}
               >{operation.name}</div>
             );
