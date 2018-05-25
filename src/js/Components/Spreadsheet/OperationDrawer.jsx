@@ -52,6 +52,8 @@ export default class OperationDrawer extends React.Component {
       const endRow = Math.max(selection[0], selection[2]);
       const endCol = Math.max(selection[1], selection[3]);
 
+      const reversedLabels = startRow != selection[0] || startCol != selection[1];
+
       const selectedCells = self.props.hotInstance.getData.apply(self, selection);
       const rows = selectedCells.length;
       const cols = selectedCells[0].length;
@@ -85,12 +87,12 @@ export default class OperationDrawer extends React.Component {
       if (firstEmpty < 0) { // if there are no empty cells selected, look outside selection
         if (horizontalStrip) {
           fillCellRow = startRow;
-          fillCellCol = endCol + 1;
+          fillCellCol = reversedLabels ? startCol - 1 : endCol + 1;
         } else if (verticalStrip) {
-          fillCellRow = endRow + 1;
+          fillCellRow = reversedLabels ? startRow - 1 : endRow + 1;
           fillCellCol = startCol;
         }
-        if (fillCellRow === this.props.hotInstance.countRows() || fillCellCol === this.props.hotInstance.countCols()) {
+        if (fillCellRow < 0 || fillCellRow === this.props.hotInstance.countRows() || fillCellCol < 0 || fillCellCol === this.props.hotInstance.countCols()) {
           return output;
         }
       } else if (horizontalStrip) {
@@ -107,7 +109,7 @@ export default class OperationDrawer extends React.Component {
       let fillString = `=${operationName}(${firstArgLabel}, ${secondArgLabel})`;
 
       // if labels have been reordered, order it back
-      if (startRow != selection[0] || startCol != selection[1]) {
+      if (reversedLabels) {
         fillString = `=${operationName}(${secondArgLabel}, ${firstArgLabel})`;
       }
       output.fillString = fillString;
