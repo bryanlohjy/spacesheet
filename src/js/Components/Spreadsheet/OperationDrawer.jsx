@@ -42,18 +42,30 @@ export default class OperationDrawer extends React.Component {
             const verticalStrip = rows > 1 && cols === 1;
             const horizontalStrip = cols > 1 && rows === 1;
 
-            if (horizontalStrip) {
-              const hasValuesAtEnds = validMatrix[0][0] && validMatrix[0][cols - 1];
-              let hasNoValuesInBetween = true;
-              for (let col = 1; col < cols - 1; col++) {
-                if (validMatrix[0][col]) {
-                  hasNoValuesInBetween = false;
+            let hasValuesAtEnds;
+            let hasInBetweens;
+            let hasEmptyValuesInBetween = true;
+            if (verticalStrip) {
+              hasInBetweens = rows > 2;
+              hasValuesAtEnds = validMatrix[0][0] && validMatrix[rows - 1][0];
+              for (let row = 1; row < rows - 1; row++) {
+                if (validMatrix[row][0]) {
+                  hasEmptyValuesInBetween = false;
                   break;
                 }
               }
-              if (hasValuesAtEnds && hasNoValuesInBetween && cols > 2) {
-                return true;
+            } else if (horizontalStrip) {
+              hasInBetweens = cols > 2;
+              hasValuesAtEnds = validMatrix[0][0] && validMatrix[0][cols - 1];
+              for (let col = 1; col < cols - 1; col++) {
+                if (validMatrix[0][col]) {
+                  hasEmptyValuesInBetween = false;
+                  break;
+                }
               }
+            }
+            if (hasValuesAtEnds && hasInBetweens && hasEmptyValuesInBetween) {
+              return true;
             }
           }
           return false;
@@ -78,7 +90,12 @@ export default class OperationDrawer extends React.Component {
               const isStartCell = rowIndex === 0 && colIndex === 0;
               const isEndCell = rowIndex === rows - 1 && colIndex === cols - 1;
               if (!isStartCell && !isEndCell) {
-                let lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                let lerpBy;
+                if (horizontalStrip) {
+                  lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                } else if (verticalStrip) {
+                  lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+                }
                 return `=LERP(${startLabel}, ${endLabel}, ${lerpBy})`;
               }
               return col;
