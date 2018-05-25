@@ -83,27 +83,15 @@ export default class OperationDrawer extends React.Component {
       let fillCellRow;
       let fillCellCol;
       if (firstEmpty < 0) { // if there are no empty cells selected, look outside selection
-        // look first for a cell on an extended column, then row if not available
         if (horizontalStrip) {
-          const extendedValidMatrix = getValidMatrix(self.props.hotInstance.getData(startRow, startCol, endRow,  endCol + 1));
-          const extendedEndCol = extendedValidMatrix.map(row => {
-            return row[row.length - 1];
-          });
-          const emptyCellsInEndCol = getAllIndicesInArray(extendedEndCol, false);
-          if (emptyCellsInEndCol.length <= 0) {
-            return output;
-          }
           fillCellRow = startRow;
           fillCellCol = endCol + 1;
         } else if (verticalStrip) {
-          const extendedValidMatrix = getValidMatrix(self.props.hotInstance.getData(startRow, startCol, endRow + 1,  endCol));
-          const extendedEndRow = extendedValidMatrix[extendedValidMatrix.length - 1];
-          const emptyCellsInEndRow = getAllIndicesInArray(extendedEndRow, false);
-          if (emptyCellsInEndRow.length <= 0) {
-            return output;
-          }
           fillCellRow = endRow + 1;
           fillCellCol = startCol;
+        }
+        if (fillCellRow === this.props.hotInstance.countRows() || fillCellCol === this.props.hotInstance.countCols()) {
+          return output;
         }
       } else if (horizontalStrip) {
         fillCellRow = startRow;
