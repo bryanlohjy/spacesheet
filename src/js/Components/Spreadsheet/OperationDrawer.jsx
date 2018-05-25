@@ -43,10 +43,97 @@ export default class OperationDrawer extends React.Component {
         }
       }
     };
+
+    const twoArgSmartFillFn = operationName => {
+      const output = { cellsToHighlight: [], fillString: "" };
+      const selection = self.props.currentSelection;
+      const startRow = Math.min(selection[0], selection[2]);
+      const startCol = Math.min(selection[1], selection[3]);
+      const endRow = Math.max(selection[0], selection[2]);
+      const endCol = Math.max(selection[1], selection[3]);
+
+      const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+      const rows = selectedCells.length;
+      const cols = selectedCells[0].length;
+      const validMatrix = getValidMatrix(selectedCells);
+      const verticalStrip = rows > 1 && cols === 1;
+      const horizontalStrip = cols > 1 && rows === 1;
+
+      let vals;
+      if (horizontalStrip) {
+        vals = validMatrix[0];
+      } else if (verticalStrip) {
+        vals = validMatrix.map(row => row[0]);
+      }
+      if (!vals || vals.length < 0) { return output };
+      const valids = getAllIndicesInArray(vals, true);
+      if (valids.length !== 2) { return output };
+
+      let firstArgCoords;
+      let secondArgCoords;
+      if (horizontalStrip) {
+        firstArgCoords = { row: startRow, col: valids[0] + startCol };
+        secondArgCoords = { row: startRow, col: valids[1] + startCol };
+      } else if (verticalStrip) {
+        firstArgCoords = { row: valids[0] + startRow, col: startCol };
+        secondArgCoords = { row: valids[1] + startRow, col: startCol };
+      }
+
+      const firstEmpty = vals.indexOf(false);
+      let fillCellRow;
+      let fillCellCol;
+      if (firstEmpty < 0) { // if there are no empty cells selected, look outside selection
+        // look first for a cell on an extended column, then row if not available
+        if (horizontalStrip) {
+          const extendedValidMatrix = getValidMatrix(self.props.hotInstance.getData(startRow, startCol, endRow,  endCol + 1));
+          const extendedEndCol = extendedValidMatrix.map(row => {
+            return row[row.length - 1];
+          });
+          const emptyCellsInEndCol = getAllIndicesInArray(extendedEndCol, false);
+          if (emptyCellsInEndCol.length <= 0) {
+            return output;
+          }
+          fillCellRow = startRow;
+          fillCellCol = endCol + 1;
+        } else if (verticalStrip) {
+          const extendedValidMatrix = getValidMatrix(self.props.hotInstance.getData(startRow, startCol, endRow + 1,  endCol));
+          const extendedEndRow = extendedValidMatrix[extendedValidMatrix.length - 1];
+          const emptyCellsInEndRow = getAllIndicesInArray(extendedEndRow, false);
+          if (emptyCellsInEndRow.length <= 0) {
+            return output;
+          }
+          fillCellRow = endRow + 1;
+          fillCellCol = startCol;
+        }
+      } else if (horizontalStrip) {
+        fillCellRow = startRow;
+        fillCellCol = startCol + firstEmpty;
+      } else if (verticalStrip) {
+        fillCellRow = startRow + firstEmpty;
+        fillCellCol = startCol;
+      }
+
+      const firstArgLabel = cellCoordsToLabel(firstArgCoords);
+      const secondArgLabel = cellCoordsToLabel(secondArgCoords);
+
+      output.cellsToHighlight.push([fillCellRow, fillCellCol]);
+
+      const fillString = `=${operationName}(${firstArgLabel}, ${secondArgLabel})`;
+      output.fillString = fillString;
+      return output;
+    }
+
     const self = this;
     this.operations = {
       AVERAGE: {
         onMouseOver: e => {
+          const smartFill = self.operations.LERP.smartFillCells;
+          if (smartFill && smartFill.cellsToHighlight.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
+          } else {
+            const selection = self.props.hotInstance.getSelected();
+            highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+          }
         },
         onClick: e => {
         },
@@ -101,7 +188,6 @@ export default class OperationDrawer extends React.Component {
           const endRow = Math.max(selection[0], selection[2]);
           const endCol = Math.max(selection[1], selection[3]);
 
-
           output.newData = selectedCells.map((row, rowIndex) => {
             return row.map((val, colIndex) => {
               const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
@@ -155,78 +241,61 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          const output = { cellsToHighlight: [], fillString: "" };
-          const selection = self.props.currentSelection;
-          const startRow = Math.min(selection[0], selection[2]);
-          const startCol = Math.min(selection[1], selection[3]);
-          const endRow = Math.max(selection[0], selection[2]);
-          const endCol = Math.max(selection[1], selection[3]);
-
-          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-          const rows = selectedCells.length;
-          const cols = selectedCells[0].length;
-          const validMatrix = getValidMatrix(selectedCells);
-          const verticalStrip = rows > 2 && cols === 1;
-          const horizontalStrip = cols > 2 && rows === 1;
-
-          let vals;
-          if (horizontalStrip) {
-            vals = validMatrix[0];
-          } else if (verticalStrip) {
-            vals = validMatrix.map(row => row[0]);
-          }
-
-          if (!vals || vals.length < 0) { return output };
-          const valids = getAllIndicesInArray(vals, true);
-          const firstEmpty = vals.indexOf(false);
-          if (valids.length !== 2) { return output };
-          if (firstEmpty < 0) { return output };
-
-          let fillCellRow;
-          let fillCellCol;
-          let firstArgCoords;
-          let secondArgCoords;
-
-          if (horizontalStrip) {
-            fillCellRow = startRow;
-            fillCellCol = startCol + firstEmpty;
-            firstArgCoords = { row: startRow, col: valids[0] + startCol };
-            secondArgCoords = { row: startRow, col: valids[1] + startCol };
-          } else if (verticalStrip) {
-            fillCellRow = startRow + firstEmpty;
-            fillCellCol = startCol;
-            firstArgCoords = { row: valids[0] + startRow, col: startCol };
-            secondArgCoords = { row: valids[1] + startRow, col: startCol };
-          }
-
-          const firstArgLabel = cellCoordsToLabel(firstArgCoords);
-          const secondArgLabel = cellCoordsToLabel(secondArgCoords);
-
-          output.cellsToHighlight.push([fillCellRow, fillCellCol]);
-
-          const fillString = `=MINUS(${firstArgLabel}, ${secondArgLabel})`;
-          output.fillString = fillString;
-          return output;
+          return twoArgSmartFillFn('MINUS');
         },
       },
       SUM: {
         onMouseOver: e => {
+          const smartFill = self.operations.SUM.smartFillCells;
+          if (smartFill && smartFill.cellsToHighlight.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
+          } else {
+            const selection = self.props.hotInstance.getSelected();
+            highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+          }
         },
         onClick: e => {
+          const smartFill = self.operations.SUM.smartFillCells;
+          if (smartFill.cellsToHighlight.length > 0) {
+            const smartFillCell = smartFill.cellsToHighlight[0];
+            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+          } else {
+            self.props.setSelectedCellData('=SUM(');
+          }
         },
         shouldHighlight: () => {
+          const smartFill = self.operations.SUM.smartFillCells;
+          return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
+          return twoArgSmartFillFn('SUM');
         },
       },
       DIST: {
         onMouseOver: e => {
+          const smartFill = self.operations.DIST.smartFillCells;
+          if (smartFill && smartFill.cellsToHighlight.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
+          } else {
+            const selection = self.props.hotInstance.getSelected();
+            highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+          }
         },
         onClick: e => {
+          const smartFill = self.operations.DIST.smartFillCells;
+          if (smartFill.cellsToHighlight.length > 0) {
+            const smartFillCell = smartFill.cellsToHighlight[0];
+            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+          } else {
+            self.props.setSelectedCellData('=DIST(');
+          }
         },
         shouldHighlight: () => {
+          const smartFill = self.operations.DIST.smartFillCells;
+          return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
+          return twoArgSmartFillFn('DIST');
         },
       },
       SLIDER: {
@@ -324,6 +393,7 @@ export default class OperationDrawer extends React.Component {
                 className={`operation-button ${this.state.highlighted[key] ? 'highlighted' : ''}`}
                 onClick={ e => {
                   operation.onClick(e);
+                  this.updateHighlights();
                 }}
                 onMouseOver={ e => {
                   operation.onMouseOver(e);
