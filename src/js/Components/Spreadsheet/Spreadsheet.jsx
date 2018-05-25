@@ -6,7 +6,6 @@ import OperationDrawer from './OperationDrawer.jsx';
 
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
-import { randomInt } from '../../lib/helpers.js';
 
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
@@ -162,7 +161,9 @@ class HotTableContainer extends React.Component {
         }
       }
     });
-    hotInstance.selectCell(0, 0);
+    setTimeout(() => {
+      hotInstance.selectCell(0, 0);
+    }, 0);
   };
   shouldComponentUpdate(newProps, newState) {
     return false;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula, cellCoordsToLabel } from './CellHelpers.js';
-import { removeInstancesOfClassName } from '../../lib/helpers.js';
+import { removeInstancesOfClassName, randomInt } from '../../lib/helpers.js';
 
 export default class OperationDrawer extends React.Component {
   constructor(props) {
@@ -18,57 +18,131 @@ export default class OperationDrawer extends React.Component {
       return JSON.stringify(arr1, null, 0) === JSON.stringify(arr2, null, 0);
     };
 
-    this.operations = [
-      {
-        name: 'AVERAGE',
-        populateString: '=AVERAGE(',
-        shouldHighlight: () => {
-          return false;
+    const highlightCellsFromSelection = (hotInstance, selection) => {
+      const startRow = Math.min(selection[0], selection[2]);
+      const startCol = Math.min(selection[1], selection[3]);
+      const endRow = Math.max(selection[0], selection[2]);
+      const endCol = Math.max(selection[1], selection[3]);
+
+      for (let row = startRow; row <= endRow; row++) {
+        for (let col = startCol; col <= endCol; col++) {
+          const cell = hotInstance.getCell(row, col);
+          if (cell) {
+            cell.classList.add('highlighted-reference');
+          }
+        }
+      }
+    };
+
+    const highlightSmartFillArray = (hotInstance, arr) => {
+      for (let cellRefIndex = 0; cellRefIndex < arr.length; cellRefIndex++) {
+        const cell = arr[cellRefIndex];
+        const reference = hotInstance.getCell(cell[0], cell[1]);
+        if (reference) {
+          reference.classList.add('highlighted-reference');
+        }
+      }
+    };
+    const self = this;
+    this.operations = {
+      AVERAGE: {
+        onMouseOver: e => {
         },
-        highlightedFunction: () => {
+        onClick: e => {
+        },
+        shouldHighlight: () => {
+        },
+        get smartFillCells() {
         },
       },
-      {
-        name: 'LERP',
-        populateString: '=LERP(',
-        shouldHighlight: () => {
-          const selection = this.props.currentSelection;
-          const selectedCells = this.props.hotInstance.getData.apply(this, selection);
-          const validMatrix = getValidMatrix(selectedCells)
+      LERP: {
+        onMouseOver: e => {
+          const smartFill = self.operations.LERP.smartFillCells;
+          if (smartFill && smartFill.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill);
+          } else {
+            const selection = self.props.hotInstance.getSelected();
+            highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+          }
+        },
+        onClick: e => {
+          const smartFill = self.operations.LERP.smartFillCells;
+          if (smartFill && smartFill.length > 0) {
+            // fill cells in between start and end
+            // with incremented lerp
+            const selection = self.props.currentSelection;
+            const selectedCells = self.props.hotInstance.getData.apply(self, selection);
 
-          if (validMatrix && validMatrix.length > 0) {
-            const rows = validMatrix.length;
-            const cols = validMatrix[0].length;
+            const rows = selectedCells.length;
+            const cols = selectedCells[0].length;
 
             const verticalStrip = rows > 1 && cols === 1;
             const horizontalStrip = cols > 1 && rows === 1;
 
-            let hasValuesAtEnds;
-            let hasInBetweens;
+            const validMatrix = getValidMatrix(selectedCells);
 
-            if (!verticalStrip && !horizontalStrip) { // check for grid
-              hasInBetweens = rows > 2 || cols > 2;
-              if (hasInBetweens) {
-                if (validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][0] && validMatrix[rows - 1][cols - 1]) {
-                  return true;
+            const startRow = Math.min(selection[0], selection[2]);
+            const startCol = Math.min(selection[1], selection[3]);
+            const endRow = Math.max(selection[0], selection[2]);
+            const endCol = Math.max(selection[1], selection[3]);
+
+            const vals = selectedCells.map((row, rowIndex) => {
+              return row.map((col, colIndex) => {
+                if (!verticalStrip && !horizontalStrip) { // gridInterpolation
+                  // interpolate horizontally between anchors, then vertically between results
+                  let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                  let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
+                  let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+                  let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
+                  const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
+                  if (!isAnchor) {
+                    let lerpBy;
+                    if (rowIndex === 0) {
+                      lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                      return `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`
+                    } else if (rowIndex === rows - 1) {
+                      lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                      return `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`
+                    } else {
+                      lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+                      const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
+                      const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
+                      return `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`
+                    }
+                  }
+                } else {
+                  let startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                  let endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+                  const isStartCell = rowIndex === 0 && colIndex === 0;
+                  const isEndCell = rowIndex === rows - 1 && colIndex === cols - 1;
+                  if (!isStartCell && !isEndCell) {
+                    let lerpBy;
+                    if (horizontalStrip) {
+                      lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                    } else if (verticalStrip) {
+                      lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+                    }
+                    return `=LERP(${startLabel}, ${endLabel}, ${lerpBy})`;
+                  }
                 }
-              }
-            } else if (verticalStrip) {
-              hasInBetweens = rows > 2;
-              hasValuesAtEnds = validMatrix[0][0] && validMatrix[rows - 1][0];
-            } else if (horizontalStrip) {
-              hasInBetweens = cols > 2;
-              hasValuesAtEnds = validMatrix[0][0] && validMatrix[0][cols - 1];
+                return col;
+              });
+            });
+            if (!arraysAreSimilar(selectedCells, vals)) {
+              self.props.hotInstance.populateFromArray(startRow, startCol, vals);
             }
-            if (hasValuesAtEnds && hasInBetweens) {
-              return true;
-            }
+          } else {
+            self.props.setSelectedCellData(`=LERP(`);
           }
-          return false;
         },
-        mouseOver: () => { // highlight cells that would be populated
-          const selection = this.props.currentSelection;
-          const selectedCells = this.props.hotInstance.getData.apply(this, selection);
+        shouldHighlight: () => {
+          const smartFill = self.operations.LERP.smartFillCells;
+          return smartFill && smartFill.length > 0;
+        },
+        get smartFillCells() {
+          if (!self.props || !self.props.currentSelection || !self.props.hotInstance) { return; }
+          const selection = self.props.currentSelection;
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const rows = selectedCells.length;
           const cols = selectedCells[0].length;
           const startRow = Math.min(selection[0], selection[2]);
@@ -76,8 +150,15 @@ export default class OperationDrawer extends React.Component {
           const endRow = Math.max(selection[0], selection[2]);
           const endCol = Math.max(selection[1], selection[3]);
 
+          // check to see if there are anchors
+          const cells = [];
+
+          const validMatrix = getValidMatrix(selectedCells);
           const verticalStrip = rows > 1 && cols === 1;
           const horizontalStrip = cols > 1 && rows === 1;
+          const hasAnchors = validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][cols - 1] && validMatrix[rows - 1][0];
+
+          if (!hasAnchors) { return cells; }
 
           for (let row = startRow; row <= endRow; row++) {
             for (let col = startCol; col <= endCol; col++) {
@@ -94,125 +175,91 @@ export default class OperationDrawer extends React.Component {
                   continue;
                 }
               }
-              const reference = this.props.hotInstance.getCell(row, col);
-              if (reference) {
-                reference.classList.add('highlighted-reference');
-              }
+              cells.push([row, col]);
             }
           }
+          return cells;
         },
-        highlightedFunction: () => {
-          // fill cells in between start and end
-          // with incremented lerp
-          const selection = this.props.currentSelection;
-          const selectedCells = this.props.hotInstance.getData.apply(this, selection);
-
-          const rows = selectedCells.length;
-          const cols = selectedCells[0].length;
-
-          const verticalStrip = rows > 1 && cols === 1;
-          const horizontalStrip = cols > 1 && rows === 1;
-
-          const validMatrix = getValidMatrix(selectedCells);
-
+      },
+      MINUS: {
+        onMouseOver: e => {
+        },
+        onClick: e => {
+        },
+        shouldHighlight: () => {
+        },
+        get smartFillCells() {
+        },
+      },
+      SUM: {
+        onMouseOver: e => {
+        },
+        onClick: e => {
+        },
+        shouldHighlight: () => {
+        },
+        get smartFillCells() {
+        },
+      },
+      DIST: {
+        onMouseOver: e => {
+        },
+        onClick: e => {
+        },
+        shouldHighlight: () => {
+        },
+        get smartFillCells() {
+        },
+      },
+      SLIDER: {
+        onMouseOver: e => {
+          const selection = self.props.hotInstance.getSelected();
+          highlightCellsFromSelection(self.props.hotInstance, selection);
+        },
+        onClick: e => {
+          const selection = self.props.hotInstance.getSelected();
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const startRow = Math.min(selection[0], selection[2]);
           const startCol = Math.min(selection[1], selection[3]);
-          const endRow = Math.max(selection[0], selection[2]);
-          const endCol = Math.max(selection[1], selection[3]);
-
-          const vals = selectedCells.map((row, rowIndex) => {
-            return row.map((col, colIndex) => {
-              if (!verticalStrip && !horizontalStrip) { // gridInterpolation
-                // interpolate horizontally between anchors, then vertically between results
-                let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-                let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
-                let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-                let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
-                const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
-                if (!isAnchor) {
-                  let lerpBy;
-                  if (rowIndex === 0) {
-                    lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                    return `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`
-                  } else if (rowIndex === rows - 1) {
-                    lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                    return `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`
-                  } else {
-                    lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
-                    const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
-                    const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
-                    return `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`
-                  }
-                }
-              } else {
-                let startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-                let endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-                const isStartCell = rowIndex === 0 && colIndex === 0;
-                const isEndCell = rowIndex === rows - 1 && colIndex === cols - 1;
-                if (!isStartCell && !isEndCell) {
-                  let lerpBy;
-                  if (horizontalStrip) {
-                    lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                  } else if (verticalStrip) {
-                    lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
-                  }
-                  return `=LERP(${startLabel}, ${endLabel}, ${lerpBy})`;
-                }
-              }
-              return col;
+          const newCells = selectedCells.map(row => {
+            return row.map(col => {
+              return `=SLIDER(0, 1, 0.05)`;
             });
           });
-          if (!arraysAreSimilar(selectedCells, vals)) {
-            this.props.hotInstance.populateFromArray(startRow, startCol, vals);
-          }
+          self.props.hotInstance.populateFromArray(startRow, startCol, newCells);
         },
-      },
-      {
-        name: 'MINUS',
-        populateString: '=MINUS(',
         shouldHighlight: () => {
           return false;
         },
-        highlightedFunction: () => {
+        get smartFillCells() {
+          return [];
         },
       },
-      {
-        name: 'SUM',
-        populateString: '=SUM(',
+      RANDFONT: {
+        onMouseOver: e => {
+          const selection = self.props.hotInstance.getSelected();
+          highlightCellsFromSelection(self.props.hotInstance, selection);
+        },
+        onClick: e => {
+          const selection = self.props.hotInstance.getSelected();
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const newCells = selectedCells.map(row => {
+            return row.map(col => {
+              return `=RANDFONT(${randomInt(0, 9999)})`;
+            });
+          });
+          self.props.hotInstance.populateFromArray(startRow, startCol, newCells);
+        },
         shouldHighlight: () => {
           return false;
         },
-        highlightedFunction: () => {
+        get smartFillCells() {
+          return [];
         },
       },
-      {
-        name: 'SLIDER',
-        populateString: '=SLIDER(0, 1, 0.05)',
-        shouldHighlight: () => {
-          return false;
-        },
-        highlightedFunction: () => {
-        },
-      },
-      {
-        name: 'RANDFONT',
-        populateString: `=RANDFONT()`,
-        shouldHighlight: () => {
-          return false;
-        },
-        highlightedFunction: () => {
-        },
-      },
-      {
-        name: 'DIST',
-        populateString: '=DIST(',
-        shouldHighlight: () => {
-          return false;
-        },
-        highlightedFunction: () => {
-        },
-      },
-    ];
+    }
     this.state = {
       highlighted: {
         AVERAGE: false,
@@ -239,11 +286,11 @@ export default class OperationDrawer extends React.Component {
       RANDFONT: false,
       DIST: false,
     };
-
     if (this.props.currentSelection && this.props.hotInstance) { // add in highlighted selection logic
-      for (let opIndex = 0; opIndex < this.operations.length; opIndex++) {
-        const operation = this.operations[opIndex];
-        highlight[operation.name] = operation.shouldHighlight();
+      const operations = Object.keys(this.operations);
+      for (let opIndex = 0; opIndex < operations.length; opIndex++) {
+        const operationKey = operations[opIndex];
+        highlight[operationKey] = this.operations[operationKey].shouldHighlight();
       }
       this.setState({ highlighted: highlight });
     }
@@ -251,31 +298,22 @@ export default class OperationDrawer extends React.Component {
   render() {
     return (
       <div className='operation-drawer'>
-        { this.operations.map(operation => {
-            const highlighted = this.state.highlighted[operation.name];
+        { Object.keys(this.operations).map(key => {
+          const operation = this.operations[key];
             return (
               <div
-                key={operation.name}
-                className={`operation-button ${highlighted ? 'highlighted' : ''}`}
+                key={key}
+                className={`operation-button ${this.state.highlighted[key] ? 'highlighted' : ''}`}
                 onClick={ e => {
-                  const string = operation.name === 'RANDFONT' ? `=RANDFONT(${randomInt(0, 9999)})` : operation.populateString;
-                  const closeAfterSetting = operation.name === 'SLIDER' || operation.name === 'RANDFONT';
-                  if (highlighted) {
-                    operation.highlightedFunction();
-                  } else {
-                    this.props.setSelectedCellData(string, closeAfterSetting);
-                  }
-                  this.updateHighlights();
+                  operation.onClick(e);
                 }}
                 onMouseOver={ e => {
-                  if (highlighted) {
-                    operation.mouseOver();
-                  }
+                  operation.onMouseOver(e);
                 }}
                 onMouseOut={ e => {
                   removeInstancesOfClassName('highlighted-reference');
                 }}
-              >{operation.name}</div>
+              >{key}</div>
             );
           }) }
       </div>
