@@ -116,10 +116,15 @@ export default class OperationDrawer extends React.Component {
       const firstArgLabel = cellCoordsToLabel(firstArgCoords);
       const secondArgLabel = cellCoordsToLabel(secondArgCoords);
 
-      output.cellsToHighlight.push([fillCellRow, fillCellCol]);
+      let fillString = `=${operationName}(${firstArgLabel}, ${secondArgLabel})`;
 
-      const fillString = `=${operationName}(${firstArgLabel}, ${secondArgLabel})`;
+      // if labels have been reordered, order it back
+      if (startRow != selection[0] || startCol != selection[1]) {
+        fillString = `=${operationName}(${secondArgLabel}, ${firstArgLabel})`;
+      }
       output.fillString = fillString;
+
+      output.cellsToHighlight.push([fillCellRow, fillCellCol]);
       return output;
     }
 
@@ -140,6 +145,15 @@ export default class OperationDrawer extends React.Component {
         shouldHighlight: () => {
         },
         get smartFillCells() {
+          const output = { cellsToHighlight: [], newData: [] };
+          // if a strip is selected, and there is an empty - fill that cell with the average cell
+
+          // otherwise, look for empties outside the selection
+            // if a vertical strip - look first for the cell below the selection
+              // extend col and look down otherwise
+
+            // if a horizontal strip - look first for the cell to the right of the selection
+              // extend row and look right other wise
         },
       },
       LERP: {
