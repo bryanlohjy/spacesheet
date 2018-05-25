@@ -45,8 +45,24 @@ export default class OperationDrawer extends React.Component {
             let hasValuesAtEnds;
             let hasInBetweens;
             let hasEmptyValuesInBetween = true;
-            if (verticalStrip) {
-              hasInBetweens = rows > 2;
+
+            if (!verticalStrip && !horizontalStrip) { // check for grid
+              hasInBetweens = rows > 2 && cols > 2;
+              if (hasInBetweens) {
+                for (let row = 0; row < rows; row++) {
+                  for (let col = 0; col < cols; col++) {
+                    const isAnchor = (row === 0 && (col === 0 || col === cols - 1)) || (row === rows - 1 && (col === 0 || col === cols - 1));
+                    if (!isAnchor && validMatrix[row][col]) {
+                      hasEmptyValuesInBetween = false;
+                      break;
+                    }
+                  }
+                }
+                if (hasEmptyValuesInBetween && validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][0] && validMatrix[rows - 1][cols - 1]) {
+                  return true;
+                }
+              }
+            } else if (verticalStrip) {
               hasValuesAtEnds = validMatrix[0][0] && validMatrix[rows - 1][0];
               for (let row = 1; row < rows - 1; row++) {
                 if (validMatrix[row][0]) {
@@ -79,31 +95,59 @@ export default class OperationDrawer extends React.Component {
           const rows = selectedCells.length;
           const cols = selectedCells[0].length;
 
-          const startLabel = cellCoordsToLabel({ row: selection[0], col: selection[1] });
-          const endLabel = cellCoordsToLabel({ row: selection[2], col: selection[3] });
-
           const verticalStrip = rows > 1 && cols === 1;
           const horizontalStrip = cols > 1 && rows === 1;
 
+          const validMatrix = getValidMatrix(selectedCells);
+
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const endRow = Math.max(selection[0], selection[2]);
+          const endCol = Math.max(selection[1], selection[3]);
+
           const vals = selectedCells.map((row, rowIndex) => {
             return row.map((col, colIndex) => {
-              const isStartCell = rowIndex === 0 && colIndex === 0;
-              const isEndCell = rowIndex === rows - 1 && colIndex === cols - 1;
-              if (!isStartCell && !isEndCell) {
-                let lerpBy;
-                if (horizontalStrip) {
-                  lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                } else if (verticalStrip) {
-                  lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+              if (!verticalStrip && !horizontalStrip) { // gridInterpolation
+                // interpolate horizontally between anchors, then vertically between results
+                let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
+                let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+                let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
+                const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
+                if (!isAnchor) {
+                  let lerpBy;
+                  if (rowIndex === 0) {
+                    lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                    return `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`
+                  } else if (rowIndex === rows - 1) {
+                    lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                    return `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`
+                  } else {
+                    lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+                    const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
+                    const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
+                    return `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`
+                  }
                 }
-                return `=LERP(${startLabel}, ${endLabel}, ${lerpBy})`;
+              } else {
+                let startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                let endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+                const isStartCell = rowIndex === 0 && colIndex === 0;
+                const isEndCell = rowIndex === rows - 1 && colIndex === cols - 1;
+                if (!isStartCell && !isEndCell) {
+                  let lerpBy;
+                  if (horizontalStrip) {
+                    lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                  } else if (verticalStrip) {
+                    lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+                  }
+                  return `=LERP(${startLabel}, ${endLabel}, ${lerpBy})`;
+                }
               }
               return col;
             });
           });
           if (!arraysAreSimilar(selectedCells, vals)) {
-            const startRow = Math.min(selection[0], selection[2]);
-            const startCol = Math.min(selection[1], selection[3]);
             this.props.hotInstance.populateFromArray(startRow, startCol, vals);
           }
         },
