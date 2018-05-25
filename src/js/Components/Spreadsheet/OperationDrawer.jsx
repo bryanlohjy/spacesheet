@@ -85,7 +85,9 @@ export default class OperationDrawer extends React.Component {
             });
           });
           if (!arraysAreSimilar(selectedCells, vals)) {
-            this.props.hotInstance.populateFromArray(selection[0], selection[1], vals, selection[2], selection[3]);
+            const startRow = Math.min(selection[0], selection[2]);
+            const startCol = Math.min(selection[1], selection[3]);
+            this.props.hotInstance.populateFromArray(startRow, startCol, vals);
           }
         },
       },
