@@ -45,51 +45,28 @@ export default class OperationDrawer extends React.Component {
 
             let hasValuesAtEnds;
             let hasInBetweens;
-            let hasEmptyValuesInBetween = true;
 
             if (!verticalStrip && !horizontalStrip) { // check for grid
-              hasInBetweens = rows > 2 && cols > 2;
+              hasInBetweens = rows > 2 || cols > 2;
               if (hasInBetweens) {
-                for (let row = 0; row < rows; row++) {
-                  for (let col = 0; col < cols; col++) {
-                    const isAnchor = (row === 0 && (col === 0 || col === cols - 1)) || (row === rows - 1 && (col === 0 || col === cols - 1));
-                    if (!isAnchor && validMatrix[row][col]) {
-                      hasEmptyValuesInBetween = false;
-                      break;
-                    }
-                  }
-                }
-                if (hasEmptyValuesInBetween && validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][0] && validMatrix[rows - 1][cols - 1]) {
+                if (validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][0] && validMatrix[rows - 1][cols - 1]) {
                   return true;
                 }
               }
             } else if (verticalStrip) {
               hasInBetweens = rows > 2;
               hasValuesAtEnds = validMatrix[0][0] && validMatrix[rows - 1][0];
-              for (let row = 1; row < rows - 1; row++) {
-                if (validMatrix[row][0]) {
-                  hasEmptyValuesInBetween = false;
-                  break;
-                }
-              }
             } else if (horizontalStrip) {
               hasInBetweens = cols > 2;
               hasValuesAtEnds = validMatrix[0][0] && validMatrix[0][cols - 1];
-              for (let col = 1; col < cols - 1; col++) {
-                if (validMatrix[0][col]) {
-                  hasEmptyValuesInBetween = false;
-                  break;
-                }
-              }
             }
-            if (hasValuesAtEnds && hasInBetweens && hasEmptyValuesInBetween) {
+            if (hasValuesAtEnds && hasInBetweens) {
               return true;
             }
           }
           return false;
         },
         mouseOver: () => { // highlight cells that would be populated
-          // 'highlighted-reference'
           const selection = this.props.currentSelection;
           const selectedCells = this.props.hotInstance.getData.apply(this, selection);
           const rows = selectedCells.length;
