@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula, cellCoordsToLabel } from './CellHelpers.js';
+import { removeInstancesOfClassName } from '../../lib/helpers.js';
 
 export default class OperationDrawer extends React.Component {
   constructor(props) {
@@ -63,6 +64,7 @@ export default class OperationDrawer extends React.Component {
                 }
               }
             } else if (verticalStrip) {
+              hasInBetweens = rows > 2;
               hasValuesAtEnds = validMatrix[0][0] && validMatrix[rows - 1][0];
               for (let row = 1; row < rows - 1; row++) {
                 if (validMatrix[row][0]) {
@@ -85,6 +87,42 @@ export default class OperationDrawer extends React.Component {
             }
           }
           return false;
+        },
+        mouseOver: () => { // highlight cells that would be populated
+          // 'highlighted-reference'
+          const selection = this.props.currentSelection;
+          const selectedCells = this.props.hotInstance.getData.apply(this, selection);
+          const rows = selectedCells.length;
+          const cols = selectedCells[0].length;
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const endRow = Math.max(selection[0], selection[2]);
+          const endCol = Math.max(selection[1], selection[3]);
+
+          const verticalStrip = rows > 1 && cols === 1;
+          const horizontalStrip = cols > 1 && rows === 1;
+
+          for (let row = startRow; row <= endRow; row++) {
+            for (let col = startCol; col <= endCol; col++) {
+              if (verticalStrip) {
+                if (row === startRow || row === endRow) {
+                  continue;
+                }
+              } else if (horizontalStrip) {
+                if (col === startCol || col === endCol) {
+                  continue;
+                }
+              } else { // grid
+                if ((row === startRow && (col === startCol || col === endCol)) || (row === endRow && (col === startCol || col === endCol))) {
+                  continue;
+                }
+              }
+              const reference = this.props.hotInstance.getCell(row, col);
+              if (reference) {
+                reference.classList.add('highlighted-reference');
+              }
+            }
+          }
         },
         highlightedFunction: () => {
           // fill cells in between start and end
@@ -251,6 +289,14 @@ export default class OperationDrawer extends React.Component {
                     this.props.setSelectedCellData(string, closeAfterSetting);
                   }
                   this.updateHighlights();
+                }}
+                onMouseOver={ e => {
+                  if (highlighted) {
+                    operation.mouseOver();
+                  }
+                }}
+                onMouseOut={ e => {
+                  removeInstancesOfClassName('highlighted-reference');
                 }}
               >{operation.name}</div>
             );

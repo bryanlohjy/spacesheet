@@ -33,7 +33,7 @@ export default opts => {
           if (row < numRows && col < numCols) {
             const reference = hotInstance.getCell(row, col);
             if (reference) {
-              reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
+              reference.classList.add('highlighted-reference');
             }
           }
         }
@@ -47,7 +47,7 @@ export default opts => {
       if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
         const reference = hotInstance.getCell(coords.row, coords.col);
         if (reference) {
-          reference.classList.add('highlighted-reference', `_${ (singleCount % 5) }`);
+          reference.classList.add('highlighted-reference');
         }
       }
     }
