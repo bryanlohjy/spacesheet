@@ -136,7 +136,7 @@ export default class OperationDrawer extends React.Component {
         },
         get smartFillCells() {
           const output = { cellsToHighlight: [], newData: [] };
-          // if a strip is selected, and there is an empty - fill that cell with the average cell
+          // if a strip is selected, and there is an empty at the end or start - fill that cell with the average cell
 
           // otherwise, look for empties outside the selection
             // if a vertical strip - look first for the cell below the selection
@@ -158,8 +158,9 @@ export default class OperationDrawer extends React.Component {
         },
         onClick: e => {
           const smartFill = self.operations.LERP.smartFillCells;
-          if (smartFill && smartFill.newData.length > 0) {
-            const newData = smartFill.newData;
+          const newData = smartFill.newData;
+          const isSingleCell = newData.length === 1 && newData[0].length === 1;
+          if (newData && newData.length > 0 && !isSingleCell) {
             const selection = self.props.currentSelection;
             const startRow = Math.min(selection[0], selection[2]);
             const startCol = Math.min(selection[1], selection[3]);
