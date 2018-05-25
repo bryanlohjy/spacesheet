@@ -58,8 +58,8 @@ export default class OperationDrawer extends React.Component {
       LERP: {
         onMouseOver: e => {
           const smartFill = self.operations.LERP.smartFillCells;
-          if (smartFill && smartFill.length > 0) {
-            highlightSmartFillArray(self.props.hotInstance, smartFill);
+          if (smartFill && smartFill.cellsToHighlight.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
           } else {
             const selection = self.props.hotInstance.getSelected();
             highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
@@ -67,69 +67,14 @@ export default class OperationDrawer extends React.Component {
         },
         onClick: e => {
           const smartFill = self.operations.LERP.smartFillCells;
-          if (smartFill && smartFill.length > 0) {
-            // fill cells in between start and end
-            // with incremented lerp
+          if (smartFill && smartFill.newData.length > 0) {
+            const newData = smartFill.newData;
             const selection = self.props.currentSelection;
-            const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-
-            const rows = selectedCells.length;
-            const cols = selectedCells[0].length;
-
-            const verticalStrip = rows > 1 && cols === 1;
-            const horizontalStrip = cols > 1 && rows === 1;
-
-            const validMatrix = getValidMatrix(selectedCells);
-
             const startRow = Math.min(selection[0], selection[2]);
             const startCol = Math.min(selection[1], selection[3]);
-            const endRow = Math.max(selection[0], selection[2]);
-            const endCol = Math.max(selection[1], selection[3]);
-
-            const vals = selectedCells.map((row, rowIndex) => {
-              return row.map((col, colIndex) => {
-                if (!verticalStrip && !horizontalStrip) { // gridInterpolation
-                  // interpolate horizontally between anchors, then vertically between results
-                  let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-                  let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
-                  let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-                  let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
-                  const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
-                  if (!isAnchor) {
-                    let lerpBy;
-                    if (rowIndex === 0) {
-                      lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                      return `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`
-                    } else if (rowIndex === rows - 1) {
-                      lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                      return `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`
-                    } else {
-                      lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
-                      const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
-                      const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
-                      return `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`
-                    }
-                  }
-                } else {
-                  let startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-                  let endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-                  const isStartCell = rowIndex === 0 && colIndex === 0;
-                  const isEndCell = rowIndex === rows - 1 && colIndex === cols - 1;
-                  if (!isStartCell && !isEndCell) {
-                    let lerpBy;
-                    if (horizontalStrip) {
-                      lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                    } else if (verticalStrip) {
-                      lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
-                    }
-                    return `=LERP(${startLabel}, ${endLabel}, ${lerpBy})`;
-                  }
-                }
-                return col;
-              });
-            });
-            if (!arraysAreSimilar(selectedCells, vals)) {
-              self.props.hotInstance.populateFromArray(startRow, startCol, vals);
+            const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+            if (!arraysAreSimilar(selectedCells, newData)) {
+              self.props.hotInstance.populateFromArray(startRow, startCol, newData);
             }
           } else {
             self.props.setSelectedCellData(`=LERP(`);
@@ -137,54 +82,60 @@ export default class OperationDrawer extends React.Component {
         },
         shouldHighlight: () => {
           const smartFill = self.operations.LERP.smartFillCells;
-          return smartFill && smartFill.length > 0;
+          return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
+          const output = { cellsToHighlight: [], newData: [] };
           const selection = self.props.currentSelection;
           const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+
           const rows = selectedCells.length;
           const cols = selectedCells[0].length;
+
+          const validMatrix = getValidMatrix(selectedCells);
+          const hasAnchors = validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][cols - 1] && validMatrix[rows - 1][0];
+          if (!hasAnchors) { return output; }
+
           const startRow = Math.min(selection[0], selection[2]);
           const startCol = Math.min(selection[1], selection[3]);
           const endRow = Math.max(selection[0], selection[2]);
           const endCol = Math.max(selection[1], selection[3]);
 
-          // check to see if there are anchors
-          const cells = [];
 
-          const validMatrix = getValidMatrix(selectedCells);
-          const verticalStrip = rows > 1 && cols === 1;
-          const horizontalStrip = cols > 1 && rows === 1;
-          const hasAnchors = validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][cols - 1] && validMatrix[rows - 1][0];
-
-          if (!hasAnchors) { return cells; }
-
-          for (let row = startRow; row <= endRow; row++) {
-            for (let col = startCol; col <= endCol; col++) {
-              if (verticalStrip) {
-                if (row === startRow || row === endRow) {
-                  continue;
-                }
-              } else if (horizontalStrip) {
-                if (col === startCol || col === endCol) {
-                  continue;
-                }
-              } else { // grid
-                if ((row === startRow && (col === startCol || col === endCol)) || (row === endRow && (col === startCol || col === endCol))) {
-                  continue;
-                }
+          output.newData = selectedCells.map((row, rowIndex) => {
+            return row.map((val, colIndex) => {
+              const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
+              if (isAnchor) { return val; }
+              let lerpBy;
+              let fillString;
+              if (rowIndex === 0) {
+                let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
+                lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                fillString = `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`;
+              } else if (rowIndex === rows - 1) {
+                let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+                let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
+                lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+                fillString = `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`;
+              } else {
+                lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+                const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
+                const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
+                fillString = `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`;
               }
-              cells.push([row, col]);
-            }
-          }
-          return cells;
+              output.cellsToHighlight.push([startRow + rowIndex, startCol + colIndex]);
+              return fillString;
+            });
+          });
+          return output;
         },
       },
       MINUS: {
         onMouseOver: e => {
           const smartFill = self.operations.MINUS.smartFillCells;
-          if (smartFill && smartFill.length > 0) {
-            highlightSmartFillArray(self.props.hotInstance, smartFill);
+          if (smartFill && smartFill.cellsToHighlight.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
           } else {
             const selection = self.props.hotInstance.getSelected();
             highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
@@ -192,19 +143,19 @@ export default class OperationDrawer extends React.Component {
         },
         onClick: e => {
           const smartFill = self.operations.MINUS.smartFillCells;
-          if (smartFill.length > 0) {
-            const smartFillCell = smartFill[0];
-            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFillCell[2]);
+          if (smartFill.cellsToHighlight.length > 0) {
+            const smartFillCell = smartFill.cellsToHighlight[0];
+            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
           } else {
             self.props.setSelectedCellData('=MINUS(');
           }
         },
         shouldHighlight: () => {
           const smartFill = self.operations.MINUS.smartFillCells;
-          return smartFill && smartFill.length > 0;
+          return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          const cells = [];
+          const output = { cellsToHighlight: [], fillString: "" };
           const selection = self.props.currentSelection;
           const startRow = Math.min(selection[0], selection[2]);
           const startCol = Math.min(selection[1], selection[3]);
@@ -225,11 +176,11 @@ export default class OperationDrawer extends React.Component {
             vals = validMatrix.map(row => row[0]);
           }
 
-          if (!vals || vals.length < 0) { return cells };
+          if (!vals || vals.length < 0) { return output };
           const valids = getAllIndicesInArray(vals, true);
           const firstEmpty = vals.indexOf(false);
-          if (valids.length !== 2) { return cells };
-          if (firstEmpty < 0) { return cells };
+          if (valids.length !== 2) { return output };
+          if (firstEmpty < 0) { return output };
 
           let fillCellRow;
           let fillCellCol;
@@ -250,8 +201,12 @@ export default class OperationDrawer extends React.Component {
 
           const firstArgLabel = cellCoordsToLabel(firstArgCoords);
           const secondArgLabel = cellCoordsToLabel(secondArgCoords);
-          cells.push([fillCellRow, fillCellCol, `=MINUS(${firstArgLabel}, ${secondArgLabel})`])
-          return cells;
+
+          output.cellsToHighlight.push([fillCellRow, fillCellCol]);
+
+          const fillString = `=MINUS(${firstArgLabel}, ${secondArgLabel})`;
+          output.fillString = fillString;
+          return output;
         },
       },
       SUM: {
