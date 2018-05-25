@@ -218,18 +218,39 @@ export default class OperationDrawer extends React.Component {
           const verticalStrip = rows > 2 && cols === 1;
           const horizontalStrip = cols > 2 && rows === 1;
 
+          let vals;
           if (horizontalStrip) {
-            const row = validMatrix[0];
-            const valids = getAllIndicesInArray(row, true);
-            const firstEmpty = row.indexOf(false);
-            if (valids.length !== 2) { return cells };
-            if (firstEmpty < 0) { return cells };
-
-            const firstValidLabel = cellCoordsToLabel({ row: startRow, col: valids[0] + startCol });
-            const secondValidLabel = cellCoordsToLabel({ row: startRow, col: valids[1] + startCol });
-
-            cells.push([startRow, startCol + firstEmpty, `=MINUS(${firstValidLabel}, ${secondValidLabel})`])
+            vals = validMatrix[0];
+          } else if (verticalStrip) {
+            vals = validMatrix.map(row => row[0]);
           }
+
+          if (!vals || vals.length < 0) { return cells };
+          const valids = getAllIndicesInArray(vals, true);
+          const firstEmpty = vals.indexOf(false);
+          if (valids.length !== 2) { return cells };
+          if (firstEmpty < 0) { return cells };
+
+          let fillCellRow;
+          let fillCellCol;
+          let firstArgCoords;
+          let secondArgCoords;
+
+          if (horizontalStrip) {
+            fillCellRow = startRow;
+            fillCellCol = startCol + firstEmpty;
+            firstArgCoords = { row: startRow, col: valids[0] + startCol };
+            secondArgCoords = { row: startRow, col: valids[1] + startCol };
+          } else if (verticalStrip) {
+            fillCellRow = startRow + firstEmpty;
+            fillCellCol = startCol;
+            firstArgCoords = { row: valids[0] + startRow, col: startCol };
+            secondArgCoords = { row: valids[1] + startRow, col: startCol };
+          }
+
+          const firstArgLabel = cellCoordsToLabel(firstArgCoords);
+          const secondArgLabel = cellCoordsToLabel(secondArgCoords);
+          cells.push([fillCellRow, fillCellCol, `=MINUS(${firstArgLabel}, ${secondArgLabel})`])
           return cells;
         },
       },
