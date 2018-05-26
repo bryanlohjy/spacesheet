@@ -46,8 +46,6 @@ export default class OperationDrawer extends React.Component {
           const endRow = Math.max(selection[0], selection[2]);
           const endCol = Math.max(selection[1], selection[3]);
 
-          const isSingleCell = startRow === endRow && startCol === endCol;
-
           const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const rows = selectedCells.length;
           const cols = selectedCells[0].length;
@@ -57,21 +55,34 @@ export default class OperationDrawer extends React.Component {
           const horizontalStrip = cols > 1 && rows === 1;
           const gridSelection = rows > 1 && cols > 1;
 
-          let hasVals;
+          let _valCount = 0;
+          let hasMultipleValues;
+          for (let rowIndex = 0; rowIndex < validMatrix.length; rowIndex++) {
+            const row = validMatrix[rowIndex];
+            for (let colIndex = 0; colIndex < row.length; colIndex++) {
+              const val = validMatrix[rowIndex][colIndex];
+              if (val === true) {
+                _valCount++;
+                if (_valCount >= 2) {
+                  hasMultipleValues = true;
+                  break;
+                }
+              }
+            }
+          }
+          const hasVals = _valCount > 0;
+          if (!hasMultipleValues) { return output; }
+
           // if there are vals, and there is an empty at the end of selection
           if (verticalStrip || horizontalStrip) {
             let vals;
-            let emptyLastVal;
-
             if (verticalStrip) {
               vals = validMatrix.map(row => row[0]);
             } else if (horizontalStrip) {
               vals = validMatrix[0];
             }
 
-            hasVals = getAllIndicesInArray(vals, true).length > 0;
-
-            emptyLastVal = vals[vals.length - 1] === false;
+            const emptyLastVal = vals[vals.length - 1] === false;
             const emptyValIsWithinSelection = verticalStrip ? rows > 2 : cols > 2;
 
             let startLabel;
@@ -88,18 +99,6 @@ export default class OperationDrawer extends React.Component {
               }
               output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
               return output;
-            }
-          } else if (gridSelection) {
-            for (let rowIndex = 0; rowIndex < validMatrix.length; rowIndex++) {
-              const row = validMatrix[rowIndex];
-              for (let colIndex = 0; colIndex < row.length; colIndex++) {
-                const val = validMatrix[rowIndex][colIndex];
-                if (val === true) {
-                  hasVals = true;
-                  break;
-                }
-              }
-              if (hasVals) { break; }
             }
           }
 
