@@ -44,6 +44,21 @@ export default class OperationDrawer extends React.Component {
       }
     };
 
+    const numValidsInArray = arr => {
+      let sum = 0;
+      for (let rowIndex = 0; rowIndex < arr.length; rowIndex++) {
+        const row = arr[rowIndex];
+        for (let colIndex = 0; colIndex < row.length; colIndex++) {
+          const val = arr[rowIndex][colIndex];
+          if (val === true) {
+            sum++;
+          }
+        }
+      }
+      return sum;
+    }
+
+
     const twoArgSmartFillFn = operationName => {
       const output = { cellsToHighlight: [], fillString: "" };
       const selection = self.props.currentSelection;
@@ -122,7 +137,7 @@ export default class OperationDrawer extends React.Component {
     this.operations = {
       AVERAGE: {
         onMouseOver: e => {
-          const smartFill = self.operations.LERP.smartFillCells;
+          const smartFill = self.operations.AVERAGE.smartFillCells;
           if (smartFill && smartFill.cellsToHighlight.length > 0) {
             highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
           } else {
@@ -131,19 +146,102 @@ export default class OperationDrawer extends React.Component {
           }
         },
         onClick: e => {
+          const smartFill = self.operations.AVERAGE.smartFillCells;
+          if (smartFill.cellsToHighlight.length > 0) {
+            const smartFillCell = smartFill.cellsToHighlight[0];
+            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+          } else {
+            self.props.setSelectedCellData('=AVERAGE(');
+          }
         },
         shouldHighlight: () => {
+          const smartFill = self.operations.AVERAGE.smartFillCells;
+          return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          const output = { cellsToHighlight: [], newData: [] };
-          // if a strip is selected, and there is an empty at the end or start - fill that cell with the average cell
+          const output = { cellsToHighlight: [], fillString: '' };
+          const selection = self.props.currentSelection;
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const endRow = Math.max(selection[0], selection[2]);
+          const endCol = Math.max(selection[1], selection[3]);
 
-          // otherwise, look for empties outside the selection
-            // if a vertical strip - look first for the cell below the selection
-              // extend col and look down otherwise
+          if (startRow === endRow && startCol === endCol) { return output; }
 
-            // if a horizontal strip - look first for the cell to the right of the selection
-              // extend row and look right other wise
+          const reversedLabels = startRow != selection[0] || startCol != selection[1];
+
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+          const rows = selectedCells.length;
+          const cols = selectedCells[0].length;
+          const validMatrix = getValidMatrix(selectedCells);
+          const verticalStrip = rows > 1 && cols === 1;
+          const horizontalStrip = cols > 1 && rows === 1;
+
+          let vals;
+          let allValids;
+          let emptyLastVal;
+          const numValids = numValidsInArray(validMatrix);
+          
+          if (numValids < 1) { return output }
+          if (horizontalStrip) {
+            vals = validMatrix[0];
+            allValids = getAllIndicesInArray(vals, true).length === vals.length;
+            emptyLastVal = vals[vals.length - 1] === false;
+          } else if (verticalStrip) {
+            vals = validMatrix.map(row => row[0]);
+            allValids = getAllIndicesInArray(vals, true).length === vals.length;
+            emptyLastVal = vals[vals.length - 1] === false;
+          }
+
+          let startLabel;
+          let endLabel;
+          if (emptyLastVal && vals.length > 2) { // set
+            if (horizontalStrip) {
+              output.cellsToHighlight = [[startRow, endCol]];
+              startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+              endLabel = cellCoordsToLabel({ row: startRow, col: endCol - 1 });
+            } else if (verticalStrip) {
+              output.cellsToHighlight = [[endRow, startCol]];
+              startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+              endLabel = cellCoordsToLabel({ row: endRow - 1, col: startCol });
+            }
+            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+            return output;
+          }
+
+          // there is no empty cell at end of selection, look outside of selection
+          if (horizontalStrip) {
+            output.cellsToHighlight = [[startRow, endCol + 1]];
+            startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+            endLabel = cellCoordsToLabel({ row: startRow, col: endCol });
+            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+            return output;
+          } else if (verticalStrip) {
+            output.cellsToHighlight = [[endRow + 1, startCol]];
+            startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+            endLabel = cellCoordsToLabel({ row: endRow, col: startCol });
+            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+            return output;
+          }
+
+          // if grid is selected, look for cell in both directions
+          let cellCoordsToCheck = [
+            [startRow, endCol + 1], // right top
+            [endRow + 1, startCol], // bottom left
+          ];
+
+          const fillCellValidity = cellCoordsToCheck.map(coords => {
+            return self.props.hotInstance.getDataAtCell(coords[0], coords[1]).trim().length > 0;
+          });
+
+          const fillCellCoords = cellCoordsToCheck[fillCellValidity.indexOf(false)];
+          if (fillCellCoords) {
+            output.cellsToHighlight = [ fillCellCoords ];
+            const startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+            const endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+          }
+          return output;
         },
       },
       LERP: {
