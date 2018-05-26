@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
+import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import FontModel from '../Models/FontModel.js';
 import { formatDate } from '../lib/helpers.js';
@@ -74,26 +75,31 @@ export default class Application extends React.Component {
   render () {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const dataPickerSize = docHeight - navHeight;
+    const fontDrawerHeight = 200;
+    const dataPickerSize = docHeight - navHeight - fontDrawerHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
     const spreadsheetHeight = docHeight - navHeight;
-
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded ?
-            <div className="spreadsheet-datapicker-container">
-              <DataPickers
-                width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
-                height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
-                outputWidth={ this.state.outputWidth }
-                outputHeight={ this.state.outputHeight }
-                drawFn={ this.drawFn }
-                decodeFn={ this.decodeFn }
-                onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                ref='dataPicker'
-              />
+            <div className="component-container">
+              <div className="left-container">
+                <DataPickers
+                  width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
+                  height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
+                  outputWidth={ this.state.outputWidth }
+                  outputHeight={ this.state.outputHeight }
+                  drawFn={ this.drawFn }
+                  decodeFn={ this.decodeFn }
+                  onCellClick={ this.setSpreadsheetCellFromDataPicker }
+                  ref='dataPicker'
+                />
+                <FontDrawer
+                  height={fontDrawerHeight}
+                />
+              </div>
               <Spreadsheet
                 width={ spreadsheetWidth }
                 height={ spreadsheetHeight }
