@@ -82,9 +82,9 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
   if (firstEmpty < 0) { // if there are no empty cells selected, look outside selection
     if (horizontalStrip) {
       fillCellRow = startRow;
-      fillCellCol = reversedLabels ? startCol - 1 : endCol + 1;
+      fillCellCol = endCol + 1;
     } else if (verticalStrip) {
-      fillCellRow = reversedLabels ? startRow - 1 : endRow + 1;
+      fillCellRow = endRow + 1;
       fillCellCol = startCol;
     }
     if (fillCellRow < 0 || fillCellRow === hotInstance.countRows() || fillCellCol < 0 || fillCellCol === hotInstance.countCols()) {
