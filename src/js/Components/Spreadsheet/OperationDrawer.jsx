@@ -2,122 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula, cellCoordsToLabel } from './CellHelpers.js';
 import { removeInstancesOfClassName, randomInt, getAllIndicesInArray } from '../../lib/helpers.js';
+import {
+  getValidMatrix,
+  arraysAreSimilar,
+  highlightCellsFromSelection,
+  highlightSmartFillArray,
+  twoArgSmartFillFn,
+} from './OperationDrawerHelpers.js';
 
 export default class OperationDrawer extends React.Component {
   constructor(props) {
     super(props);
-    const getValidMatrix = arr => {
-      if (!arr) { return; }
-      return arr.map(row => {
-        return row.map(val => {
-          return val.trim().length > 0;
-        });
-      });
-    };
-    const arraysAreSimilar = (arr1, arr2) => {
-      return JSON.stringify(arr1, null, 0) === JSON.stringify(arr2, null, 0);
-    };
-
-    const highlightCellsFromSelection = (hotInstance, selection) => {
-      const startRow = Math.min(selection[0], selection[2]);
-      const startCol = Math.min(selection[1], selection[3]);
-      const endRow = Math.max(selection[0], selection[2]);
-      const endCol = Math.max(selection[1], selection[3]);
-
-      for (let row = startRow; row <= endRow; row++) {
-        for (let col = startCol; col <= endCol; col++) {
-          const cell = hotInstance.getCell(row, col);
-          if (cell) {
-            cell.classList.add('highlighted-reference');
-          }
-        }
-      }
-    };
-
-    const highlightSmartFillArray = (hotInstance, arr) => {
-      for (let cellRefIndex = 0; cellRefIndex < arr.length; cellRefIndex++) {
-        const cell = arr[cellRefIndex];
-        const reference = hotInstance.getCell(cell[0], cell[1]);
-        if (reference) {
-          reference.classList.add('highlighted-reference');
-        }
-      }
-    };
-
-    const twoArgSmartFillFn = operationName => {
-      const output = { cellsToHighlight: [], fillString: "" };
-      const selection = self.props.currentSelection;
-      const startRow = Math.min(selection[0], selection[2]);
-      const startCol = Math.min(selection[1], selection[3]);
-      const endRow = Math.max(selection[0], selection[2]);
-      const endCol = Math.max(selection[1], selection[3]);
-
-      const reversedLabels = startRow != selection[0] || startCol != selection[1];
-
-      const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-      const rows = selectedCells.length;
-      const cols = selectedCells[0].length;
-      const validMatrix = getValidMatrix(selectedCells);
-      const verticalStrip = rows > 1 && cols === 1;
-      const horizontalStrip = cols > 1 && rows === 1;
-
-      let vals;
-      if (horizontalStrip) {
-        vals = validMatrix[0];
-      } else if (verticalStrip) {
-        vals = validMatrix.map(row => row[0]);
-      }
-      if (!vals || vals.length < 0) { return output };
-      const valids = getAllIndicesInArray(vals, true);
-      if (valids.length !== 2) { return output };
-
-      let firstArgCoords;
-      let secondArgCoords;
-      if (horizontalStrip) {
-        firstArgCoords = { row: startRow, col: valids[0] + startCol };
-        secondArgCoords = { row: startRow, col: valids[1] + startCol };
-      } else if (verticalStrip) {
-        firstArgCoords = { row: valids[0] + startRow, col: startCol };
-        secondArgCoords = { row: valids[1] + startRow, col: startCol };
-      }
-
-      const firstEmpty = vals.indexOf(false);
-      let fillCellRow;
-      let fillCellCol;
-      if (firstEmpty < 0) { // if there are no empty cells selected, look outside selection
-        if (horizontalStrip) {
-          fillCellRow = startRow;
-          fillCellCol = reversedLabels ? startCol - 1 : endCol + 1;
-        } else if (verticalStrip) {
-          fillCellRow = reversedLabels ? startRow - 1 : endRow + 1;
-          fillCellCol = startCol;
-        }
-        if (fillCellRow < 0 || fillCellRow === this.props.hotInstance.countRows() || fillCellCol < 0 || fillCellCol === this.props.hotInstance.countCols()) {
-          return output;
-        }
-      } else if (horizontalStrip) {
-        fillCellRow = startRow;
-        fillCellCol = startCol + firstEmpty;
-      } else if (verticalStrip) {
-        fillCellRow = startRow + firstEmpty;
-        fillCellCol = startCol;
-      }
-
-      const firstArgLabel = cellCoordsToLabel(firstArgCoords);
-      const secondArgLabel = cellCoordsToLabel(secondArgCoords);
-
-      let fillString = `=${operationName}(${firstArgLabel}, ${secondArgLabel})`;
-
-      // if labels have been reordered, order it back
-      if (reversedLabels) {
-        fillString = `=${operationName}(${secondArgLabel}, ${firstArgLabel})`;
-      }
-      output.fillString = fillString;
-
-      output.cellsToHighlight.push([fillCellRow, fillCellCol]);
-      return output;
-    }
-
     const self = this;
     this.operations = {
       AVERAGE: {
@@ -339,7 +234,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return twoArgSmartFillFn('MINUS');
+          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'MINUS');
         },
       },
       SUM: {
@@ -366,7 +261,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return twoArgSmartFillFn('SUM');
+          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'SUM');
         },
       },
       DIST: {
@@ -393,7 +288,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return twoArgSmartFillFn('DIST');
+          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'DIST');
         },
       },
       SLIDER: {
