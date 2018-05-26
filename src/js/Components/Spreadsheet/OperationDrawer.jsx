@@ -44,21 +44,6 @@ export default class OperationDrawer extends React.Component {
       }
     };
 
-    const numValidsInArray = arr => {
-      let sum = 0;
-      for (let rowIndex = 0; rowIndex < arr.length; rowIndex++) {
-        const row = arr[rowIndex];
-        for (let colIndex = 0; colIndex < row.length; colIndex++) {
-          const val = arr[rowIndex][colIndex];
-          if (val === true) {
-            sum++;
-          }
-        }
-      }
-      return sum;
-    }
-
-
     const twoArgSmartFillFn = operationName => {
       const output = { cellsToHighlight: [], fillString: "" };
       const selection = self.props.currentSelection;
@@ -166,80 +151,90 @@ export default class OperationDrawer extends React.Component {
           const endRow = Math.max(selection[0], selection[2]);
           const endCol = Math.max(selection[1], selection[3]);
 
-          if (startRow === endRow && startCol === endCol) { return output; }
-
-          const reversedLabels = startRow != selection[0] || startCol != selection[1];
+          const isSingleCell = startRow === endRow && startCol === endCol;
 
           const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const rows = selectedCells.length;
           const cols = selectedCells[0].length;
+
           const validMatrix = getValidMatrix(selectedCells);
           const verticalStrip = rows > 1 && cols === 1;
           const horizontalStrip = cols > 1 && rows === 1;
+          const gridSelection = rows > 1 && cols > 1;
 
-          let vals;
-          let allValids;
-          let emptyLastVal;
-          const numValids = numValidsInArray(validMatrix);
-          
-          if (numValids < 1) { return output }
-          if (horizontalStrip) {
-            vals = validMatrix[0];
-            allValids = getAllIndicesInArray(vals, true).length === vals.length;
-            emptyLastVal = vals[vals.length - 1] === false;
-          } else if (verticalStrip) {
-            vals = validMatrix.map(row => row[0]);
-            allValids = getAllIndicesInArray(vals, true).length === vals.length;
-            emptyLastVal = vals[vals.length - 1] === false;
-          }
+          let hasVals;
+          // if there are vals, and there is an empty at the end of selection
+          if (verticalStrip || horizontalStrip) {
+            let vals;
+            let emptyLastVal;
 
-          let startLabel;
-          let endLabel;
-          if (emptyLastVal && vals.length > 2) { // set
-            if (horizontalStrip) {
-              output.cellsToHighlight = [[startRow, endCol]];
-              startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-              endLabel = cellCoordsToLabel({ row: startRow, col: endCol - 1 });
-            } else if (verticalStrip) {
-              output.cellsToHighlight = [[endRow, startCol]];
-              startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-              endLabel = cellCoordsToLabel({ row: endRow - 1, col: startCol });
+            if (verticalStrip) {
+              vals = validMatrix.map(row => row[0]);
+            } else if (horizontalStrip) {
+              vals = validMatrix[0];
             }
-            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
-            return output;
+
+            hasVals = getAllIndicesInArray(vals, true).length > 0;
+
+            emptyLastVal = vals[vals.length - 1] === false;
+            const emptyValIsWithinSelection = verticalStrip ? rows > 2 : cols > 2;
+
+            let startLabel;
+            let endLabel;
+            if (emptyLastVal && emptyValIsWithinSelection && hasVals) {
+              if (verticalStrip) {
+                output.cellsToHighlight = [[endRow, startCol]];
+                startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                endLabel = cellCoordsToLabel({ row: endRow - 1, col: startCol });
+              } else if (horizontalStrip) {
+                output.cellsToHighlight = [[startRow, endCol]];
+                startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+                endLabel = cellCoordsToLabel({ row: startRow, col: endCol - 1 });
+              }
+              output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+              return output;
+            }
+          } else if (gridSelection) {
+            for (let rowIndex = 0; rowIndex < validMatrix.length; rowIndex++) {
+              const row = validMatrix[rowIndex];
+              for (let colIndex = 0; colIndex < row.length; colIndex++) {
+                const val = validMatrix[rowIndex][colIndex];
+                if (val === true) {
+                  hasVals = true;
+                  break;
+                }
+              }
+              if (hasVals) { break; }
+            }
           }
 
-          // there is no empty cell at end of selection, look outside of selection
-          if (horizontalStrip) {
-            output.cellsToHighlight = [[startRow, endCol + 1]];
-            startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-            endLabel = cellCoordsToLabel({ row: startRow, col: endCol });
-            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
-            return output;
-          } else if (verticalStrip) {
-            output.cellsToHighlight = [[endRow + 1, startCol]];
-            startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-            endLabel = cellCoordsToLabel({ row: endRow, col: startCol });
-            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
-            return output;
-          }
+          if (hasVals) { // populate cells to right, or bottom
+            const numRows = self.props.hotInstance.countRows();
+            const numCols = self.props.hotInstance.countCols();
+            // check cells outside of selection
+            const rightCell = endCol + 1 < numCols ? [[startRow, endCol + 1]] : false;
+            const bottomCell = endRow + 1 < numRows ? [[endRow + 1, startCol]] : false;
 
-          // if grid is selected, look for cell in both directions
-          let cellCoordsToCheck = [
-            [startRow, endCol + 1], // right top
-            [endRow + 1, startCol], // bottom left
-          ];
+            let startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+            let endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
 
-          const fillCellValidity = cellCoordsToCheck.map(coords => {
-            return self.props.hotInstance.getDataAtCell(coords[0], coords[1]).trim().length > 0;
-          });
-
-          const fillCellCoords = cellCoordsToCheck[fillCellValidity.indexOf(false)];
-          if (fillCellCoords) {
-            output.cellsToHighlight = [ fillCellCoords ];
-            const startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-            const endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-            output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+            if (verticalStrip) { // if vertical, look to the bottom first
+              if (bottomCell) {
+                output.cellsToHighlight = bottomCell;
+                output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+              } else if (rightCell) {
+                output.cellsToHighlight = rightCell;
+                output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+              }
+            } else {
+              if (rightCell) {
+                output.cellsToHighlight = rightCell;
+                output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+              } else if (bottomCell) {
+                output.cellsToHighlight = bottomCell;
+                output.fillString = `=AVERAGE(${startLabel}:${endLabel})`;
+              }
+            }
           }
           return output;
         },
