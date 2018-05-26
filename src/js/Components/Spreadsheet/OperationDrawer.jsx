@@ -29,7 +29,10 @@ export default class OperationDrawer extends React.Component {
           const smartFill = self.operations.AVERAGE.smartFillCells;
           if (smartFill.cellsToHighlight.length > 0) {
             const smartFillCell = smartFill.cellsToHighlight[0];
-            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            const prevCellData = self.props.hotInstance.getDataAtCell(smartFillCell[0], smartFillCell[1]);
+            if (prevCellData !== smartFill.fillString) {
+              self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            }
           } else {
             self.props.setSelectedCellData('=AVERAGE(');
           }
@@ -227,7 +230,10 @@ export default class OperationDrawer extends React.Component {
           const smartFill = self.operations.MINUS.smartFillCells;
           if (smartFill.cellsToHighlight.length > 0) {
             const smartFillCell = smartFill.cellsToHighlight[0];
-            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            const prevCellData = self.props.hotInstance.getDataAtCell(smartFillCell[0], smartFillCell[1]);
+            if (prevCellData !== smartFill.fillString) {
+              self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            }
           } else {
             self.props.setSelectedCellData('=MINUS(');
           }
@@ -254,7 +260,10 @@ export default class OperationDrawer extends React.Component {
           const smartFill = self.operations.SUM.smartFillCells;
           if (smartFill.cellsToHighlight.length > 0) {
             const smartFillCell = smartFill.cellsToHighlight[0];
-            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            const prevCellData = self.props.hotInstance.getDataAtCell(smartFillCell[0], smartFillCell[1]);
+            if (prevCellData !== smartFill.fillString) {
+              self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            }
           } else {
             self.props.setSelectedCellData('=SUM(');
           }
@@ -281,7 +290,10 @@ export default class OperationDrawer extends React.Component {
           const smartFill = self.operations.DIST.smartFillCells;
           if (smartFill.cellsToHighlight.length > 0) {
             const smartFillCell = smartFill.cellsToHighlight[0];
-            self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            const prevCellData = self.props.hotInstance.getDataAtCell(smartFillCell[0], smartFillCell[1]);
+            if (prevCellData !== smartFill.fillString) {
+              self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+            }
           } else {
             self.props.setSelectedCellData('=DIST(');
           }
@@ -304,12 +316,14 @@ export default class OperationDrawer extends React.Component {
           const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const startRow = Math.min(selection[0], selection[2]);
           const startCol = Math.min(selection[1], selection[3]);
-          const newCells = selectedCells.map(row => {
+          const newData = selectedCells.map(row => {
             return row.map(col => {
               return `=SLIDER(0, 1, 0.05)`;
             });
           });
-          self.props.hotInstance.populateFromArray(startRow, startCol, newCells);
+          if (!arraysAreSimilar(selectedCells, newData)) {
+            self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+          }
         },
         shouldHighlight: () => {
           return false;
@@ -328,12 +342,14 @@ export default class OperationDrawer extends React.Component {
           const selectedCells = self.props.hotInstance.getData.apply(self, selection);
           const startRow = Math.min(selection[0], selection[2]);
           const startCol = Math.min(selection[1], selection[3]);
-          const newCells = selectedCells.map(row => {
+          const newData = selectedCells.map(row => {
             return row.map(col => {
               return `=RANDFONT(${randomInt(0, 9999)})`;
             });
           });
-          self.props.hotInstance.populateFromArray(startRow, startCol, newCells);
+          if (!arraysAreSimilar(selectedCells, newData)) {
+            self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+          }
         },
         shouldHighlight: () => {
           return false;
