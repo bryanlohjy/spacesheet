@@ -14,7 +14,6 @@
   }
 }
 
-
 .spreadsheet-container {
   width: 100%;
   height: 100%;
@@ -28,6 +27,29 @@
     box-sizing: border-box;
     width: 100%;
     height: 21px;
+  }
+  .operation-drawer {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-content: center;
+    padding: 5px;
+    background-color: rgb(230, 230, 230);
+    .operation-button {
+      &.highlighted {
+        background: darkorange;
+      }
+      letter-spacing: 2px;
+      background-color: rgb(100, 100, 100);
+      color: rgb(230, 230, 230);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 2px;
+      padding: 2px 10px;
+    }
   }
   .table-container {
     textarea.capture-cells {
@@ -61,34 +83,8 @@
       $color4: rgba(29, 131, 140, 0.2);
       $shadow4: rgba(29, 131, 140, 1);
 
-      &._0 {
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
-      }
-      &._1 {
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
-        // background-color: $color1;
-        // box-shadow: inset 0 0 1px $shadow1;
-      }
-      &._2 {
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
-        // background-color: $color2;
-        // box-shadow: inset 0 0 1px $shadow2;
-      }
-      &._3 {
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
-        // background-color: $color3;
-        // box-shadow: inset 0 0 1px $shadow3;
-      }
-      &._4 {
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
-        // background-color: $color4;
-        // box-shadow: inset 0 0 1px $shadow4;
-      }
+      background-color: $color3;
+      box-shadow: inset 0 0 1px $shadow3;
     }
     .canvas-container {
       display: flex;

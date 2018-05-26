@@ -35,6 +35,10 @@ export default class DataPicker {
     */
     this.cells = {};
   };
+  resetZoom() {
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.draw();
+  };
   zoom(degree) {
     // scale around origin
     const prevTransform = this.ctx.getTransform();

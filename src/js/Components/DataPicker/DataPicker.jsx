@@ -16,6 +16,7 @@ export default class DataPicker extends React.Component {
       highlighterRow: 0,
       drawnWidth: 0,
       drawnHeight: 0,
+      isLoaded: false,
     };
 
     this.initDataPicker = this.initDataPicker.bind(this);
@@ -23,6 +24,7 @@ export default class DataPicker extends React.Component {
     this.handleMouseWheel = this.handleMouseWheel.bind(this);
     this.mouseToDataCoordinates = this.mouseToDataCoordinates.bind(this);
     this.handleZoomClick = this.handleZoomClick.bind(this);
+    this.resetZoom = this.resetZoom.bind(this);
   };
   componentDidMount() {
     this.initDataPicker();
@@ -47,6 +49,7 @@ export default class DataPicker extends React.Component {
       }
     );
     this.props.onDataPickerInit(this.dataPicker);
+    this.setState({ isLoaded: true })
   };
   mouseToDataCoordinates(mouseX, mouseY) {
     const dataPicker = this.dataPicker;
@@ -104,6 +107,19 @@ export default class DataPicker extends React.Component {
     dataPicker.zoom(direction)
     const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
 
+    this.setState({
+      highlighterColumn: column,
+      highlighterRow: row,
+    });
+  };
+  resetZoom() {
+    const dataPicker = this.dataPicker;
+    if (!dataPicker) { return; }
+    // zoom towards center
+    dataPicker.resetZoom();
+    const centerX = this.refs.dataPickerCanvas.width / 2;
+    const centerY = this.refs.dataPickerCanvas.height / 2;
+    const { row, column } = this.mouseToDataCoordinates(centerX, centerY);
     this.setState({
       highlighterColumn: column,
       highlighterRow: row,
@@ -202,15 +218,27 @@ export default class DataPicker extends React.Component {
             drawnWidth={ this.state.drawnWidth }
             drawnHeight={ this.state.drawnHeight }
           /> : "" }
-        { this.props.visible ?
-          <ZoomButtons
-            zoomIn={ () => {
-              this.handleZoomClick(1);
-            }}
-            zoomOut={ () => {
-              this.handleZoomClick(-1);
-            }}
-          />
+        { this.props.visible && this.state.isLoaded ?
+          <div className="datapicker-ui">
+            <MiniMap
+              width={this.props.width}
+              height={this.props.height}
+              viewportWidth={Math.floor(this.props.width / this.dataPicker.scale)}
+              viewportHeight={Math.floor(this.props.height / this.dataPicker.scale)}
+              viewportX={Math.floor(-this.dataPicker.translateX / this.dataPicker.scale)}
+              viewportY={Math.floor(-this.dataPicker.translateY / this.dataPicker.scale)}
+              displayScale={Math.round(this.dataPicker.scale * 100)}
+            />
+            <ZoomButtons
+              zoomIn={() => {
+                this.handleZoomClick(1);
+              }}
+              zoomOut={() => {
+                this.handleZoomClick(-1);
+              }}
+              resetZoom={this.resetZoom}
+            />
+          </div>
           : ""
         }
       </div>
@@ -250,6 +278,11 @@ class ZoomButtons extends React.Component {
         }}>
           -
         </span>
+        <span onClick={() => {
+          this.props.resetZoom();
+        }}>
+        100%
+        </span>
       </div>
     );
   };
@@ -257,7 +290,48 @@ class ZoomButtons extends React.Component {
 ZoomButtons.propTypes = {
   zoomIn: PropTypes.func,
   zoomOut: PropTypes.func,
-  visible: PropTypes.bool,
+  resetZoom: PropTypes.func,
+};
+
+class MiniMap extends React.Component {
+  constructor(props) {
+    super(props);
+    this.drawScale = 1/10;
+  };
+  render() {
+    return (
+      <div className="datapicker-minimap">
+        <div
+          className="whole"
+          style={{
+            width: this.props.width * this.drawScale,
+            height: this.props.height * this.drawScale,
+          }}
+        >
+          <span>{this.props.displayScale}%</span>
+          <div
+            className="window"
+            style={{
+              width: this.props.viewportWidth * this.drawScale,
+              height: this.props.viewportHeight * this.drawScale,
+              left: this.props.viewportX * this.drawScale,
+              top: this.props.viewportY * this.drawScale,
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+MiniMap.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  viewportWidth: PropTypes.number,
+  viewportHeight: PropTypes.number,
+  viewportX: PropTypes.number,
+  viewportY: PropTypes.number,
+  displayScale: PropTypes.number,
 };
 
 class DataPickerHighlighter extends React.Component {

@@ -2,27 +2,110 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HotTable from 'react-handsontable';
 import HandsOnTable from 'handsontable';
+import OperationDrawer from './OperationDrawer.jsx';
+
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
+
 import { DemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
-    this.initHotTable = this.initHotTable.bind(this);
-
-    this.state = {
+    this.state = { // updated using refs to prevent unnecessary table rendering
       inputBarIsMounted: false,
+      inputBarValue: "",
+      currentSelection: [0, 0, 0, 0],
     };
+    this.setSelectedCellData = this.setSelectedCellData.bind(this);
+  };
+  setSelectedCellData(operation, closeAfterSetting) {
+    if (closeAfterSetting) {
+      const selection = this.hotInstance.getSelected();
+      const prevData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+      if (prevData !== operation) {
+        this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
+        this.props.setInputBarValue(operation);
+      }
+      return;
+    }
+    const editor = this.hotInstance.getActiveEditor();
+    editor.beginEditing();
+    editor.clearHighlightedReferences();
+    editor.TEXTAREA.value = operation;
+    editor.eventManager.fireEvent(editor.TEXTAREA, 'keydown');
+    editor.updateTableCellCaptureClass();
+  };
+  render() {
+    return (
+      <div className="spreadsheet-container">
+        <input className="input-bar" type="text"
+          disabled
+          value={this.props.inputBarValue}
+          ref={ el => {
+            if (!this.state.inputBarIsMounted) {
+              this.setState({ inputBarIsMounted : true });
+            }
+          }}
+        />
+        <OperationDrawer
+          setSelectedCellData={this.setSelectedCellData}
+          currentSelection={this.state.currentSelection}
+          hotInstance={this.hotInstance}
+        />
+        {
+          this.state.inputBarIsMounted ? (
+            <div className="table-container" ref="tableContainer">
+              <HotTableContainer
+                outputWidth={this.props.outputWidth}
+                outputHeight={this.props.outputHeight}
+                setTableRef={ ref => {
+                  this.hotInstance = ref.hotInstance;
+                  this.props.setTableRef(ref);
+                }}
+                width={this.props.width}
+                height={this.props.height}
+                setInputBarValue={this.props.setInputBarValue}
+                getCellFromDataPicker={this.props.getCellFromDataPicker}
+                model={this.props.model}
+                drawFn={this.props.drawFn}
+                decodeFn={this.props.decodeFn}
+                afterSelection={ (r, c, r2, c2) => {
+                  this.setState({
+                    currentSelection: [r, c , r2, c2],
+                  });
+                }}
+              />
+            </div>) : ''
+        }
+      </div>
+    )
+  }
+}
+Spreadsheet.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
+  drawFn: PropTypes.func,
+  decodeFn: PropTypes.func,
+  getCellFromDataPicker: PropTypes.func,
+  model: PropTypes.object,
+  inputBarValue: PropTypes.string,
+  setTableRef: PropTypes.func,
+};
 
+class HotTableContainer extends React.Component {
+  constructor(props) {
+    super(props);
     this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
     this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
+    this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
-
     const cellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
@@ -32,7 +115,7 @@ export default class Spreadsheet extends React.Component {
         getCellFromDataPicker: this.props.getCellFromDataPicker,
         model: this.props.model,
       }),
-      inputBar: this.inputBar,
+      setInputBarValue: this.props.setInputBarValue,
     });
 
     hotInstance.updateSettings({
@@ -41,20 +124,20 @@ export default class Spreadsheet extends React.Component {
         const cellData = hotInstance.getDataAtRowProp(row, prop);
         switch (getCellType(cellData)) {
           case 'FORMULA':
-            cellProperties.renderer = cellTypes.Formula.renderer;
-            cellProperties.editor = cellTypes.Formula.editor;
-            break;
+          cellProperties.renderer = cellTypes.Formula.renderer;
+          cellProperties.editor = cellTypes.Formula.editor;
+          break;
           case 'SLIDER':
-            cellProperties.renderer = cellTypes.Slider.renderer;
-            cellProperties.editor = cellTypes.Slider.editor;
-            break;
+          cellProperties.renderer = cellTypes.Slider.renderer;
+          cellProperties.editor = cellTypes.Slider.editor;
+          break;
           case 'RANDFONT':
-            cellProperties.renderer = cellTypes.RandFont.renderer;
-            cellProperties.editor = cellTypes.RandFont.editor;
-            break;
+          cellProperties.renderer = cellTypes.RandFont.renderer;
+          cellProperties.editor = cellTypes.RandFont.editor;
+          break;
           default:
-            cellProperties.renderer = cellTypes.Text.renderer;
-            cellProperties.editor = cellTypes.Text.editor;
+          cellProperties.renderer = cellTypes.Text.renderer;
+          cellProperties.editor = cellTypes.Text.editor;
         }
         return cellProperties;
       },
@@ -78,96 +161,81 @@ export default class Spreadsheet extends React.Component {
         }
       }
     });
-    hotInstance.selectCell(0, 0);
+    setTimeout(() => {
+      hotInstance.selectCell(0, 0);
+    }, 0);
+  };
+  shouldComponentUpdate(newProps, newState) {
+    return false;
   };
   render() {
-    const inputBarHeight = 21;
     return (
-      <div className="spreadsheet-container">
-        <input className="input-bar" type="text"
-          disabled
-          ref={ el => {
-            if (!this.state.inputBarIsMounted) {
-              this.inputBar = el;
-              this.setState({ inputBarIsMounted : true });
-            }
-          }}
-          style={{
-            height: inputBarHeight || 21,
-          }}
-        />
-        {
-          this.state.inputBarIsMounted ? (
-            <div className="table-container" ref="tableContainer">
-              <HotTable
-                className="table"
-                ref={ ref => {
-                  this.props.setTableRef(ref);
-                  this.hotInstance = ref.hotInstance;
-                  this.initHotTable();
-                }}
-                root='hot'
+      <HotTable
+        className="table"
+        ref={ ref => {
+          if (ref && !this.hotInstance) {
+            this.props.setTableRef(ref);
+            this.hotInstance = ref.hotInstance;
+            this.initHotTable();
+          }
+        }}
+        root='hot'
 
-                mergeCells={ this.demoSheet.mergeCells }
+        mergeCells={ this.demoSheet.mergeCells }
 
-                rowHeaderWidth={32}
-                colHeaderHeight={32}
+        rowHeaderWidth={32}
+        colHeaderHeight={32}
 
-                colHeaders={true}
-                rowHeaders={true}
-                preventOverflow="horizontal"
-                rowHeights={this.props.outputHeight}
-                colWidths={this.props.outputWidth}
+        colHeaders={true}
+        rowHeaders={true}
+        preventOverflow="horizontal"
+        rowHeights={this.props.outputHeight}
+        colWidths={this.props.outputWidth}
 
-                width={ this.props.width }
-                height={ this.props.height - inputBarHeight }
+        maxCols={ this.maxCols }
+        maxRows={ this.maxRows }
 
-                maxCols={ this.maxCols }
-                maxRows={ this.maxRows }
+        // afterRender={ e => { console.warn('HotTable Render')}}
 
-                viewportColumnRenderingOffset={26}
-                viewportRowRenderingOffset={26}
+        viewportColumnRenderingOffset={26}
+        viewportRowRenderingOffset={26}
 
-                outsideClickDeselects={false}
-                // make sure input bar is in sync
-                afterUndo={ changes => {
-                  const selection = this.hotInstance.getSelected();
-                  const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  if (this.inputBar.value !== data) {
-                    this.inputBar.value = data;
-                  }
-                }}
-                afterRedo={ changes => {
-                  const selection = this.hotInstance.getSelected();
-                  const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  if (this.inputBar.value !== data) {
-                    this.inputBar.value = data;
-                  }
-                }}
-                comments={true}
-                customBorders={true}
+        outsideClickDeselects={false}
 
-                undo
-                redo
-              />
-            </div>) : ''
-        }
-      </div>
-    )
+        afterUndo={ changes => {
+          const selection = this.hotInstance.getSelected();
+          const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+          this.props.setInputBarValue(data)
+        }}
+        afterRedo={ changes => {
+          const selection = this.hotInstance.getSelected();
+          const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+          this.props.setInputBarValue(data);
+        }}
+        afterSelection={ (r, c, r2, c2) => {
+          this.props.afterSelection(r, c, r2, c2);
+        }}
+
+        comments={true}
+        customBorders={true}
+
+        undo
+        redo
+      />
+    );
   }
 }
-Spreadsheet.propTypes = {
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
+HotTableContainer.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
   drawFn: PropTypes.func,
   decodeFn: PropTypes.func,
-
-  setTableRef: PropTypes.func,
-  dataPickerCellData: PropTypes.object,
   getCellFromDataPicker: PropTypes.func,
   model: PropTypes.object,
-  // beforeChange: PropTypes.func,
-  // setCurrentColor: PropTypes.func,
+  inputBarValue: PropTypes.string,
+  afterSelection: PropTypes.func,
+  setInputBarValue: PropTypes.func,
+  setTableRef: PropTypes.func,
 };

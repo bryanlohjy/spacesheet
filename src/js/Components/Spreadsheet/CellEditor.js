@@ -2,6 +2,7 @@ import HandsOnTable from 'handsontable';
 import { cellLabelToCoords, cellCoordsToLabel, isFormula, getCellFromLabel } from './CellHelpers.js';
 import { getAllRegexMatches, removeInstancesOfClassName } from '../../lib/helpers.js';
 import Regex from '../../lib/Regex.js';
+import { getArgumentsFromFunction } from './FormulaParser.js';
 
 export default opts => {
   let CustomTextEditor =  HandsOnTable.editors.TextEditor.prototype.extend();
@@ -32,7 +33,7 @@ export default opts => {
           if (row < numRows && col < numCols) {
             const reference = hotInstance.getCell(row, col);
             if (reference) {
-              reference.classList.add('highlighted-reference', `_${ (rangeCount % 5) }`);
+              reference.classList.add('highlighted-reference');
             }
           }
         }
@@ -46,7 +47,7 @@ export default opts => {
       if (coords.row < hotInstance.countRows() && coords.col < hotInstance.countCols()) {
         const reference = hotInstance.getCell(coords.row, coords.col);
         if (reference) {
-          reference.classList.add('highlighted-reference', `_${ (singleCount % 5) }`);
+          reference.classList.add('highlighted-reference');
         }
       }
     }
@@ -54,7 +55,7 @@ export default opts => {
 
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
-    opts.inputBar.value = this.originalValue || '';
+    opts.setInputBarValue(this.originalValue || '');
   };
 
   CustomTextEditor.prototype.cellCapturePosition = function() { // returns caret position relative to where the captured cell should be
@@ -69,10 +70,36 @@ export default opts => {
         return "BEFORE";
       }
       let postCaret = editorData.substring(caretPosition, editorData.length);
-      if (new RegExp(/[a-z]\d?$/gi).test(preCaret) && new RegExp(/^[0-9]?[^a-z]/gi).test(postCaret)) {
+      if (new RegExp(/[a-z]\d?$/gi).test(preCaret)) {
         return "BETWEEN";
-      } else if (new RegExp(/[a-z]\d+$/gi).test(preCaret)) {
+      } else if (new RegExp(/[a-z]?\d+$/gi).test(preCaret)) {
         return "AFTER";
+      }
+    }
+    return false;
+  };
+
+  CustomTextEditor.prototype.shouldCloseOff = function(str) {
+    if (!str) {
+      str = this.TEXTAREA.value;
+    }
+
+    if ((new RegExp(/^\s*=\s*average\s*\(/gi)).test(str)) {
+      return false;
+    }
+
+    if (str.trim()[str.trim().length - 1] !== ')') { // close of string if not
+      const lastCommaIndex = str.lastIndexOf(',');
+      const preLastComma = str.substring(0, lastCommaIndex);
+      str = preLastComma + ')';
+    }
+    // check if operation should be closed off
+    const args = getArgumentsFromFunction(str);
+    if (args && args.length) {
+      const isLerpOperation = (new RegExp(/^\s*=\s*lerp\s*\(/gi)).test(str);
+      // if lerp, return true if it has 3 args
+      if ((isLerpOperation && args.length >= 3) || (!isLerpOperation && args.length >= 2)) {
+        return str;
       }
     }
     return false;
@@ -82,14 +109,13 @@ export default opts => {
     const capturePos = this.cellCapturePosition();
     if (capturePos) {
       const cellCoords = this.instance.getCoords(e.target);
-      if (cellCoords.row < 0 || cellCoords.col < 0) {
-        return;
-      }
+      if (cellCoords.row < 0 || cellCoords.col < 0) { return; }
 
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
 
+      // split string on either side of caret
       const editorVal = this.TEXTAREA.value;
       let caretPosition = HandsOnTable.dom.getCaretPosition(this.TEXTAREA);
       let preCaret = editorVal.substring(0, caretPosition);
@@ -98,10 +124,25 @@ export default opts => {
       const cellLabel = cellCoordsToLabel(cellCoords);
 
       let newString;
+
       switch (capturePos) {
         case 'BEFORE':
-          newString = `${preCaret}${cellLabel}${postCaret}`;
-          caretPosition = Number(caretPosition) + Number(cellLabel.length);
+          const replace = this.shouldCloseOff();
+          if (replace) {
+            postCaret = postCaret.trim();
+            const referenceToReplace = (postCaret).match(new RegExp(/^[a-z]?\d+/gi))[0];
+            postCaret = postCaret.substring(referenceToReplace.length, postCaret.length);
+            newString = `${preCaret}${cellLabel}${postCaret}`;
+          } else { // add to string
+            newString = `${preCaret}${cellLabel}, ${postCaret}`;
+            if (this.shouldCloseOff(newString)) {
+              const endsWithBracket = postCaret.trim()[postCaret.trim().length - 1] === ")";
+              newString = `${preCaret}${cellLabel}${postCaret}${!endsWithBracket ? ')' : ''}`;
+              caretPosition = Number(caretPosition) + Number(cellLabel.length);
+            } else {
+              caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
+            }
+          }
           break;
         case 'BETWEEN':
           preCaret = preCaret.replace(/[a-z]\d?$/gi, '');
@@ -110,12 +151,20 @@ export default opts => {
           break;
         case 'AFTER':
           preCaret = preCaret.trim();
-          const referenceToReplace = (preCaret).match(new RegExp(/[a-z]\d+$/gi))[0];
+          const referenceToReplace = (preCaret).match(new RegExp(/[a-z]?\d+$/gi))[0];
           preCaret = preCaret.substring(0, preCaret.length - referenceToReplace.length);
-          newString = `${preCaret}${cellLabel}${postCaret}`;
+          newString = `${preCaret}${cellLabel}, ${postCaret}`;
+          caretPosition += 2;
       }
 
-      opts.inputBar.value = newString;
+      // if not the average function, check if enough args are specified - close off if so
+      if (!(new RegExp(/^\s*=\s*average\s*\(/gi)).test(newString)) {
+        const shouldClose = this.shouldCloseOff(newString);
+        if (shouldClose) {
+          newString = shouldClose;
+        }
+      }
+      opts.setInputBarValue(newString);
       this.TEXTAREA.value = newString;
       HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
 
@@ -135,15 +184,16 @@ export default opts => {
   };
 
   const onKeyDown = function(e) { // update input bar as cell is edited
+    if (!e.key) { return; }
     if (e.key.trim().length === 1 || e.keyCode === 8 || e.keyCode === 46) {
       setTimeout(() => {
-        opts.inputBar.value = e.target.value;
+        opts.setInputBarValue(e.target.value);
         this.clearHighlightedReferences();
         this.highlightReferences(this.instance, e.target.value);
       }, 0);
     } else if (e.keyCode === 27) { // if escape, then set to originalValue
       setTimeout(() => {
-        opts.inputBar.value = this.originalValue;
+        opts.setInputBarValue(this.originalValue);
       }, 0);
     }
   };
@@ -159,10 +209,12 @@ export default opts => {
   };
 
   CustomTextEditor.prototype.open = function() {
+    // console.log(Object.keys(this))
+    this._fullEditMode = true;
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     this.TEXTAREA.setAttribute('spellcheck', 'false');
     setTimeout(() => {
-      opts.inputBar.value = this.TEXTAREA.value || '';
+      opts.setInputBarValue(this.TEXTAREA.value || '');
     }, 0);
     this.highlightReferences(this.instance, this.originalValue);
     this.updateTableCellCaptureClass();

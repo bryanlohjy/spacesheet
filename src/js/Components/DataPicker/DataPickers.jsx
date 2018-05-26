@@ -105,7 +105,7 @@ class DataPickerSelector extends React.Component {
                   }}
                   className={`${key === this.props.selectedGrid ? 'active' : ''}`}
                 >
-                  {label}
+                  <span>{label}</span>
                 </li>
               )
             })

@@ -1,7 +1,7 @@
 import HandsOnTable from 'handsontable';
 import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
-
+import { getArgumentsFromFunction } from './FormulaParser.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   const CustomTextEditor = CellEditor(opts);
@@ -49,7 +49,7 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
-      const randArgs = opts.formulaParser.getArgumentsFromFunction(data);
+      const randArgs = getArgumentsFromFunction(data);
       if (randArgs.length === 0) { // if there are no arguments, use a smart default
         data = `=SLIDER(0, 1, 0.05)`;
         hotInstance.setDataAtCell(row, col, data);
@@ -111,6 +111,8 @@ const CellTypes = opts => {
         valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
 
         if (!prevSlider) {
+          // set value to halfway by default
+          slider.setAttribute('value', (min + max)/2);
           sliderContainer.appendChild(valueSpan);
           sliderContainer.appendChild(slider);
           td.appendChild(sliderContainer);
@@ -127,7 +129,7 @@ const CellTypes = opts => {
   const RandFont = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
-        const randArgs = opts.formulaParser.getArgumentsFromFunction(data);
+        const randArgs = getArgumentsFromFunction(data);
         if (randArgs.length === 0) { // if there are no arguments, create a random seed
           data = `=RANDFONT(${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
@@ -168,7 +170,7 @@ const CellTypes = opts => {
               e.stopPropagation();
               e.stopImmediatePropagation();
               const newValue = `=RANDFONT(${ randomInt(0, 99999) })`;
-              opts.inputBar.value= newValue;
+              opts.setInputBarValue(newValue);
               hotInstance.setDataAtCell(row, col, newValue);
             });
 

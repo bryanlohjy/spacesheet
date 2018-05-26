@@ -15,9 +15,11 @@ export default class Application extends React.Component {
       modelIsLoaded: false,
       outputWidth: 0,
       outputHeight: 0,
+      inputBarValue: "",
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
+    this.setInputBarValue = this.setInputBarValue.bind(this);
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
@@ -51,15 +53,21 @@ export default class Application extends React.Component {
   setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
     const cellData = `=DATAPICKER('${dataKey}')`;
-    this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
-    this.refs.spreadsheet.inputBar.value = cellData;
+    const prevData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+    if (prevData !== cellData) {
+      this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
+      this.setInputBarValue(cellData);
+    }
+  };
+  setInputBarValue(value) {
+    this.setState({ inputBarValue: value });
   };
   getCellFromDataPicker(dataKey) {
     dataKey = dataKey.trim().replace(/["']/gi, "");
     const firstHyphen = dataKey.indexOf('-');
     const dataPickerKey = dataKey.substring(0, firstHyphen);
     const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
-    
+
     const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
@@ -99,6 +107,8 @@ export default class Application extends React.Component {
                 setTableRef={ ref => {
                   this.hotInstance = ref.hotInstance;
                 }}
+                inputBarValue={this.state.inputBarValue}
+                setInputBarValue={this.setInputBarValue}
               />
             </div> :
             <div className="loader-container">
