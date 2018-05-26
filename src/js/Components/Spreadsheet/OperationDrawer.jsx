@@ -146,8 +146,7 @@ export default class OperationDrawer extends React.Component {
         onClick: e => {
           const smartFill = self.operations.LERP.smartFillCells;
           const newData = smartFill.newData;
-          const isSingleCell = newData.length === 1 && newData[0].length === 1;
-          if (newData && newData.length > 0 && !isSingleCell) {
+          if (newData && newData.length > 0) {
             const selection = self.props.currentSelection;
             const startRow = Math.min(selection[0], selection[2]);
             const startCol = Math.min(selection[1], selection[3]);
@@ -180,10 +179,12 @@ export default class OperationDrawer extends React.Component {
           const endRow = Math.max(selection[0], selection[2]);
           const endCol = Math.max(selection[1], selection[3]);
 
-          output.newData = selectedCells.map((row, rowIndex) => {
+          let hasNewData = false;
+          const _newData = selectedCells.map((row, rowIndex) => {
             return row.map((val, colIndex) => {
               const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
               if (isAnchor) { return val; }
+              if (!hasNewData) { hasNewData = true; }
               let lerpBy;
               let fillString;
               if (rowIndex === 0) {
@@ -206,6 +207,9 @@ export default class OperationDrawer extends React.Component {
               return fillString;
             });
           });
+          if (hasNewData) {
+            output.newData = _newData;
+          }
           return output;
         },
       },
