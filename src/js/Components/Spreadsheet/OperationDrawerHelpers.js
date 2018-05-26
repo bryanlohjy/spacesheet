@@ -75,44 +75,46 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
     firstArgCoords = { row: valids[0] + startRow, col: startCol };
     secondArgCoords = { row: valids[1] + startRow, col: startCol };
   }
-
-  const firstEmpty = vals.indexOf(false);
-  let fillCellRow;
-  let fillCellCol;
-  if (firstEmpty < 0) { // if there are no empty cells selected, look outside selection
-    if (horizontalStrip) {
-      fillCellRow = startRow;
-      fillCellCol = endCol + 1;
-    } else if (verticalStrip) {
-      fillCellRow = endRow + 1;
-      fillCellCol = startCol;
-    }
-    if (fillCellRow < 0 || fillCellRow === hotInstance.countRows() || fillCellCol < 0 || fillCellCol === hotInstance.countCols()) {
-      return output;
-    }
-  } else if (horizontalStrip) {
-    fillCellRow = startRow;
-    fillCellCol = startCol + firstEmpty;
-  } else if (verticalStrip) {
-    fillCellRow = startRow + firstEmpty;
-    fillCellCol = startCol;
-  }
-
   const firstArgLabel = cellCoordsToLabel(firstArgCoords);
   const secondArgLabel = cellCoordsToLabel(secondArgCoords);
-
   let fillString = `=${operationName}(${firstArgLabel}, ${secondArgLabel})`;
-
   // if labels have been reordered, order it back
   if (reversedLabels) {
     fillString = `=${operationName}(${secondArgLabel}, ${firstArgLabel})`;
   }
   output.fillString = fillString;
 
-  output.cellsToHighlight.push([fillCellRow, fillCellCol]);
+  const firstEmpty = vals.indexOf(false);
+  if (firstEmpty >= 0) {
+    if (horizontalStrip) {
+      output.cellsToHighlight = [[startRow, startCol + firstEmpty]];
+    } else if (verticalStrip) {
+      output.cellsToHighlight = [[startRow + firstEmpty, startCol]];
+    }
+  } else { // if there are no empty cells selected, look outside selection
+    const numRows = hotInstance.countRows();
+    const numCols = hotInstance.countCols();
+    const rightCell = endCol + 1 < numCols ? [[startRow, endCol + 1]] : false;
+    const bottomCell = endRow + 1 < numRows ? [[endRow + 1, startCol]] : false;
+    if (verticalStrip) { // if vertical, look to the bottom first
+      if (bottomCell) {
+        output.cellsToHighlight = bottomCell;
+      } else if (rightCell) {
+        output.cellsToHighlight = rightCell;
+      }
+    } else if (horizontalStrip) {
+      if (rightCell) {
+        output.cellsToHighlight = rightCell;
+      } else if (bottomCell) {
+        output.cellsToHighlight = bottomCell;
+      }
+    }
+  }
+
+
+
   return output;
 }
-
 
 module.exports = {
   getValidMatrix,
