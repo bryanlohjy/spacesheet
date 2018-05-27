@@ -28,9 +28,17 @@ export default class FontDrawer extends React.Component {
             });
           }}
         />
-        <FontCanvas
-          inputValue={this.state.inputValue}
-        />
+        <div className="font-canvas-container">
+          <FontCanvas
+            inputValue={this.state.inputValue}
+          />
+          <FontCanvas
+            inputValue={this.state.inputValue}
+          />
+          <FontCanvas
+            inputValue={this.state.inputValue}
+          />
+        </div>
       </div>
     );
   };
@@ -47,26 +55,29 @@ class FontCanvas extends React.Component {
   };
   componentDidMount() {
     const parentEl = this.refs.canvasEl.parentNode;
-    console.log(parentEl)
+    console.log(parentEl.offsetWidth, parentEl.clientWidth, parentEl.getBoundingClientRect().width)
+    this.refs.canvasEl.width = parentEl.clientWidth;
     this.ctx = this.refs.canvasEl.getContext('2d');
     this.updateCanvas();
   };
   componentWillReceiveProps(newProps) {
     if (newProps.inputValue !== this.props.inputValue) {
-      this.updateCanvas();
+      setTimeout(() => {
+        this.updateCanvas();
+      }, 0);
     }
   };
   updateCanvas() {
+    const canvas = this.ctx.canvas;
     this.ctx.fillStyle = `rgb(${Math.random() * 255}, 100, 100)`;
-    this.ctx.fillRect(0, 0, 100, 100);
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.ctx.fillText(this.props.inputValue, 10, 90);
   };
   render() {
     return (
       <canvas
         ref="canvasEl"
         className="font-canvas"
-        // width="100%"
-        // height="100%"
       />
     );
   };

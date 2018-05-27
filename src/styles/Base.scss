@@ -18,6 +18,12 @@
     flex-direction: row;
     align-items: flex-start;
   }
+  .right-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 100%;
+  }
   .bottom-nav {
     display: flex;
     flex-direction: column;

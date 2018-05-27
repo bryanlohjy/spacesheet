@@ -75,17 +75,16 @@ export default class Application extends React.Component {
   render () {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const fontDrawerHeight = 200;
-    const dataPickerSize = docHeight - navHeight - fontDrawerHeight;
+    const fontDrawerHeight = 400;
+    const dataPickerSize = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight - navHeight;
+    const spreadsheetHeight = docHeight - navHeight - fontDrawerHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded ?
             <div className="component-container">
-              <div className="left-container">
                 <DataPickers
                   width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
                   height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
@@ -96,26 +95,27 @@ export default class Application extends React.Component {
                   onCellClick={ this.setSpreadsheetCellFromDataPicker }
                   ref='dataPicker'
                 />
+              <div className="right-container">
+                <Spreadsheet
+                  width={ spreadsheetWidth }
+                  height={ spreadsheetHeight }
+                  outputWidth={ this.state.outputWidth }
+                  outputHeight={ this.state.outputHeight }
+                  drawFn={ this.drawFn }
+                  decodeFn={ this.decodeFn }
+                  getCellFromDataPicker={ this.getCellFromDataPicker }
+                  ref='spreadsheet'
+                  model={ this.model }
+                  setTableRef={ ref => {
+                    this.hotInstance = ref.hotInstance;
+                  }}
+                  inputBarValue={this.state.inputBarValue}
+                  setInputBarValue={this.setInputBarValue}
+                />
                 <FontDrawer
                   height={fontDrawerHeight}
                 />
               </div>
-              <Spreadsheet
-                width={ spreadsheetWidth }
-                height={ spreadsheetHeight }
-                outputWidth={ this.state.outputWidth }
-                outputHeight={ this.state.outputHeight }
-                drawFn={ this.drawFn }
-                decodeFn={ this.decodeFn }
-                getCellFromDataPicker={ this.getCellFromDataPicker }
-                ref='spreadsheet'
-                model={ this.model }
-                setTableRef={ ref => {
-                  this.hotInstance = ref.hotInstance;
-                }}
-                inputBarValue={this.state.inputBarValue}
-                setInputBarValue={this.setInputBarValue}
-              />
             </div> :
             <div className="loader-container">
               <div className="loader"/>
