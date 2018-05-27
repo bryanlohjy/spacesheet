@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula } from '../Spreadsheet/CellHelpers.js';
+import { charToDecodeIndex } from './FontDrawerHelpers.js';
 
 export default class FontDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: '',
+      inputValue: 'handgloves',
     };
   };
   render() {
@@ -24,6 +25,7 @@ export default class FontDrawer extends React.Component {
               inputValue: e.target.value,
             });
           }}
+          autoComplete={false}
         />
         <div className="font-samples">
           <FontSample
@@ -32,13 +34,27 @@ export default class FontDrawer extends React.Component {
             formulaParser={this.props.formulaParser}
             drawFn={this.props.drawFn}
             decodeFn={this.props.decodeFn}
-          />
-          {/* <FontSample
-            inputValue={this.state.inputValue}
+            outputWidth={ this.props.outputWidth }
+            outputHeight={ this.props.outputHeight }
           />
           <FontSample
             inputValue={this.state.inputValue}
-          /> */}
+            hotInstance={this.props.hotInstance}
+            formulaParser={this.props.formulaParser}
+            drawFn={this.props.drawFn}
+            decodeFn={this.props.decodeFn}
+            outputWidth={ this.props.outputWidth }
+            outputHeight={ this.props.outputHeight }
+          />
+          <FontSample
+            inputValue={this.state.inputValue}
+            hotInstance={this.props.hotInstance}
+            formulaParser={this.props.formulaParser}
+            drawFn={this.props.drawFn}
+            decodeFn={this.props.decodeFn}
+            outputWidth={ this.props.outputWidth }
+            outputHeight={ this.props.outputHeight }
+          />
         </div>
       </div>
     );
@@ -50,6 +66,8 @@ FontDrawer.propTypes = {
   formulaParser: PropTypes.object,
   drawFn: PropTypes.func,
   decodeFn: PropTypes.func,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
 };
 
 class FontSample extends React.Component {
@@ -65,6 +83,8 @@ class FontSample extends React.Component {
     const controls = this.refs.canvasEl.previousSibling;
 
     this.refs.canvasEl.width = parentEl.clientWidth - controls.clientWidth;
+    this.refs.canvasEl.height = controls.clientHeight;
+
     this.ctx = this.refs.canvasEl.getContext('2d');
     this.updateCanvas();
   };
@@ -82,7 +102,7 @@ class FontSample extends React.Component {
 
     if (!selectedVal || !selectedVal.trim() || !isFormula(selectedVal)) { return; }
     const result = this.props.formulaParser.parse(selectedVal.replace('=', '')).result;
-    if (result && Array.isArray(result)) {
+    if (result && result.length === 40) {
       this.setState({ vector: result }, () => {
         this.updateCanvas();
       });
@@ -91,15 +111,25 @@ class FontSample extends React.Component {
   updateCanvas() {
     const vec = this.state.vector;
     if (vec.length <= 0) { return; }
-    const canvas = this.ctx.canvas;
-    const image = this.props.decodeFn(vec, 2);
-    if (image) {
-      this.props.drawFn(this.ctx, image);
-    }
-    // this.ctx.fillStyle = `rgb(${Math.random() * 255}, 100, 100)`;
-    // this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // this.ctx.fillText(this.props.inputValue, 10, 90);
 
+    const canvas = this.ctx.canvas;
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const sampleString = this.props.inputValue;
+    if (sampleString && sampleString.length > 0) {
+      const charsToDraw = sampleString.split('');
+      for (let charIndex = 0; charIndex < charsToDraw.length; charIndex++) {
+        const char = sampleString[charIndex];
+        const decodeIndex = charToDecodeIndex(char);
+        if (decodeIndex > -1) {
+          this.ctx.save();
+          this.ctx.scale(0.5, 0.5);
+          const image = this.props.decodeFn(vec, decodeIndex);
+          this.ctx.translate(this.props.outputWidth * charIndex, 0);
+          this.props.drawFn(this.ctx, image);
+          this.ctx.restore();
+        }
+      }
+    }
   };
   render() {
     return (
@@ -125,4 +155,6 @@ FontSample.propTypes = {
   formulaParser: PropTypes.object,
   drawFn: PropTypes.func,
   decodeFn: PropTypes.func,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
 };

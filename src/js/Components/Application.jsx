@@ -121,6 +121,8 @@ export default class Application extends React.Component {
                   formulaParser={this.formulaParser}
                   drawFn={this.drawFn}
                   decodeFn={this.decodeFn}
+                  outputWidth={ this.state.outputWidth }
+                  outputHeight={ this.state.outputHeight }
                 />
               </div>
             </div> :
