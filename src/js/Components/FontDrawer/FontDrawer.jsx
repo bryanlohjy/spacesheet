@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula } from '../Spreadsheet/CellHelpers.js';
 import { charToDecodeIndex } from './FontDrawerHelpers.js';
+import { arraysAreSimilar } from '../../lib/helpers.js';
 
 export default class FontDrawer extends React.Component {
   constructor(props) {
@@ -77,6 +78,8 @@ class FontSample extends React.Component {
     this.updateCanvas = this.updateCanvas.bind(this);
     this.storeSelectedFont = this.storeSelectedFont.bind(this);
     this.state = { vector: [] };
+
+    this.decodedImages = {};
   };
   componentDidMount() {
     const parentEl = this.refs.canvasEl.parentNode;
@@ -103,9 +106,13 @@ class FontSample extends React.Component {
     if (!selectedVal || !selectedVal.trim() || !isFormula(selectedVal)) { return; }
     const result = this.props.formulaParser.parse(selectedVal.replace('=', '')).result;
     if (result && result.length === 40) {
-      this.setState({ vector: result }, () => {
-        this.updateCanvas();
-      });
+      if (!arraysAreSimilar(result, this.state.vector)) {
+        this.setState({ vector: result }, () => {
+          this.updateCanvas();
+        });
+        console.log('set')
+        this.decodedImages = {};
+      }
     }
   };
   updateCanvas() {
@@ -123,7 +130,13 @@ class FontSample extends React.Component {
         if (decodeIndex > -1) {
           this.ctx.save();
           this.ctx.scale(0.5, 0.5);
-          const image = this.props.decodeFn(vec, decodeIndex);
+          let image;
+          if (this.decodedImages[decodeIndex]) { // decode only if it hasn't before
+            image = this.decodedImages[decodeIndex];
+          } else {
+            image = this.props.decodeFn(vec, decodeIndex);
+            this.decodedImages[decodeIndex] = image;
+          }
           this.ctx.translate(this.props.outputWidth * charIndex, 0);
           this.props.drawFn(this.ctx, image);
           this.ctx.restore();

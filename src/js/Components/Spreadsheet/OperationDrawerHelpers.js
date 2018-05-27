@@ -9,9 +9,6 @@ const getValidMatrix = arr => {
     });
   });
 };
-const arraysAreSimilar = (arr1, arr2) => {
-  return JSON.stringify(arr1, null, 0) === JSON.stringify(arr2, null, 0);
-};
 
 const highlightCellsFromSelection = (hotInstance, selection) => {
   const startRow = Math.min(selection[0], selection[2]);
@@ -118,7 +115,6 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
 
 module.exports = {
   getValidMatrix,
-  arraysAreSimilar,
   highlightCellsFromSelection,
   highlightSmartFillArray,
   twoArgSmartFillFn,
