@@ -40,8 +40,8 @@ export default class Application extends React.Component {
         ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
         ctx.drawImage(this.memoryCtx.canvas, 0, 0);
       };
-      this.decodeFn = vector => { // vector to output
-        return model.decode(vector, 0);
+      this.decodeFn = (vector, charIndex) => { // vector to output
+        return model.decode(vector, charIndex || 0);
       };
       this.model = model;
       this.setState({
@@ -109,11 +109,18 @@ export default class Application extends React.Component {
                   setTableRef={ ref => {
                     this.hotInstance = ref.hotInstance;
                   }}
+                  setFormulaParserRef={ parser => {
+                    this.formulaParser = parser;
+                  }}
                   inputBarValue={this.state.inputBarValue}
                   setInputBarValue={this.setInputBarValue}
                 />
                 <FontDrawer
                   height={fontDrawerHeight}
+                  hotInstance={this.hotInstance}
+                  formulaParser={this.formulaParser}
+                  drawFn={this.drawFn}
+                  decodeFn={this.decodeFn}
                 />
               </div>
             </div> :
