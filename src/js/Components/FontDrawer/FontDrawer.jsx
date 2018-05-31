@@ -206,7 +206,7 @@ class FontSample extends React.Component {
           if (this.decodedImages[decodeIndex]) { // decode only if it hasn't before
             image = this.decodedImages[decodeIndex];
           } else {
-            image = this.props.decodeFn(vec, decodeIndex);
+            image = this.props.decodeFn(Object.values(vec), decodeIndex);
             this.decodedImages[decodeIndex] = image;
           }
           this.ctx.translate(this.props.outputWidth * charIndex + this.props.outputWidth /2 , (canvas.height/scaleFactor - this.props.outputHeight)/2);
