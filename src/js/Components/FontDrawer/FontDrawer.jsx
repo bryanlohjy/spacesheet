@@ -22,6 +22,7 @@ export default class FontDrawer extends React.Component {
     this.onSortEnd = this.onSortEnd.bind(this);
     this.setItemProperty = this.setItemProperty.bind(this);
     this.setSampleFontFromSelection = this.setSampleFontFromSelection.bind(this);
+    this.clearSampleFont = this.clearSampleFont.bind(this);
   };
   updateFontSamples() {
     if (!this.props.hotInstance || !this.props.formulaParser) { return; }
@@ -70,6 +71,10 @@ export default class FontDrawer extends React.Component {
     const col = selection[1];
     this.setItemProperty(itemIndex, { cell: cellCoordsToLabel({row: row, col: col}) });
   };
+  clearSampleFont(itemIndex) {
+    if (!this.props.hotInstance || !this.props.formulaParser) { return; }
+    this.setItemProperty(itemIndex, { cell: '', vector: [] });
+  };
   render() {
     return (
       <div
@@ -94,6 +99,7 @@ export default class FontDrawer extends React.Component {
           sampleText={this.state.sampleText}
           setItemProperty={this.setItemProperty}
           setSampleFontFromSelection={this.setSampleFontFromSelection}
+          clearSampleFont={this.clearSampleFont}
 
           drawFn={this.props.drawFn}
           decodeFn={this.props.decodeFn}
@@ -147,6 +153,7 @@ const FontSampleList = SortableContainer(props => {
           outputWidth={ props.outputWidth }
           outputHeight={ props.outputHeight }
           setSampleFontFromSelection={ props.setSampleFontFromSelection }
+          clearSampleFont={ props.clearSampleFont }
         />
       ))}
     </div>
@@ -235,7 +242,10 @@ class FontSample extends React.Component {
                   <button onClick={ e => {
                     this.props.setSampleFontFromSelection(this.props.itemIndex);
                   }}>+</button>
-                ) : (<button>x</button>) }
+                ) : (
+                  <button onClick={ e => {
+                    this.props.clearSampleFont(this.props.itemIndex);
+                  }}>x</button>) }
             </div>
           </div>
         </div>
@@ -263,4 +273,5 @@ FontSample.propTypes = {
   outputWidth: PropTypes.number,
   outputHeight: PropTypes.number,
   setSampleFontFromSelection: PropTypes.func,
+  clearSampleFont: PropTypes.func,
 };
