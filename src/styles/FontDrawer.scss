@@ -49,6 +49,22 @@
       justify-content: center;
       width: 100%;
       padding: 10px;
+      .font-sample-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        padding: 2px;
+        cursor: pointer;
+        span {
+          font-size: 12px;
+          font-weight: 700;
+        }
+        img {
+          width: 20px;
+          margin-right: 4px;
+        }
+      }
       .font-sample-reference {
         display: flex;
         border: 1px solid grey;

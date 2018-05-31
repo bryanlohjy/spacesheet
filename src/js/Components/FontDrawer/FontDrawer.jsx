@@ -13,9 +13,9 @@ export default class FontDrawer extends React.Component {
     this.state = {
       sampleText: 'handgloves',
       items: [
-        { mode: 'WATCHING', cell: 'A1', vector: [], id: uuidv4() },
-        { mode: 'LOCKED', cell: '', vector: [], id: uuidv4() },
-        { mode: 'WATCHING', cell: '', vector: [], id: uuidv4() },
+        { locked: false, cell: 'A1', vector: [], id: uuidv4() },
+        { locked: false, cell: '', vector: [], id: uuidv4() },
+        { locked: false, cell: '', vector: [], id: uuidv4() },
       ],
     };
     this.updateFontSamples = this.updateFontSamples.bind(this);
@@ -31,13 +31,15 @@ export default class FontDrawer extends React.Component {
       if (item.cell && new RegExp(CELL_REFERENCE).test(item.cell)) {
         const { row, col } = cellLabelToCoords(item.cell);
         const cellData = this.props.hotInstance.getDataAtCell(row, col);
-        if (cellData && isFormula(cellData)) {
-          const result = this.props.formulaParser.parse(cellData.replace('=', '')).result;
-          if (result && result.length === 40 && !(btoa(result) === btoa(item.vector))) {
-            item.vector = result;
+        if (!item.locked) {
+          if (cellData && isFormula(cellData)) {
+            const result = this.props.formulaParser.parse(cellData.replace('=', '')).result;
+            if (result && result.length === 40 && !(btoa(result) === btoa(item.vector))) {
+              item.vector = result;
+            }
+          } else if (!cellData) {
+            item.vector = [];
           }
-        } else if (!cellData) {
-          item.vector = [];
         }
       }
       return item;
@@ -69,11 +71,11 @@ export default class FontDrawer extends React.Component {
     const selection = this.props.hotInstance.getSelected();
     const row = selection[0];
     const col = selection[1];
-    this.setItemProperty(itemIndex, { cell: cellCoordsToLabel({row: row, col: col}) });
+    this.setItemProperty(itemIndex, { cell: cellCoordsToLabel({row: row, col: col}), locked: false });
   };
   clearSampleFont(itemIndex) {
     if (!this.props.hotInstance || !this.props.formulaParser) { return; }
-    this.setItemProperty(itemIndex, { cell: '', vector: [] });
+    this.setItemProperty(itemIndex, { cell: '', vector: [], locked: false });
   };
   render() {
     return (
@@ -143,7 +145,7 @@ const FontSampleList = SortableContainer(props => {
           setItemProperty={props.setItemProperty}
 
           cell={item.cell}
-          mode={item.mode}
+          locked={item.locked}
           vector={item.vector}
 
           sampleText={props.sampleText}
@@ -166,6 +168,7 @@ class FontSample extends React.Component {
     super(props);
     this.ctx;
     this.updateCanvas = this.updateCanvas.bind(this);
+    this.toggleLocked = this.toggleLocked.bind(this);
   };
   componentDidMount() {
     const parentEl = this.refs.container;
@@ -213,19 +216,38 @@ class FontSample extends React.Component {
       }
     }
   };
+  toggleLocked() {
+    this.props.setItemProperty(this.props.itemIndex, { locked: !this.props.locked });
+  };
   render() {
+    const validCell = this.props.cell && new RegExp(CELL_REFERENCE).test(this.props.cell);
+    const validClass = validCell ? 'valid' : 'invalid';
+    const lockedClass = this.props.locked ? 'locked' : '';
+    const inputClasses = `${this.props.cell && !this.props.locked ? validClass : ''} ${lockedClass}`;
     return (
       <div className="font-sample" ref="container">
         <div className="font-sample-controls" ref="controls">
           <DragHandle/>
           <div className="font-sample-panel">
-            { this.props.cell ? <span style={{ fontSize: 8 }}>{this.props.mode}</span> : '' }
+            { this.props.cell ?
+                this.props.locked ? (
+                  <div className="font-sample-options" onClick={this.toggleLocked}>
+                    <img src='/dist/assets/sharp-lock-24px.svg'/>
+                    <span>LOCK</span>
+                  </div>
+                ): (
+                  <div className="font-sample-options" onClick={this.toggleLocked}>
+                    <img src='/dist/assets/sharp-lock_open-24px.svg'/>
+                    <span>WATCH</span>
+                  </div>
+                )
+              : ""
+            }
             <div className="font-sample-reference">
               <input
                 type="text"
                 value={this.props.cell}
                 onKeyDown={ e => {
-                  console.log(e.key)
                   let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                   acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
                   if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
@@ -236,7 +258,8 @@ class FontSample extends React.Component {
                 onChange={ e => {
                   this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
                 }}
-                className={`cell-reference ${this.props.cell ? `${new RegExp(CELL_REFERENCE).test(this.props.cell) ? 'valid' : 'invalid'}` : ''}`}
+                className={`cell-reference ${inputClasses}`}
+                disabled={this.props.locked}
               />
               { !this.props.cell ? (
                   <button onClick={ e => {
@@ -245,7 +268,8 @@ class FontSample extends React.Component {
                 ) : (
                   <button onClick={ e => {
                     this.props.clearSampleFont(this.props.itemIndex);
-                  }}>x</button>) }
+                  }}>x</button>)
+              }
             </div>
           </div>
         </div>
