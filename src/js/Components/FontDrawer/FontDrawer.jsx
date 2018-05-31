@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isFormula } from '../Spreadsheet/CellHelpers.js';
+import { isFormula, cellLabelToCoords } from '../Spreadsheet/CellHelpers.js';
 import { charToDecodeIndex } from './FontDrawerHelpers.js';
 import { arraysAreSimilar } from '../../lib/helpers.js';
+import { CELL_REFERENCE } from '../../lib/Regex.js';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
+import uuidv4 from 'uuid/v4';
 
 export default class FontDrawer extends React.Component {
   constructor(props) {
@@ -11,35 +13,53 @@ export default class FontDrawer extends React.Component {
     this.state = {
       sampleText: 'handgloves',
       items: [
-        { mode: 'WATCHING', cell: 'A1', vector: [], },
-        { mode: 'LOCKED', cell: '', vector: [], },
-        { mode: 'WATCHING', cell: 'B3', vector: [], },
-        { mode: 'WATCHING', cell: 'A1', vector: [], },
-        { mode: 'LOCKED', cell: '', vector: [], },
-        { mode: 'WATCHING', cell: 'B3', vector: [], },
+        { mode: 'WATCHING', cell: 'A1', vector: [], id: uuidv4() },
+        { mode: 'LOCKED', cell: '', vector: [], id: uuidv4() },
+        { mode: 'WATCHING', cell: '', vector: [], id: uuidv4() },
       ],
     };
+    this.updateFontSamples = this.updateFontSamples.bind(this);
     this.onSortEnd = this.onSortEnd.bind(this);
     this.setItemProperty = this.setItemProperty.bind(this);
   };
-  onSortEnd({oldIndex, newIndex}) {
-    this.setState({
-      items: arrayMove(this.state.items, oldIndex, newIndex),
+  updateFontSamples() {
+    if (!this.props.hotInstance || !this.props.formulaParser) { return; }
+    let items = JSON.parse(JSON.stringify(this.state.items));
+    items.map(item => {
+      if (item.cell && new RegExp(CELL_REFERENCE).test(item.cell)) {
+        const { row, col } = cellLabelToCoords(item.cell);
+        const cellData = this.props.hotInstance.getDataAtCell(row, col);
+        if (cellData && isFormula(cellData)) {
+          const result = this.props.formulaParser.parse(cellData.replace('=', '')).result;
+          if (result && result.length === 40 && !(btoa(result) === btoa(item.vector))) {
+            item.vector = result;
+          }
+        } else if (!cellData) {
+          item.vector = [];
+        }
+      }
+      return item;
     });
+    this.setState({ items: items });
+  };
+  onSortEnd({oldIndex, newIndex}) {
+    let items = JSON.parse(JSON.stringify(this.state.items));
+    const sortedItems = arrayMove(items, oldIndex, newIndex);
+    this.setState({ items: sortedItems });
   };
   setItemProperty(itemIndex, changes) {
-    const _item = this.state.items[itemIndex];
+    let items = JSON.parse(JSON.stringify(this.state.items));
+    const _item = items[itemIndex];
     const changeKeys = Object.keys(changes);
     for (let changeIndex = 0; changeIndex < changeKeys.length; changeIndex++) {
       const changeKey = changeKeys[changeIndex];
       _item[changeKey] = changes[changeKey];
     }
-
-    let items = this.state.items;
     items[itemIndex] = _item;
-
-    this.setState({
-      items: items,
+    this.setState({ items: items }, () => {
+      if (changeKeys.indexOf('cell') > -1) {
+        this.updateFontSamples();
+      }
     });
   };
   render() {
@@ -65,17 +85,15 @@ export default class FontDrawer extends React.Component {
           items={this.state.items}
           sampleText={this.state.sampleText}
           setItemProperty={this.setItemProperty}
-          //
-          // hotInstance={this.props.hotInstance}
-          // formulaParser={this.props.formulaParser}
-          // drawFn={this.props.drawFn}
-          // decodeFn={this.props.decodeFn}
-          // outputWidth={ this.props.outputWidth }
-          // outputHeight={ this.props.outputHeight }
-          //
+
+          drawFn={this.props.drawFn}
+          decodeFn={this.props.decodeFn}
+          outputWidth={ this.props.outputWidth }
+          outputHeight={ this.props.outputHeight }
+
           onSortEnd={this.onSortEnd}
           lockAxis="y"
-          // transitionDuration={50}
+
           useDragHandle={true}
         />
       </div>
@@ -102,7 +120,7 @@ const FontSampleList = SortableContainer(props => {
     <div className="font-samples">
       {items.map((item, index) => (
         <SortableFontSample
-          key={`item-${index}`}
+          key={`item-${item.id}`}
           index={index}
 
           itemIndex={index}
@@ -115,30 +133,16 @@ const FontSampleList = SortableContainer(props => {
 
           sampleText={props.sampleText}
 
-
-          // hotInstance={props.hotInstance}
-          // formulaParser={props.formulaParser}
-          // drawFn={props.drawFn}
-          // decodeFn={props.decodeFn}
-          // outputWidth={ props.outputWidth }
-          // outputHeight={ props.outputHeight }
-          // item={item}
+          drawFn={props.drawFn}
+          decodeFn={props.decodeFn}
+          outputWidth={ props.outputWidth }
+          outputHeight={ props.outputHeight }
         />
       ))}
     </div>
   );
 });
 
-// FontSampleList.propTypes = {
-//   items: array,
-//   sampleText: string,
-//    setItemProperty
-// };
-
-// onMouseDown={ () => {
-//   this.props.setItemProperty(this.props.itemIndex, { cell: Math.random().toString() });
-// }}
-// >
 const DragHandle = SortableHandle(() => <span className="sort-handle">::</span>); // This can be any component you want
 class FontSample extends React.Component {
   constructor(props) {
@@ -147,26 +151,50 @@ class FontSample extends React.Component {
     this.updateCanvas = this.updateCanvas.bind(this);
   };
   componentDidMount() {
-    // console.log(this.refs.controls.clientHeight, this.refs.controls.clientWidth)
     const parentEl = this.refs.container;
     const controls = this.refs.controls;
-    //
-    this.refs.canvasEl.width = parentEl.clientWidth - controls.clientWidth;
-    // console.log(this.refs.canvasEl.width)
-    // this.refs.canvasEl.height = controls.clientHeight;
 
+    this.refs.canvasEl.width = parentEl.clientWidth - controls.clientWidth;
+    this.decodedImages = {};
     this.ctx = this.refs.canvasEl.getContext('2d');
     this.updateCanvas();
   };
-  componentWillReceiveProps(props) {
-    // console.log(props);
-    // console.log('updateCanvas')
+  componentWillReceiveProps(newProps) {
+    if (!arraysAreSimilar(newProps.vector || [], this.props.vector) || newProps.sampleText !== this.props.sampleText) {
+      this.decodedImages = {};
+      setTimeout(this.updateCanvas, 0);
+    }
   };
   updateCanvas() {
-    const el = this.ctx.canvas;
-    this.ctx.fillStyle = 'teal';
-    this.ctx.rect(0, 0, 20 || el.width, 20 || el.height);
-    this.ctx.fill();
+    const canvas = this.ctx.canvas;
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const vec = this.props.vector;
+    if (vec.length <= 0) { return; }
+
+    const sampleString = this.props.sampleText;
+    const scaleFactor = 0.6;
+    if (sampleString && sampleString.length > 0) {
+      const charsToDraw = sampleString.split('');
+      for (let charIndex = 0; charIndex < charsToDraw.length; charIndex++) {
+        const char = sampleString[charIndex];
+        const decodeIndex = charToDecodeIndex(char);
+        if (decodeIndex > -1) {
+          this.ctx.save();
+          this.ctx.scale(scaleFactor, scaleFactor);
+          let image;
+          if (this.decodedImages[decodeIndex]) { // decode only if it hasn't before
+            image = this.decodedImages[decodeIndex];
+          } else {
+            image = this.props.decodeFn(vec, decodeIndex);
+            this.decodedImages[decodeIndex] = image;
+          }
+          this.ctx.translate(this.props.outputWidth * charIndex + this.props.outputWidth /2 , (canvas.height/scaleFactor - this.props.outputHeight)/2);
+          this.props.drawFn(this.ctx, image);
+          this.ctx.restore();
+        }
+      }
+    }
   };
   render() {
     return (
@@ -174,18 +202,34 @@ class FontSample extends React.Component {
         <div className="font-sample-controls" ref="controls">
           <DragHandle/>
           <div className="font-sample-panel">
-            { this.props.cell ?
-              <input type="text" value={this.props.cell}/> :
+            <input
+              type="text"
+              value={this.props.cell}
+              onKeyDown={ e => {
+                console.log(e.key)
+                let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
+                if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
+                  e.preventDefault();
+                  return;
+                };
+              }}
+              onChange={ e => {
+                this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
+              }}
+              className={`cell-reference ${this.props.cell ? `${new RegExp(CELL_REFERENCE).test(this.props.cell) ? 'valid' : 'invalid'}` : ''}`}
+            />
+            { !this.props.cell ?
               <button>+</button>
+              : ""
             }
-            <span>{this.props.mode.charAt(0)}</span>
+            <span style={{ fontSize: 8 }}>{this.props.mode}</span>
           </div>
         </div>
         <canvas
           ref="canvasEl"
           className="font-sample-canvas"
-          // width={100} //
-          height={100} //
+          height={80}
         />
       </div>
     );
@@ -194,119 +238,15 @@ class FontSample extends React.Component {
 FontSample.propTypes = {
   cell: PropTypes.string,
   mode: PropTypes.string,
-  vector: PropTypes.array,
+  vector: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+  ]),
   sampleText: PropTypes.string,
   itemIndex: PropTypes.number,
   setItemProperty: PropTypes.func,
-  // hotInstance: PropTypes.object,
-  // formulaParser: PropTypes.object,
-  // drawFn: PropTypes.func,
-  // decodeFn: PropTypes.func,
-  // outputWidth: PropTypes.number,
-  // outputHeight: PropTypes.number,
+  drawFn: PropTypes.func,
+  decodeFn: PropTypes.func,
+  outputWidth: PropTypes.number,
+  outputHeight: PropTypes.number,
 };
-
-
-//
-//
-// class FontSample extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.ctx;
-//     this.updateCanvas = this.updateCanvas.bind(this);
-//     this.storeSelectedFont = this.storeSelectedFont.bind(this);
-//     this.state = { vector: [] };
-//
-//     this.decodedImages = {};
-//   };
-//   componentDidMount() {
-//     const parentEl = this.refs.canvasEl.parentNode;
-//     const controls = this.refs.canvasEl.previousSibling;
-//
-//     this.refs.canvasEl.width = parentEl.clientWidth - controls.clientWidth;
-//     this.refs.canvasEl.height = controls.clientHeight;
-//
-//     this.ctx = this.refs.canvasEl.getContext('2d');
-//     this.updateCanvas();
-//   };
-//   componentWillReceiveProps(newProps) {
-//     if (newProps.inputValue !== this.props.inputValue) {
-//       setTimeout(() => {
-//         this.updateCanvas();
-//       }, 0);
-//     }
-//   };
-//   storeSelectedFont(e) {
-//     if (!this.props.hotInstance || !this.props.formulaParser) { return; }
-//     const selection = this.props.hotInstance.getSelected();
-//     const selectedVal = this.props.hotInstance.getDataAtCell(selection[0], selection[1]);
-//
-//     if (!selectedVal || !selectedVal.trim() || !isFormula(selectedVal)) { return; }
-//     const result = this.props.formulaParser.parse(selectedVal.replace('=', '')).result;
-//     if (result && result.length === 40) {
-//       if (!arraysAreSimilar(result, this.state.vector)) {
-//         this.setState({ vector: result }, () => {
-//           this.updateCanvas();
-//         });
-//         console.log('set')
-//         this.decodedImages = {};
-//       }
-//     }
-//   };
-//   updateCanvas() {
-//     const vec = this.state.vector;
-//     if (vec.length <= 0) { return; }
-//
-//     const canvas = this.ctx.canvas;
-//     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     const sampleString = this.props.inputValue;
-//
-//     if (sampleString && sampleString.length > 0) {
-//       const charsToDraw = sampleString.split('');
-//       for (let charIndex = 0; charIndex < charsToDraw.length; charIndex++) {
-//         const char = sampleString[charIndex];
-//         const decodeIndex = charToDecodeIndex(char);
-//         if (decodeIndex > -1) {
-//           this.ctx.save();
-//           this.ctx.scale(0.5, 0.5);
-//           let image;
-//           if (this.decodedImages[decodeIndex]) { // decode only if it hasn't before
-//             image = this.decodedImages[decodeIndex];
-//           } else {
-//             image = this.props.decodeFn(vec, decodeIndex);
-//             this.decodedImages[decodeIndex] = image;
-//           }
-//           this.ctx.translate(this.props.outputWidth * charIndex, 0);
-//           this.props.drawFn(this.ctx, image);
-//           this.ctx.restore();
-//         }
-//       }
-//     }
-//   };
-//   render() {
-//     return (
-//       <div className="font-sample">
-//         <div className="font-sample-controls">
-//           <button
-//             onClick={ this.storeSelectedFont }
-//           >
-//             store
-//           </button>
-//         </div>
-//         <canvas
-//           ref="canvasEl"
-//           className="font-sample-canvas"
-//         />
-//       </div>
-//     );
-//   };
-// };
-// FontSample.propTypes = {
-//   inputValue: PropTypes.string,
-//   hotInstance: PropTypes.object,
-//   formulaParser: PropTypes.object,
-//   drawFn: PropTypes.func,
-//   decodeFn: PropTypes.func,
-//   outputWidth: PropTypes.number,
-//   outputHeight: PropTypes.number,
-// };

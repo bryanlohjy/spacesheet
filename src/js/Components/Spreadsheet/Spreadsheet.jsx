@@ -76,6 +76,7 @@ export default class Spreadsheet extends React.Component {
                     currentSelection: [r, c , r2, c2],
                   });
                 }}
+                afterRender={this.props.afterRender}
                 setFormulaParserRef={this.props.setFormulaParserRef}
               />
             </div>) : ''
@@ -96,6 +97,7 @@ Spreadsheet.propTypes = {
   inputBarValue: PropTypes.string,
   setTableRef: PropTypes.func,
   setFormulaParserRef: PropTypes.func,
+  afterRender: PropTypes.func,
 };
 
 class HotTableContainer extends React.Component {
@@ -199,7 +201,10 @@ class HotTableContainer extends React.Component {
         maxCols={ this.maxCols }
         maxRows={ this.maxRows }
 
-        // afterRender={ e => { console.warn('HotTable Render')}}
+        afterRender={ forced => {
+          if (!this.props.afterRender) { return; }
+          this.props.afterRender();
+        }}
 
         viewportColumnRenderingOffset={26}
         viewportRowRenderingOffset={26}
@@ -240,6 +245,7 @@ HotTableContainer.propTypes = {
   model: PropTypes.object,
   inputBarValue: PropTypes.string,
   afterSelection: PropTypes.func,
+  afterRender: PropTypes.func,
   setInputBarValue: PropTypes.func,
   setTableRef: PropTypes.func,
   setFormulaParserRef: PropTypes.func,

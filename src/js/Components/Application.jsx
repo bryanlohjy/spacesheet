@@ -114,6 +114,10 @@ export default class Application extends React.Component {
                   }}
                   inputBarValue={this.state.inputBarValue}
                   setInputBarValue={this.setInputBarValue}
+                  afterRender={ () => {
+                    if (!this.refs.fontDrawer && !this.refs.fontDrawer.updateFontSamples()) { return; }
+                    this.refs.fontDrawer.updateFontSamples();
+                  }}
                 />
                 <FontDrawer
                   height={fontDrawerHeight}
@@ -123,6 +127,7 @@ export default class Application extends React.Component {
                   decodeFn={this.decodeFn}
                   outputWidth={ this.state.outputWidth }
                   outputHeight={ this.state.outputHeight }
+                  ref='fontDrawer'
                 />
               </div>
             </div> :
