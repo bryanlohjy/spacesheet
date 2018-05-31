@@ -45,21 +45,41 @@
     .font-sample-panel {
       display: flex;
       flex-direction: column;
-      width: 100%;
-      padding: 10px 20px;
-      input {
-        &.invalid {
-          background-color: rgba(255, 0, 0, 0.4);
-        }
-        &.valid {
-          background-color: rgba(0, 255, 0, 0.4);
-        }
-        width: 100%;
-        max-width: 50px;
-        text-align: center;
-      }
       align-items: center;
       justify-content: center;
+      width: 100%;
+      padding: 10px;
+      .font-sample-reference {
+        display: flex;
+        border: 1px solid grey;
+        > * {
+          margin: 0;
+          padding: 0;
+        }
+        input {
+          &.invalid {
+            background-color: rgba(255, 0, 0, 0.4);
+          }
+          &.valid {
+            background-color: rgba(0, 255, 0, 0.4);
+          }
+          width: 100%;
+          max-width: 50px;
+          text-align: center;
+          border: none;
+        }
+        button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          width: 20px;
+          border: none;
+          cursor: pointer;
+        }
+        align-items: center;
+        justify-content: center;
+      }
     }
   }
 }

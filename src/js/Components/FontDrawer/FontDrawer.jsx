@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isFormula, cellLabelToCoords } from '../Spreadsheet/CellHelpers.js';
+import { isFormula, cellLabelToCoords, cellCoordsToLabel } from '../Spreadsheet/CellHelpers.js';
 import { charToDecodeIndex } from './FontDrawerHelpers.js';
 import { arraysAreSimilar } from '../../lib/helpers.js';
 import { CELL_REFERENCE } from '../../lib/Regex.js';
@@ -21,6 +21,7 @@ export default class FontDrawer extends React.Component {
     this.updateFontSamples = this.updateFontSamples.bind(this);
     this.onSortEnd = this.onSortEnd.bind(this);
     this.setItemProperty = this.setItemProperty.bind(this);
+    this.setSampleFontFromSelection = this.setSampleFontFromSelection.bind(this);
   };
   updateFontSamples() {
     if (!this.props.hotInstance || !this.props.formulaParser) { return; }
@@ -62,6 +63,13 @@ export default class FontDrawer extends React.Component {
       }
     });
   };
+  setSampleFontFromSelection(itemIndex) {
+    if (!this.props.hotInstance || !this.props.formulaParser) { return; }
+    const selection = this.props.hotInstance.getSelected();
+    const row = selection[0];
+    const col = selection[1];
+    this.setItemProperty(itemIndex, { cell: cellCoordsToLabel({row: row, col: col}) });
+  };
   render() {
     return (
       <div
@@ -85,6 +93,7 @@ export default class FontDrawer extends React.Component {
           items={this.state.items}
           sampleText={this.state.sampleText}
           setItemProperty={this.setItemProperty}
+          setSampleFontFromSelection={this.setSampleFontFromSelection}
 
           drawFn={this.props.drawFn}
           decodeFn={this.props.decodeFn}
@@ -137,6 +146,7 @@ const FontSampleList = SortableContainer(props => {
           decodeFn={props.decodeFn}
           outputWidth={ props.outputWidth }
           outputHeight={ props.outputHeight }
+          setSampleFontFromSelection={ props.setSampleFontFromSelection }
         />
       ))}
     </div>
@@ -202,28 +212,31 @@ class FontSample extends React.Component {
         <div className="font-sample-controls" ref="controls">
           <DragHandle/>
           <div className="font-sample-panel">
-            <input
-              type="text"
-              value={this.props.cell}
-              onKeyDown={ e => {
-                console.log(e.key)
-                let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
-                if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
-                  e.preventDefault();
-                  return;
-                };
-              }}
-              onChange={ e => {
-                this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
-              }}
-              className={`cell-reference ${this.props.cell ? `${new RegExp(CELL_REFERENCE).test(this.props.cell) ? 'valid' : 'invalid'}` : ''}`}
-            />
-            { !this.props.cell ?
-              <button>+</button>
-              : ""
-            }
-            <span style={{ fontSize: 8 }}>{this.props.mode}</span>
+            { this.props.cell ? <span style={{ fontSize: 8 }}>{this.props.mode}</span> : '' }
+            <div className="font-sample-reference">
+              <input
+                type="text"
+                value={this.props.cell}
+                onKeyDown={ e => {
+                  console.log(e.key)
+                  let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                  acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
+                  if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
+                    e.preventDefault();
+                    return;
+                  };
+                }}
+                onChange={ e => {
+                  this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
+                }}
+                className={`cell-reference ${this.props.cell ? `${new RegExp(CELL_REFERENCE).test(this.props.cell) ? 'valid' : 'invalid'}` : ''}`}
+              />
+              { !this.props.cell ? (
+                  <button onClick={ e => {
+                    this.props.setSampleFontFromSelection(this.props.itemIndex);
+                  }}>+</button>
+                ) : (<button>x</button>) }
+            </div>
           </div>
         </div>
         <canvas
@@ -249,4 +262,5 @@ FontSample.propTypes = {
   decodeFn: PropTypes.func,
   outputWidth: PropTypes.number,
   outputHeight: PropTypes.number,
+  setSampleFontFromSelection: PropTypes.func,
 };
