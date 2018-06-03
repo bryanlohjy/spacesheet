@@ -76,7 +76,7 @@ export default class Spreadsheet extends React.Component {
                     currentSelection: [r, c , r2, c2],
                   });
                 }}
-                afterRender={this.props.afterRender}
+                afterRender={ this.props.afterRender }
                 setFormulaParserRef={this.props.setFormulaParserRef}
               />
             </div>) : ''
@@ -203,7 +203,7 @@ class HotTableContainer extends React.Component {
 
         afterRender={ forced => {
           if (!this.props.afterRender) { return; }
-          this.props.afterRender();
+          this.props.afterRender(forced);
         }}
 
         viewportColumnRenderingOffset={26}

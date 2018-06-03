@@ -114,7 +114,8 @@ export default class Application extends React.Component {
                   }}
                   inputBarValue={this.state.inputBarValue}
                   setInputBarValue={this.setInputBarValue}
-                  afterRender={ () => {
+                  afterRender={ forced => {
+                    if (!forced) { return };
                     if (!this.refs.fontDrawer && !this.refs.fontDrawer.updateFontSamples()) { return; }
                     this.refs.fontDrawer.updateFontSamples();
                   }}
