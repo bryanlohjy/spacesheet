@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isFormula, cellLabelToCoords, cellCoordsToLabel } from '../Spreadsheet/CellHelpers.js';
+import { isFormula, cellLabelToCoords, cellCoordsToLabel, cellLabelIsWithinSpreadsheet } from '../Spreadsheet/CellHelpers.js';
 import { charToDecodeIndex } from './FontDrawerHelpers.js';
 import { arraysAreSimilar } from '../../lib/helpers.js';
 import { CELL_REFERENCE } from '../../lib/Regex.js';
@@ -103,6 +103,8 @@ export default class FontDrawer extends React.Component {
           setSampleFontFromSelection={this.setSampleFontFromSelection}
           clearSampleFont={this.clearSampleFont}
 
+
+          hotInstance={this.props.hotInstance}
           drawFn={this.props.drawFn}
           decodeFn={this.props.decodeFn}
           outputWidth={ this.props.outputWidth }
@@ -150,6 +152,7 @@ const FontSampleList = SortableContainer(props => {
 
           sampleText={props.sampleText}
 
+          hotInstance={props.hotInstance}
           drawFn={props.drawFn}
           decodeFn={props.decodeFn}
           outputWidth={ props.outputWidth }
@@ -221,7 +224,8 @@ class FontSample extends React.Component {
   };
   render() {
     const validCell = this.props.cell && new RegExp(CELL_REFERENCE).test(this.props.cell);
-    const validClass = validCell ? 'valid' : 'invalid';
+    const withinRange = validCell ? cellLabelIsWithinSpreadsheet(this.props.hotInstance, this.props.cell) : false;
+    const validClass = validCell && withinRange ? 'valid' : 'invalid';
     const lockedClass = this.props.locked ? 'locked' : '';
     const inputClasses = `${this.props.cell && !this.props.locked ? validClass : ''} ${lockedClass}`;
     return (
@@ -248,12 +252,12 @@ class FontSample extends React.Component {
                 type="text"
                 value={this.props.cell}
                 onKeyDown={ e => {
-                  let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                  acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
-                  if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
-                    e.preventDefault();
-                    return;
-                  };
+                  // let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                  // acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
+                  // if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
+                  //   e.preventDefault();
+                  //   return;
+                  // };
                 }}
                 onChange={ e => {
                   this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
@@ -298,4 +302,5 @@ FontSample.propTypes = {
   outputHeight: PropTypes.number,
   setSampleFontFromSelection: PropTypes.func,
   clearSampleFont: PropTypes.func,
+  hotInstance: PropTypes.object,
 };
