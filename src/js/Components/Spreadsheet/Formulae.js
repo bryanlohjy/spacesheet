@@ -196,6 +196,18 @@ export default class Formulae {
   SLIDER_TENSOR(params) {
     return '#N/A';
   };
+  DOT(params) {
+    return '#N/A';
+  };
+  DOT_TENSOR(params) {
+    if (params.length !== 2) {
+      return '#N/A';
+    }
+    return dl.tidy(() => { // multiply two vectors, and sum resulting vector
+      const multiplied = dl.tensor1d(params[0]).mul(dl.tensor1d(params[1]));
+      return multiplied.sum();
+    }).getValues()[0];
+  };
   call(name, params, isTensorCalculation) {
     const aliases = {
       'ADD': 'SUM',
