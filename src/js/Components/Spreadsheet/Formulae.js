@@ -110,15 +110,40 @@ export default class Formulae {
     if (validParams.length < 2) {
       return '#N/A';
     }
+    params = validParams;
     let result;
-    for (let i = 0; i < validParams.length; i++) {
+    for (let i = 0; i < params.length; i++) {
       if (isNaN(result)) {
-        result = validParams[i]
+        result = params[i]
       } else {
-        result *= Number(validParams[i]);
+        result *= Number(params[i]);
       }
     }
     return result;
+  };
+  MULTIPLY_TENSOR(params) {
+    const validParams = params.filter(param => param || param === 0);
+    if (validParams.length < 2) {
+      return '#N/A';
+    }
+    params = validParams;
+    return dl.tidy(() => {
+      let total;
+      for (let count = 0; count < params.length; count++) {
+        let param = params[count];
+        if (typeof param === "object") {
+          param = dl.tensor1d(param);
+        } else {
+          param = dl.scalar(param);
+        }
+        if (!total) {
+          total = param;
+        } else {
+          total = total.mul(param);
+        }
+      }
+      return total;
+    }).getValues();
   };
   SLERP(params) {
     return '#N/A';
