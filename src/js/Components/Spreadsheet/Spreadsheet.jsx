@@ -7,7 +7,7 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { DemoSheet } from './SpreadsheetData.js';
+import { OperatorDemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
@@ -101,7 +101,7 @@ class HotTableContainer extends React.Component {
     super(props);
     this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
     this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
-    this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
+    this.demoSheet = OperatorDemoSheet(this.maxRows, this.maxCols);
     this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {

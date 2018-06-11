@@ -183,13 +183,12 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          // return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'AVERAGE');
           return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'SUM');
         },
       },
-      DIST: {
+      MUL: {
         onMouseOver: e => {
-          const smartFill = self.operations.DIST.smartFillCells;
+          const smartFill = self.operations.MUL.smartFillCells;
           if (smartFill && smartFill.cellsToHighlight.length > 0) {
             highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
           } else {
@@ -198,7 +197,7 @@ export default class OperationDrawer extends React.Component {
           }
         },
         onClick: e => {
-          const smartFill = self.operations.DIST.smartFillCells;
+          const smartFill = self.operations.MUL.smartFillCells;
           if (smartFill.cellsToHighlight.length > 0) {
             const smartFillCell = smartFill.cellsToHighlight[0];
             const prevCellData = self.props.hotInstance.getDataAtCell(smartFillCell[0], smartFillCell[1]);
@@ -206,17 +205,47 @@ export default class OperationDrawer extends React.Component {
               self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
             }
           } else {
-            self.props.setSelectedCellData('=DIST(');
+            self.props.setSelectedCellData('=MUL(');
           }
         },
         shouldHighlight: () => {
-          const smartFill = self.operations.DIST.smartFillCells;
+          const smartFill = self.operations.MUL.smartFillCells;
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'DIST');
+          return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'MUL');
         },
       },
+      // DIST: {
+      //   onMouseOver: e => {
+      //     const smartFill = self.operations.DIST.smartFillCells;
+      //     if (smartFill && smartFill.cellsToHighlight.length > 0) {
+      //       highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
+      //     } else {
+      //       const selection = self.props.hotInstance.getSelected();
+      //       highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+      //     }
+      //   },
+      //   onClick: e => {
+      //     const smartFill = self.operations.DIST.smartFillCells;
+      //     if (smartFill.cellsToHighlight.length > 0) {
+      //       const smartFillCell = smartFill.cellsToHighlight[0];
+      //       const prevCellData = self.props.hotInstance.getDataAtCell(smartFillCell[0], smartFillCell[1]);
+      //       if (prevCellData !== smartFill.fillString) {
+      //         self.props.hotInstance.setDataAtCell(smartFillCell[0], smartFillCell[1], smartFill.fillString);
+      //       }
+      //     } else {
+      //       self.props.setSelectedCellData('=DIST(');
+      //     }
+      //   },
+      //   shouldHighlight: () => {
+      //     const smartFill = self.operations.DIST.smartFillCells;
+      //     return smartFill && smartFill.cellsToHighlight.length > 0;
+      //   },
+      //   get smartFillCells() {
+      //     return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'DIST');
+      //   },
+      // },
       SLIDER: {
         onMouseOver: e => {
           const selection = self.props.hotInstance.getSelected();
@@ -276,9 +305,10 @@ export default class OperationDrawer extends React.Component {
         LERP: false,
         MINUS: false,
         SUM: false,
+        MUL: false,
         SLIDER: false,
         RANDFONT: false,
-        DIST: false,
+        // DIST: false,
       }
     };
     this.updateHighlights = this.updateHighlights.bind(this);
@@ -292,9 +322,10 @@ export default class OperationDrawer extends React.Component {
       LERP: false,
       MINUS: false,
       SUM: false,
+      MUL: false,
       SLIDER: false,
       RANDFONT: false,
-      DIST: false,
+      // DIST: false,
     };
     if (this.props.currentSelection && this.props.hotInstance) { // add in highlighted selection logic
       const operations = Object.keys(this.operations);

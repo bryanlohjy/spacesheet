@@ -50,4 +50,52 @@ const DemoSheet = (rows, cols) => {
   }
   return data;
 }
-module.exports = { DemoSheet };
+
+const OperatorDemoSheet = (rows, cols) => {
+  const emptyRow = [];
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
+    emptyRow.push('');
+  }
+  let data = {
+    data: [
+      emptyRow.slice(),
+      ["","has property","=DATAPICKER('V1-1-5-3-0-0')","=DATAPICKER('V1-1-4-8-0-0')","=DATAPICKER('V1-1-4-7-0-0')"],
+      ["","doesn't have property","=DATAPICKER('V1-1-1-6-0-0')","=DATAPICKER('V1-1-3-7-0-0')","=DATAPICKER('V1-1-2-6-0-0')"],
+      ["","difference","=MINUS(C2, C3)","=MINUS(D2, D3)","=MINUS(E2, E3)"],
+      ["","scaled difference","=MUL(C4, C8)","=MUL(D4, D8)","=MUL(E4, E8)"],
+      emptyRow.slice(),
+      ["","input","boldness","serif strength","italic strength","transformed"],
+      ["","=DATAPICKER('V1-1-4-6-0-0')","=SLIDER(-1, 1, 0.05)","=SLIDER(-1, 1, 0.05)","=SLIDER(-1, 1, 0.05)","=SUM(B8, C5:E5)"],
+    ],
+    mergeCells: [
+      // { row: 1, col: 1, rowspan: 1, colspan: 6 },
+      // { row: 2, col: 1, rowspan: 1, colspan: 4 },
+      // { row: 3, col: 1, rowspan: 1, colspan: 4 },
+      // { row: 4, col: 1, rowspan: 1, colspan: 4 },
+      // { row: 5, col: 1, rowspan: 1, colspan: 4 },
+      // { row: 6, col: 1, rowspan: 1, colspan: 4 },
+      // { row: 7, col: 1, rowspan: 1, colspan: 4 },
+      // { row: 8, col: 1, rowspan: 1, colspan: 6 },
+      // { row: 10, col: 1, rowspan: 1, colspan: 6 },
+    ],
+  };
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
+      data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
+    }
+  }
+  return data;
+}
+module.exports = { DemoSheet, OperatorDemoSheet};
