@@ -84,7 +84,7 @@ export default opts => {
       str = this.TEXTAREA.value;
     }
 
-    if ((new RegExp(/^\s*=\s*average\s*\(/gi)).test(str)) {
+    if ((new RegExp(/^\s*=\s*average\s*\(/gi)).test(str) || (new RegExp(/^\s*=\s*sum\s*\(/gi)).test(str) || (new RegExp(/^\s*=\s*add\s*\(/gi)).test(str)) {
       return false;
     }
 
