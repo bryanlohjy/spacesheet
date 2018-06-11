@@ -89,6 +89,9 @@ const helpers = {
     };
     return indexes;
   },
+  arraysAreSimilar(arr1, arr2) {
+    return JSON.stringify(arr1, null, 0) === JSON.stringify(arr2, null, 0);
+  },
   getAllRegexMatches(regex, string) {
     const matches = [];
     var m;

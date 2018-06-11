@@ -76,6 +76,8 @@ export default class Spreadsheet extends React.Component {
                     currentSelection: [r, c , r2, c2],
                   });
                 }}
+                afterRender={ this.props.afterRender }
+                setFormulaParserRef={this.props.setFormulaParserRef}
               />
             </div>) : ''
         }
@@ -94,6 +96,8 @@ Spreadsheet.propTypes = {
   model: PropTypes.object,
   inputBarValue: PropTypes.string,
   setTableRef: PropTypes.func,
+  setFormulaParserRef: PropTypes.func,
+  afterRender: PropTypes.func,
 };
 
 class HotTableContainer extends React.Component {
@@ -106,15 +110,17 @@ class HotTableContainer extends React.Component {
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
+    const formulaParser = new FormulaParser(this.hotInstance, {
+      getCellFromDataPicker: this.props.getCellFromDataPicker,
+      model: this.props.model,
+    });
+    this.props.setFormulaParserRef(formulaParser);
     const cellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
-      formulaParser: new FormulaParser(this.hotInstance, {
-        getCellFromDataPicker: this.props.getCellFromDataPicker,
-        model: this.props.model,
-      }),
+      formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
     });
 
@@ -195,7 +201,10 @@ class HotTableContainer extends React.Component {
         maxCols={ this.maxCols }
         maxRows={ this.maxRows }
 
-        // afterRender={ e => { console.warn('HotTable Render')}}
+        afterRender={ forced => {
+          if (!this.props.afterRender) { return; }
+          this.props.afterRender(forced);
+        }}
 
         viewportColumnRenderingOffset={26}
         viewportRowRenderingOffset={26}
@@ -236,6 +245,8 @@ HotTableContainer.propTypes = {
   model: PropTypes.object,
   inputBarValue: PropTypes.string,
   afterSelection: PropTypes.func,
+  afterRender: PropTypes.func,
   setInputBarValue: PropTypes.func,
   setTableRef: PropTypes.func,
+  setFormulaParserRef: PropTypes.func,
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
+import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import FontModel from '../Models/FontModel.js';
 import { formatDate } from '../lib/helpers.js';
@@ -39,8 +40,8 @@ export default class Application extends React.Component {
         ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
         ctx.drawImage(this.memoryCtx.canvas, 0, 0);
       };
-      this.decodeFn = vector => { // vector to output
-        return model.decode(vector, 0);
+      this.decodeFn = (vector, charIndex) => { // vector to output
+        return model.decode(vector, charIndex || 0);
       };
       this.model = model;
       this.setState({
@@ -77,42 +78,62 @@ export default class Application extends React.Component {
   render () {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
+    const fontDrawerHeight = 400;
     const dataPickerSize = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight - navHeight;
-
+    const spreadsheetHeight = docHeight - navHeight - fontDrawerHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
           this.state.modelIsLoaded ?
-            <div className="spreadsheet-datapicker-container">
-              <DataPickers
-                width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
-                height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
-                outputWidth={ this.state.outputWidth }
-                outputHeight={ this.state.outputHeight }
-                drawFn={ this.drawFn }
-                decodeFn={ this.decodeFn }
-                onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                ref='dataPicker'
-              />
-              <Spreadsheet
-                width={ spreadsheetWidth }
-                height={ spreadsheetHeight }
-                outputWidth={ this.state.outputWidth }
-                outputHeight={ this.state.outputHeight }
-                drawFn={ this.drawFn }
-                decodeFn={ this.decodeFn }
-                getCellFromDataPicker={ this.getCellFromDataPicker }
-                ref='spreadsheet'
-                model={ this.model }
-                setTableRef={ ref => {
-                  this.hotInstance = ref.hotInstance;
-                }}
-                inputBarValue={this.state.inputBarValue}
-                setInputBarValue={this.setInputBarValue}
-              />
+            <div className="component-container">
+                <DataPickers
+                  width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
+                  height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
+                  outputWidth={ this.state.outputWidth }
+                  outputHeight={ this.state.outputHeight }
+                  drawFn={ this.drawFn }
+                  decodeFn={ this.decodeFn }
+                  onCellClick={ this.setSpreadsheetCellFromDataPicker }
+                  ref='dataPicker'
+                />
+              <div className="right-container">
+                <Spreadsheet
+                  width={ spreadsheetWidth }
+                  height={ spreadsheetHeight }
+                  outputWidth={ this.state.outputWidth }
+                  outputHeight={ this.state.outputHeight }
+                  drawFn={ this.drawFn }
+                  decodeFn={ this.decodeFn }
+                  getCellFromDataPicker={ this.getCellFromDataPicker }
+                  ref='spreadsheet'
+                  model={ this.model }
+                  setTableRef={ ref => {
+                    this.hotInstance = ref.hotInstance;
+                  }}
+                  setFormulaParserRef={ parser => {
+                    this.formulaParser = parser;
+                  }}
+                  inputBarValue={this.state.inputBarValue}
+                  setInputBarValue={this.setInputBarValue}
+                  afterRender={ forced => {
+                    if (!forced) { return };
+                    if (!this.refs.fontDrawer && !this.refs.fontDrawer.updateFontSamples()) { return; }
+                    this.refs.fontDrawer.updateFontSamples();
+                  }}
+                />
+                <FontDrawer
+                  height={fontDrawerHeight}
+                  hotInstance={this.hotInstance}
+                  formulaParser={this.formulaParser}
+                  drawFn={this.drawFn}
+                  decodeFn={this.decodeFn}
+                  outputWidth={ this.state.outputWidth }
+                  outputHeight={ this.state.outputHeight }
+                  ref='fontDrawer'
+                />
+              </div>
             </div> :
             <div className="loader-container">
               <div className="loader"/>
