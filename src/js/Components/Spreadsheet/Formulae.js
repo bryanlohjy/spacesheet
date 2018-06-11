@@ -105,6 +105,21 @@ export default class Formulae {
       return from.add(to.sub(from).mul(dl.scalar(step)));
     }).getValues();
   };
+  MULTIPLY(params) {
+    const validParams = params.filter(param => param || param === 0);
+    if (validParams.length < 2) {
+      return '#N/A';
+    }
+    let result;
+    for (let i = 0; i < validParams.length; i++) {
+      if (isNaN(result)) {
+        result = validParams[i]
+      } else {
+        result *= Number(validParams[i]);
+      }
+    }
+    return result;
+  };
   SLERP(params) {
     return '#N/A';
   };
@@ -159,6 +174,7 @@ export default class Formulae {
     const aliases = {
       'ADD': 'SUM',
       'INTERPOLATE': 'LERP',
+      'MUL': 'MULTIPLY',
     };
 
     name = name.toUpperCase();
