@@ -103,8 +103,8 @@ Spreadsheet.propTypes = {
 class HotTableContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
-    this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
+    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth) + 1;
+    this.maxRows = Math.ceil(this.props.height / this.props.outputHeight) + 1;
     this.demoSheet = OperatorDemoSheet(this.maxRows, this.maxCols);
     this.initHotTable = this.initHotTable.bind(this);
   };

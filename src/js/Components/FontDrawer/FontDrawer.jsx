@@ -13,7 +13,7 @@ export default class FontDrawer extends React.Component {
     this.state = {
       sampleText: 'handgloves',
       items: [
-        { locked: false, cell: 'A1', vector: [], id: uuidv4() },
+        { locked: false, cell: 'F8', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
       ],
@@ -23,6 +23,10 @@ export default class FontDrawer extends React.Component {
     this.setItemProperty = this.setItemProperty.bind(this);
     this.setSampleFontFromSelection = this.setSampleFontFromSelection.bind(this);
     this.clearSampleFont = this.clearSampleFont.bind(this);
+  };
+  componentDidMount() {
+    this.updateFontSamples();
+    this.props.hotInstance.render();
   };
   updateFontSamples() {
     if (!this.props.hotInstance || !this.props.formulaParser) { return; }

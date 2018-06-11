@@ -119,7 +119,8 @@ export default class Application extends React.Component {
                   setInputBarValue={this.setInputBarValue}
                   afterRender={ forced => {
                     if (!forced) { return };
-                    if (!this.refs.fontDrawer && !this.refs.fontDrawer.updateFontSamples() || !this.hotInstance) { return; }
+                    // console.log(this.refs.fontDrawer)
+                    if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
                     this.refs.fontDrawer.updateFontSamples();
                     const editor = this.hotInstance.getActiveEditor();
                     if (editor) {
@@ -128,16 +129,18 @@ export default class Application extends React.Component {
                     }
                   }}
                 />
-                <FontDrawer
-                  height={fontDrawerHeight}
-                  hotInstance={this.hotInstance}
-                  formulaParser={this.formulaParser}
-                  drawFn={this.drawFn}
-                  decodeFn={this.decodeFn}
-                  outputWidth={ this.state.outputWidth }
-                  outputHeight={ this.state.outputHeight }
-                  ref='fontDrawer'
-                />
+                { this.hotInstance && this.formulaParser ?
+                  <FontDrawer
+                    height={fontDrawerHeight}
+                    hotInstance={this.hotInstance}
+                    formulaParser={this.formulaParser}
+                    drawFn={this.drawFn}
+                    decodeFn={this.decodeFn}
+                    outputWidth={ this.state.outputWidth }
+                    outputHeight={ this.state.outputHeight }
+                    ref='fontDrawer'
+                  /> : ""
+                }
               </div>
             </div> :
             <div className="loader-container">
