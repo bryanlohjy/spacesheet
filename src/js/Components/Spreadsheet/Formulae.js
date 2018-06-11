@@ -70,6 +70,7 @@ export default class Formulae {
     return total;
   };
   SUM_TENSOR(params) {
+    console.log(params)
     return dl.tidy(() => {
       let total;
       for (let count = 0; count < params.length; count++) {

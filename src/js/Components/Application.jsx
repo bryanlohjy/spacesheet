@@ -63,6 +63,9 @@ export default class Application extends React.Component {
     this.setState({ inputBarValue: value });
   };
   getCellFromDataPicker(dataKey) {
+    if (Array.isArray(dataKey)) {
+      dataKey = dataKey[0];
+    }
     dataKey = dataKey.trim().replace(/["']/gi, "");
     const firstHyphen = dataKey.indexOf('-');
     const dataPickerKey = dataKey.substring(0, firstHyphen);
