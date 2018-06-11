@@ -183,7 +183,8 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'SUM');
+          // return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'AVERAGE');
+          return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'SUM');
         },
       },
       DIST: {
