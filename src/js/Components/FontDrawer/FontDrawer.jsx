@@ -247,12 +247,12 @@ class FontSample extends React.Component {
             { this.props.cell ?
                 this.props.locked ? (
                   <div className="font-sample-options" onClick={this.toggleLocked}>
-                    <img src='/dist/assets/sharp-lock-24px.svg'/>
+                    <img src='./dist/assets/sharp-lock-24px.svg'/>
                     <span>LOCK</span>
                   </div>
                 ): (
                   <div className="font-sample-options" onClick={this.toggleLocked}>
-                    <img src='/dist/assets/sharp-lock_open-24px.svg'/>
+                    <img src='./dist/assets/sharp-lock_open-24px.svg'/>
                     <span>WATCH</span>
                   </div>
                 )
