@@ -4,7 +4,9 @@ import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
+import ModelLoader from '../lib/ModelLoader.js';
 import FontModel from '../Models/FontModel.js';
+
 import { formatDate } from '../lib/helpers.js';
 
 import { saveJSON } from './Application.js';
@@ -24,31 +26,26 @@ export default class Application extends React.Component {
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
-    this.memoryCtx = this.refs.memoryCanvas.getContext('2d');
-    new FontModel(model => {
-      this.drawFn = (ctx, decodedData) => { // decoded vector => canvas rendering logic
-        const memoryCtxData = this.memoryCtx.getImageData(0, 0, model.outputWidth, model.outputHeight);
-        const memoryCtxDataLength = memoryCtxData.data.length;
-        for (let i = 0; i < memoryCtxDataLength/4; i++) {
-          const val = (1 - decodedData[i]) * 255;
-          memoryCtxData.data[4*i] = val;    // RED (0-255)
-          memoryCtxData.data[4*i+1] = val;    // GREEN (0-255)
-          memoryCtxData.data[4*i+2] = val;    // BLUE (0-255)
-          memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
-        }
-        this.memoryCtx.putImageData(memoryCtxData, 0, 0);
-        ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
-        ctx.drawImage(this.memoryCtx.canvas, 0, 0);
-      };
-      this.decodeFn = (vector, charIndex) => { // vector to output
-        return model.decode(vector, charIndex || 0);
-      };
-      this.model = model;
-      this.setState({
-        modelIsLoaded: true,
-        outputWidth: model.outputWidth,
-        outputHeight: model.outputHeight,
-      });
+    this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
+
+    const loader = new ModelLoader(this, FontModel);
+
+    const self = this;
+    loader.load((errors, model) => {
+      if (!errors) {
+        console.log('Success', model)
+        self.drawFn = model.drawFn;
+        self.decodeFn = model.decodeFn;
+        self.model = model;
+
+        self.setState({
+          outputWidth: model.outputWidth,
+          outputHeight: model.outputHeight,
+          modelIsLoaded: true,
+        });
+      } else {
+        console.log('Errors')
+      }
     });
   };
   setSpreadsheetCellFromDataPicker(dataKey) {
