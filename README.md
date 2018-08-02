@@ -6,9 +6,9 @@
 The _SpaceSheet_ is a general purpose spreadsheet tool designed to understand the affordances of latent space exploration as a tool for design experimentation. It is the designed output of the [self-titled thesis](./SpaceSheets_Design_Experimentation_In_Latent-Space.pdf). The tool has been implemented to explore a latent space of fonts ([_deepfonts_ by Erik Bernhardsson](https://github.com/erikbern/deep-fonts)).
 
 # Getting Started
-The application is available as a web application through _[this link](http://bryanlohjy.gitlab.io/spacesheets-mdi-eval/)_.
+The application is available as a web application through _[this link](http://bryanlohjy.gitlab.io/font-spreadsheet/)_.
 
-If the link does not work, try refreshing the page. Failing that, _[download the files from the repository](https://gitlab.com/bryanlohjy/spacesheets-mdi-eval/-/archive/master/spacesheets-mdi-eval-master.zip)_ and run them locally. To load the application locally, you will need to run a web server. This can be achieved fairly easily using _[this browser extension](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en)_.  
+If the link does not work, try refreshing the page. Failing that, _[download the files from the repository](https://gitlab.com/bryanlohjy/spacesheets-mdi-eval/-/archive/master/font-spreadsheet.zip)_ and run them locally. To load the application locally, you will need to run a web server. This can be achieved fairly easily using _[this browser extension](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en)_.  
 
 The app should look like the image below once loaded. If it doesn't, read the notes under it to troubleshoot.
 
@@ -74,6 +74,6 @@ Let's isolate a serif vector.
 # Alternative versions
 As mentioned in the thesis, alternative versions of the application were created as experiments. These versions operate between drawings, rather than within a latent space of images.
 
-* [Faces](http://bryanlohjy.gitlab.io/spacesheets-mdi-eval/faces.html)
-* [Confetti](http://bryanlohjy.gitlab.io/spacesheets-mdi-eval/confetti.html)
-* [Constellations](http://bryanlohjy.gitlab.io/spacesheets-mdi-eval/constellations.html)
+* [Faces](http://bryanlohjy.gitlab.io/font-spreadsheet/faces.html)
+* [Confetti](http://bryanlohjy.gitlab.io/font-spreadsheet/confetti.html)
+* [Constellations](http://bryanlohjy.gitlab.io/font-spreadsheet/constellations.html)
