@@ -104,7 +104,7 @@ class HotTableContainer extends React.Component {
   constructor(props) {
     super(props);
     this.maxCols = Math.ceil(this.props.width / this.props.outputWidth) + 1;
-    this.maxRows = Math.ceil(this.props.height / this.props.outputHeight) + 1;
+    this.maxRows = null;
     this.demoSheet = OperatorDemoSheet(this.maxRows, this.maxCols);
     this.initHotTable = this.initHotTable.bind(this);
   };
@@ -198,8 +198,8 @@ class HotTableContainer extends React.Component {
         rowHeights={this.props.outputHeight}
         colWidths={this.props.outputWidth}
 
-        maxCols={ this.maxCols }
-        maxRows={ this.maxRows }
+        minCols={7}
+        minRows={10}
 
         afterRender={ forced => {
           if (!this.props.afterRender) { return; }
