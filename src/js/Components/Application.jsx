@@ -148,7 +148,7 @@ export default class Application extends React.Component {
               <span className="loading-message">Loading model ...</span>
             </div>
         }
-        <nav ref="bottomNav" className="bottom-nav">
+        {/* <nav ref="bottomNav" className="bottom-nav">
           <button
             onClick={ e => {
               const dateString = formatDate(new Date());
@@ -158,7 +158,7 @@ export default class Application extends React.Component {
               saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
             }}
           >SAVE</button>
-        </nav>
+        </nav> */}
       </div>
     );
   }
