@@ -1,0 +1,101 @@
+.font-drawer {
+  height: 200px;
+  width: 100%;
+  border-top: 1px solid rgb(204, 204, 204);
+  border-left: 1px solid rgb(204, 204, 204);
+  box-sizing: border-box;
+  // padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  background-color: lightgrey;
+  .font-samples {
+    overflow-y: auto;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+}
+
+.font-sample { //
+  display: flex;
+  margin: 5px;
+  background-color: white;
+  border-radius: 2px;
+  min-height: 50px;
+  // width: 100%;
+
+  .font-sample-controls {
+    display: flex;
+    width: 100px;
+    background-color: whitesmoke;
+    border-radius: 2px 0 0 2px;
+    overflow: hidden;
+    // border-right: 1px solid darkgrey;
+    .sort-handle {
+      display: flex;
+      align-items: center;
+      cursor: row-resize;
+      height: 100%;
+      background-color: darkgrey;
+      color: white;
+    }
+    .font-sample-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 10px;
+      .font-sample-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        padding: 2px;
+        cursor: pointer;
+        span {
+          font-size: 12px;
+          font-weight: 700;
+        }
+        img {
+          width: 20px;
+          margin-right: 4px;
+        }
+      }
+      .font-sample-reference {
+        display: flex;
+        border: 1px solid grey;
+        > * {
+          margin: 0;
+          padding: 0;
+        }
+        input {
+          &.invalid {
+            background-color: rgba(255, 0, 0, 0.4);
+          }
+          &.valid {
+            background-color: rgba(0, 255, 0, 0.4);
+          }
+          width: 100%;
+          max-width: 50px;
+          text-align: center;
+          border: none;
+        }
+        button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          width: 20px;
+          border: none;
+          cursor: pointer;
+        }
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

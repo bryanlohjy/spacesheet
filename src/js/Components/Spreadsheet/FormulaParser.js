@@ -14,12 +14,6 @@ const arrayContainsArray = arr => {
   return false;
 };
 
-const arrayIsARangeFragment = arr => {
-  if (arr && arr.length === 1) {
-    return true;
-  };
-}
-
 const getArgumentsFromFunction = (string) => {
   let res = [];
   const openBracketIndices = getIndicesOf('(', string);
@@ -97,10 +91,21 @@ const FormulaParser = (hotInstance, opts) => {
   });
 
   // override common functions to check for and work with tensors
-  parser.on('callFunction', (name, params, done) => {
-    if (arrayIsARangeFragment(params)) {
-      params = params[0];
+  parser.on('callFunction', (name, paramChunks, done) => {
+    const params = [];
+    // flatten all arg chunks into a single array
+    for (let argIndex = 0; argIndex < paramChunks.length; argIndex++) {
+      const paramChunk = paramChunks[argIndex];
+      // flatten nested arrays
+      if (Array.isArray(paramChunk) && paramChunk.length !== 40) { // if it is an array and not a vector, flatten it out
+        for (let paramIndex = 0; paramIndex < paramChunk.length; paramIndex++) {
+          params.push(paramChunk[paramIndex]);
+        }
+      } else {
+        params.push(paramChunk);
+      }
     }
+
     const isTensorCalculation = arrayContainsArray(params);
     // evaluates using overwritten formulae, first, otherwise uses hot-formula defaults
     const result = CustomFormula.call(name, params, isTensorCalculation);

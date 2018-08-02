@@ -11,7 +11,11 @@ export default opts => {
     removeInstancesOfClassName('highlighted-reference');
   };
   CustomTextEditor.prototype.highlightReferences = function(hotInstance, data) {
-    if (!data || !isFormula(data)) {
+    if (!data) {
+      data = this.originalValue
+    }
+
+    if (!isFormula(data)) {
       return;
     }
     // deal with cell ranges first
@@ -55,6 +59,8 @@ export default opts => {
 
   CustomTextEditor.prototype.prepare = function() {
     HandsOnTable.editors.TextEditor.prototype.prepare.apply(this, arguments);
+    this.clearHighlightedReferences();
+    this.highlightReferences(this.instance, this.originalValue);
     opts.setInputBarValue(this.originalValue || '');
   };
 
@@ -84,7 +90,7 @@ export default opts => {
       str = this.TEXTAREA.value;
     }
 
-    if ((new RegExp(/^\s*=\s*average\s*\(/gi)).test(str)) {
+    if ((new RegExp(/^\s*=\s*average\s*\(/gi)).test(str) || (new RegExp(/^\s*=\s*sum\s*\(/gi)).test(str) || (new RegExp(/^\s*=\s*add\s*\(/gi)).test(str)) {
       return false;
     }
 

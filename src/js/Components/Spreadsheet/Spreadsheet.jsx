@@ -7,7 +7,7 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { DemoSheet } from './SpreadsheetData.js';
+import { OperatorDemoSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
@@ -76,6 +76,8 @@ export default class Spreadsheet extends React.Component {
                     currentSelection: [r, c , r2, c2],
                   });
                 }}
+                afterRender={ this.props.afterRender }
+                setFormulaParserRef={this.props.setFormulaParserRef}
               />
             </div>) : ''
         }
@@ -94,27 +96,31 @@ Spreadsheet.propTypes = {
   model: PropTypes.object,
   inputBarValue: PropTypes.string,
   setTableRef: PropTypes.func,
+  setFormulaParserRef: PropTypes.func,
+  afterRender: PropTypes.func,
 };
 
 class HotTableContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth);
-    this.maxRows = Math.ceil(this.props.height / this.props.outputHeight);
-    this.demoSheet = DemoSheet(this.maxRows, this.maxCols);
+    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth) + 1;
+    this.maxRows = null;
+    this.demoSheet = OperatorDemoSheet(this.maxRows, this.maxCols);
     this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
+    const formulaParser = new FormulaParser(this.hotInstance, {
+      getCellFromDataPicker: this.props.getCellFromDataPicker,
+      model: this.props.model,
+    });
+    this.props.setFormulaParserRef(formulaParser);
     const cellTypes = new CellTypes({
       drawFn: this.props.drawFn,
       decodeFn: this.props.decodeFn,
       outputWidth: this.props.outputWidth,
       outputHeight: this.props.outputHeight,
-      formulaParser: new FormulaParser(this.hotInstance, {
-        getCellFromDataPicker: this.props.getCellFromDataPicker,
-        model: this.props.model,
-      }),
+      formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
     });
 
@@ -192,10 +198,13 @@ class HotTableContainer extends React.Component {
         rowHeights={this.props.outputHeight}
         colWidths={this.props.outputWidth}
 
-        maxCols={ this.maxCols }
-        maxRows={ this.maxRows }
+        minCols={7}
+        minRows={10}
 
-        // afterRender={ e => { console.warn('HotTable Render')}}
+        afterRender={ forced => {
+          if (!this.props.afterRender) { return; }
+          this.props.afterRender(forced);
+        }}
 
         viewportColumnRenderingOffset={26}
         viewportRowRenderingOffset={26}
@@ -236,6 +245,8 @@ HotTableContainer.propTypes = {
   model: PropTypes.object,
   inputBarValue: PropTypes.string,
   afterSelection: PropTypes.func,
+  afterRender: PropTypes.func,
   setInputBarValue: PropTypes.func,
   setTableRef: PropTypes.func,
+  setFormulaParserRef: PropTypes.func,
 };

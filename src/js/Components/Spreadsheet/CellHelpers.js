@@ -53,6 +53,15 @@ const CellHelpers = {
     }
     return false;
   },
+  cellLabelIsWithinSpreadsheet: (hotInstance, label) => {
+    if (!hotInstance || !label) { return; }
+    const { row, col } = CellHelpers.cellLabelToCoords(label);
+    if (row < 0 || col < 0) { return; }
+    if (row < hotInstance.countRows() && col < hotInstance.countCols()) {
+      return true;
+    }
+    return false;
+  }
 };
 
 module.exports = CellHelpers;

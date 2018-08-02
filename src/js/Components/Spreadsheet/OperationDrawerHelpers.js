@@ -9,9 +9,6 @@ const getValidMatrix = arr => {
     });
   });
 };
-const arraysAreSimilar = (arr1, arr2) => {
-  return JSON.stringify(arr1, null, 0) === JSON.stringify(arr2, null, 0);
-};
 
 const highlightCellsFromSelection = (hotInstance, selection) => {
   const startRow = Math.min(selection[0], selection[2]);
@@ -37,6 +34,101 @@ const highlightSmartFillArray = (hotInstance, arr) => {
       reference.classList.add('highlighted-reference');
     }
   }
+};
+
+const groupArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
+  const output = { cellsToHighlight: [], fillString: '' };
+  const selection = currentSelection;
+  const startRow = Math.min(selection[0], selection[2]);
+  const startCol = Math.min(selection[1], selection[3]);
+  const endRow = Math.max(selection[0], selection[2]);
+  const endCol = Math.max(selection[1], selection[3]);
+
+  const selectedCells = hotInstance.getData.apply(self, selection);
+  const rows = selectedCells.length;
+  const cols = selectedCells[0].length;
+
+  const validMatrix = getValidMatrix(selectedCells);
+  const verticalStrip = rows > 1 && cols === 1;
+  const horizontalStrip = cols > 1 && rows === 1;
+  const gridSelection = rows > 1 && cols > 1;
+
+  let _valCount = 0;
+  let hasMultipleValues;
+  for (let rowIndex = 0; rowIndex < validMatrix.length; rowIndex++) {
+    const row = validMatrix[rowIndex];
+    for (let colIndex = 0; colIndex < row.length; colIndex++) {
+      const val = validMatrix[rowIndex][colIndex];
+      if (val === true) {
+        _valCount++;
+        if (_valCount >= 2) {
+          hasMultipleValues = true;
+          break;
+        }
+      }
+    }
+  }
+  const hasVals = _valCount > 0;
+  if (!hasMultipleValues) { return output; }
+
+  // if there are vals, and there is an empty at the end of selection
+  if (verticalStrip || horizontalStrip) {
+    let vals;
+    if (verticalStrip) {
+      vals = validMatrix.map(row => row[0]);
+    } else if (horizontalStrip) {
+      vals = validMatrix[0];
+    }
+
+    const emptyLastVal = vals[vals.length - 1] === false;
+    const emptyValIsWithinSelection = verticalStrip ? rows > 2 : cols > 2;
+
+    let startLabel;
+    let endLabel;
+    if (emptyLastVal && emptyValIsWithinSelection && hasVals) {
+      if (verticalStrip) {
+        output.cellsToHighlight = [[endRow, startCol]];
+        startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+        endLabel = cellCoordsToLabel({ row: endRow - 1, col: startCol });
+      } else if (horizontalStrip) {
+        output.cellsToHighlight = [[startRow, endCol]];
+        startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+        endLabel = cellCoordsToLabel({ row: startRow, col: endCol - 1 });
+      }
+      output.fillString = `=${operationName}(${startLabel}:${endLabel})`;
+      return output;
+    }
+  }
+
+  if (hasVals) { // populate cells to right, or bottom
+    const numRows = hotInstance.countRows();
+    const numCols = hotInstance.countCols();
+    // check cells outside of selection
+    const rightCell = endCol + 1 < numCols ? [[startRow, endCol + 1]] : false;
+    const bottomCell = endRow + 1 < numRows ? [[endRow + 1, startCol]] : false;
+
+    let startLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+    let endLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+
+    if (verticalStrip) { // if vertical, look to the bottom first
+      if (bottomCell) {
+        output.cellsToHighlight = bottomCell;
+        output.fillString = `=${operationName}(${startLabel}:${endLabel})`;
+      } else if (rightCell) {
+        output.cellsToHighlight = rightCell;
+        output.fillString = `=${operationName}(${startLabel}:${endLabel})`;
+      }
+    } else {
+      if (rightCell) {
+        output.cellsToHighlight = rightCell;
+        output.fillString = `=${operationName}(${startLabel}:${endLabel})`;
+      } else if (bottomCell) {
+        output.cellsToHighlight = bottomCell;
+        output.fillString = `=${operationName}(${startLabel}:${endLabel})`;
+      }
+    }
+  }
+  return output;
 };
 
 const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
@@ -118,8 +210,8 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
 
 module.exports = {
   getValidMatrix,
-  arraysAreSimilar,
   highlightCellsFromSelection,
   highlightSmartFillArray,
+  groupArgSmartFillFn,
   twoArgSmartFillFn,
 };
