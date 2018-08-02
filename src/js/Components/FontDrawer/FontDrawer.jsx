@@ -91,6 +91,13 @@ export default class FontDrawer extends React.Component {
           className="sample-font-input"
           type="text"
           value={this.state.sampleText}
+          onKeyDown={e => {
+            const acceptedMeta = [8, 46, 32, 37, 38, 39, 40].indexOf(e.keyCode) > -1;
+            const acceptedKeys = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            if (acceptedKeys.indexOf(e.key) < 0 && !acceptedMeta) {
+              e.preventDefault();
+            }
+          }}
           onChange={e => {
             this.setState({
               sampleText: e.target.value,
