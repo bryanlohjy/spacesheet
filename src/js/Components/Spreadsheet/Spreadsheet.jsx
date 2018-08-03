@@ -95,9 +95,9 @@ Spreadsheet.propTypes = {
 class HotTableContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth) + 1;
-    this.maxRows = null;
-    this.demoSheet = OperatorDemoSheet(this.maxRows, this.maxCols);
+    const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
+    const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
+    this.demoSheet = OperatorDemoSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {
@@ -115,7 +115,6 @@ class HotTableContainer extends React.Component {
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
     });
-
     hotInstance.updateSettings({
       cells: (row, col, prop) => {
         let cellProperties = {};
