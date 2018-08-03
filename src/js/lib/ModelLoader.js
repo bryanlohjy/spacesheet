@@ -13,7 +13,7 @@ export default class ModelLoader {
       modelType: ModelTypes.LEARNT,
       drawFn: () => {},
       decodeFn: () => {},
-      randFn: () => {},
+      randVectorFn: () => {},
       // encodeFn: () => {},
       // vectorSchema: [ // used to generate random values + eventually to be used by TSNE
       //   {
@@ -21,7 +21,7 @@ export default class ModelLoader {
       //     createRandom: () => { return [] },
       //   }
       // ],
-      randomVectorFn: null,
+      // randomVectorFn: null,
       outputWidth: 64,
       outputHeight: 64,
     }

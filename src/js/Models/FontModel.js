@@ -15,7 +15,7 @@ export default class FontModel {
 
     this.drawFn = this.drawFn.bind(this);
     this.decodeFn = this.decodeFn.bind(this);
-    this.randFn = this.randFn.bind(this);
+    this.randVectorFn = this.randVectorFn.bind(this);
   }
   init(weightsLoadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters
     const varLoader = new dl.CheckpointLoader(this.checkpointPath);
@@ -110,7 +110,7 @@ export default class FontModel {
       return output.getValues();
     });
   }
-  randFn(params) {
+  randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
     return dl.tidy(() => {
       const fontEmbeddings = this.modelVars.input.weights.getValues();

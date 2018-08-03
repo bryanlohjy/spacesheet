@@ -33,7 +33,7 @@ export default class Application extends React.Component {
 
     loader.load((errors, model) => {
       if (!errors) {
-        console.log('Success', model)
+        // console.log('Success', model)
         self.drawFn = model.drawFn;
         self.decodeFn = model.decodeFn;
         self.model = model;
