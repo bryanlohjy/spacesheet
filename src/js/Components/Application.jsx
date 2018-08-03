@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import ModelLoader from '../lib/ModelLoader.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
+import ModelToLoad from '../Models/FontModel.js';
+
 import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
+import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+
+
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
-import ModelLoader from '../lib/ModelLoader.js';
-// import ModelToLoad from '../Models/MNISTModel.js';
-
-import ModelToLoad from '../Models/FontModel.js';
-
-import { formatDate } from '../lib/helpers.js';
-
-import { saveJSON } from './Application.js';
+// import { formatDate } from '../lib/helpers.js';
+// import { saveJSON } from './Application.js';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -66,8 +67,7 @@ export default class Application extends React.Component {
     const firstHyphen = dataKey.indexOf('-');
     const dataPickerKey = dataKey.substring(0, firstHyphen);
     const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
-
-    const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[cellKey];
+    const cell = DataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
   render() {
@@ -94,8 +94,9 @@ export default class Application extends React.Component {
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.model.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.model.outputHeight }
                 model={ this.state.model }
+                dataPickerGrids={DataPickerGrids}
                 onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                ref='dataPicker'
+                ref='dataPickers'
               />
               <div className="right-container">
                 <Spreadsheet

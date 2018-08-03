@@ -7,34 +7,11 @@ import { lerp, slerp } from '../../lib/tensorUtils.js';
 
 import DataPicker from './DataPicker.jsx';
 
-import V1 from '../../Data/variety_1.json';
-import V2 from '../../Data/variety_2.json';
-import STD from '../../Data/family.json';
-import NOVEL from '../../Data/novelty.json';
-
 export default class DataPickers extends React.Component {
   constructor(props) {
     super(props);
     this.state = { // used to manage highlighter
       selectedGrid: 'V1',
-    };
-    this.grids = {
-      V1: {
-        label: 'Variety 1',
-        data: V1,
-      },
-      V2: {
-        label: 'Variety 2',
-        data: V2,
-      },
-      STD: {
-        label: 'Standard',
-        data: STD,
-      },
-      NOVEL: {
-        label: 'Novel',
-        data: NOVEL,
-      },
     };
   };
   render() {
@@ -42,7 +19,7 @@ export default class DataPickers extends React.Component {
     return (
       <div>
         <DataPickerSelector
-          grids={this.grids}
+          dataPickerGrids={this.props.dataPickerGrids}
           onSelectGrid={gridName => {
             if (gridName !== this.state.selectedGrid) {
               this.setState({ selectedGrid: gridName });
@@ -53,18 +30,18 @@ export default class DataPickers extends React.Component {
         />
         <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height - selectorHeight}}>
           {
-            Object.keys(this.grids).map(key => {
+            Object.keys(this.props.dataPickerGrids).map(key => {
               return (
                 <DataPicker
                   key={key}
                   visible={key === this.state.selectedGrid}
                   width={this.props.width}
                   height={this.props.height - selectorHeight}
-                  data={this.grids[key].data}
+                  data={this.props.dataPickerGrids[key].data}
                   dataPickerLabel={key}
                   model={this.props.model}
                   onDataPickerInit={ dataPickerObject => {
-                    this.grids[key].dataPicker = dataPickerObject;
+                    this.props.dataPickerGrids[key].dataPicker = dataPickerObject;
                   }}
                   onCellClick={ this.props.onCellClick }
                 />
@@ -79,6 +56,7 @@ export default class DataPickers extends React.Component {
 DataPickers.propTypes = {
   model: PropTypes.object.isRequired,
   onCellClick: PropTypes.func,
+  dataPickerGrids: PropTypes.object,
 };
 
 class DataPickerSelector extends React.Component {
@@ -90,8 +68,8 @@ class DataPickerSelector extends React.Component {
       <div className="datapicker-selector" style={{ height: this.props.height }}>
         <ul>
           {
-            Object.keys(this.props.grids).map(key => {
-              const label = this.props.grids[key].label;
+            Object.keys(this.props.dataPickerGrids).map(key => {
+              const label = this.props.dataPickerGrids[key].label;
               return (
                 <li key={label}
                   onClick={() => {
@@ -110,7 +88,7 @@ class DataPickerSelector extends React.Component {
   };
 }
 DataPickerSelector.propTypes = {
-  grids: PropTypes.object,
+  dataPickerGrids: PropTypes.object,
   onSelectGrid: PropTypes.func,
   selectedGrid: PropTypes.string,
   height: PropTypes.number,
