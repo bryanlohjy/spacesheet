@@ -5,7 +5,7 @@ import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import ModelLoader from '../lib/ModelLoader.js';
-import FontModel from '../Models/FontModel.js';
+import ModelToLoad from '../Models/FontModel.js';
 
 import { formatDate } from '../lib/helpers.js';
 
@@ -28,23 +28,22 @@ export default class Application extends React.Component {
     this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
 
-    const loader = new ModelLoader(this, FontModel);
-
+    const loader = new ModelLoader(this, ModelToLoad);
     const self = this;
+
     loader.load((errors, model) => {
       if (!errors) {
         console.log('Success', model)
         self.drawFn = model.drawFn;
         self.decodeFn = model.decodeFn;
         self.model = model;
-
         self.setState({
           outputWidth: model.outputWidth,
           outputHeight: model.outputHeight,
           modelIsLoaded: true,
         });
       } else {
-        console.log('Errors')
+        console.log('Errors');
       }
     });
   };
@@ -72,7 +71,7 @@ export default class Application extends React.Component {
     const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
-  render () {
+  render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
     const fontDrawerHeight = 400;
