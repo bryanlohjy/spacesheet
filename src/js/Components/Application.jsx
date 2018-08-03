@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-// import ModelToLoad from '../Models/MNISTModel.js';
-import ModelToLoad from '../Models/FontModel.js';
+import ModelToLoad from '../Models/MNISTModel.js';
+// import ModelToLoad from '../Models/FontModel.js';
 
 import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
 import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
-
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
