@@ -7,6 +7,8 @@ import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import ModelLoader from '../lib/ModelLoader.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
+
 import ModelToLoad from '../Models/FontModel.js';
 
 import { formatDate } from '../lib/helpers.js';
@@ -71,10 +73,11 @@ export default class Application extends React.Component {
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const fontDrawerHeight = 400;
+    // const fontDrawerHeight = 400;
     const dataPickerSize = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight - navHeight - fontDrawerHeight;
+    const spreadsheetHeight = docHeight - navHeight
+    // - fontDrawerHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -120,9 +123,8 @@ export default class Application extends React.Component {
                     }
                   }}
                 />
-                { this.hotInstance && this.formulaParser ?
+                { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
                   <FontDrawer
-                    height={fontDrawerHeight}
                     hotInstance={this.hotInstance}
                     formulaParser={this.formulaParser}
                     model={this.state.model}

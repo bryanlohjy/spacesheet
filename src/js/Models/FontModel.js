@@ -21,7 +21,7 @@ export default class FontModel {
       this.decodeFn = this.decodeFn.bind(this);
       this.randVectorFn = this.randVectorFn.bind(this);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
   init(loadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters

@@ -85,7 +85,6 @@ export default class FontDrawer extends React.Component {
     return (
       <div
         className="font-drawer"
-        style={{height: this.props.height}}
       >
         <input
           className="sample-font-input"
@@ -131,7 +130,6 @@ export default class FontDrawer extends React.Component {
   };
 }
 FontDrawer.propTypes = {
-  height: PropTypes.number,
   hotInstance: PropTypes.object,
   formulaParser: PropTypes.object,
   model: PropTypes.object.isRequired

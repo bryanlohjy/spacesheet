@@ -97,7 +97,7 @@ class HotTableContainer extends React.Component {
     super(props);
     const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
     const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
-    this.demoSheet = OperatorDemoSheet(rows, cols);
+    this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : null;
     this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {
@@ -138,7 +138,7 @@ class HotTableContainer extends React.Component {
         }
         return cellProperties;
       },
-      data: this.demoSheet.data,
+      data: this.demoSheet ? this.demoSheet.data : null,
       contextMenu: {
         items: {
           "undo": {
@@ -178,7 +178,7 @@ class HotTableContainer extends React.Component {
         }}
         root='hot'
 
-        mergeCells={ this.demoSheet.mergeCells }
+        mergeCells={  this.demoSheet ? this.demoSheet.mergeCells : null }
 
         rowHeaderWidth={32}
         colHeaderHeight={32}
