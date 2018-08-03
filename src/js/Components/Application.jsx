@@ -73,11 +73,9 @@ export default class Application extends React.Component {
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    // const fontDrawerHeight = 400;
     const dataPickerSize = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight - navHeight
-    // - fontDrawerHeight;
+    const spreadsheetHeight = docHeight - navHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>

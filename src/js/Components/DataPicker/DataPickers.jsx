@@ -15,19 +15,21 @@ export default class DataPickers extends React.Component {
     };
   };
   render() {
-    const selectorHeight = 48;
+    const selectorHeight = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ? 48 : 0;
     return (
       <div>
-        <DataPickerSelector
-          dataPickerGrids={this.props.dataPickerGrids}
-          onSelectGrid={gridName => {
-            if (gridName !== this.state.selectedGrid) {
-              this.setState({ selectedGrid: gridName });
-            }
-          }}
-          selectedGrid={this.state.selectedGrid}
-          height={selectorHeight}
-        />
+        { this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ?
+            <DataPickerSelector
+              dataPickerGrids={this.props.dataPickerGrids}
+              onSelectGrid={gridName => {
+                if (gridName !== this.state.selectedGrid) {
+                  this.setState({ selectedGrid: gridName });
+                }
+              }}
+              selectedGrid={this.state.selectedGrid}
+              height={selectorHeight}
+            /> : ""
+        }
         <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height - selectorHeight}}>
           {
             Object.keys(this.props.dataPickerGrids).map(key => {
