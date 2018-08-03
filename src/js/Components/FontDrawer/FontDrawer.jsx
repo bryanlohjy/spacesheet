@@ -116,10 +116,10 @@ export default class FontDrawer extends React.Component {
 
 
           hotInstance={this.props.hotInstance}
-          drawFn={this.props.drawFn}
-          decodeFn={this.props.decodeFn}
-          outputWidth={ this.props.outputWidth }
-          outputHeight={ this.props.outputHeight }
+          drawFn={this.props.model.drawFn}
+          decodeFn={this.props.model.decodeFn}
+          outputWidth={ this.props.model.outputWidth }
+          outputHeight={ this.props.model.outputHeight }
 
           onSortEnd={this.onSortEnd}
           lockAxis="y"
@@ -134,10 +134,7 @@ FontDrawer.propTypes = {
   height: PropTypes.number,
   hotInstance: PropTypes.object,
   formulaParser: PropTypes.object,
-  drawFn: PropTypes.func,
-  decodeFn: PropTypes.func,
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
+  model: PropTypes.object.isRequired
 };
 
 
@@ -166,10 +163,10 @@ const FontSampleList = SortableContainer(props => {
           hotInstance={props.hotInstance}
           drawFn={props.drawFn}
           decodeFn={props.decodeFn}
-          outputWidth={ props.outputWidth }
-          outputHeight={ props.outputHeight }
-          setSampleFontFromSelection={ props.setSampleFontFromSelection }
-          clearSampleFont={ props.clearSampleFont }
+          outputWidth={props.outputWidth}
+          outputHeight={props.outputHeight}
+          setSampleFontFromSelection={props.setSampleFontFromSelection}
+          clearSampleFont={props.clearSampleFont}
         />
       ))}
     </div>

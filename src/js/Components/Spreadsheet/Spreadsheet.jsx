@@ -58,8 +58,6 @@ export default class Spreadsheet extends React.Component {
           this.state.inputBarIsMounted ? (
             <div className="table-container" ref="tableContainer">
               <HotTableContainer
-                outputWidth={this.props.outputWidth}
-                outputHeight={this.props.outputHeight}
                 setTableRef={ ref => {
                   this.hotInstance = ref.hotInstance;
                   this.props.setTableRef(ref);
@@ -69,8 +67,6 @@ export default class Spreadsheet extends React.Component {
                 setInputBarValue={this.props.setInputBarValue}
                 getCellFromDataPicker={this.props.getCellFromDataPicker}
                 model={this.props.model}
-                drawFn={this.props.drawFn}
-                decodeFn={this.props.decodeFn}
                 afterSelection={ (r, c, r2, c2) => {
                   this.setState({
                     currentSelection: [r, c , r2, c2],
@@ -88,12 +84,8 @@ export default class Spreadsheet extends React.Component {
 Spreadsheet.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
-  drawFn: PropTypes.func,
-  decodeFn: PropTypes.func,
   getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object,
+  model: PropTypes.object.isRequired,
   inputBarValue: PropTypes.string,
   setTableRef: PropTypes.func,
   setFormulaParserRef: PropTypes.func,
@@ -116,10 +108,10 @@ class HotTableContainer extends React.Component {
     });
     this.props.setFormulaParserRef(formulaParser);
     const cellTypes = new CellTypes({
-      drawFn: this.props.drawFn,
-      decodeFn: this.props.decodeFn,
-      outputWidth: this.props.outputWidth,
-      outputHeight: this.props.outputHeight,
+      drawFn: this.props.model.drawFn,
+      decodeFn: this.props.model.decodeFn,
+      outputWidth: this.props.model.outputWidth,
+      outputHeight: this.props.model.outputHeight,
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
     });
@@ -195,8 +187,8 @@ class HotTableContainer extends React.Component {
         colHeaders={true}
         rowHeaders={true}
         preventOverflow="horizontal"
-        rowHeights={this.props.outputHeight}
-        colWidths={this.props.outputWidth}
+        rowHeights={this.props.model.outputHeight}
+        colWidths={this.props.model.outputWidth}
 
         minCols={7}
         minRows={10}
@@ -237,12 +229,8 @@ class HotTableContainer extends React.Component {
 HotTableContainer.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
-  drawFn: PropTypes.func,
-  decodeFn: PropTypes.func,
   getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object,
+  model: PropTypes.object.isRequired,
   inputBarValue: PropTypes.string,
   afterSelection: PropTypes.func,
   afterRender: PropTypes.func,

@@ -42,10 +42,7 @@ export default class DataPicker extends React.Component {
       this.refs.dataPickerCanvas.getContext('2d'),
       {
         gridData: this.props.data,
-        outputWidth: this.props.outputWidth,
-        outputHeight: this.props.outputHeight,
-        drawFn: this.props.drawFn,
-        decodeFn: this.props.decodeFn,
+        model: this.props.model,
       }
     );
     this.props.onDataPickerInit(this.dataPicker);
@@ -249,10 +246,7 @@ DataPicker.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   visible: PropTypes.bool,
-  outputWidth: PropTypes.number.isRequired,
-  outputHeight: PropTypes.number.isRequired,
-  drawFn: PropTypes.func.isRequired,
-  decodeFn: PropTypes.func.isRequired,
+  model: PropTypes.object.isRequired,
   data: PropTypes.object,
   dataPickerLabel: PropTypes.string,
   onCellClick: PropTypes.func,

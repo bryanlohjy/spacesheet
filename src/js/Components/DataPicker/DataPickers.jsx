@@ -62,10 +62,7 @@ export default class DataPickers extends React.Component {
                   height={this.props.height - selectorHeight}
                   data={this.grids[key].data}
                   dataPickerLabel={key}
-                  outputWidth={this.props.outputWidth}
-                  outputHeight={this.props.outputHeight}
-                  drawFn={this.props.drawFn}
-                  decodeFn={this.props.decodeFn}
+                  model={this.props.model}
                   onDataPickerInit={ dataPickerObject => {
                     this.grids[key].dataPicker = dataPickerObject;
                   }}
@@ -80,10 +77,7 @@ export default class DataPickers extends React.Component {
   }
 }
 DataPickers.propTypes = {
-  outputWidth: PropTypes.number.isRequired,
-  outputHeight: PropTypes.number.isRequired,
-  drawFn: PropTypes.func.isRequired,
-  decodeFn: PropTypes.func.isRequired,
+  model: PropTypes.object.isRequired,
   onCellClick: PropTypes.func,
 };
 

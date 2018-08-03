@@ -16,8 +16,7 @@ export default class Application extends React.Component {
     super(props);
     this.state = {
       modelIsLoaded: false,
-      outputWidth: 0,
-      outputHeight: 0,
+      model: null,
       inputBarValue: "",
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
@@ -34,12 +33,11 @@ export default class Application extends React.Component {
     loader.load((errors, model) => {
       if (!errors) {
         // console.log('Success', model)
-        self.drawFn = model.drawFn;
-        self.decodeFn = model.decodeFn;
-        self.model = model;
+        // self.drawFn = model.drawFn;
+        // self.decodeFn = model.decodeFn;
+        // self.model = model;
         self.setState({
-          outputWidth: model.outputWidth,
-          outputHeight: model.outputHeight,
+          model: model,
           modelIsLoaded: true,
         });
       } else {
@@ -82,29 +80,22 @@ export default class Application extends React.Component {
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
-          this.state.modelIsLoaded ?
+          this.state.modelIsLoaded && this.state.model ?
             <div className="component-container">
-                <DataPickers
-                  width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
-                  height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
-                  outputWidth={ this.state.outputWidth }
-                  outputHeight={ this.state.outputHeight }
-                  drawFn={ this.drawFn }
-                  decodeFn={ this.decodeFn }
-                  onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                  ref='dataPicker'
-                />
+              <DataPickers
+                width={ dataPickerSize || this.state.gridData.grid.columns * this.state.model.outputWidth }
+                height={ dataPickerSize || this.state.gridData.grid.rows * this.state.model.outputHeight }
+                model={ this.state.model }
+                onCellClick={ this.setSpreadsheetCellFromDataPicker }
+                ref='dataPicker'
+              />
               <div className="right-container">
                 <Spreadsheet
                   width={ spreadsheetWidth }
                   height={ spreadsheetHeight }
-                  outputWidth={ this.state.outputWidth }
-                  outputHeight={ this.state.outputHeight }
-                  drawFn={ this.drawFn }
-                  decodeFn={ this.decodeFn }
                   getCellFromDataPicker={ this.getCellFromDataPicker }
                   ref='spreadsheet'
-                  model={ this.model }
+                  model={ this.state.model }
                   setTableRef={ ref => {
                     this.hotInstance = ref.hotInstance;
                   }}
@@ -115,7 +106,6 @@ export default class Application extends React.Component {
                   setInputBarValue={this.setInputBarValue}
                   afterRender={ forced => {
                     if (!forced) { return };
-                    // console.log(this.refs.fontDrawer)
                     if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
                     this.refs.fontDrawer.updateFontSamples();
                     const editor = this.hotInstance.getActiveEditor();
@@ -130,12 +120,10 @@ export default class Application extends React.Component {
                     height={fontDrawerHeight}
                     hotInstance={this.hotInstance}
                     formulaParser={this.formulaParser}
-                    drawFn={this.drawFn}
-                    decodeFn={this.decodeFn}
-                    outputWidth={ this.state.outputWidth }
-                    outputHeight={ this.state.outputHeight }
+                    model={this.state.model}
                     ref='fontDrawer'
-                  /> : ""
+                  />
+                  : ""
                 }
               </div>
             </div> :
