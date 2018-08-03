@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import ErrorsAndWarningsModal from './ErrorsAndWarningsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
@@ -17,6 +19,7 @@ export default class Application extends React.Component {
     this.state = {
       modelIsLoaded: false,
       model: null,
+      loadErrorsAndWarnings: null,
       inputBarValue: "",
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
@@ -30,18 +33,18 @@ export default class Application extends React.Component {
     const loader = new ModelLoader(this, ModelToLoad);
     const self = this;
 
-    loader.load((errors, model) => {
-      if (!errors) {
-        // console.log('Success', model)
-        // self.drawFn = model.drawFn;
-        // self.decodeFn = model.decodeFn;
-        // self.model = model;
+    loader.load((errorsAndWarnings, model) => {
+      if (!errorsAndWarnings) {
         self.setState({
           model: model,
           modelIsLoaded: true,
         });
       } else {
-        console.log('Errors');
+        self.setState({
+          loadErrorsAndWarnings: errorsAndWarnings,
+          model: !errorsAndWarnings.errors ? model : null,
+          modelIsLoaded: !errorsAndWarnings.errors,
+        });
       }
     });
   };
@@ -79,6 +82,13 @@ export default class Application extends React.Component {
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
+        {
+          this.state.loadErrorsAndWarnings ?
+            <ErrorsAndWarningsModal
+              errors={this.state.loadErrorsAndWarnings.errors}
+              warnings={this.state.loadErrorsAndWarnings.warnings}
+            /> : ''
+        }
         {
           this.state.modelIsLoaded && this.state.model ?
             <div className="component-container">

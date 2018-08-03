@@ -9,22 +9,22 @@ export default class ModelLoader {
 
     this.app = app;
     this.modelConstructor = modelConstructor;
-    this.requiredValues = {
-      modelType: ModelTypes.LEARNT,
-      drawFn: () => {},
-      decodeFn: () => {},
-      randVectorFn: () => {},
-      // encodeFn: () => {},
-      // vectorSchema: [ // used to generate random values + eventually to be used by TSNE
-      //   {
-      //     get length() { return 10 },
-      //     createRandom: () => { return [] },
-      //   }
-      // ],
-      // randomVectorFn: null,
-      outputWidth: 64,
-      outputHeight: 64,
-    }
+    // this.requiredValues = {
+    //   modelType: ModelTypes.LEARNT,
+    //   drawFn: () => {},
+    //   decodeFn: () => {},
+    //   randVectorFn: () => {},
+    //   // encodeFn: () => {},
+    //   // vectorSchema: [ // used to generate random values + eventually to be used by TSNE
+    //   //   {
+    //   //     get length() { return 10 },
+    //   //     createRandom: () => { return [] },
+    //   //   }
+    //   // ],
+    //   // randomVectorFn: null,
+    //   outputWidth: 64,
+    //   outputHeight: 64,
+    // }
   };
   load(modelLoadedCallback) {
     if (!this.modelConstructor) {
@@ -34,7 +34,7 @@ export default class ModelLoader {
     const model = new this.modelConstructor();
     const self = this;
     model.init(loadedModel => {
-      let errors = null;
+      let errorsAndWarnings = {};
       if (loadedModel.modelType === 'LEARNT') {
         // augment drawFN so it draws onto a memory ctx, and then onto the argument ctx - to simplify translation on DataPicker Canvas
         const clonedDrawFn = loadedModel.drawFn.bind({});
@@ -48,7 +48,7 @@ export default class ModelLoader {
         loadedModel.drawFn = augmentedFn;
       }
       if (modelLoadedCallback && typeof modelLoadedCallback === 'function') {
-        modelLoadedCallback(errors, loadedModel);
+        modelLoadedCallback(errorsAndWarnings, loadedModel);
       }
     });
   };
