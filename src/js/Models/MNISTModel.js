@@ -11,10 +11,13 @@ const math = dl.ENV.math;
 // drawFn
 // decodeFn
 // randVectorFn
+
+
+// vector length = 100;
 export default class Model {
   constructor() {
-    this.outputWidth = 32;
-    this.outputHeight = 32;
+    this.outputWidth = 28;
+    this.outputHeight = 28;
     try {
       this.init = this.init.bind(this);
       this.drawFn = this.drawFn.bind(this);
@@ -41,11 +44,11 @@ export default class Model {
     const ctxData = ctx.getImageData(0, 0, this.outputWidth, this.outputHeight);
     const ctxDataLength = ctxData.data.length;
     for (let i = 0; i < ctxDataLength/4; i++) {
-      const val = (1 - decodedData[i]) * 255;
+      const val = (decodedData[i]) * 255;
       ctxData.data[4*i] = val;    // RED (0-255)
       ctxData.data[4*i+1] = val;    // GREEN (0-255)
       ctxData.data[4*i+2] = val;    // BLUE (0-255)
-      ctxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
+      ctxData.data[4*i+3] = decodedData[i] = 255;  // ALPHA (0-255)
     }
     ctx.putImageData(ctxData, 0, 0);
   }
@@ -84,11 +87,7 @@ export default class Model {
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
     return dl.tidy(() => {
-      const fontEmbeddings = this.modelVars.input.weights.getValues();
-      const numberOfFonts = fontEmbeddings.length/40;
-      const startIndex = randomInt(0, numberOfFonts, randomSeed) * 40;
-      const randomEmbedding = dl.tensor1d(fontEmbeddings.slice(startIndex, startIndex + 40));
-      return randomEmbedding;
+      return dl.randomNormal([100], 0, 1, null, randomSeed);;
     }).getValues();
   }
 }
