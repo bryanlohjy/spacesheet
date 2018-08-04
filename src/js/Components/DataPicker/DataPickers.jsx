@@ -16,9 +16,10 @@ export default class DataPickers extends React.Component {
   };
   render() {
     const selectorHeight = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ? 48 : 0;
+    const multipleDataPickers = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1;
     return (
       <div>
-        { this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ?
+        { multipleDataPickers ?
             <DataPickerSelector
               dataPickerGrids={this.props.dataPickerGrids}
               onSelectGrid={gridName => {
@@ -31,24 +32,24 @@ export default class DataPickers extends React.Component {
             /> : ""
         }
         <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height - selectorHeight}}>
-          {
-            Object.keys(this.props.dataPickerGrids).map(key => {
-              return (
-                <DataPicker
-                  key={key}
-                  visible={key === this.state.selectedGrid}
-                  width={this.props.width}
-                  height={this.props.height - selectorHeight}
-                  data={this.props.dataPickerGrids[key].data}
-                  dataPickerLabel={key}
-                  model={this.props.model}
-                  onDataPickerInit={ dataPickerObject => {
-                    this.props.dataPickerGrids[key].dataPicker = dataPickerObject;
-                  }}
-                  onCellClick={ this.props.onCellClick }
-                />
-              )
-            })
+          { this.props.dataPickerGrids ?
+              Object.keys(this.props.dataPickerGrids).map(key => {
+                return (
+                  <DataPicker
+                    key={key}
+                    visible={ multipleDataPickers ? key === this.state.selectedGrid : true }
+                    width={this.props.width}
+                    height={this.props.height - selectorHeight}
+                    data={this.props.dataPickerGrids[key].data}
+                    dataPickerLabel={key}
+                    model={this.props.model}
+                    onDataPickerInit={ dataPickerObject => {
+                      this.props.dataPickerGrids[key].dataPicker = dataPickerObject;
+                    }}
+                    onCellClick={ this.props.onCellClick }
+                  />
+                )
+              }) : ''
           }
         </div>
       </div>

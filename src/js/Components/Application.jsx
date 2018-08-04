@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-import ModelToLoad from '../Models/MNISTModel.js';
-// import ModelToLoad from '../Models/FontModel.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
+import ModelToLoad from '../Models/FontModel.js';
+
+import GenerateDataPicker from '../lib/DataPickerGenerator.js';
+// import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 
 import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
-import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
@@ -23,6 +25,7 @@ export default class Application extends React.Component {
       model: null,
       loadErrors: null,
       inputBarValue: "",
+      dataPickerGrids: false,
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
@@ -35,9 +38,16 @@ export default class Application extends React.Component {
     const loader = new ModelLoader(this, ModelToLoad);
     loader.load(res => {
       if (!res.errors) {
+        let dataPickerGrids;
+        try {
+          dataPickerGrids = DataPickerGrids;
+        } catch (e) {
+          dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
+        }
         this.setState({
           model: res.model,
           modelIsLoaded: true,
+          dataPickerGrids: dataPickerGrids,
         });
       } else {
         this.setState({
@@ -66,7 +76,7 @@ export default class Application extends React.Component {
     const firstHyphen = dataKey.indexOf('-');
     const dataPickerKey = dataKey.substring(0, firstHyphen);
     const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
-    const cell = DataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
+    const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
   render() {
@@ -85,13 +95,13 @@ export default class Application extends React.Component {
             /> : ''
         }
         {
-          this.state.modelIsLoaded && this.state.model ?
+          this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
               <DataPickers
                 width={ dataPickerSize || this.state.gridData.grid.columns * this.state.model.outputWidth }
                 height={ dataPickerSize || this.state.gridData.grid.rows * this.state.model.outputHeight }
                 model={ this.state.model }
-                dataPickerGrids={DataPickerGrids}
+                dataPickerGrids={this.state.dataPickerGrids}
                 onCellClick={ this.setSpreadsheetCellFromDataPicker }
                 ref='dataPickers'
               />

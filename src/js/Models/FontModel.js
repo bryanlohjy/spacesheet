@@ -40,6 +40,7 @@ export default class FontModel {
     });
   }
   drawFn(ctx, decodedData) { // logic to draw decoded vectors onto HTML canvas element.
+    const border = 20;
     const ctxData = ctx.getImageData(0, 0, this.outputWidth, this.outputHeight);
     const ctxDataLength = ctxData.data.length;
     for (let i = 0; i < ctxDataLength/4; i++) {

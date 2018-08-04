@@ -3,6 +3,7 @@ export default (rows, cols, key, model) =>  {
   const grid = {};
 
   const gridData = {};
+  gridData.data = {};
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const cellKey = `${row}-${col}`;
@@ -10,7 +11,7 @@ export default (rows, cols, key, model) =>  {
       cellData.row = row;
       cellData.column = col;
       cellData.vector = model.randVectorFn();
-      gridData[cellKey] = cellData;
+      gridData.data[cellKey] = cellData;
     }
   }
   gridData.grid = { rows: rows, columns: cols };

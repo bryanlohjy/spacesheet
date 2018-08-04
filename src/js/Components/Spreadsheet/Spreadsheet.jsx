@@ -97,7 +97,8 @@ class HotTableContainer extends React.Component {
     super(props);
     const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
     const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
-    this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
+    // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
+    this.demoSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {
