@@ -167,6 +167,7 @@ class HotTableContainer extends React.Component {
     return false;
   };
   render() {
+    const minCellSize = 64;
     return (
       <HotTable
         className="table"
@@ -187,8 +188,8 @@ class HotTableContainer extends React.Component {
         colHeaders={true}
         rowHeaders={true}
         preventOverflow="horizontal"
-        rowHeights={this.props.model.outputHeight}
-        colWidths={this.props.model.outputWidth}
+        rowHeights={Math.max(this.props.model.outputHeight, minCellSize)}
+        colWidths={Math.max(this.props.model.outputWidth, minCellSize)}
 
         minCols={7}
         minRows={10}
