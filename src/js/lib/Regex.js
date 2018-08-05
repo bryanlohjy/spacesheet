@@ -1,10 +1,10 @@
 module.exports = {
   CELLS: {
-    RANDFONT: new RegExp(/=\s*randfont\(.*\)$/ig),
+    RANDVAR: new RegExp(/=\s*randvar\(.*\)$/ig),
     SLIDER: new RegExp(/=\s*slider\(.*\)$/ig),
   },
-  RANDFONT: {
-    isValid: new RegExp(/RANDFONT\(\s*[\d]+\s*\)/ig),
+  RANDVAR: {
+    isValid: new RegExp(/RANDVAR\(\s*[\d]+\s*\)/ig),
   },
   SLIDER: new RegExp(/\s*slider/ig),
   CELL_REFERENCE: /([a-z]\d+)/gi,

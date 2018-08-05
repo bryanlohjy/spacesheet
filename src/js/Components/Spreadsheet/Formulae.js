@@ -9,7 +9,7 @@ export default class Formulae {
   DATAPICKER(params) {
     return this.getCellFromDataPicker(params);
   };
-  RANDFONT(params) {
+  RANDVAR(params) {
     return this.model.randVectorFn(params);
   };
   AVERAGE(params) {

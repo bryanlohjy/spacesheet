@@ -126,12 +126,12 @@ const CellTypes = opts => {
     editor: CustomTextEditor,
   };
 
-  const RandFont = {
+  const RandVar = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
         const randArgs = getArgumentsFromFunction(data);
         if (randArgs.length === 0) { // if there are no arguments, create a random seed
-          data = `=RANDFONT(${ randomInt(0, 99999) })`;
+          data = `=RANDVAR${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
         }
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
@@ -169,7 +169,7 @@ const CellTypes = opts => {
               e.preventDefault();
               e.stopPropagation();
               e.stopImmediatePropagation();
-              const newValue = `=RANDFONT(${ randomInt(0, 99999) })`;
+              const newValue = `=RANDVAR(${ randomInt(0, 99999) })`;
               opts.setInputBarValue(newValue);
               hotInstance.setDataAtCell(row, col, newValue);
             });
@@ -193,7 +193,7 @@ const CellTypes = opts => {
     Formula,
     Text,
     Slider,
-    RandFont,
+    RandVar,
   };
 }
 

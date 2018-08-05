@@ -129,9 +129,9 @@ class HotTableContainer extends React.Component {
           cellProperties.renderer = cellTypes.Slider.renderer;
           cellProperties.editor = cellTypes.Slider.editor;
           break;
-          case 'RANDFONT':
-          cellProperties.renderer = cellTypes.RandFont.renderer;
-          cellProperties.editor = cellTypes.RandFont.editor;
+          case 'RANDVAR':
+          cellProperties.renderer = cellTypes.RandVar.renderer;
+          cellProperties.editor = cellTypes.RandVar.editor;
           break;
           default:
           cellProperties.renderer = cellTypes.Text.renderer;
