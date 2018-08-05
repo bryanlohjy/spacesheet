@@ -48,7 +48,7 @@ export default class Model {
       ctxData.data[4*i] = val;    // RED (0-255)
       ctxData.data[4*i+1] = val;    // GREEN (0-255)
       ctxData.data[4*i+2] = val;    // BLUE (0-255)
-      ctxData.data[4*i+3] = decodedData[i] = 255;  // ALPHA (0-255)
+      ctxData.data[4*i+3] = 255;  // ALPHA (0-255)
     }
     ctx.putImageData(ctxData, 0, 0);
   }
