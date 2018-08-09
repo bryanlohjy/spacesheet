@@ -64,42 +64,28 @@
     overflow: hidden;
     height: 100%;
     width: 100%;
-
     .highlighted-reference {
-      position: relative;
-      ::after {
+      $color0: rgba(158, 201, 114, 0.2);
+      $shadow0: rgba(158, 201, 114, 1);
 
-        $color0: rgba(158, 201, 114, 0.2);
-        $shadow0: rgba(158, 201, 114, 1);
+      $color1: rgba(255, 107, 151, 0.2);
+      $shadow1: rgba(255, 107, 151, 1);
 
-        $color1: rgba(255, 107, 151, 0.2);
-        $shadow1: rgba(255, 107, 151, 1);
+      $color2: rgba(136, 73, 143, 0.2);
+      $shadow2: rgba(136, 73, 143, 1);
 
-        $color2: rgba(136, 73, 143, 0.2);
-        $shadow2: rgba(136, 73, 143, 1);
+      $color3: rgba(238, 132, 52, 0.2);
+      $shadow3: rgba(238, 132, 52, 1);
 
-        $color3: rgba(238, 132, 52, 0.2);
-        $shadow3: rgba(238, 132, 52, 1);
+      // $color3: rgba(255, 184, 111, 0.2);
+      // $shadow3: rgba(255, 184, 111, 1);
 
-        // $color3: rgba(255, 184, 111, 0.2);
-        // $shadow3: rgba(255, 184, 111, 1);
+      $color4: rgba(29, 131, 140, 0.2);
+      $shadow4: rgba(29, 131, 140, 1);
 
-        $color4: rgba(29, 131, 140, 0.2);
-        $shadow4: rgba(29, 131, 140, 1);
-
-        content: '';
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        z-index: 9998;
-        background-color: $color3;
-        box-shadow: inset 0 0 1px $shadow3;
-        pointer-events: none;
-      }
+      background-color: $color3;
+      box-shadow: inset 0 0 1px $shadow3;
     }
-
     .canvas-container {
       display: flex;
       padding: 0;
@@ -108,7 +94,7 @@
       outline: 2px solid grey;
       width: 100%;
       height: 100%;
-
+      
       canvas {
         position: absolute;
         top: 0;
