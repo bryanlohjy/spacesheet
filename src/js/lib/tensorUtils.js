@@ -12,6 +12,7 @@ const tensorUtils = {
     })
   },
 	lerp(from, to, step) {
+    console.log(from, to, step)
     return dl.tidy(() => {
       return from.add(to.sub(from).mul(dl.scalar(step)));
     });
