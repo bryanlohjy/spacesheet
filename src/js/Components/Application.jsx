@@ -95,30 +95,30 @@ export default class Application extends React.Component {
               errors={this.state.loadErrors}
             /> : ''
         }
-        {
+        {/* {
           this.state.modelIsLoaded && this.state.model ?
             <div>
               <canvas
                 width={this.state.model.outputWidth}
                 height={this.state.model.outputHeight}
                 ref={ref => {
-                  console.log('initial draw')
-                  const randVec = this.state.model.randVectorFn();
-                  const decodedData = this.state.model.decodeFn(randVec);
                   this.ctx = ref.getContext('2d');
-                  this.state.model.drawFn(this.ctx, decodedData);
-                }}
-                onMouseMove={() => {
-                  console.log('mousemove')
                   const randVec = this.state.model.randVectorFn();
-                  const decodedData = this.state.model.decodeFn(randVec);
-                  this.state.model.drawFn(this.ctx, decodedData);
+                  this.state.model.decodeFn(randVec, decodedData => {
+                    this.state.model.drawFn(this.ctx, decodedData);
+                  });
+                }}
+                onClick={() => {
+                  const randVec = this.state.model.randVectorFn();
+                  this.state.model.decodeFn(randVec, decodedData => {
+                    this.state.model.drawFn(this.ctx, decodedData);
+                  });
                 }}
               />
             </div>
           : ''
-        }
-        {/* {
+        } */}
+        {
           this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
               <DataPickers
@@ -170,7 +170,7 @@ export default class Application extends React.Component {
               <div className="loader"/>
               <span className="loading-message">Loading model ...</span>
             </div>
-        } */}
+        }
         {/* <nav ref="bottomNav" className="bottom-nav">
           <button
             onClick={ e => {

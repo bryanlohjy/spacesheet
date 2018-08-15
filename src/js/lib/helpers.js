@@ -22,10 +22,17 @@ const helpers = {
 			return (arr[helpers.randomInt(0, arr.length-1)]);
 		}
 	},
-  getData: function(url) { // function to get data from server
+  getData: function(url, args) { // function to get data from server
     return new Promise((resolve, reject) => {
       var req = new XMLHttpRequest();
-      req.open('GET', url);
+      if (args) {
+        const argKeys = Object.keys(args);
+        for (let argIndex = 0; argIndex < argKeys.length; argIndex++) {
+          const argKey = argKeys[argIndex];
+          url += `?${argKey}=${args[argKey]}`
+        }
+      }
+      req.open('GET', url, Boolean(args));
       req.onload = function() {
         if (req.status == 200) {
           resolve(req.response);

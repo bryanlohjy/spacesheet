@@ -12,6 +12,8 @@ export default class DataPicker {
     this.outputHeight = opts.model.outputHeight;
     this.drawFn = opts.model.drawFn;
     this.decodeFn = opts.model.decodeFn;
+    this.asyncDecode = opts.model.asyncDecode;
+
 
     const gridData = opts.gridData;
     this.grid = gridData.data; // keys are [ column-row ]
@@ -204,6 +206,7 @@ export default class DataPicker {
             subrow,
             subcolumn,
             dataPicker: this,
+            asyncDecode: this.asyncDecode,
           };
           cell = new Cell(this.ctx, cellParams);
           this.cells[cellKey] = cell;
@@ -236,6 +239,8 @@ class Cell {
 
     this.dataPicker = params.dataPicker;
 
+    this.asyncDecode = params.asyncDecode;
+
     this.vector;
     this.image;
 
@@ -248,7 +253,14 @@ class Cell {
       const anchorKey = `${this.column}-${this.row}`;
       const anchor = this.dataPicker.grid[anchorKey];
       this.vector = anchor.vector;
-      this.image = this.decodeFn(this.vector);
+      if (this.asyncDecode) {
+        this.decodeFn(this.vector, imgData => {
+          this.image = imgData;
+          this.draw();
+        });
+      } else {
+        this.image = this.decodeFn(this.vector);
+      }
       return;
     }
 
@@ -264,9 +276,18 @@ class Cell {
         const from = dl.tensor1d(fromAnchor.vector);
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subcolumn;
+        console.log()
         return lerp(from, to, lerpAmount);
       }).getValues();
-      this.image = this.decodeFn(this.vector);
+
+      if (this.asyncDecode) {
+        this.decodeFn(this.vector, imgData => {
+          this.image = imgData;
+          this.draw();
+        });
+      } else {
+        this.image = this.decodeFn(this.vector);
+      }
 
       return;
     }
@@ -299,6 +320,7 @@ class Cell {
           subrow: 0,
           subcolumn: self.subcolumn,
           dataPicker: self.dataPicker,
+          asyncDecode: self.asyncDecode,
         }
         fromAnchor = new Cell(self.ctx, cellParams);
         self.dataPicker.cells[fromAnchorKey] = fromAnchor;
@@ -324,6 +346,7 @@ class Cell {
           subrow: 0,
           subcolumn: self.subcolumn,
           dataPicker: self.dataPicker,
+          asyncDecode: self.asyncDecode,
         }
         toAnchor = new Cell(self.ctx, cellParams);
         self.dataPicker.cells[toAnchorKey] = toAnchor;
@@ -335,7 +358,15 @@ class Cell {
         const lerpAmount = 1 / this.subdivisions * this.subrow;
         return lerp(from, to, lerpAmount);
       }).getValues();
-      this.image = this.decodeFn(this.vector);
+
+      if (this.asyncDecode) {
+        this.decodeFn(this.vector, imgData => {
+          this.image = imgData;
+          this.draw();
+        });
+      } else {
+        this.image = this.decodeFn(this.vector);
+      }
 
       return;
     }

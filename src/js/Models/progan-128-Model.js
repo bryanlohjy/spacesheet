@@ -3,7 +3,7 @@ import {loadFrozenModel} from '@tensorflow/tfjs-converter';
 
 // define model here
 import * as dl from 'deeplearn';
-import { randomInt } from '../lib/helpers.js';
+import { randomInt, getData } from '../lib/helpers.js';
 // import { inputTimesWeightAddBias } from '../lib/tensorUtils.js';
 //
 // const math = dl.ENV.math;
@@ -19,6 +19,7 @@ export default class Model {
   constructor() {
     this.outputWidth = 128;
     this.outputHeight = 128;
+    this.asyncDecode = true;
     try {
       this.init = this.init.bind(this);
       this.drawFn = this.drawFn.bind(this);
@@ -40,6 +41,10 @@ export default class Model {
   drawFn(ctx, decodedData) {
     // // logic to draw decoded vectors onto HTML canvas element.
     // decodedData = decodedData.dataSync();
+    if (!decodedData) {
+      // this.decodeFn(this.randVectorFn(), ctx);
+      return;
+    }
     const ctxData = ctx.getImageData(0, 0, this.outputWidth, this.outputHeight);
     const ctxDataLength = ctxData.data.length;
 
@@ -51,16 +56,12 @@ export default class Model {
     }
     ctx.putImageData(ctxData, 0, 0);
   }
-  decodeFn(inputVector) { // vector to image
-    return tf.randomNormal([49152], 0, 1).dataSync();
-    // inputVector.reshape([-1, 512]);
-    let array = tf.tidy(() => {
-      // console.log(inputVector)
-      let reshaped = tf.tensor(inputVector, [1, 512]);
-      return this.loadedModel.execute({latent_vector: reshaped});
-    }).dataSync();
-    return array;
-    // return dl.tensor1d(array);
+  decodeFn(inputVector, decodedCallback) { // vector to image
+    getData('http://127.0.0.1:5000/decode', { 'latentVector': inputVector }).then(res => {
+      if (decodedCallback) {
+        decodedCallback(JSON.parse(res).payload);
+      }
+    });
   }
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
