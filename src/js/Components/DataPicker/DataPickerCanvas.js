@@ -14,7 +14,6 @@ export default class DataPicker {
     this.decodeFn = opts.model.decodeFn;
     this.asyncDecode = opts.model.asyncDecode;
 
-
     const gridData = opts.gridData;
     this.grid = gridData.data; // keys are [ column-row ]
     this.rows = gridData.grid.rows;
@@ -276,9 +275,9 @@ class Cell {
         const from = dl.tensor1d(fromAnchor.vector);
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subcolumn;
-        console.log()
+        // console.log(from, to, lerp(from, to, lerpAmount))
         return lerp(from, to, lerpAmount);
-      }).getValues();
+      }).dataSync();
 
       if (this.asyncDecode) {
         this.decodeFn(this.vector, imgData => {
@@ -356,8 +355,9 @@ class Cell {
         const from = dl.tensor1d(fromAnchor.vector);
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subrow;
+        // console.log(from, to, lerp(from, to, lerpAmount))
         return lerp(from, to, lerpAmount);
-      }).getValues();
+      }).dataSync();
 
       if (this.asyncDecode) {
         this.decodeFn(this.vector, imgData => {

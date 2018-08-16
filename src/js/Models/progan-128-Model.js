@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import {loadFrozenModel} from '@tensorflow/tfjs-converter';
+// import {loadFrozenModel} from '@tensorflow/tfjs-converter';
 
 // define model here
 import * as dl from 'deeplearn';
@@ -30,13 +30,14 @@ export default class Model {
     }
   }
   init(loadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters
-    const MODEL_URL = './dist/data/progan-128/tensorflowjs_model.pb';
-    const WEIGHTS_URL = './dist/data/progan-128/weights_manifest.json';
-
-    loadFrozenModel(MODEL_URL, WEIGHTS_URL).then(model => {
-      this.loadedModel = model;
+    // const MODEL_URL = './dist/data/progan-128/tensorflowjs_model.pb';
+    // const WEIGHTS_URL = './dist/data/progan-128/weights_manifest.json';
+    //
+    // loadFrozenModel(MODEL_URL, WEIGHTS_URL).then(model => {
+    //   this.loadedModel = model;
+      // this.loadedModel = this;
       loadedCallback(this);
-    });
+    // });
   }
   drawFn(ctx, decodedData) {
     // // logic to draw decoded vectors onto HTML canvas element.
@@ -65,10 +66,8 @@ export default class Model {
   }
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
-    let array = tf.tidy(() => {
-      return tf.randomNormal([1, 512], 0, 1, null, randomSeed);
-    }).dataSync();
-    // return dl.tensor1d(array);
-    return array;
+    return dl.tidy(() => {
+      return dl.randomNormal([512], 0, 1, null, randomSeed);;
+    }).getValues();
   }
 }
