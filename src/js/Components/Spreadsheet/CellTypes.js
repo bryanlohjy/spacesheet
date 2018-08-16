@@ -28,8 +28,14 @@ const CellTypes = opts => {
               td.appendChild(canvasContainer);
 
               const ctx = canvas.getContext('2d');
-              const decodedVector = opts.decodeFn(result);
-              opts.drawFn(ctx, decodedVector);
+              if (opts.asyncDecode) {
+                opts.decodeFn(result, imgData => {
+                  opts.drawFn(ctx, imgData);
+                });
+              } else {
+                const decodedVector = opts.decodeFn(result);
+                opts.drawFn(ctx, decodedVector);
+              }
             } else {
               td.innerText = result;
             }
@@ -181,9 +187,16 @@ const CellTypes = opts => {
             canvasContainer.appendChild(canvasElement);
             td.appendChild(canvasContainer);
           }
-          const imageData = opts.decodeFn(result);
+
           const ctx = canvasElement.getContext('2d');
-          opts.drawFn(ctx, imageData);
+          if (opts.asyncDecode) {
+            opts.decodeFn(result, imgData => {
+              opts.drawFn(ctx, imgData);
+            });
+          } else {
+            const imageData = opts.decodeFn(result);
+            opts.drawFn(ctx, imageData);
+          }
         } else {
           td.innerHTML = error;
         }
