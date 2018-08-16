@@ -36,6 +36,7 @@ export default class Model {
     // loadFrozenModel(MODEL_URL, WEIGHTS_URL).then(model => {
     //   this.loadedModel = model;
       // this.loadedModel = this;
+      this.loadedModel = this;
       loadedCallback(this);
     // });
   }
@@ -68,6 +69,6 @@ export default class Model {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
     return dl.tidy(() => {
       return dl.randomNormal([512], 0, 1, null, randomSeed);;
-    }).getValues();
+    }).dataSync();
   }
 }

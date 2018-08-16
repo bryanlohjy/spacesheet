@@ -115,6 +115,7 @@ class HotTableContainer extends React.Component {
       outputHeight: this.props.model.outputHeight,
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
+      asyncDecode: this.props.model.asyncDecode,
     });
     hotInstance.updateSettings({
       cells: (row, col, prop) => {

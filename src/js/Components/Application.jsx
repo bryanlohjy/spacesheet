@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-import ModelToLoad from '../Models/MNISTModel.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
-// import ModelToLoad from '../Models/progan-128-Model.js';
+import ModelToLoad from '../Models/progan-128-Model.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -43,7 +43,7 @@ export default class Application extends React.Component {
         try {
           dataPickerGrids = DataPickerGrids;
         } catch (e) {
-          dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
+          dataPickerGrids = GenerateDataPicker(3, 3, 'DATAPICKER', res.model);
         }
         this.setState({
           model: res.model,

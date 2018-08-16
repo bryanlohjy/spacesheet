@@ -7,7 +7,6 @@ export default class DataPicker {
     this.ctx = ctx;
     this.width = this.ctx.canvas.width;
     this.height = this.ctx.canvas.height;
-
     this.outputWidth = opts.model.outputWidth;
     this.outputHeight = opts.model.outputHeight;
     this.drawFn = opts.model.drawFn;
@@ -275,7 +274,6 @@ class Cell {
         const from = dl.tensor1d(fromAnchor.vector);
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subcolumn;
-        // console.log(from, to, lerp(from, to, lerpAmount))
         return lerp(from, to, lerpAmount);
       }).dataSync();
 
@@ -355,7 +353,6 @@ class Cell {
         const from = dl.tensor1d(fromAnchor.vector);
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subrow;
-        // console.log(from, to, lerp(from, to, lerpAmount))
         return lerp(from, to, lerpAmount);
       }).dataSync();
 

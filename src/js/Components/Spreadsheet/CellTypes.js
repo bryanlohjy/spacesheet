@@ -40,7 +40,7 @@ const CellTypes = opts => {
               td.innerText = result;
             }
           } else {
-            td.innerText = error || "#ERROR!";
+            td.innerText = error || "#LOL!";
           }
         } catch (e) {
           console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
