@@ -1,0 +1,18 @@
+.errors-modal-wrapper {
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  .modal {
+    border-radius: 5px;
+    padding: 1rem;
+    background: white;
+    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.3);
+    min-width: 25%;
+    min-height: 25%;
+  }
+}

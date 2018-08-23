@@ -9,13 +9,8 @@ export default class Formulae {
   DATAPICKER(params) {
     return this.getCellFromDataPicker(params);
   };
-  RANDFONT(params) {
-    let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
-    return this.model.randomFontEmbedding(0, randomSeed).getValues();
-    // return dl.tidy(() => {
-    //   let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
-    //   return dl.randomNormal([40], 0, 0.2, 'float32', randomSeed);
-    // }).getValues();
+  RANDVAR(params) {
+    return this.model.randVectorFn(params);
   };
   AVERAGE(params) {
     let result = 0;

@@ -7,8 +7,8 @@ const CellHelpers = {
       if (new RegExp(Regex.CELLS.SLIDER).test(cellData)) {
         return 'SLIDER';
       }
-      if (new RegExp(Regex.CELLS.RANDFONT).test(cellData)) {
-        return 'RANDFONT';
+      if (new RegExp(Regex.CELLS.RANDVAR).test(cellData)) {
+        return 'RANDVAR';
       }
       return 'FORMULA';
     } else {

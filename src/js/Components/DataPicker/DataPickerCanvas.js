@@ -8,8 +8,10 @@ export default class DataPicker {
     this.width = this.ctx.canvas.width;
     this.height = this.ctx.canvas.height;
 
-    this.outputWidth = opts.outputWidth;
-    this.outputHeight = opts.outputHeight;
+    this.outputWidth = opts.model.outputWidth;
+    this.outputHeight = opts.model.outputHeight;
+    this.drawFn = opts.model.drawFn;
+    this.decodeFn = opts.model.decodeFn;
 
     const gridData = opts.gridData;
     this.grid = gridData.data; // keys are [ column-row ]
@@ -24,9 +26,6 @@ export default class DataPicker {
     this.maxScale = 15;
 
     this.minSize = 10;
-
-    this.drawFn = opts.drawFn || (() => { return; });
-    this.decodeFn = opts.decodeFn || (() => { return; });
 
     initCanvas(ctx);
     /*

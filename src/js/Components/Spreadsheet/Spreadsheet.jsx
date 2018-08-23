@@ -7,7 +7,7 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { OperatorDemoSheet } from './SpreadsheetData.js';
+import { OperatorDemoSheet, BlankSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 export default class Spreadsheet extends React.Component {
@@ -58,8 +58,6 @@ export default class Spreadsheet extends React.Component {
           this.state.inputBarIsMounted ? (
             <div className="table-container" ref="tableContainer">
               <HotTableContainer
-                outputWidth={this.props.outputWidth}
-                outputHeight={this.props.outputHeight}
                 setTableRef={ ref => {
                   this.hotInstance = ref.hotInstance;
                   this.props.setTableRef(ref);
@@ -69,8 +67,6 @@ export default class Spreadsheet extends React.Component {
                 setInputBarValue={this.props.setInputBarValue}
                 getCellFromDataPicker={this.props.getCellFromDataPicker}
                 model={this.props.model}
-                drawFn={this.props.drawFn}
-                decodeFn={this.props.decodeFn}
                 afterSelection={ (r, c, r2, c2) => {
                   this.setState({
                     currentSelection: [r, c , r2, c2],
@@ -88,12 +84,8 @@ export default class Spreadsheet extends React.Component {
 Spreadsheet.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
-  drawFn: PropTypes.func,
-  decodeFn: PropTypes.func,
   getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object,
+  model: PropTypes.object.isRequired,
   inputBarValue: PropTypes.string,
   setTableRef: PropTypes.func,
   setFormulaParserRef: PropTypes.func,
@@ -103,9 +95,10 @@ Spreadsheet.propTypes = {
 class HotTableContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.maxCols = Math.ceil(this.props.width / this.props.outputWidth) + 1;
-    this.maxRows = null;
-    this.demoSheet = OperatorDemoSheet(this.maxRows, this.maxCols);
+    const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
+    const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
+    // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
+    this.demoSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
   };
   initHotTable() {
@@ -116,14 +109,13 @@ class HotTableContainer extends React.Component {
     });
     this.props.setFormulaParserRef(formulaParser);
     const cellTypes = new CellTypes({
-      drawFn: this.props.drawFn,
-      decodeFn: this.props.decodeFn,
-      outputWidth: this.props.outputWidth,
-      outputHeight: this.props.outputHeight,
+      drawFn: this.props.model.drawFn,
+      decodeFn: this.props.model.decodeFn,
+      outputWidth: this.props.model.outputWidth,
+      outputHeight: this.props.model.outputHeight,
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
     });
-
     hotInstance.updateSettings({
       cells: (row, col, prop) => {
         let cellProperties = {};
@@ -137,9 +129,9 @@ class HotTableContainer extends React.Component {
           cellProperties.renderer = cellTypes.Slider.renderer;
           cellProperties.editor = cellTypes.Slider.editor;
           break;
-          case 'RANDFONT':
-          cellProperties.renderer = cellTypes.RandFont.renderer;
-          cellProperties.editor = cellTypes.RandFont.editor;
+          case 'RANDVAR':
+          cellProperties.renderer = cellTypes.RandVar.renderer;
+          cellProperties.editor = cellTypes.RandVar.editor;
           break;
           default:
           cellProperties.renderer = cellTypes.Text.renderer;
@@ -147,7 +139,7 @@ class HotTableContainer extends React.Component {
         }
         return cellProperties;
       },
-      data: this.demoSheet.data,
+      data: this.demoSheet ? this.demoSheet.data : null,
       contextMenu: {
         items: {
           "undo": {
@@ -175,6 +167,7 @@ class HotTableContainer extends React.Component {
     return false;
   };
   render() {
+    const minCellSize = 64;
     return (
       <HotTable
         className="table"
@@ -187,7 +180,7 @@ class HotTableContainer extends React.Component {
         }}
         root='hot'
 
-        mergeCells={ this.demoSheet.mergeCells }
+        mergeCells={  this.demoSheet ? this.demoSheet.mergeCells : null }
 
         rowHeaderWidth={32}
         colHeaderHeight={32}
@@ -195,8 +188,8 @@ class HotTableContainer extends React.Component {
         colHeaders={true}
         rowHeaders={true}
         preventOverflow="horizontal"
-        rowHeights={this.props.outputHeight}
-        colWidths={this.props.outputWidth}
+        rowHeights={Math.max(this.props.model.outputHeight, minCellSize)}
+        colWidths={Math.max(this.props.model.outputWidth, minCellSize)}
 
         minCols={7}
         minRows={10}
@@ -237,12 +230,8 @@ class HotTableContainer extends React.Component {
 HotTableContainer.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
-  outputWidth: PropTypes.number,
-  outputHeight: PropTypes.number,
-  drawFn: PropTypes.func,
-  decodeFn: PropTypes.func,
   getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object,
+  model: PropTypes.object.isRequired,
   inputBarValue: PropTypes.string,
   afterSelection: PropTypes.func,
   afterRender: PropTypes.func,

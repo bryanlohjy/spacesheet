@@ -271,7 +271,7 @@ export default class OperationDrawer extends React.Component {
           return [];
         },
       },
-      RANDFONT: {
+      RANDVAR: {
         onMouseOver: e => {
           const selection = self.props.hotInstance.getSelected();
           highlightCellsFromSelection(self.props.hotInstance, selection);
@@ -283,7 +283,7 @@ export default class OperationDrawer extends React.Component {
           const startCol = Math.min(selection[1], selection[3]);
           const newData = selectedCells.map(row => {
             return row.map(col => {
-              return `=RANDFONT(${randomInt(0, 9999)})`;
+              return `=RANDVAR(${randomInt(0, 9999)})`;
             });
           });
           if (!arraysAreSimilar(selectedCells, newData)) {
@@ -306,7 +306,7 @@ export default class OperationDrawer extends React.Component {
         SUM: false,
         MUL: false,
         SLIDER: false,
-        RANDFONT: false,
+        RANDVAR: false,
         // DIST: false,
       }
     };
@@ -323,7 +323,7 @@ export default class OperationDrawer extends React.Component {
       SUM: false,
       MUL: false,
       SLIDER: false,
-      RANDFONT: false,
+      RANDVAR: false,
       // DIST: false,
     };
     if (this.props.currentSelection && this.props.hotInstance) { // add in highlighted selection logic

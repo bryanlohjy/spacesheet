@@ -1,4 +1,4 @@
-const DemoSheet = (rows, cols) => {
+const BlankSheet = (rows, cols) => {
   const emptyRow = [];
   const numRows = rows || 17;
   const numCols = cols || 10;
@@ -98,4 +98,4 @@ const OperatorDemoSheet = (rows, cols) => {
   }
   return data;
 }
-module.exports = { DemoSheet, OperatorDemoSheet};
+module.exports = { BlankSheet, OperatorDemoSheet};

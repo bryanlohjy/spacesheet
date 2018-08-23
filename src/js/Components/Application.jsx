@@ -1,22 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import ModelLoader from '../lib/ModelLoader.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
+import ModelToLoad from '../Models/FontModel.js';
+
+// import GenerateDataPicker from '../lib/DataPickerGenerator.js';
+import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+
+import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
+
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
-import FontModel from '../Models/FontModel.js';
-import { formatDate } from '../lib/helpers.js';
-
-import { saveJSON } from './Application.js';
+// import { formatDate } from '../lib/helpers.js';
+// import { saveJSON } from './Application.js';
 
 export default class Application extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       modelIsLoaded: false,
-      outputWidth: 0,
-      outputHeight: 0,
+      model: null,
+      loadErrors: null,
       inputBarValue: "",
+      dataPickerGrids: false,
     };
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
@@ -24,31 +33,27 @@ export default class Application extends React.Component {
   };
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
-    this.memoryCtx = this.refs.memoryCanvas.getContext('2d');
-    new FontModel(model => {
-      this.drawFn = (ctx, decodedData) => { // decoded vector => canvas rendering logic
-        const memoryCtxData = this.memoryCtx.getImageData(0, 0, model.outputWidth, model.outputHeight);
-        const memoryCtxDataLength = memoryCtxData.data.length;
-        for (let i = 0; i < memoryCtxDataLength/4; i++) {
-          const val = (1 - decodedData[i]) * 255;
-          memoryCtxData.data[4*i] = val;    // RED (0-255)
-          memoryCtxData.data[4*i+1] = val;    // GREEN (0-255)
-          memoryCtxData.data[4*i+2] = val;    // BLUE (0-255)
-          memoryCtxData.data[4*i+3] = decodedData[i] <= 0.05 ? 0 : 255;  // ALPHA (0-255)
+    this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
+
+    const loader = new ModelLoader(this, ModelToLoad);
+    loader.load(res => {
+      if (!res.errors) {
+        let dataPickerGrids;
+        try {
+          dataPickerGrids = DataPickerGrids;
+        } catch (e) {
+          dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
         }
-        this.memoryCtx.putImageData(memoryCtxData, 0, 0);
-        ctx.clearRect(0, 0, model.outputWidth, model.outputHeight);
-        ctx.drawImage(this.memoryCtx.canvas, 0, 0);
-      };
-      this.decodeFn = (vector, charIndex) => { // vector to output
-        return model.decode(vector, charIndex || 0);
-      };
-      this.model = model;
-      this.setState({
-        modelIsLoaded: true,
-        outputWidth: model.outputWidth,
-        outputHeight: model.outputHeight,
-      });
+        this.setState({
+          model: res.model,
+          modelIsLoaded: true,
+          dataPickerGrids: dataPickerGrids,
+        });
+      } else {
+        this.setState({
+          loadErrors: res.errors,
+        });
+      }
     });
   };
   setSpreadsheetCellFromDataPicker(dataKey) {
@@ -71,44 +76,42 @@ export default class Application extends React.Component {
     const firstHyphen = dataKey.indexOf('-');
     const dataPickerKey = dataKey.substring(0, firstHyphen);
     const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
-
-    const cell = this.refs.dataPicker.grids[dataPickerKey].dataPicker.cells[cellKey];
+    const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
-  render () {
+  render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const fontDrawerHeight = 400;
     const dataPickerSize = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight - navHeight - fontDrawerHeight;
+    const spreadsheetHeight = docHeight - navHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
-          this.state.modelIsLoaded ?
+          this.state.loadErrors ?
+            <ErrorsModal
+              errors={this.state.loadErrors}
+            /> : ''
+        }
+        {
+          this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
-                <DataPickers
-                  width={ dataPickerSize || this.state.gridData.grid.columns * this.state.outputWidth }
-                  height={ dataPickerSize || this.state.gridData.grid.rows * this.state.outputHeight }
-                  outputWidth={ this.state.outputWidth }
-                  outputHeight={ this.state.outputHeight }
-                  drawFn={ this.drawFn }
-                  decodeFn={ this.decodeFn }
-                  onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                  ref='dataPicker'
-                />
+              <DataPickers
+                width={ dataPickerSize || this.state.gridData.grid.columns * this.state.model.outputWidth }
+                height={ dataPickerSize || this.state.gridData.grid.rows * this.state.model.outputHeight }
+                model={ this.state.model }
+                dataPickerGrids={this.state.dataPickerGrids}
+                onCellClick={ this.setSpreadsheetCellFromDataPicker }
+                ref='dataPickers'
+              />
               <div className="right-container">
                 <Spreadsheet
                   width={ spreadsheetWidth }
                   height={ spreadsheetHeight }
-                  outputWidth={ this.state.outputWidth }
-                  outputHeight={ this.state.outputHeight }
-                  drawFn={ this.drawFn }
-                  decodeFn={ this.decodeFn }
                   getCellFromDataPicker={ this.getCellFromDataPicker }
                   ref='spreadsheet'
-                  model={ this.model }
+                  model={ this.state.model }
                   setTableRef={ ref => {
                     this.hotInstance = ref.hotInstance;
                   }}
@@ -119,7 +122,6 @@ export default class Application extends React.Component {
                   setInputBarValue={this.setInputBarValue}
                   afterRender={ forced => {
                     if (!forced) { return };
-                    // console.log(this.refs.fontDrawer)
                     if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
                     this.refs.fontDrawer.updateFontSamples();
                     const editor = this.hotInstance.getActiveEditor();
@@ -129,17 +131,14 @@ export default class Application extends React.Component {
                     }
                   }}
                 />
-                { this.hotInstance && this.formulaParser ?
+                { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
                   <FontDrawer
-                    height={fontDrawerHeight}
                     hotInstance={this.hotInstance}
                     formulaParser={this.formulaParser}
-                    drawFn={this.drawFn}
-                    decodeFn={this.decodeFn}
-                    outputWidth={ this.state.outputWidth }
-                    outputHeight={ this.state.outputHeight }
+                    model={this.state.model}
                     ref='fontDrawer'
-                  /> : ""
+                  />
+                  : ""
                 }
               </div>
             </div> :

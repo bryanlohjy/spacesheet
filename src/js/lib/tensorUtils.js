@@ -4,7 +4,10 @@ const math = dl.ENV.math;
 const tensorUtils = {
   inputTimesWeightAddBias(params) { // takes in input, weights, biases and activation function
     return dl.tidy(() => {
-      const { input, weights, biases } = { ...params };
+      let { input, weights, biases } = { ...params };
+      if (input.constructor.name !== 'Tensor') {
+        input = dl.tensor(input);
+      }
       return math.add(math.vectorTimesMatrix(input, weights), biases);
     })
   },

@@ -1,0 +1,41 @@
+{
+  "gen/dense/bias": {
+    "filename": "gen_dense_bias",
+    "shape": [
+      128
+    ]
+  },
+  "gen/dense/kernel": {
+    "filename": "gen_dense_kernel",
+    "shape": [
+      100,
+      128
+    ]
+  },
+  "gen/dense_1/bias": {
+    "filename": "gen_dense_1_bias",
+    "shape": [
+      128
+    ]
+  },
+  "gen/dense_1/kernel": {
+    "filename": "gen_dense_1_kernel",
+    "shape": [
+      128,
+      128
+    ]
+  },
+  "gen/dense_2/bias": {
+    "filename": "gen_dense_2_bias",
+    "shape": [
+      784
+    ]
+  },
+  "gen/dense_2/kernel": {
+    "filename": "gen_dense_2_kernel",
+    "shape": [
+      128,
+      784
+    ]
+  }
+}
