@@ -87,6 +87,7 @@ const FormulaParser = (hotInstance, opts) => {
         fragment.push(value);
       }
     }
+    fragment.isFragment = true;
     done(fragment);
   });
 
@@ -97,7 +98,7 @@ const FormulaParser = (hotInstance, opts) => {
     for (let argIndex = 0; argIndex < paramChunks.length; argIndex++) {
       const paramChunk = paramChunks[argIndex];
       // flatten nested arrays
-      if (Array.isArray(paramChunk) && paramChunk.length !== 40) { // if it is an array and not a vector, flatten it out
+      if (Array.isArray(paramChunk) && paramChunk.isFragment) { // if it is an array and not a vector, flatten it out
         for (let paramIndex = 0; paramIndex < paramChunk.length; paramIndex++) {
           params.push(paramChunk[paramIndex]);
         }
@@ -105,7 +106,6 @@ const FormulaParser = (hotInstance, opts) => {
         params.push(paramChunk);
       }
     }
-
     const isTensorCalculation = arrayContainsArray(params);
     // evaluates using overwritten formulae, first, otherwise uses hot-formula defaults
     const result = CustomFormula.call(name, params, isTensorCalculation);
