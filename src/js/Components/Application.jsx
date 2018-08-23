@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-// import ModelToLoad from '../Models/MNISTModel.js';
-import ModelToLoad from '../Models/FontModel.js';
+import ModelToLoad from '../Models/MNISTModel.js';
+// import ModelToLoad from '../Models/FontModel.js';
+// import ModelToLoad from '../Models/Colours.js';
 
-// import GenerateDataPicker from '../lib/DataPickerGenerator.js';
-import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+import GenerateDataPicker from '../lib/DataPickerGenerator.js';
+// import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 
 import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
@@ -81,10 +82,10 @@ export default class Application extends React.Component {
   };
   render() {
     const docHeight = document.body.offsetHeight;
-    const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const dataPickerSize = docHeight - navHeight;
+    // const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
+    const dataPickerSize = docHeight;
     const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight - navHeight;
+    const spreadsheetHeight = docHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -98,8 +99,8 @@ export default class Application extends React.Component {
           this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
               <DataPickers
-                width={ dataPickerSize || this.state.gridData.grid.columns * this.state.model.outputWidth }
-                height={ dataPickerSize || this.state.gridData.grid.rows * this.state.model.outputHeight }
+                width={ dataPickerSize || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
+                height={ dataPickerSize || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
                 model={ this.state.model }
                 dataPickerGrids={this.state.dataPickerGrids}
                 onCellClick={ this.setSpreadsheetCellFromDataPicker }
