@@ -45,20 +45,22 @@ export default class ModelLoader {
     }
 
     // all is well, load model
-    model.init(loadedModel => {
-      // augment drawFN so it draws onto a memory ctx, and then onto the argument ctx - to simplify translation on DataPicker Canvas
-      const clonedDrawFn = loadedModel.drawFn.bind({});
-      const augmentedFn = (ctx, decodedData) => {
-        ctx.clearRect(0, 0, loadedModel.outputWidth, loadedModel.outputHeight);
-        clonedDrawFn(this.app.memoryCtx, decodedData);
-        const memoryCtxData = this.app.memoryCtx.getImageData(0, 0, loadedModel.outputWidth, loadedModel.outputHeight);
-        this.app.memoryCtx.putImageData(memoryCtxData, 0, 0);
-        ctx.drawImage(this.app.memoryCtx.canvas, 0, 0);
-      }
-      loadedModel.drawFn = augmentedFn;
-      res.model = loadedModel;
-      res.errors = null;
-      modelLoadedCallback(res);
-    });
+    setTimeout(() => {
+      model.init(loadedModel => {
+        // augment drawFN so it draws onto a memory ctx, and then onto the argument ctx - to simplify translation on DataPicker Canvas
+        const clonedDrawFn = loadedModel.drawFn.bind({});
+        const augmentedFn = (ctx, decodedData) => {
+          ctx.clearRect(0, 0, loadedModel.outputWidth, loadedModel.outputHeight);
+          clonedDrawFn(this.app.memoryCtx, decodedData);
+          const memoryCtxData = this.app.memoryCtx.getImageData(0, 0, loadedModel.outputWidth, loadedModel.outputHeight);
+          this.app.memoryCtx.putImageData(memoryCtxData, 0, 0);
+          ctx.drawImage(this.app.memoryCtx.canvas, 0, 0);
+        }
+        loadedModel.drawFn = augmentedFn;
+        res.model = loadedModel;
+        res.errors = null;
+        modelLoadedCallback(res);
+      });
+    })
   };
 }
