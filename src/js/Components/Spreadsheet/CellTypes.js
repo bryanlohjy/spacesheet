@@ -18,6 +18,8 @@ const CellTypes = opts => {
             if (typeof result === 'object') { // it is a vector
               const canvasContainer = document.createElement('div');
               canvasContainer.classList.add('canvas-container');
+              canvasContainer.style.width = `${opts.outputWidth - 1}px`;
+              canvasContainer.style.height = `${opts.outputHeight - 1}px`;
 
               const canvas = document.createElement('canvas');
               canvas.width = opts.outputWidth - 1;
@@ -147,6 +149,8 @@ const CellTypes = opts => {
 
             const canvasContainer = document.createElement('div');
             canvasContainer.classList.add('canvas-container');
+            canvasContainer.style.width = `${opts.outputWidth - 1}px`;
+            canvasContainer.style.height = `${opts.outputHeight - 1}px`;
 
             canvasElement = document.createElement('canvas');
             canvasElement.width = opts.outputWidth - 1;
