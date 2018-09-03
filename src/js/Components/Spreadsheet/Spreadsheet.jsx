@@ -100,6 +100,7 @@ class HotTableContainer extends React.Component {
     // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
     this.demoSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
+    this.minCellSize = 64;
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
@@ -115,6 +116,7 @@ class HotTableContainer extends React.Component {
       outputHeight: this.props.model.outputHeight,
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
+      minCellSize: this.minCellSize,
     });
     hotInstance.updateSettings({
       cells: (row, col, prop) => {
@@ -167,7 +169,6 @@ class HotTableContainer extends React.Component {
     return false;
   };
   render() {
-    const minCellSize = 64;
     return (
       <HotTable
         className="table"
@@ -188,8 +189,8 @@ class HotTableContainer extends React.Component {
         colHeaders={true}
         rowHeaders={true}
         preventOverflow="horizontal"
-        rowHeights={Math.max(this.props.model.outputHeight, minCellSize)}
-        colWidths={Math.max(this.props.model.outputWidth, minCellSize)}
+        rowHeights={Math.max(this.props.model.outputHeight, this.minCellSize)}
+        colWidths={Math.max(this.props.model.outputWidth, this.minCellSize)}
 
         minCols={7}
         minRows={10}
