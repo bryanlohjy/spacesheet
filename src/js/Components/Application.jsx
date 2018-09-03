@@ -82,10 +82,9 @@ export default class Application extends React.Component {
   };
   render() {
     const docHeight = document.body.offsetHeight;
-    // const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const dataPickerSize = docHeight;
-    const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight;
+    const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
+    const appHeight = docHeight - navHeight;
+    const spreadsheetWidth = document.body.offsetWidth - appHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -99,8 +98,8 @@ export default class Application extends React.Component {
           this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
               <DataPickers
-                width={ dataPickerSize || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-                height={ dataPickerSize || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
+                width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
+                height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
                 model={ this.state.model }
                 dataPickerGrids={this.state.dataPickerGrids}
                 onCellClick={ this.setSpreadsheetCellFromDataPicker }
@@ -109,7 +108,7 @@ export default class Application extends React.Component {
               <div className="right-container">
                 <Spreadsheet
                   width={ spreadsheetWidth }
-                  height={ spreadsheetHeight }
+                  height={ appHeight }
                   getCellFromDataPicker={ this.getCellFromDataPicker }
                   ref='spreadsheet'
                   model={ this.state.model }
@@ -148,8 +147,18 @@ export default class Application extends React.Component {
               <span className="loading-message">Loading model ...</span>
             </div>
         }
-        {/* <nav ref="bottomNav" className="bottom-nav">
-          <button
+        <nav ref="bottomNav" className="bottom-nav">
+          <div>
+            <p>SpaceSheet</p>
+            <a>Fonts</a>
+            <a>MNIST</a>
+            <a>Colours</a>
+          </div>
+          <div>
+            <a>Info</a>
+            <a>Contact</a>
+          </div>
+          {/* <button
             onClick={ e => {
               const dateString = formatDate(new Date());
               const cellData = JSON.stringify(this.hotInstance.getData());
@@ -157,8 +166,8 @@ export default class Application extends React.Component {
               saveJSON(cellData, `fs-data-${dateString}`);
               saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
             }}
-          >SAVE</button>
-        </nav> */}
+          >SAVE</button> */}
+        </nav>
       </div>
     );
   }
