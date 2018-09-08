@@ -110,6 +110,10 @@
     .highlighted-reference {
       background-color: $actionColorTransparent;
       box-shadow: inset 0 0 1px $cellHighlight;
+      .canvas-container canvas {
+        outline: 2px solid $cellHighlight;
+        outline-offset: -2px;
+      }
     }
     .canvas-container {
       display: flex;
@@ -174,7 +178,8 @@
       pointer-events: none;
       span {
         margin-bottom: 2px;
-        font-weight: bold;
+        font-weight: 500;
+        color: $darkerGrey;
       }
       input {
         &.reversed {
