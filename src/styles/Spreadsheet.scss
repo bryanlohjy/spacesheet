@@ -1,17 +1,23 @@
+@import "./variables.scss";
+
 .handsontable {
   font-size: 12px;
   tbody tr th .relative {
     padding-top: 5px;
   }
   th {
+    &.ht__highlight {
+      background-color: $grey !important;
+    }
+    background: $lightGrey;
     letter-spacing: 1px;
     span {
-      color: #a3a3a3;
+      color: $darkGrey;
       font-weight: 500;
     }
   }
   textarea {
-    color: #808080;
+    color: $darkerGrey;
   }
   .htContextMenu {
     .htItemWrapper {
@@ -21,7 +27,7 @@
     }
     .htDisabled {
       div {
-        color: lightgrey;
+        color: $lightGrey;
       }
     }
   }
@@ -38,8 +44,8 @@
   background-color: white;
   .input-bar, .operation-button {
     font-size: 15px;
-    background: #f3f3f3;
-    color: #a3a3a3;
+    background: $lightGrey;
+    color: $darkGrey;
   }
   .input-bar {
     padding: 0 12px;
@@ -72,13 +78,13 @@
       }
 
       &.highlighted {
-        color: #ff7100;
+        color: $actionColor;
         box-shadow: 1px 1px 5px rgba(0,0,0,0.4);
-        outline: 1px solid #ff7100;
+        outline: 1px solid $actionColor;
         z-index: 9999;
 
         &:hover {
-          background: rgba(238, 132, 52, 0.2);
+          background: $actionColorTransparent;
         }
         &:active {
           box-shadow: none;
@@ -95,40 +101,21 @@
     .capture-cells {
       tbody td:hover {
         cursor: pointer;
-        box-shadow: inset 0 0 0 1px rgb(238, 132, 52);
+        box-shadow: inset 0 0 0 1px $cellHighlight;
       }
     }
     overflow: hidden;
     height: 100%;
     width: 100%;
     .highlighted-reference {
-      $color0: rgba(158, 201, 114, 0.2);
-      $shadow0: rgba(158, 201, 114, 1);
-
-      $color1: rgba(255, 107, 151, 0.2);
-      $shadow1: rgba(255, 107, 151, 1);
-
-      $color2: rgba(136, 73, 143, 0.2);
-      $shadow2: rgba(136, 73, 143, 1);
-
-      $color3: rgba(238, 132, 52, 0.2);
-      $shadow3: rgba(238, 132, 52, 1);
-
-      // $color3: rgba(255, 184, 111, 0.2);
-      // $shadow3: rgba(255, 184, 111, 1);
-
-      $color4: rgba(29, 131, 140, 0.2);
-      $shadow4: rgba(29, 131, 140, 1);
-
-      background-color: $color3;
-      box-shadow: inset 0 0 1px $shadow3;
+      background-color: $actionColorTransparent;
+      box-shadow: inset 0 0 1px $cellHighlight;
     }
     .canvas-container {
       display: flex;
       padding: 0;
       margin: 0;
       position: relative;
-      outline: 2px solid grey;
       width: 100%;
       height: 100%;
 
@@ -163,8 +150,8 @@
         opacity: 0;
         position: absolute;
         background-color: rgba(255, 255, 255, 0.7);
-        border-top: 1px solid #CCC;
-        border-left: 1px solid #CCC;
+        border-top: 1px solid $darkerGrey;
+        border-left: 1px solid $darkerGrey;
         z-index: 1;
       }
 

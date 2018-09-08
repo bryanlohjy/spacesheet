@@ -2,6 +2,8 @@
 @import '../assets/fonts/Rubik-Regular.ttf'; // 400
 @import '../assets/fonts/Rubik-Medium.ttf';  // 500
 
+@import "./variables.scss";
+
 * {
   font-family: 'Rubik', sans-serif;
   font-weight: 400;
@@ -43,8 +45,9 @@
     padding: 0 20px;
 
     z-index: 1;
-    background-color: whitesmoke;
-    border-top: 1px solid lightgrey;
+    background: $lightGrey;
+    border-top: 1px solid #ccc;
+    color: $darkerGrey;
     width: 100%;
     height: 50px;
     div {
