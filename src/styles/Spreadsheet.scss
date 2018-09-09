@@ -112,7 +112,14 @@
     .highlighted-reference {
       background-color: $actionColorTransparent;
       box-shadow: inset 0 0 1px $cellHighlight;
-      .canvas-container canvas {
+      position: relative;
+      ::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
         outline: 2px solid $cellHighlight;
         outline-offset: -2px;
       }
