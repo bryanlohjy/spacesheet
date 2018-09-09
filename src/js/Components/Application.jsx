@@ -152,11 +152,10 @@ export default class Application extends React.Component {
             <p>SpaceSheet</p>
             <a>Fonts</a>
             <a>MNIST</a>
-            <a>Colours</a>
+            <a className="active">Colours</a>
           </div>
           <div>
             <a>Info</a>
-            <a>Contact</a>
           </div>
           {/* <button
             onClick={ e => {

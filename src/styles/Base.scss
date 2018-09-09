@@ -6,7 +6,6 @@
 
 * {
   font-family: 'Rubik', sans-serif;
-  font-weight: 400;
 }
 
 #react-container {
@@ -40,6 +39,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    height: 50px;
 
     box-sizing: border-box;
     padding: 0 20px;
@@ -47,13 +48,61 @@
     z-index: 1;
     background: $lightGrey;
     border-top: 1px solid #ccc;
-    color: $darkerGrey;
-    width: 100%;
-    height: 50px;
+    color: $darkGrey;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 15px;
+    font-weight: 500;
+
+    div {
+      a {
+        text-decoration: none;
+        display: flex;
+        height: 100%;
+        align-items: center;
+      }
+      &:first-child {
+        a {
+          padding: 0 10px;
+          margin: 0 15px;
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -1px;
+            width: 100%;
+            transition: height 0.2s;
+            height: 0;
+          }
+          &:hover::after {
+            height: 4px;
+            background: $darkGrey;
+          }
+          &.active {
+            color: $darkerGrey;
+            cursor: default;
+            &::after {
+              height: 4px;
+              background: $darkerGrey;
+            }
+          }
+        }
+      }
+      &:last-child {
+        a {
+          color: $darkerGrey;
+        }
+      }
+    }
+
     div {
       display: flex;
+      align-items: center;
+      height: 100%;
       > p, a:not(:last-child) {
-        margin-right: 10px;
+        margin-right: 15px;
       }
     }
     button {
