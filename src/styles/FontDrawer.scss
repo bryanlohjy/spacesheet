@@ -6,7 +6,6 @@
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
   box-sizing: border-box;
-  // padding: 1rem;
   display: flex;
   flex-direction: column;
   background-color: $grey;
@@ -41,7 +40,7 @@
     background-color: $lightGrey;
     border-radius: 2px 0 0 2px;
     overflow: hidden;
-    border-right: 1px solid $darkGrey;
+    box-shadow: 1px 0 0 $darkGrey;
     .sort-handle {
       display: flex;
       align-items: center;
