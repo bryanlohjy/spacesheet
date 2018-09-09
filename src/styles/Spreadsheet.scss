@@ -44,10 +44,11 @@
   background-color: white;
   .input-bar, .operation-button {
     font-size: 15px;
-    background: $lightGrey;
-    color: $darkGrey;
   }
   .input-bar {
+    background: $grey;
+    color: $darkGrey;
+    font-weight: 500;
     padding: 0 12px;
     height: 37px;
     border: 1px solid #ccc;
@@ -63,6 +64,8 @@
     border-right: 1px solid #ccc;
 
     .operation-button {
+      background: $lightGrey;
+      color: $darkGrey;
       font-weight: 500;
       text-align: center;
       flex-grow: 1;
