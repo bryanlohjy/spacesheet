@@ -149,7 +149,12 @@ export default class Application extends React.Component {
         }
         <nav ref="bottomNav" className="bottom-nav">
           <div>
-            <p>SpaceSheet</p>
+            <div className="logo">
+              <img
+                src='./dist/assets/logo.png'
+                alt="SpaceSheet Logo"
+              />
+            </div>
             <a>Fonts</a>
             <a>MNIST</a>
             <a className="active">Colours</a>
