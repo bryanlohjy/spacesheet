@@ -64,12 +64,15 @@
       }
       &:first-child {
         .logo {
-          margin-right: 15px;
+          margin-right: 25px;
           img {
             max-width: 160px;
           }
         }
-        a {
+        a:not(.logo) {
+          &:visited {
+            color: $darkGrey;
+          }
           padding: 0 10px;
           position: relative;
           &::after {
@@ -87,6 +90,7 @@
           }
           &.active {
             color: $darkerGrey;
+            pointer-events: none;
             cursor: default;
             &::after {
               height: 4px;
@@ -98,6 +102,10 @@
       &:last-child {
         a {
           color: $darkerGrey;
+          &:hover {
+            color: $actionColor;
+          }
+          transition: color 0.2s;
         }
       }
     }

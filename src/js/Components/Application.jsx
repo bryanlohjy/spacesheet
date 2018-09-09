@@ -149,18 +149,18 @@ export default class Application extends React.Component {
         }
         <nav ref="bottomNav" className="bottom-nav">
           <div>
-            <div className="logo">
+            <a className="logo" href="http://vusd.github.io/spacesheet">
               <img
                 src='./dist/assets/logo.png'
                 alt="SpaceSheet Logo"
               />
-            </div>
-            <a>Fonts</a>
-            <a>MNIST</a>
-            <a className="active">Colours</a>
+            </a>
+            <a href="./index.html">Fonts</a>
+            <a href="./mnist.html">MNIST</a>
+            <a href="./colours.html" className="active">Colours</a>
           </div>
           <div>
-            <a>Info</a>
+            <a href="http://vusd.github.io/spacesheet">Info</a>
           </div>
           {/* <button
             onClick={ e => {
