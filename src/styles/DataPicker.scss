@@ -79,13 +79,6 @@
     right: 0;
     bottom: 0;
     display: flex;
-    .scale-indicator {
-      background: white;
-      color: black;
-      padding: 5px;
-      outline: 1px solid grey;
-      height: 100%;
-    }
     .datapicker-minimap {
       background-color: rgba(255, 255, 255, 0.8);
       cursor: default;
@@ -95,18 +88,19 @@
         align-items: center;
         justify-content: center;
         display: flex;
-        outline: 1px solid grey;
+        outline: 1px solid $darkGrey;
         position: relative;
         span {
-          font-weight: 700;
-          color: #7f7f7f;
+          font-weight: 500;
+          color: $darkerGrey;
           z-index: 1;
-          text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+          text-shadow: -1px -1px 0 $lightGrey, 1px -1px 0 $lightGrey, -1px 1px 0 $lightGrey, 1px 1px 0 $lightGrey;
         }
         .window {
           position: absolute;
           left: 10px;
-          outline: 1px solid grey;
+          outline: 2px solid $darkerGrey;
+          outline-offset: -1px;
           background-color: rgba(0, 0, 0, 0.2);
           width: 20px;
           height: 10px;
@@ -116,30 +110,32 @@
     .scale-buttons {
       cursor: pointer;
       z-index: 1;
-      border-radius: 5px;
-      border: 1px solid grey;
-      background-color: whitesmoke;
+      border-radius: 2px;
+      border: 1px solid $darkGrey;
+      color: $darkerGrey;
+      background-color: $lightGrey;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       margin-left: 10px;
+      font-weight: 500;
       span {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-grow: 1;
         &:not(:first-child) {
-          border-top: 1px solid grey;
+          border-top: 1px solid $darkGrey;
         }
         &:hover {
-          background-color: white;
+          background-color: $grey;
         }
         &:first-child {
-          border-radius: 5px 5px 0 0;
+          border-radius: 2px 2px 0 0;
         }
         &:last-child {
           font-size: 12px;
-          border-radius: 0 0 5px 5px;
+          border-radius: 0 0 2px 2px;
         }
       }
     }
@@ -147,9 +143,8 @@
   .highlighter {
     position: absolute;
     pointer-events: none;
-    margin-top: -3px;
-    margin-left: -3px;
-    box-shadow: 0px 3px 10px grey;
-    border: 3px solid $actionColor;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    outline: 3px solid $actionColor;
+    outline-offset: -3px;
   }
 }
