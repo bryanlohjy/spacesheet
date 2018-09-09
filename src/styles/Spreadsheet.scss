@@ -77,15 +77,18 @@
         border-right: 1px solid #ccc;
       }
 
+      &:hover {
+        background: $actionColorTransparent;
+        color: $actionColor;
+        outline: 1px solid $actionColor;
+        z-index: 9999;
+      }
       &.highlighted {
         color: $actionColor;
         box-shadow: 1px 1px 5px rgba(0,0,0,0.4);
         outline: 1px solid $actionColor;
         z-index: 9999;
 
-        &:hover {
-          background: $actionColorTransparent;
-        }
         &:active {
           box-shadow: none;
         }
