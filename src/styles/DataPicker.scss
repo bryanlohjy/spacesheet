@@ -111,7 +111,7 @@
       cursor: pointer;
       z-index: 1;
       border-radius: 2px;
-      border: 1px solid $darkGrey;
+      border: 1px solid $darkerGrey;
       color: $darkerGrey;
       background-color: $lightGrey;
       display: flex;
@@ -125,7 +125,7 @@
         justify-content: center;
         flex-grow: 1;
         &:not(:first-child) {
-          border-top: 1px solid $darkGrey;
+          border-top: 1px solid $darkerGrey;
         }
         &:hover {
           background-color: $grey;
