@@ -110,7 +110,6 @@
     .scale-buttons {
       cursor: pointer;
       z-index: 1;
-      border-radius: 2px;
       border: 1px solid $darkerGrey;
       color: $darkerGrey;
       background-color: $lightGrey;
@@ -131,11 +130,9 @@
           background-color: $grey;
         }
         &:first-child {
-          border-radius: 2px 2px 0 0;
         }
         &:last-child {
           font-size: 12px;
-          border-radius: 0 0 2px 2px;
         }
       }
     }
