@@ -160,6 +160,7 @@ export default class DataPicker {
     this.ctx.fillRect(x, y, this.width, this.height)
   };
   draw() {
+    console.log('draw datapicker', this)
     this.updateTransform();
     // const toDraw = this.indicesToDraw;
     this.clearCanvas();
@@ -341,6 +342,7 @@ class Cell {
     }
   };
   draw() {
+    // console.log(this.vector)
     this.ctx.save();
     const scaleFactor = this.w / this.outputWidth;
     this.ctx.translate(this.x, this.y);

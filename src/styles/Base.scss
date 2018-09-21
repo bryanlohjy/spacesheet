@@ -16,23 +16,35 @@
 }
 .application-container {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   flex-direction: column;
   width: 100%;
   height: 100%;
-
   .component-container { // holds datapicker and spreadsheet
-    width: 100%;
-    height: 100%;
-    display: inline-flex;
+    display: flex;
+    flex-grow: 1;
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
-  }
-  .right-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    height: 100%;
+    .left-container {
+      display: flex;
+    }
+    .right-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      height: 100%;
+      .spreadsheet-container {
+        width: 100%;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1;
+        background-color: white;
+      }
+    }
+
   }
   .bottom-nav {
     display: flex;
@@ -41,7 +53,6 @@
     justify-content: space-between;
     width: 100%;
     height: 50px;
-
     box-sizing: border-box;
     padding: 0 20px 0 15px;
 

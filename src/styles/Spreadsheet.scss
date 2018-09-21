@@ -34,14 +34,6 @@
 }
 
 .spreadsheet-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 1;
-  background-color: white;
   .input-bar, .operation-button {
     font-size: 15px;
   }

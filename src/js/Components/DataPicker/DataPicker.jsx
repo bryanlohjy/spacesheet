@@ -29,8 +29,11 @@ export default class DataPicker extends React.Component {
   componentDidMount() {
     this.initDataPicker();
     if (this.props.visible) {
+      console.log('visible')
       this.dataPicker.draw();
     }
+    //  chrome bug fix
+    setTimeout(() => {this.dataPicker.draw()}, 500);
   };
   componentWillReceiveProps(newProps) {
     if (!this.props.visible && newProps.visible) {
@@ -194,6 +197,7 @@ export default class DataPicker extends React.Component {
     }
   };
   render() {
+    console.log('render datapicker')
     return (
       <div>
         <canvas
