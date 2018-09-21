@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-import ModelToLoad from '../Models/MNISTModel.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
+import ModelToLoad from '../Models/FaceModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Colours.js';
 

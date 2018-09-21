@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@tensorflow/tfjs": "^0.13.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "deeplearn": "^0.5.1",
     "hot-formula-parser": "^2.3.3",
