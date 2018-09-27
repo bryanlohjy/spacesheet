@@ -98,7 +98,19 @@ export default class Application extends React.Component {
         {
           this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
-              <DataPickers
+              <canvas
+                ref={ref => {
+                  const canvas = ref;
+                  canvas.width = this.state.model.outputWidth;
+                  canvas.height = this.state.model.outputHeight;
+
+                  const randVec = this.state.model.randVectorFn();
+                  const imgData = this.state.model.decodeFn(randVec);
+                  console.log(imgData)
+                  // this.state.model.drawFn(canvas.getContext('2d'), imgData);
+                }}
+              />
+              {/* <DataPickers
                 width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
                 height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
                 model={ this.state.model }
@@ -141,7 +153,7 @@ export default class Application extends React.Component {
                   />
                   : ""
                 }
-              </div>
+              </div> */}
             </div> :
             <div className="loader-container">
               <div className="loader"/>

@@ -56,11 +56,17 @@ export default class Model {
     // return tf.randomNormal([49152], 0, 1).dataSync();
     // inputVector.reshape([-1, 512]);
     let array = tf.tidy(() => {
-      console.log(this.loadedModel)
+      console.log("HELLO");
+      console.log(this.loadedModel, inputVector.length)
       let reshaped = tf.tensor(inputVector, [1, 512]);
-      return this.loadedModel.execute({"G/labels_in": reshaped});
+      let emptyLabels = tf.zeros([]);
+      let emptyLatent  = tf.zeros([]);
+      return this.loadedModel.predict({
+        "G/latents_in": reshaped,
+        "G/labels_in": emptyLatent,
+      });
     }).dataSync();
-    // console.log('!!', array)
+    console.log('!!', array)
     return array;
     // return dl.tensor1d(array);
   }
