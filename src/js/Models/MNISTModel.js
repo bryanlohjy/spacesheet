@@ -81,13 +81,13 @@ export default class Model {
           }),
         );
       });
-      return output.getValues();
+      return output.dataSync();
     });
   }
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
     return dl.tidy(() => {
       return dl.randomNormal([100], 0, 1, null, randomSeed);;
-    }).getValues();
+    }).dataSync();
   }
 }

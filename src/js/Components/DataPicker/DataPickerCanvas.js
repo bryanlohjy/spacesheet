@@ -265,7 +265,7 @@ class Cell {
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subcolumn;
         return lerp(from, to, lerpAmount);
-      }).getValues();
+      }).dataSync();
       this.image = this.decodeFn(this.vector);
 
       return;
@@ -334,7 +334,7 @@ class Cell {
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subrow;
         return lerp(from, to, lerpAmount);
-      }).getValues();
+      }).dataSync();
       this.image = this.decodeFn(this.vector);
 
       return;

@@ -62,7 +62,7 @@ const tensorUtils = {
       const d = dl.tensor1d(q22).mul(dl.scalar(x - x1)).mul(dl.scalar(y - y1));
 
       const denominator = dl.scalar(x2 - x1).mul(dl.scalar(y2 - y1));
-      const result = a.add(b).add(c).add(c).div(denominator).getValues();
+      const result = a.add(b).add(c).add(c).div(denominator).dataSync();
       // console.log(result)
       return a.add(b).add(c).add(c).div(denominator)
     });
