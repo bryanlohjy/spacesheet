@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-import ModelToLoad from '../Models/MNISTModel.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
-// import ModelToLoad from '../Models/Colours.js';
+import ModelToLoad from '../Models/Colours.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -82,7 +82,7 @@ export default class Application extends React.Component {
   };
   render() {
     const docHeight = document.body.offsetHeight;
-    const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
+    const navHeight = 50;
     const appHeight = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - appHeight;
     return (
@@ -131,7 +131,7 @@ export default class Application extends React.Component {
                     }
                   }}
                 />
-                { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
+                {/* { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
                   <FontDrawer
                     hotInstance={this.hotInstance}
                     formulaParser={this.formulaParser}
@@ -139,7 +139,7 @@ export default class Application extends React.Component {
                     ref='fontDrawer'
                   />
                   : ""
-                }
+                } */}
               </div>
             </div> :
             <div className="loader-container">
