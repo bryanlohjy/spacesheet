@@ -100,7 +100,7 @@ class HotTableContainer extends React.Component {
     // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
     this.demoSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
-    this.minCellSize = 64;
+    this.minCellSize = 84;
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
