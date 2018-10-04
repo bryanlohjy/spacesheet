@@ -15,9 +15,6 @@ import DataPickers from './DataPicker/DataPickers.jsx';
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
-// import { formatDate } from '../lib/helpers.js';
-// import { saveJSON } from './Application.js';
-
 export default class Application extends React.Component {
   constructor(props) {
     super(props);
@@ -162,15 +159,6 @@ export default class Application extends React.Component {
           <div>
             <a href="http://vusd.github.io/spacesheet">Info</a>
           </div>
-          {/* <button
-            onClick={ e => {
-              const dateString = formatDate(new Date());
-              const cellData = JSON.stringify(this.hotInstance.getData());
-              const mergedCellData = JSON.stringify(this.hotInstance.mergeCells.mergedCellInfoCollection);
-              saveJSON(cellData, `fs-data-${dateString}`);
-              saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
-            }}
-          >SAVE</button> */}
         </nav>
       </div>
     );

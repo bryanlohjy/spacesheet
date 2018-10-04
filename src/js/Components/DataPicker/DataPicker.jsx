@@ -194,7 +194,6 @@ export default class DataPicker extends React.Component {
     }
   };
   render() {
-    console.log('render datapicker')
     return (
       <div>
         <canvas

@@ -41,7 +41,6 @@ const CellHelpers = {
     return res;
   },
   getCellFromLabel: (hotInstance, label) => {
-    console.log(hotInstance, label)
     const coords = CellHelpers.cellLabelToCoords(label);
     if (coords) {
       return hotInstance.getCell(coords.row, coords.col)

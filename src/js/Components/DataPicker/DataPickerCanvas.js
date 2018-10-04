@@ -113,18 +113,6 @@ export default class DataPicker {
     }
     return false;
   };
-  // get indicesToDraw() { // return an array of evenly distributed column indices to draw
-  //   let indicesToDraw = [0];
-  //   const minSize = this.minSize || this.columns;
-  //
-  //   for (let i = 1; i < minSize - 1; i++) {
-  //     const val = Math.floor(map(i, 0, minSize - 1, 0, this.columns - 1));
-  //     indicesToDraw.push(val)
-  //   }
-  //   indicesToDraw.push(this.columns - 1);
-  //
-  //   return indicesToDraw;
-  // };
   get subdivisions() { // return the amount to subdivide by
     let subdivisions = parseInt(this.scale);
     // only subdivide at even intervals
@@ -160,11 +148,10 @@ export default class DataPicker {
     this.ctx.fillRect(x, y, this.width, this.height)
   };
   draw() {
-    console.log('draw datapicker', this)
     this.updateTransform();
-    // const toDraw = this.indicesToDraw;
     this.clearCanvas();
-    // https://github.com/dribnet/plat/blob/master/plat/grid_layout.py#L71L106
+
+    // Grid interpolation logic from: https://github.com/dribnet/plat/blob/master/plat/grid_layout.py#L71L106
     const intermediates = this.subdivisions;
     const totalRows = intermediates * this.rows;
     const totalColumns = intermediates * this.columns;
@@ -342,7 +329,6 @@ class Cell {
     }
   };
   draw() {
-    // console.log(this.vector)
     this.ctx.save();
     const scaleFactor = this.w / this.outputWidth;
     this.ctx.translate(this.x, this.y);
