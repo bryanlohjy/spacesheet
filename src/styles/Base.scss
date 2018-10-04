@@ -1,3 +1,13 @@
+@import '../assets/fonts/Rubik-Light.ttf';   // 300
+@import '../assets/fonts/Rubik-Regular.ttf'; // 400
+@import '../assets/fonts/Rubik-Medium.ttf';  // 500
+
+@import "./variables.scss";
+
+* {
+  font-family: 'Rubik', sans-serif;
+}
+
 #react-container {
   width: 100vw;
   height: 100vh;
@@ -6,38 +16,120 @@
 }
 .application-container {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   flex-direction: column;
   width: 100%;
   height: 100%;
-
   .component-container { // holds datapicker and spreadsheet
-    width: 100%;
-    height: 100%;
-    display: inline-flex;
+    display: flex;
+    flex-grow: 1;
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
-  }
-  .right-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    height: 100%;
+    .left-container {
+      display: flex;
+    }
+    .right-container {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      height: 100%;
+      .spreadsheet-container {
+        width: 100%;
+        display: flex;
+        flex-grow: 1;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1;
+        background-color: white;
+      }
+    }
+
   }
   .bottom-nav {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-
-    box-sizing: border-box;
-    padding: 0 20px;
-
-    z-index: 1;
-    background-color: whitesmoke;
-    border-top: 1px solid lightgrey;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
     height: 50px;
+    box-sizing: border-box;
+    padding: 0 20px 0 15px;
+
+    z-index: 1;
+    background: $lightGrey;
+    border-top: 1px solid #ccc;
+    color: $darkGrey;
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 15px;
+    font-weight: 500;
+
+    div {
+      a {
+        color: $darkGrey;
+        text-decoration: none;
+        display: flex;
+        height: 100%;
+        align-items: center;
+      }
+      &:first-child {
+        .logo {
+          margin-right: 25px;
+          img {
+            max-width: 160px;
+          }
+        }
+        a:not(.logo) {
+          &:visited {
+            color: $darkGrey;
+          }
+          padding: 0 10px;
+          position: relative;
+          &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -1px;
+            width: 100%;
+            transition: height 0.2s;
+            height: 0;
+          }
+          &:hover::after {
+            height: 4px;
+            background: $darkGrey;
+          }
+          &.active {
+            color: $darkerGrey;
+            pointer-events: none;
+            cursor: default;
+            &::after {
+              height: 4px;
+              background: $darkerGrey;
+            }
+          }
+        }
+      }
+      &:last-child {
+        a {
+          color: $darkerGrey;
+          &:hover {
+            color: $actionColor;
+          }
+          transition: color 0.2s;
+        }
+      }
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      > p, a:not(:last-child) {
+        margin-right: 15px;
+      }
+    }
     button {
       cursor: pointer;
       font-weight: bold;
