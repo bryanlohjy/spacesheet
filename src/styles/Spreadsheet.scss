@@ -1,5 +1,24 @@
+@import "./variables.scss";
+
 .handsontable {
   font-size: 12px;
+  tbody tr th .relative {
+    padding-top: 5px;
+  }
+  th {
+    &.ht__highlight {
+      background-color: $grey !important;
+    }
+    background: $lightGrey;
+    letter-spacing: 1px;
+    span {
+      color: $darkGrey;
+      font-weight: 500;
+    }
+  }
+  textarea {
+    color: $darkerGrey;
+  }
   .htContextMenu {
     .htItemWrapper {
       &:after { // sizing arrrows
@@ -8,47 +27,68 @@
     }
     .htDisabled {
       div {
-        color: lightgrey;
+        color: $lightGrey;
       }
     }
   }
 }
 
 .spreadsheet-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 1;
-  background-color: white;
+  .input-bar, .operation-button {
+    font-size: 15px;
+  }
   .input-bar {
-    box-sizing: border-box;
+    background: $grey;
+    color: $darkGrey;
+    font-weight: 500;
+    padding: 0 12px;
+    height: 37px;
+    border: 1px solid #ccc;
+    letter-spacing: 1px;
+
     width: 100%;
-    height: 21px;
   }
   .operation-drawer {
-    box-sizing: border-box;
     display: flex;
-    width: 100%;
     justify-content: space-between;
-    flex-wrap: wrap;
-    align-content: center;
-    padding: 5px;
-    background-color: rgb(230, 230, 230);
+    height: 37px;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+
     .operation-button {
-      &.highlighted {
-        background: darkorange;
-      }
-      letter-spacing: 2px;
-      background-color: rgb(100, 100, 100);
-      color: rgb(230, 230, 230);
-      font-weight: 700;
-      font-size: 12px;
+      background: $lightGrey;
+      color: $darkGrey;
+      font-weight: 500;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      border-radius: 2px;
-      padding: 2px 10px;
+      padding-top: 2px;
+
+      &:not(:last-child) {
+        border-right: 1px solid #ccc;
+      }
+
+      &:hover {
+        background: $actionColorTransparent;
+        color: $actionColor;
+        outline: 1px solid $actionColor;
+        z-index: 9999;
+      }
+      &.highlighted {
+        color: $actionColor;
+        box-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+        outline: 1px solid $actionColor;
+        z-index: 9999;
+
+        &:active {
+          box-shadow: none;
+        }
+      }
+      transition: box-shadow 0.1s, color 0.1s;
+      letter-spacing: 2px;
     }
   }
   .table-container {
@@ -58,43 +98,35 @@
     .capture-cells {
       tbody td:hover {
         cursor: pointer;
-        box-shadow: inset 0 0 0 1px rgb(238, 132, 52);
+        box-shadow: inset 0 0 0 1px $cellHighlight;
       }
     }
     overflow: hidden;
     height: 100%;
     width: 100%;
     .highlighted-reference {
-      $color0: rgba(158, 201, 114, 0.2);
-      $shadow0: rgba(158, 201, 114, 1);
-
-      $color1: rgba(255, 107, 151, 0.2);
-      $shadow1: rgba(255, 107, 151, 1);
-
-      $color2: rgba(136, 73, 143, 0.2);
-      $shadow2: rgba(136, 73, 143, 1);
-
-      $color3: rgba(238, 132, 52, 0.2);
-      $shadow3: rgba(238, 132, 52, 1);
-
-      // $color3: rgba(255, 184, 111, 0.2);
-      // $shadow3: rgba(255, 184, 111, 1);
-
-      $color4: rgba(29, 131, 140, 0.2);
-      $shadow4: rgba(29, 131, 140, 1);
-
-      background-color: $color3;
-      box-shadow: inset 0 0 1px $shadow3;
+      background-color: $actionColorTransparent;
+      box-shadow: inset 0 0 1px $cellHighlight;
+      position: relative;
+      ::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        outline: 2px solid $cellHighlight;
+        outline-offset: -2px;
+      }
     }
     .canvas-container {
       display: flex;
       padding: 0;
       margin: 0;
       position: relative;
-      outline: 2px solid grey;
       width: 100%;
       height: 100%;
-      
+
       canvas {
         position: absolute;
         top: 0;
@@ -126,8 +158,8 @@
         opacity: 0;
         position: absolute;
         background-color: rgba(255, 255, 255, 0.7);
-        border-top: 1px solid #CCC;
-        border-left: 1px solid #CCC;
+        border-top: 1px solid $darkerGrey;
+        border-left: 1px solid $darkerGrey;
         z-index: 1;
       }
 
@@ -150,7 +182,8 @@
       pointer-events: none;
       span {
         margin-bottom: 2px;
-        font-weight: bold;
+        font-weight: 500;
+        color: $darkerGrey;
       }
       input {
         &.reversed {
