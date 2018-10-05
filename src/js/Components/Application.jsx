@@ -153,6 +153,7 @@ export default class Application extends React.Component {
                 alt="SpaceSheet Logo"
               />
             </a>
+            <a href="./faces.html">Faces</a>
             <a href="./index.html">Fonts</a>
             <a href="./mnist.html">MNIST</a>
             <a href="./colours.html" className="active">Colours</a>
