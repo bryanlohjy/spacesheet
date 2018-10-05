@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
-// import ModelToLoad from '../Models/Colours.js';
-import ModelToLoad from '../Models/FaceModel.js';
+import ModelToLoad from '../Models/Colours.js';
+// import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -14,7 +14,7 @@ import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
-import FontDrawer from './FontDrawer/FontDrawer.jsx';
+// import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -147,19 +147,19 @@ export default class Application extends React.Component {
         }
         <nav ref="bottomNav" className="bottom-nav">
           <div>
-            <a className="logo" href="http://vusd.github.io/spacesheet">
+            <div className="logo">
               <img
                 src='./dist/assets/logo.png'
                 alt="SpaceSheet Logo"
               />
-            </a>
+            </div>
             <a href="./faces.html">Faces</a>
             <a href="./index.html">Fonts</a>
             <a href="./mnist.html">MNIST</a>
             <a href="./colours.html" className="active">Colours</a>
           </div>
           <div>
-            <a href="http://vusd.github.io/spacesheet">Info</a>
+            <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
           </div>
         </nav>
       </div>

@@ -28,6 +28,7 @@
     align-items: flex-start;
     .left-container {
       display: flex;
+      flex-direction: column;
     }
     .right-container {
       display: flex;
