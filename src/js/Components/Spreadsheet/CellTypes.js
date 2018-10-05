@@ -84,6 +84,9 @@ const CellTypes = opts => {
           sliderContainer = document.createElement('div');
           sliderContainer.classList.add('slider-container');
 
+          sliderContainer.style.width = `${cellWidth - 1}px`;
+          sliderContainer.style.height = `${cellHeight - 1}px`;
+
           slider = document.createElement('input');
           slider.setAttribute('type', 'range');
           slider.setAttribute('tabindex', '-1');
