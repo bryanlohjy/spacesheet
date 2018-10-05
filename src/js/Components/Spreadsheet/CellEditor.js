@@ -215,7 +215,6 @@ export default opts => {
   };
 
   CustomTextEditor.prototype.open = function() {
-    // console.log(Object.keys(this))
     this._fullEditMode = true;
     HandsOnTable.editors.TextEditor.prototype.open.apply(this, arguments);
     this.TEXTAREA.setAttribute('spellcheck', 'false');

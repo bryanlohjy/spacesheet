@@ -114,17 +114,17 @@ export default class FontModel {
           }),
         );
       });
-      return output.getValues();
+      return output.dataSync();
     });
   }
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
     return dl.tidy(() => {
-      const fontEmbeddings = this.modelVars.input.weights.getValues();
+      const fontEmbeddings = this.modelVars.input.weights.dataSync();
       const numberOfFonts = fontEmbeddings.length/40;
       const startIndex = randomInt(0, numberOfFonts, randomSeed) * 40;
       const randomEmbedding = dl.tensor1d(fontEmbeddings.slice(startIndex, startIndex + 40));
       return randomEmbedding;
-    }).getValues();
+    }).dataSync();
   }
 }

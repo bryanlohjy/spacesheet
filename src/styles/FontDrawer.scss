@@ -1,13 +1,22 @@
+@import "./variables.scss";
+
 .font-drawer {
   height: 400px;
   width: 100%;
-  border-top: 1px solid rgb(204, 204, 204);
-  border-left: 1px solid rgb(204, 204, 204);
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
   box-sizing: border-box;
-  // padding: 1rem;
   display: flex;
   flex-direction: column;
-  background-color: lightgrey;
+  background-color: $grey;
+  .sample-font-input {
+    border: none;
+    border-bottom: 1px solid $grey;
+    height: 30px;
+    padding: 0 12px;
+    color: $darkerGrey;
+
+  }
   .font-samples {
     overflow-y: auto;
     display: flex;
@@ -25,22 +34,20 @@
   background-color: white;
   border-radius: 2px;
   min-height: 50px;
-  // width: 100%;
-
   .font-sample-controls {
     display: flex;
     width: 100px;
-    background-color: whitesmoke;
+    background-color: $lightGrey;
     border-radius: 2px 0 0 2px;
     overflow: hidden;
-    // border-right: 1px solid darkgrey;
+    box-shadow: 1px 0 0 $darkGrey;
     .sort-handle {
       display: flex;
       align-items: center;
       cursor: row-resize;
       height: 100%;
-      background-color: darkgrey;
-      color: white;
+      background-color: $darkerGrey;
+      color: $lightGrey;
     }
     .font-sample-panel {
       display: flex;
@@ -55,24 +62,29 @@
         justify-content: space-between;
         margin-bottom: 5px;
         padding: 2px;
+        color: $darkerGrey;
         cursor: pointer;
         span {
           font-size: 12px;
-          font-weight: 700;
+          font-weight: 500;
         }
         img {
-          width: 20px;
+          width: 15px;
           margin-right: 4px;
         }
       }
       .font-sample-reference {
         display: flex;
-        border: 1px solid grey;
+        border: 1px solid $darkGrey;
+        color: $darkerGrey;
+        border-radius: 2px;
         > * {
           margin: 0;
           padding: 0;
+          height: 20px;
         }
         input {
+          flex-grow: 1;
           &.invalid {
             background-color: rgba(255, 0, 0, 0.4);
           }
@@ -91,6 +103,7 @@
           padding: 0;
           width: 20px;
           border: none;
+          border-left: 1px solid $darkGrey;
           cursor: pointer;
         }
         align-items: center;

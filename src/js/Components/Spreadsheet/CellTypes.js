@@ -7,6 +7,9 @@ const CellTypes = opts => {
   const CustomTextEditor = CellEditor(opts);
   // Formula ==============
   // A non editable cell which renders references from the Formula
+  const cellWidth = Math.max(opts.outputWidth, opts.minCellSize || 0);
+  const cellHeight = Math.max(opts.outputHeight, opts.minCellSize || 0);
+
   const Formula = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
@@ -18,11 +21,12 @@ const CellTypes = opts => {
             if (typeof result === 'object') { // it is a vector
               const canvasContainer = document.createElement('div');
               canvasContainer.classList.add('canvas-container');
+              canvasContainer.style.width = `${cellWidth - 1}px`;
+              canvasContainer.style.height = `${cellHeight - 1}px`;
 
               const canvas = document.createElement('canvas');
               canvas.width = opts.outputWidth - 1;
               canvas.height = opts.outputHeight - 1;
-              canvas.classList.add('canvas-container');
 
               canvasContainer.appendChild(canvas);
               td.appendChild(canvasContainer);
@@ -79,6 +83,9 @@ const CellTypes = opts => {
           td.innerHTML = '';
           sliderContainer = document.createElement('div');
           sliderContainer.classList.add('slider-container');
+
+          sliderContainer.style.width = `${cellWidth - 1}px`;
+          sliderContainer.style.height = `${cellHeight - 1}px`;
 
           slider = document.createElement('input');
           slider.setAttribute('type', 'range');
@@ -147,6 +154,8 @@ const CellTypes = opts => {
 
             const canvasContainer = document.createElement('div');
             canvasContainer.classList.add('canvas-container');
+            canvasContainer.style.width = `${cellWidth - 1}px`;
+            canvasContainer.style.height = `${cellHeight - 1}px`;
 
             canvasElement = document.createElement('canvas');
             canvasElement.width = opts.outputWidth - 1;
