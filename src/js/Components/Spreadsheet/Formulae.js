@@ -36,7 +36,7 @@ export default class Formulae {
       if (total) {
         return total.div(dl.scalar(count));
       }
-    }).getValues();
+    }).dataSync();
   };
   MINUS_TENSOR(params) {
     if (params.length > 2 || params.length === 1) {
@@ -55,7 +55,7 @@ export default class Formulae {
         }
       }
       return total;
-    }).getValues();
+    }).dataSync();
   };
   SUM(params) {
     let total = 0;
@@ -78,7 +78,7 @@ export default class Formulae {
         }
       }
       return total;
-    }).getValues();
+    }).dataSync();
   };
   LERP(params) {
     if (params.length !== 3) {
@@ -98,7 +98,7 @@ export default class Formulae {
       const to = isNaN(params[1]) ? dl.tensor1d(params[1]) : dl.scalar(params[1]);
       const step = params[2];
       return from.add(to.sub(from).mul(dl.scalar(step)));
-    }).getValues();
+    }).dataSync();
   };
   MULTIPLY(params) {
     const validParams = params.filter(param => param || param === 0);
@@ -138,7 +138,7 @@ export default class Formulae {
         }
       }
       return total;
-    }).getValues();
+    }).dataSync();
   };
   SLERP(params) {
     return '#N/A';
@@ -154,7 +154,7 @@ export default class Formulae {
       const omega = dl.acos(from.mul(to));
       const so = dl.sin(omega);
       return dl.sin(omega.mul(dl.scalar(1 - step)).div(so).mul(from).add(dl.sin(dl.scalar(step).mul(omega)).div(so).mul(to)));
-    }).getValues();
+    }).dataSync();
   };
   DIST(params) {
     return '#N/A';
@@ -167,7 +167,7 @@ export default class Formulae {
       const a = dl.tensor1d(params[0]);
       const b = dl.tensor1d(params[1]);
       return b.sub(a).square().sum().sqrt();
-    }).getValues()[0].toString();
+    }).dataSync()[0].toString();
   };
   SLIDER(params) {
     const validParams = params.filter(val => { return !isNaN(val) })
@@ -200,7 +200,7 @@ export default class Formulae {
     return dl.tidy(() => { // multiply two vectors, and sum resulting vector
       const multiplied = dl.tensor1d(params[0]).mul(dl.tensor1d(params[1]));
       return multiplied.sum();
-    }).getValues()[0];
+    }).dataSync()[0];
   };
   call(name, params, isTensorCalculation) {
     const aliases = {

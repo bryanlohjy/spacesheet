@@ -43,13 +43,7 @@ const tensorUtils = {
       }
       return 0;
     });
-    // (x1, y1, q11), (_x1, y2, q12), (x2, _y1, q21), (_x2, _y2, q22) = points
-    // return (q11 * (x2 - x) * (y2 - y) +
-    //         q21 * (x - x1) * (y2 - y) +
-    //         q12 * (x2 - x) * (y - y1) +
-    //         q22 * (x - x1) * (y - y1)
-    //        ) / ((x2 - x1) * (y2 - y1) + 0.0)
-    // console.log(points)
+
     return dl.tidy(() => {
       const [ x1, y1, q11 ]   = [ ... sorted[0] ];
       const [ _x1, y2, q12 ]  = [ ... sorted[1] ];
@@ -62,12 +56,10 @@ const tensorUtils = {
       const d = dl.tensor1d(q22).mul(dl.scalar(x - x1)).mul(dl.scalar(y - y1));
 
       const denominator = dl.scalar(x2 - x1).mul(dl.scalar(y2 - y1));
-      const result = a.add(b).add(c).add(c).div(denominator).getValues();
-      // console.log(result)
+      const result = a.add(b).add(c).add(c).div(denominator).dataSync();
+
       return a.add(b).add(c).add(c).div(denominator)
     });
-
-    // console.log(column, row, data)
   },
 };
 module.exports = tensorUtils;

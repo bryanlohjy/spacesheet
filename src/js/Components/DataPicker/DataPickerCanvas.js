@@ -113,18 +113,6 @@ export default class DataPicker {
     }
     return false;
   };
-  // get indicesToDraw() { // return an array of evenly distributed column indices to draw
-  //   let indicesToDraw = [0];
-  //   const minSize = this.minSize || this.columns;
-  //
-  //   for (let i = 1; i < minSize - 1; i++) {
-  //     const val = Math.floor(map(i, 0, minSize - 1, 0, this.columns - 1));
-  //     indicesToDraw.push(val)
-  //   }
-  //   indicesToDraw.push(this.columns - 1);
-  //
-  //   return indicesToDraw;
-  // };
   get subdivisions() { // return the amount to subdivide by
     let subdivisions = parseInt(this.scale);
     // only subdivide at even intervals
@@ -161,9 +149,9 @@ export default class DataPicker {
   };
   draw() {
     this.updateTransform();
-    // const toDraw = this.indicesToDraw;
     this.clearCanvas();
-    // https://github.com/dribnet/plat/blob/master/plat/grid_layout.py#L71L106
+
+    // Grid interpolation logic from: https://github.com/dribnet/plat/blob/master/plat/grid_layout.py#L71L106
     const intermediates = this.subdivisions;
     const totalRows = intermediates * this.rows;
     const totalColumns = intermediates * this.columns;
@@ -265,7 +253,7 @@ class Cell {
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subcolumn;
         return lerp(from, to, lerpAmount);
-      }).getValues();
+      }).dataSync();
       this.image = this.decodeFn(this.vector);
 
       return;
@@ -334,7 +322,7 @@ class Cell {
         const to = dl.tensor1d(toAnchor.vector);
         const lerpAmount = 1 / this.subdivisions * this.subrow;
         return lerp(from, to, lerpAmount);
-      }).getValues();
+      }).dataSync();
       this.image = this.decodeFn(this.vector);
 
       return;

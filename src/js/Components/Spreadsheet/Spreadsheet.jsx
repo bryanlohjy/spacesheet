@@ -14,7 +14,7 @@ export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
     this.state = { // updated using refs to prevent unnecessary table rendering
-      inputBarIsMounted: false,
+      inputBarAndOperationDrawerIsMounted: false,
       inputBarValue: "",
       currentSelection: [0, 0, 0, 0],
     };
@@ -40,22 +40,26 @@ export default class Spreadsheet extends React.Component {
   render() {
     return (
       <div className="spreadsheet-container">
-        <input className="input-bar" type="text"
-          disabled
-          value={this.props.inputBarValue}
+        <div
           ref={ el => {
-            if (!this.state.inputBarIsMounted) {
-              this.setState({ inputBarIsMounted : true });
+            if (!this.state.inputBarIsMounted && !this.inputBarAndOperationDrawerEl) {
+              this.setState({ inputBarAndOperationDrawerIsMounted : true });
+              this.inputBarAndOperationDrawerEl = el;
             }
           }}
-        />
-        <OperationDrawer
-          setSelectedCellData={this.setSelectedCellData}
-          currentSelection={this.state.currentSelection}
-          hotInstance={this.hotInstance}
-        />
+        >
+          <input className="input-bar" type="text"
+            disabled
+            value={this.props.inputBarValue}
+          />
+          <OperationDrawer
+            setSelectedCellData={this.setSelectedCellData}
+            currentSelection={this.state.currentSelection}
+            hotInstance={this.hotInstance}
+          />
+        </div>
         {
-          this.state.inputBarIsMounted ? (
+          this.state.inputBarAndOperationDrawerIsMounted ? (
             <div className="table-container" ref="tableContainer">
               <HotTableContainer
                 setTableRef={ ref => {
@@ -63,7 +67,7 @@ export default class Spreadsheet extends React.Component {
                   this.props.setTableRef(ref);
                 }}
                 width={this.props.width}
-                height={this.props.height}
+                height={this.props.height - this.inputBarAndOperationDrawerEl.offsetHeight}
                 setInputBarValue={this.props.setInputBarValue}
                 getCellFromDataPicker={this.props.getCellFromDataPicker}
                 model={this.props.model}
@@ -100,6 +104,7 @@ class HotTableContainer extends React.Component {
     // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
     this.demoSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
+    this.minCellSize = 84;
   };
   initHotTable() {
     const hotInstance = this.hotInstance;
@@ -115,6 +120,7 @@ class HotTableContainer extends React.Component {
       outputHeight: this.props.model.outputHeight,
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
+      minCellSize: this.minCellSize,
     });
     hotInstance.updateSettings({
       cells: (row, col, prop) => {
@@ -167,7 +173,6 @@ class HotTableContainer extends React.Component {
     return false;
   };
   render() {
-    const minCellSize = 64;
     return (
       <HotTable
         className="table"
@@ -188,8 +193,8 @@ class HotTableContainer extends React.Component {
         colHeaders={true}
         rowHeaders={true}
         preventOverflow="horizontal"
-        rowHeights={Math.max(this.props.model.outputHeight, minCellSize)}
-        colWidths={Math.max(this.props.model.outputWidth, minCellSize)}
+        rowHeights={Math.max(this.props.model.outputHeight, this.minCellSize)}
+        colWidths={Math.max(this.props.model.outputWidth, this.minCellSize)}
 
         minCols={7}
         minRows={10}
@@ -218,6 +223,8 @@ class HotTableContainer extends React.Component {
           this.props.afterSelection(r, c, r2, c2);
         }}
 
+        width={this.props.width}
+        height={this.props.height}
         comments={true}
         customBorders={true}
 

@@ -5,6 +5,7 @@ import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
 import ModelToLoad from '../Models/Colours.js';
+// import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -13,10 +14,7 @@ import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
-import FontDrawer from './FontDrawer/FontDrawer.jsx';
-
-// import { formatDate } from '../lib/helpers.js';
-// import { saveJSON } from './Application.js';
+// import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -82,10 +80,9 @@ export default class Application extends React.Component {
   };
   render() {
     const docHeight = document.body.offsetHeight;
-    // const navHeight = this.bottomNav ? this.bottomNav.offsetHeight : null;
-    const dataPickerSize = docHeight;
-    const spreadsheetWidth = document.body.offsetWidth - dataPickerSize;
-    const spreadsheetHeight = docHeight;
+    const navHeight = 50;
+    const appHeight = docHeight - navHeight;
+    const spreadsheetWidth = document.body.offsetWidth - appHeight;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -99,8 +96,8 @@ export default class Application extends React.Component {
           this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
               <DataPickers
-                width={ dataPickerSize || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-                height={ dataPickerSize || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
+                width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
+                height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
                 model={ this.state.model }
                 dataPickerGrids={this.state.dataPickerGrids}
                 onCellClick={ this.setSpreadsheetCellFromDataPicker }
@@ -109,7 +106,7 @@ export default class Application extends React.Component {
               <div className="right-container">
                 <Spreadsheet
                   width={ spreadsheetWidth }
-                  height={ spreadsheetHeight }
+                  height={ appHeight }
                   getCellFromDataPicker={ this.getCellFromDataPicker }
                   ref='spreadsheet'
                   model={ this.state.model }
@@ -132,7 +129,7 @@ export default class Application extends React.Component {
                     }
                   }}
                 />
-                { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
+                {/* { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
                   <FontDrawer
                     hotInstance={this.hotInstance}
                     formulaParser={this.formulaParser}
@@ -140,7 +137,7 @@ export default class Application extends React.Component {
                     ref='fontDrawer'
                   />
                   : ""
-                }
+                } */}
               </div>
             </div> :
             <div className="loader-container">
@@ -148,17 +145,23 @@ export default class Application extends React.Component {
               <span className="loading-message">Loading model ...</span>
             </div>
         }
-        {/* <nav ref="bottomNav" className="bottom-nav">
-          <button
-            onClick={ e => {
-              const dateString = formatDate(new Date());
-              const cellData = JSON.stringify(this.hotInstance.getData());
-              const mergedCellData = JSON.stringify(this.hotInstance.mergeCells.mergedCellInfoCollection);
-              saveJSON(cellData, `fs-data-${dateString}`);
-              saveJSON(mergedCellData, `fs-data-${dateString}-mergecells`);
-            }}
-          >SAVE</button>
-        </nav> */}
+        <nav ref="bottomNav" className="bottom-nav">
+          <div>
+            <div className="logo">
+              <img
+                src='./dist/assets/logo.png'
+                alt="SpaceSheet Logo"
+              />
+            </div>
+            <a href="./faces.html">Faces</a>
+            <a href="./index.html">Fonts</a>
+            <a href="./mnist.html">MNIST</a>
+            <a href="./colours.html" className="active">Colours</a>
+          </div>
+          <div>
+            <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
+          </div>
+        </nav>
       </div>
     );
   }

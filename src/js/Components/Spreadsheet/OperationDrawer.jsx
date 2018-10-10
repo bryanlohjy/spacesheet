@@ -354,7 +354,9 @@ export default class OperationDrawer extends React.Component {
                 onMouseOut={ e => {
                   removeInstancesOfClassName('highlighted-reference');
                 }}
-              >{key}</div>
+              >
+                {key}
+              </div>
             );
           }) }
       </div>
