@@ -1,9 +1,10 @@
-const { Parser } = require('hot-formula-parser');
+import { Parser } from 'hot-formula-parser';
+import grammarParser from 'hot-formula-parser/lib/grammar-parser/grammar-parser';
 import * as dl from 'deeplearn';
 import Formulae from './Formulae.js';
 import Regex from '../../lib/Regex.js';
 import { getIndicesOf } from '../../lib/helpers.js';
-import { isFormula } from './CellHelpers.js';
+import { isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
 const arrayContainsArray = arr => {
   for (let i = 0; i < arr.length; i++) {
@@ -55,10 +56,81 @@ const FormulaParser = (hotInstance, opts) => {
     model: opts.model,
   });
 
+  console.log('parser:', parser, parser.parser.lexer)
+  // let seenCells = [];
+  // let seenCells = {};
+
+  let cellBeingParsed = "";
+  // let isCircular = false;
+
+  let formulaToBeParsed = "";
+
+  const parseDecorator = function(func) { // runs once
+    return function() {
+      formulaToBeParsed = arguments[0];
+
+      if (arguments.length > 1) {
+        cellBeingParsed = arguments[1];
+      }
+
+
+
+      // search for cell references to be parsed recursively and store indices
+
+      // when a cell is recursively parsed, update the string and search for the cell which had been parsed.
+      // if that cell matches its stored index, assume that it has been parsed successfully and move on.
+
+
+
+      console.log(cellBeingParsed, ':start parse', parser.parser.lexer);
+
+
+      // if (!seenCells[cellBeingParsed]) { seenCells[cellBeingParsed] = {} };
+      // seenCells.push(cellBeingParsed);
+
+      const result = func.apply(this, arguments);
+
+      console.log(cellBeingParsed, ':finish parse')
+
+      // seenCells = {};
+
+      return result;
+    }
+  };
+
+  const recursiveParseDecorator = function(func) {
+    return function() {
+      let cellLabel = arguments[1];
+      console.log('|_', cellLabel, 'within', cellBeingParsed)
+
+      // if (seenCells[cellBeingParsed][cellLabel])
+
+      // if (cellLabel === undefined || seenCells.indexOf(cellLabel) > -1) {
+      //   // console.log(cellBeingParsed, 'circref ')
+      //   return { error: "#CIRCREF", result: null };
+      // } else {
+      //   seenCells.push(cellLabel);
+      // }
+
+      const result = func.apply(this, arguments);
+
+      return result;
+    }
+  };
+
+  parser.recursiveParse = recursiveParseDecorator(parser.parse);
+  parser.parse = parseDecorator(parser.parse);
+
+
+
+  let subCellBeingParsed = '';
+
   parser.on('callCellValue', (cellCoord, done) => {
+    console.log(parser)
     const rowIndex = cellCoord.row.index;
     const columnIndex = cellCoord.column.index;
     const val = hotInstance.getDataAtCell(rowIndex, columnIndex);
+
     let newVal;
     if (new RegExp(Regex.SLIDER).test(val)) {
       const input = hotInstance.getCell(rowIndex, columnIndex).querySelector('input');
@@ -66,7 +138,15 @@ const FormulaParser = (hotInstance, opts) => {
     } else {
       newVal = val.replace('=', '');
     }
-    done(parser.parse(newVal).result);
+    // console.log(cellCoord)
+    // if (!subCellBeing)
+    const parsed = parser.recursiveParse(newVal,  cellCoord.label);
+
+    if (parsed.error) {
+      return;
+    } else {
+      done(parsed.result);
+    }
   });
 
   parser.on('callRangeValue', function(startCellCoord, endCellCoord, done) {
@@ -82,7 +162,9 @@ const FormulaParser = (hotInstance, opts) => {
       for (let col = startColIndex; col <= endColIndex; col++) {
         let value = rowData[col];
         if (isFormula(value.toString())) {
-          value = parser.parse(rowData[col].slice(1)).result;
+          const cellLabel = cellCoordsToLabel({row, col});
+          const result = parser.recursiveParse(rowData[col].slice(1), cellLabel);
+          value = result.error || result.result;
         }
         fragment.push(value);
       }
@@ -94,6 +176,7 @@ const FormulaParser = (hotInstance, opts) => {
   // override common functions to check for and work with tensors
   parser.on('callFunction', (name, paramChunks, done) => {
     const params = [];
+
     // flatten all arg chunks into a single array
     for (let argIndex = 0; argIndex < paramChunks.length; argIndex++) {
       const paramChunk = paramChunks[argIndex];
