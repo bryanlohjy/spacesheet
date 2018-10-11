@@ -219,6 +219,13 @@ export default class Formulae {
     if (!this[formulaKey]) {
       return;
     } else {
+      params = params.filter(param => {
+        if (!isNaN(param) && param !== null) {
+          return true;
+        }
+        return param;
+      });
+      console.log(params)
       return this[formulaKey](params);
     }
   };
