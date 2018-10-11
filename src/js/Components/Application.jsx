@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
-import ModelToLoad from '../Models/Colours.js';
-// import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/Colours.js';
+import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';

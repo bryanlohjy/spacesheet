@@ -225,7 +225,6 @@ export default class Formulae {
         }
         return param;
       });
-      console.log(params)
       return this[formulaKey](params);
     }
   };
