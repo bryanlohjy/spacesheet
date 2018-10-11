@@ -202,11 +202,148 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
       }
     }
   }
+  return output;
+}
+
+const matrixForEach = (matrix, cellFn) => {
+  matrix.forEach((row, rowIndex) => {
+    row.forEach((val, colIndex) => {
+      cellFn(val, rowIndex, colIndex);
+    });
+  });
+};
+
+const matrixMap = (matrix, cellFn) => {
+  let _matrix = matrix.slice();
+  return _matrix.map((row, rowIndex) => {
+    return row.map((val, colIndex) => {
+      return cellFn(val, rowIndex, colIndex);
+    });
+  });
+};
 
 
+const lerpSmartFillFn = (hotInstance, currentSelection) => {
+  const output = { cellsToHighlight: [], newData: [] };
+  const selection = currentSelection;
+
+  const startRow = Math.min(selection[0], selection[2]);
+  const startCol = Math.min(selection[1], selection[3]);
+  const endRow = Math.max(selection[0], selection[2]);
+  const endCol = Math.max(selection[1], selection[3]);
+
+  const selectedCells = hotInstance.getData.apply(self, selection);
+
+  const validMatrix = getValidMatrix(selectedCells);
+
+  let anchors = [];
+  let empties = [];
+
+  matrixForEach(validMatrix, (val, rowIndex, colIndex) => {
+    const cellCoord = [rowIndex, colIndex];
+    if (val) {
+      anchors.push(cellCoord);
+    } else {
+      empties.push(cellCoord);
+    }
+  });
+
+  // console.log(empties)
+  const rows = selectedCells.length;
+  const cols = selectedCells[0].length;
+  const isHorizontal = (rows == 1 && cols > 1);
+  const isVertical = (rows > 1 && cols == 1);
+
+  // if linear, allow interpolation if
+  if (isHorizontal || isVertical) {
+    if (anchors.length == 2) {
+      let cellsBetweenAnchors;
+
+      if (isHorizontal) {
+        cellsBetweenAnchors = Math.abs(anchors[0][1] - anchors[1][1]) - 1;
+      } else if (isVertical) {
+        cellsBetweenAnchors = Math.abs(anchors[0][0] - anchors[1][0]) - 1;
+      }
+
+      if (cellsBetweenAnchors > 0) {
+        const startLabel = cellCoordsToLabel({
+                            row: anchors[0][0] + startRow,
+                            col: anchors[0][1] + startCol,
+                          });
+
+        const endLabel =  cellCoordsToLabel({
+                            row: anchors[1][0] + startRow,
+                            col: anchors[1][1] + startCol,
+                          });
+
+        let _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+          if (validMatrix[rowIndex][colIndex]) {
+            return val;
+          }
+
+          const interval = 1 / (cellsBetweenAnchors + 1);
+          const distFromFirstAnchor = isHorizontal ? colIndex - anchors[0][1] : rowIndex - anchors[0][0];
+
+          const degree = interval * distFromFirstAnchor;
+
+          return `=LERP(${startLabel}, ${endLabel}, ${Number(degree).toFixed(2)})`;
+        });
+        return {
+          cellsToHighlight: empties.map(coord => {
+            return [coord[0] + startRow, coord[1] + startCol];
+          }),
+          newData: _newData
+        };
+      }
+    }
+  }
+
+  const hasAnchors =  validMatrix[0][0] &&
+                      validMatrix[0][cols - 1] &&
+                      validMatrix[rows - 1][cols - 1] &&
+                      validMatrix[rows - 1][0];
+
+  if (!hasAnchors) { return output; }
+
+  let hasNewData = false;
+  const _newData = selectedCells.map((row, rowIndex) => {
+    return row.map((val, colIndex) => {
+      const isAnchor =  (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) ||
+                        (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
+
+      if (isAnchor) { return val; }
+      if (!hasNewData) { hasNewData = true; }
+
+      let lerpBy;
+      let fillString;
+      if (rowIndex === 0) {
+        let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
+        let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
+        lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+        fillString = `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`;
+      } else if (rowIndex === rows - 1) {
+        let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
+        let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
+        lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
+        fillString = `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`;
+      } else {
+        lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
+        const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
+        const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
+        fillString = `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`;
+      }
+      output.cellsToHighlight.push([startRow + rowIndex, startCol + colIndex]);
+      return fillString;
+    });
+  });
+
+  if (hasNewData) {
+    output.newData = _newData;
+  }
 
   return output;
 }
+
 
 module.exports = {
   getValidMatrix,
@@ -214,4 +351,5 @@ module.exports = {
   highlightSmartFillArray,
   groupArgSmartFillFn,
   twoArgSmartFillFn,
+  lerpSmartFillFn,
 };
