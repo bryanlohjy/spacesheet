@@ -42,13 +42,13 @@ export default class Model {
       sorted.forEach((match, i) => {
         const [word, confidence] = match;
         const fontWeight = i == 2 ? 'normal' : 'normal';
-        // const fontSize = i == 2 ? 12 : 10;
         const fontSize = Math.max(12 * confidence, 8);
         ctx.font  = `normal normal ${fontWeight} ${fontSize}px Rubik`;
         ctx.fillStyle = `rgb(225, 225, 225, ${confidence})`;
         ctx.fillText(word, this.outputWidth/2, (ySpacing * i) + ySpacing);
       });
     }
+
     let borderOffset = 0;
     ctx.strokeStyle = 'rgb(40, 40, 40)';
     ctx.strokeRect(borderOffset, borderOffset, this.outputWidth-borderOffset*2, this.outputHeight-borderOffset*2);
