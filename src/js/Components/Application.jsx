@@ -10,26 +10,28 @@ import ModelToLoad from '../Models/Colours.js';
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 
-import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
-// import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 export default class Application extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       modelIsLoaded: false,
       model: null,
-      loadErrors: null,
+      currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: false,
     };
+
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
+    this.setCurrentModel = this.setCurrentModel.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
   };
+
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
@@ -49,12 +51,11 @@ export default class Application extends React.Component {
           dataPickerGrids: dataPickerGrids,
         });
       } else {
-        this.setState({
-          loadErrors: res.errors,
-        });
+        console.error(res.errors);
       }
     });
   };
+
   setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
     const cellData = `=DATAPICKER('${dataKey}')`;
@@ -64,9 +65,11 @@ export default class Application extends React.Component {
       this.setInputBarValue(cellData);
     }
   };
+
   setInputBarValue(value) {
     this.setState({ inputBarValue: value });
   };
+
   getCellFromDataPicker(dataKey) {
     if (Array.isArray(dataKey)) {
       dataKey = dataKey[0];
@@ -78,6 +81,11 @@ export default class Application extends React.Component {
     const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
+
+  setCurrentModel(modelType) {
+    this.setState({currentModel: modelType});
+  };
+
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
@@ -86,12 +94,6 @@ export default class Application extends React.Component {
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
-        {
-          this.state.loadErrors ?
-            <ErrorsModal
-              errors={this.state.loadErrors}
-            /> : ''
-        }
         {
           this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
@@ -129,15 +131,6 @@ export default class Application extends React.Component {
                     }
                   }}
                 />
-                {/* { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
-                  <FontDrawer
-                    hotInstance={this.hotInstance}
-                    formulaParser={this.formulaParser}
-                    model={this.state.model}
-                    ref='fontDrawer'
-                  />
-                  : ""
-                } */}
               </div>
             </div> :
             <div className="loader-container">
@@ -145,25 +138,54 @@ export default class Application extends React.Component {
               <span className="loading-message">Loading model ...</span>
             </div>
         }
-        <nav ref="bottomNav" className="bottom-nav">
-          <div>
-            <div className="logo">
-              <img
-                src='./dist/assets/logo.png'
-                alt="SpaceSheet Logo"
-              />
-            </div>
-            <a href="./faces.html">Faces</a>
-            <a href="./index.html">Fonts</a>
-            <a href="./mnist.html">MNIST</a>
-            <a href="./colours.html" className="active">Colours</a>
-          </div>
-          <div>
-            <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
-          </div>
-        </nav>
+        <BottomNav
+          activeLink={this.state.currentModel}
+          onLinkClick={this.setCurrentModel}
+          links={[
+            {label: 'Faces', id: 'FACES'},
+            {label: 'Fonts', id: 'FONTS'},
+            {label: 'MNIST', id: 'MNIST'},
+            {label: 'Colours', id: 'COLOURS'},
+          ]}
+        />
       </div>
     );
   }
 }
-Application.propTypes = {};
+
+class BottomNav extends React.Component {
+  render() {
+    return (
+      <nav ref="bottomNav" className="bottom-nav">
+        <div>
+          <div className="logo">
+            <img
+              src='./dist/assets/logo.png'
+              alt="SpaceSheet Logo"
+            />
+          </div>
+          {
+            this.props.links.map(link => {
+              return (
+                <a
+                  key={link.id}
+                  onClick={e => this.props.onLinkClick(link.id)}
+                  className={this.props.activeLink === link.id ? 'active' : ''}
+                >{link.label}</a>
+              )
+            })
+          }
+        </div>
+        <div>
+          <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
+        </div>
+      </nav>
+    );
+  }
+}
+
+BottomNav.propTypes = {
+  activeLink: PropTypes.string.isRequired,
+  links: PropTypes.array.isRequired,
+  onLinkClick: PropTypes.func.isRequired,
+};
