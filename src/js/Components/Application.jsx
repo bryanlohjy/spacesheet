@@ -19,7 +19,6 @@ export default class Application extends React.Component {
     super(props);
 
     this.state = {
-      modelIsLoaded: false,
       model: null,
       currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
@@ -47,7 +46,6 @@ export default class Application extends React.Component {
         }
         this.setState({
           model: res.model,
-          modelIsLoaded: true,
           dataPickerGrids: dataPickerGrids,
         });
       } else {
@@ -95,7 +93,7 @@ export default class Application extends React.Component {
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         {
-          this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
+          this.state.model && this.state.dataPickerGrids ?
             <div className="component-container">
               <DataPickers
                 width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
