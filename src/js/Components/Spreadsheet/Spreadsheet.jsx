@@ -59,32 +59,33 @@ export default class Spreadsheet extends React.Component {
           />
         </div>
         {
-          this.state.inputBarAndOperationDrawerIsMounted ? (
-            <div className="table-container" ref="tableContainer">
-              <HotTableContainer
-                setTableRef={ ref => {
-                  this.hotInstance = ref.hotInstance;
-                  this.props.setTableRef(ref);
-                }}
-                width={this.props.width}
-                height={this.props.height - this.inputBarAndOperationDrawerEl.offsetHeight}
-                setInputBarValue={this.props.setInputBarValue}
-                getCellFromDataPicker={this.props.getCellFromDataPicker}
-                model={this.props.model}
-                afterSelection={ (r, c, r2, c2) => {
-                  this.setState({
-                    currentSelection: [r, c , r2, c2],
-                  });
-                }}
-                afterRender={ this.props.afterRender }
-                setFormulaParserRef={this.props.setFormulaParserRef}
-              />
-            </div>) : ''
+          this.state.inputBarAndOperationDrawerIsMounted &&
+          <div className="table-container" ref="tableContainer">
+            <HotTableContainer
+              setTableRef={ ref => {
+                this.hotInstance = ref.hotInstance;
+                this.props.setTableRef(ref);
+              }}
+              width={this.props.width}
+              height={this.props.height - this.inputBarAndOperationDrawerEl.offsetHeight}
+              setInputBarValue={this.props.setInputBarValue}
+              getCellFromDataPicker={this.props.getCellFromDataPicker}
+              model={this.props.model}
+              afterSelection={ (r, c, r2, c2) => {
+                this.setState({
+                  currentSelection: [r, c , r2, c2],
+                });
+              }}
+              afterRender={ this.props.afterRender }
+              setFormulaParserRef={this.props.setFormulaParserRef}
+            />
+          </div>
         }
       </div>
     )
   }
 }
+
 Spreadsheet.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
@@ -113,6 +114,7 @@ class HotTableContainer extends React.Component {
       model: this.props.model,
     });
     this.props.setFormulaParserRef(formulaParser);
+
     const cellTypes = new CellTypes({
       drawFn: this.props.model.drawFn,
       decodeFn: this.props.model.decodeFn,
@@ -122,6 +124,7 @@ class HotTableContainer extends React.Component {
       setInputBarValue: this.props.setInputBarValue,
       minCellSize: this.minCellSize,
     });
+
     hotInstance.updateSettings({
       cells: (row, col, prop) => {
         let cellProperties = {};
@@ -146,6 +149,22 @@ class HotTableContainer extends React.Component {
         return cellProperties;
       },
       data: this.demoSheet ? this.demoSheet.data : null,
+      colHeaders: true,
+      rowHeaders: true,
+      rowHeaderWidth: 32,
+      minCols: 7,
+      minRows: 10,
+      rowHeights: Math.max(this.props.model.outputHeight, this.minCellSize),
+      colWidths: Math.max(this.props.model.outputWidth, this.minCellSize),
+      undo: true,
+      redo: true,
+      outsideClickDeselects: false,
+      preventOverflow: "horizontal",
+      viewportColumnRenderingOffset: 26,
+      viewportRowRenderingOffset: 26,
+      width: this.props.width,
+      height: this.props.height,
+      // Context menu settings
       contextMenu: {
         items: {
           "undo": {
@@ -163,8 +182,11 @@ class HotTableContainer extends React.Component {
           "commentsAddEdit": {},
           "commentsRemove": {},
         }
-      }
+      },
+      customBorders: true,
+      comments: true,
     });
+
     setTimeout(() => {
       hotInstance.selectCell(0, 0);
     }, 0);
@@ -184,30 +206,13 @@ class HotTableContainer extends React.Component {
           }
         }}
         root='hot'
-
-        mergeCells={  this.demoSheet ? this.demoSheet.mergeCells : null }
-
-        rowHeaderWidth={32}
-        colHeaderHeight={32}
-
-        colHeaders={true}
-        rowHeaders={true}
-        preventOverflow="horizontal"
-        rowHeights={Math.max(this.props.model.outputHeight, this.minCellSize)}
-        colWidths={Math.max(this.props.model.outputWidth, this.minCellSize)}
-
-        minCols={7}
-        minRows={10}
-
+        
+        // merge cells needs to be present in render method
+        mergeCells={ this.demoSheet && this.demoSheet.mergeCells }
         afterRender={ forced => {
           if (!this.props.afterRender) { return; }
           this.props.afterRender(forced);
         }}
-
-        viewportColumnRenderingOffset={26}
-        viewportRowRenderingOffset={26}
-
-        outsideClickDeselects={false}
 
         afterUndo={ changes => {
           const selection = this.hotInstance.getSelected();
@@ -219,17 +224,9 @@ class HotTableContainer extends React.Component {
           const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
           this.props.setInputBarValue(data);
         }}
-        afterSelection={ (r, c, r2, c2) => {
+        afterSelection={(r, c, r2, c2) => {
           this.props.afterSelection(r, c, r2, c2);
         }}
-
-        width={this.props.width}
-        height={this.props.height}
-        comments={true}
-        customBorders={true}
-
-        undo
-        redo
       />
     );
   }
