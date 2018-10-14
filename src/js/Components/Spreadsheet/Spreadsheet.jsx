@@ -39,11 +39,13 @@ export default class Spreadsheet extends React.Component {
     this.setSelectedCellData = this.setSelectedCellData.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
     this.afterSelection = this.afterSelection.bind(this);
+    this.afterRender = this.afterRender.bind(this);
+    this.afterUndoRedo = this.afterUndoRedo.bind(this);
 
     const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
     const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
-    // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
-    this.demoSheet = BlankSheet(rows, cols);
+
+    this.defaultSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
     this.minCellSize = 84;
   };
@@ -115,7 +117,7 @@ export default class Spreadsheet extends React.Component {
         }
         return cellProperties;
       },
-      data: this.demoSheet ? this.demoSheet.data : null,
+      data: this.defaultSheet ? this.defaultSheet.data : null,
       colHeaders: true,
       rowHeaders: true,
       rowHeaderWidth: 32,
@@ -130,7 +132,6 @@ export default class Spreadsheet extends React.Component {
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
 
-      // height={this.props.height - this.inputBarAndOperationDrawerEl.offsetHeight}
       // Context menu settings
       contextMenu: {
         items: {
@@ -159,6 +160,17 @@ export default class Spreadsheet extends React.Component {
     }, 0);
   };
 
+  afterRender(forced) {
+    if (!this.props.afterRender) { return; }
+    this.props.afterRender(forced);
+  };
+
+  afterUndoRedo(changes) {
+    const selection = this.hotInstance.getSelected();
+    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+    this.props.setInputBarValue(data);
+  };
+
   render() {
     return (
       <div className="spreadsheet-container">
@@ -183,41 +195,27 @@ export default class Spreadsheet extends React.Component {
         {
           this.state.inputBarAndOperationDrawerIsMounted &&
           <div className="table-container" ref="tableContainer">
-              <WrappedHotTable
-                className="table"
-                onRef={ ref => {
-                  if (ref && !this.hotInstance) {
-                    this.props.setTableRef(ref);
-                    this.hotInstance = ref.hotInstance;
-                    this.initHotTable();
-                  }
-                }}
-                root='hot'
-                width={this.props.width}
-                height={this.props.height - this.inputBarAndOperationDrawerEl.offsetHeight}
+            <WrappedHotTable
+              className="table"
+              onRef={ ref => {
+                if (ref && !this.hotInstance) {
+                  this.props.setTableRef(ref);
+                  this.hotInstance = ref.hotInstance;
+                  this.initHotTable();
+                }
+              }}
+              root='hot'
+              width={this.props.width}
+              height={this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight}
 
-                afterRender={ forced => {
-                  if (!this.props.afterRender) { return; }
-                  this.props.afterRender(forced);
-                }}
+              afterRender={this.afterRender}
+              afterUndo={this.afterUndoRedo}
+              afterRedo={this.afterUndoRedo}
+              afterSelection={this.afterSelection}
 
-                afterUndo={ changes => {
-                  const selection = this.hotInstance.getSelected();
-                  const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  this.props.setInputBarValue(data)
-                }}
-
-                afterRedo={ changes => {
-                  const selection = this.hotInstance.getSelected();
-                  const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-                  this.props.setInputBarValue(data);
-                }}
-
-                afterSelection={this.afterSelection}
-
-                // merge cells needs to be present in render method
-                mergeCells={ this.demoSheet && this.demoSheet.mergeCells }
-              />
+              // merge cells needs to be present in render method
+              mergeCells={this.defaultSheet && this.defaultSheet.mergeCells}
+            />
           </div>
         }
       </div>
