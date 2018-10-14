@@ -44,10 +44,12 @@ export default class Application extends React.Component {
         } catch (e) {
           dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
         }
-        this.setState({
-          model: res.model,
-          dataPickerGrids: dataPickerGrids,
-        });
+        setTimeout(() => {
+          this.setState({
+            model: res.model,
+            dataPickerGrids: dataPickerGrids,
+          });
+        }, 5000)
       } else {
         console.error(res.errors);
       }
@@ -92,50 +94,44 @@ export default class Application extends React.Component {
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
-        {
-          this.state.model && this.state.dataPickerGrids ?
-            <div className="component-container">
-              <DataPickers
-                width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-                height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
-                model={ this.state.model }
-                dataPickerGrids={this.state.dataPickerGrids}
-                onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                ref='dataPickers'
-              />
-              <div className="right-container">
-                <Spreadsheet
-                  width={ spreadsheetWidth }
-                  height={ appHeight }
-                  getCellFromDataPicker={ this.getCellFromDataPicker }
-                  ref='spreadsheet'
-                  model={ this.state.model }
-                  setTableRef={ ref => {
-                    this.hotInstance = ref.hotInstance;
-                  }}
-                  setFormulaParserRef={ parser => {
-                    this.formulaParser = parser;
-                  }}
-                  inputBarValue={this.state.inputBarValue}
-                  setInputBarValue={this.setInputBarValue}
-                  afterRender={ forced => {
-                    if (!forced) { return };
-                    if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
-                    this.refs.fontDrawer.updateFontSamples();
-                    const editor = this.hotInstance.getActiveEditor();
-                    if (editor) {
-                      editor.clearHighlightedReferences();
-                      editor.highlightReferences(this.hotInstance);
-                    }
-                  }}
-                />
-              </div>
-            </div> :
-            <div className="loader-container">
-              <div className="loader"/>
-              <span className="loading-message">Loading model ...</span>
-            </div>
-        }
+        <div className="component-container">
+          <DataPickers
+            width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
+            height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
+            model={ this.state.model }
+            dataPickerGrids={this.state.dataPickerGrids}
+            onCellClick={ this.setSpreadsheetCellFromDataPicker }
+            ref='dataPickers'
+          />
+          <div className="right-container">
+            <Spreadsheet
+              width={ spreadsheetWidth }
+              height={ appHeight }
+              getCellFromDataPicker={ this.getCellFromDataPicker }
+              ref='spreadsheet'
+              model={ this.state.model }
+              setTableRef={ ref => {
+                this.hotInstance = ref.hotInstance;
+              }}
+              setFormulaParserRef={ parser => {
+                this.formulaParser = parser;
+              }}
+              inputBarValue={this.state.inputBarValue}
+              setInputBarValue={this.setInputBarValue}
+              afterRender={ forced => {
+                if (!forced) { return };
+                if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
+                this.refs.fontDrawer.updateFontSamples();
+                const editor = this.hotInstance.getActiveEditor();
+                if (editor) {
+                  editor.clearHighlightedReferences();
+                  editor.highlightReferences(this.hotInstance);
+                }
+              }}
+              currentModel={this.state.currentModel}
+            />
+          </div>
+        </div>
         <BottomNav
           activeLink={this.state.currentModel}
           onLinkClick={this.setCurrentModel}

@@ -36,18 +36,25 @@ export default class Spreadsheet extends React.Component {
       inputBarValue: "",
       currentSelection: [0, 0, 0, 0],
     };
+
     this.setSelectedCellData = this.setSelectedCellData.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
+    this.updateHotTableSettings = this.updateHotTableSettings.bind(this);
+
     this.afterSelection = this.afterSelection.bind(this);
     this.afterRender = this.afterRender.bind(this);
     this.afterUndoRedo = this.afterUndoRedo.bind(this);
-
-    const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
-    const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
-
-    this.defaultSheet = BlankSheet(rows, cols);
     this.initHotTable = this.initHotTable.bind(this);
     this.minCellSize = 84;
+  };
+
+  componentWillReceiveProps(newProps) {
+    const modelFirstLoaded = newProps.model && !this.props.model;
+    const modelChanged = newProps.currentModel !== this.props.currentModel;
+
+    if (modelFirstLoaded || modelChanged) {
+      this.updateHotTableSettings(newProps.model);
+    }
   };
 
   setSelectedCellData(operation, closeAfterSetting) {
@@ -60,6 +67,7 @@ export default class Spreadsheet extends React.Component {
       }
       return;
     }
+
     const editor = this.hotInstance.getActiveEditor();
     editor.beginEditing();
     editor.clearHighlightedReferences();
@@ -68,69 +76,28 @@ export default class Spreadsheet extends React.Component {
     editor.updateTableCellCaptureClass();
   };
 
-  afterSelection(r, c, r2, c2) {
-    this.setState({
-      currentSelection: [r, c , r2, c2],
-    });
-  };
-
   initHotTable() {
-    const hotInstance = this.hotInstance;
+    const cols = Math.ceil(this.props.width / this.minCellSize) + 1;
+    const rows = Math.ceil(this.props.height / this.minCellSize) + 1;
 
-    const formulaParser = new FormulaParser(this.hotInstance, {
-      getCellFromDataPicker: this.props.getCellFromDataPicker,
-      model: this.props.model,
-    });
+    this.defaultSheet = BlankSheet(rows, cols);
 
-    this.props.setFormulaParserRef(formulaParser);
-
-    const cellTypes = new CellTypes({
-      drawFn: this.props.model.drawFn,
-      decodeFn: this.props.model.decodeFn,
-      outputWidth: this.props.model.outputWidth,
-      outputHeight: this.props.model.outputHeight,
-      formulaParser: formulaParser,
-      setInputBarValue: this.props.setInputBarValue,
-      minCellSize: this.minCellSize,
-    });
-
-    hotInstance.updateSettings({
-      cells: (row, col, prop) => {
-        let cellProperties = {};
-        const cellData = hotInstance.getDataAtRowProp(row, prop);
-        switch (getCellType(cellData)) {
-          case 'FORMULA':
-          cellProperties.renderer = cellTypes.Formula.renderer;
-          cellProperties.editor = cellTypes.Formula.editor;
-          break;
-          case 'SLIDER':
-          cellProperties.renderer = cellTypes.Slider.renderer;
-          cellProperties.editor = cellTypes.Slider.editor;
-          break;
-          case 'RANDVAR':
-          cellProperties.renderer = cellTypes.RandVar.renderer;
-          cellProperties.editor = cellTypes.RandVar.editor;
-          break;
-          default:
-          cellProperties.renderer = cellTypes.Text.renderer;
-          cellProperties.editor = cellTypes.Text.editor;
-        }
-        return cellProperties;
-      },
+    this.hotInstance.updateSettings({
       data: this.defaultSheet ? this.defaultSheet.data : null,
       colHeaders: true,
       rowHeaders: true,
       rowHeaderWidth: 32,
       minCols: 7,
       minRows: 10,
-      rowHeights: Math.max(this.props.model.outputHeight, this.minCellSize),
-      colWidths: Math.max(this.props.model.outputWidth, this.minCellSize),
+      rowHeights: this.minCellSize,
+      colWidths: this.minCellSize,
       undo: true,
       redo: true,
       outsideClickDeselects: false,
       preventOverflow: "horizontal",
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
+      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
 
       // Context menu settings
       contextMenu: {
@@ -156,8 +123,69 @@ export default class Spreadsheet extends React.Component {
     });
 
     setTimeout(() => {
-      hotInstance.selectCell(0, 0);
+      this.hotInstance.selectCell(0, 0);
     }, 0);
+  };
+
+  updateHotTableSettings(model) {
+    const cols = Math.ceil(this.props.width / model.outputWidth) + 1;
+    const rows = Math.ceil(this.props.height / model.outputHeight) + 1;
+
+    const formulaParser = new FormulaParser(this.hotInstance, {
+      getCellFromDataPicker: this.props.getCellFromDataPicker,
+      model: model,
+    });
+
+    this.props.setFormulaParserRef(formulaParser);
+
+    const cellTypes = new CellTypes({
+      drawFn: model.drawFn,
+      decodeFn: model.decodeFn,
+      outputWidth: model.outputWidth,
+      outputHeight: model.outputHeight,
+      formulaParser: formulaParser,
+      setInputBarValue: this.props.setInputBarValue,
+      minCellSize: this.minCellSize,
+    });
+
+    this.hotInstance.updateSettings({
+      cells: (row, col, prop) => {
+        let cellProperties = {};
+        const cellData = this.hotInstance.getDataAtRowProp(row, prop);
+        switch (getCellType(cellData)) {
+          case 'FORMULA':
+          cellProperties.renderer = cellTypes.Formula.renderer;
+          cellProperties.editor = cellTypes.Formula.editor;
+          break;
+          case 'SLIDER':
+          cellProperties.renderer = cellTypes.Slider.renderer;
+          cellProperties.editor = cellTypes.Slider.editor;
+          break;
+          case 'RANDVAR':
+          cellProperties.renderer = cellTypes.RandVar.renderer;
+          cellProperties.editor = cellTypes.RandVar.editor;
+          break;
+          default:
+          cellProperties.renderer = cellTypes.Text.renderer;
+          cellProperties.editor = cellTypes.Text.editor;
+        }
+        return cellProperties;
+      },
+
+      data: this.defaultSheet ? this.defaultSheet.data : null,
+      rowHeights: Math.max(model.outputHeight, this.minCellSize),
+      colWidths: Math.max(model.outputWidth, this.minCellSize),
+    });
+
+    setTimeout(() => {
+      this.hotInstance.selectCell(0, 0);
+    }, 0);
+  };
+
+  afterSelection(r, c, r2, c2) {
+    this.setState({
+      currentSelection: [r, c , r2, c2],
+    });
   };
 
   afterRender(forced) {
@@ -177,7 +205,7 @@ export default class Spreadsheet extends React.Component {
         <div
           ref={ el => {
             if (!this.state.inputBarIsMounted && !this.inputBarAndOperationDrawerEl) {
-              this.setState({ inputBarAndOperationDrawerIsMounted : true });
+              this.setState({ inputBarAndOperationDrawerIsMounted: true });
               this.inputBarAndOperationDrawerEl = el;
             }
           }}
@@ -201,9 +229,11 @@ export default class Spreadsheet extends React.Component {
                 if (ref && !this.hotInstance) {
                   this.props.setTableRef(ref);
                   this.hotInstance = ref.hotInstance;
-                  this.initHotTable();
+                  // Wait for actual heights of elements
+                  setTimeout(this.initHotTable, 0);
                 }
               }}
+
               root='hot'
               width={this.props.width}
               height={this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight}
@@ -227,9 +257,10 @@ Spreadsheet.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object.isRequired,
+  model: PropTypes.object,
   inputBarValue: PropTypes.string,
   setTableRef: PropTypes.func,
   setFormulaParserRef: PropTypes.func,
   afterRender: PropTypes.func,
+  currentModel: PropTypes.string,
 };
