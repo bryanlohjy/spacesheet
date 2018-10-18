@@ -141,7 +141,7 @@ const CellTypes = opts => {
       if (data && data.trim().length) {
         const randArgs = getArgumentsFromFunction(data);
         if (randArgs.length === 0) { // if there are no arguments, create a random seed
-          data = `=RANDVAR${ randomInt(0, 99999) })`;
+          data = `=RANDVAR(${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
         }
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
@@ -204,11 +204,17 @@ const CellTypes = opts => {
   const Mod = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
+        const args = getArgumentsFromFunction(data);
+
+        if (args.length === 1) { // if there are no arguments, create a random seed
+          data = `=MOD(${args[0]}, 0, 0)`;
+          hotInstance.setDataAtCell(row, col, data);
+        }
+
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
         let { result, error } = compiled;
 
         let prevMod = td.querySelector('.mod');
-        let prevCanvas = td.querySelector('canvas');
 
         if (result && typeof result !== 'string') {
           let canvas;
@@ -224,12 +230,9 @@ const CellTypes = opts => {
             canvas.width = opts.outputWidth - 1;
             canvas.height = opts.outputHeight - 1;
 
-            prevCanvas = canvas;
-
             class ModJoystick {
               constructor(callbacks) {
-                this.startDrag = false
-                ;
+                this.startDrag = false;
                 this.resetJoystickPos = this.resetJoystickPos.bind(this);
                 this.updateJoystickPos = this.updateJoystickPos.bind(this);
                 this.onMouseDown = this.onMouseDown.bind(this);
@@ -352,6 +355,7 @@ const CellTypes = opts => {
 
             const modJoystick = new ModJoystick({
               onChange: (rotation, rad) => {
+
                 // console.log('change', rotation, rad);
               },
               onLeave: (rotation, rad) => {
@@ -373,65 +377,7 @@ const CellTypes = opts => {
           const ctx = canvas.getContext('2d');
           const decodedVector = opts.decodeFn(result);
           opts.drawFn(ctx, decodedVector);
-          // let min = result.min;
-          // let max = result.max;
-          // let step = result.step;
-          //
-          // let slider;
-          // // let valueSpan;
-          // let sliderContainer;
-          // if (prevSlider) {
-          //   slider = prevSlider;
-          //   // valueSpan = td.querySelector('span');
-          // } else {
-          //   td.innerHTML = '';
-          //   sliderContainer = document.createElement('div');
-          //   sliderContainer.classList.add('slider-container');
-          //
-          //   sliderContainer.style.width = `${cellWidth - 1}px`;
-          //   sliderContainer.style.height = `${cellHeight - 1}px`;
-          //
-          //   slider = document.createElement('input');
-          //   slider.setAttribute('type', 'range');
-          //   slider.setAttribute('tabindex', '-1');
-          //
-          //   HandsOnTable.dom.addEvent(slider, 'input', function(e) {
-          //     hotInstance.render();
-          //   });
-          //   HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
-          //     e.preventDefault();
-          //   });
-          //   HandsOnTable.dom.addEvent(slider, 'mousedown', function(e) {
-          //     e.stopPropagation();
-          //   });
-          //
-          //   // valueSpan = document.createElement('span');
-          // }
-          //
-          // if (min > max) {
-          //   min = result.max;
-          //   max = result.min;
-          //   slider.classList.add('reversed');
-          // } else {
-          //   slider.classList.remove('reversed');
-          // }
-          //
-          // slider.setAttribute('min', min);
-          // slider.setAttribute('max', max);
-          // slider.setAttribute('step', step);
-          // slider.setAttribute('title', slider.value || 0);
-          //
-          // const numDecimals = countDecimalPlaces(step);
-          // // valueSpan.innerText = Number(slider.value).toFixed(numDecimals);
-          //
-          // if (!prevSlider) {
-          //   // set value to halfway by default
-          //   slider.setAttribute('value', (min + max)/2);
-          //   sliderContainer.appendChild(valueSpan);
-          //   sliderContainer.appendChild(slider);
-          //   td.appendChild(sliderContainer);
-          //   hotInstance.render()
-          // }
+
         } else {
           td.innerHTML = '';
           td.innerText = error || result;
