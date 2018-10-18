@@ -281,8 +281,6 @@ const lerpSmartFillFn = (hotInstance, currentSelection) => {
       cellsBetweenAnchors = Math.abs(lerpAnchors[0][0] - lerpAnchors[1][0]) - 1;
     }
 
-    if (cellsBetweenAnchors < 1) { return output; }
-
     const startLabel = cellCoordsToLabel({
                         row: lerpAnchors[0][0] + startRow,
                         col: lerpAnchors[0][1] + startCol,
