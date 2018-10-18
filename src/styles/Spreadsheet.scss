@@ -148,18 +148,48 @@
 
     .mod-container {
       position: absolute;
-      background: rgba(0, 0, 0, 0.2);
+      opacity: 0;
+
+      transition: opacity 0.1s;
+
+      &:hover {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      background: rgba(0, 0, 0, 0.1);
       z-index: 1;
       top: 0;
       left: 0;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+
+      .mod-markers {
+        color: white;
+        // rgba(255, 255, 255, 0.4);
+        border: 1px dashed white;
+        // rgba(255, 255, 255, 0.4);
+        border-radius: 100%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+      }
+
       .mod-joystick {
         position: absolute;
-        width: 15px;
-        height: 15px;
+        width: 8px;
+        height: 8px;
         background: $actionColor;
         border-radius: 100%;
         cursor: move;
       }
+
     }
 
     .canvas-container {

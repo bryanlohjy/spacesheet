@@ -212,7 +212,7 @@ const CellTypes = opts => {
 
         if (result && typeof result !== 'string') {
           let canvas;
-          if (!prevCanvas) {
+          if (!prevMod) {
             td.innerHTML = '';
 
             const canvasContainer = document.createElement('div');
@@ -258,6 +258,7 @@ const CellTypes = opts => {
                   container.addEventListener('mouseleave', this.mouseLeave);
                   container.addEventListener('mouseup', this.onMouseUp);
                   container.addEventListener('mousemove', this.onMouseMove);
+
                   const el = document.createElement('div');
                   el.classList.add('mod-joystick');
 
@@ -265,6 +266,11 @@ const CellTypes = opts => {
                   el.addEventListener('mouseup', this.onMouseUp);
                   el.ondragstart = function() { return false };
 
+                  const markers = document.createElement('div');
+                  markers.classList.add('mod-markers');
+                  markers.innerText = '＋';
+
+                  container.appendChild(markers);
                   container.appendChild(el);
 
                   this.joystickEl = el;
@@ -337,6 +343,7 @@ const CellTypes = opts => {
                 console.log('set', rotation, rad);
               }
             }).element;
+
             canvasContainer.appendChild(canvas);
             canvasContainer.appendChild(modJoystick);
 
