@@ -227,7 +227,7 @@ const CellTypes = opts => {
             prevCanvas = canvas;
 
             class ModJoystick {
-              constructor() {
+              constructor(callbacks) {
                 this.startDrag = false;
 
                 this.updateJoystickPos = this.updateJoystickPos.bind(this);
@@ -235,6 +235,11 @@ const CellTypes = opts => {
                 this.onMouseUp = this.onMouseUp.bind(this);
                 this.onMouseMove = this.onMouseMove.bind(this);
                 this.mouseLeave = this.mouseLeave.bind(this);
+                this.calcParams = this.calcParams.bind(this);
+
+                this.onChange = callbacks.onChange;
+                this.onLeave = callbacks.onLeave;
+                this.onSet = callbacks.onSet;
 
                 this.joystickX = 0;
                 this.joystickY = 0;
@@ -288,8 +293,15 @@ const CellTypes = opts => {
                 this.mouseOffsetY = e.clientY-this.joystickEl.getBoundingClientRect().top-this.joystickWidth/2;
               }
 
+              calcParams() {
+                return { rotation: this.joystickX, radius: this.joystickY };
+              }
+
               onMouseUp(e) {
+                if (!this.startDrag) { return; }
                 this.startDrag = false;
+                const {rotation, radius} = this.calcParams();
+                this.onSet(rotation, radius);
               }
 
               onMouseMove(e) {
@@ -300,14 +312,31 @@ const CellTypes = opts => {
                 this.joystickX += shiftX-this.mouseOffsetX;
                 this.joystickY += shiftY-this.mouseOffsetY;
                 this.updateJoystickPos();
+
+                const {rotation, radius} = this.calcParams();
+                this.onChange(rotation, radius);
               }
 
               mouseLeave(e) {
+                if (!this.startDrag) { return; }
                 this.startDrag = false;
+
+                const {rotation, radius} = this.calcParams();
+                this.onLeave(rotation, radius);
               }
             }
 
-            const modJoystick = new ModJoystick().element;
+            const modJoystick = new ModJoystick({
+              onChange: (rotation, rad) => {
+                console.log('change', rotation, rad);
+              },
+              onLeave: (rotation, rad) => {
+                console.log('leave', rotation, rad);
+              },
+              onSet: (rotation, rad) => {
+                console.log('set', rotation, rad);
+              }
+            }).element;
             canvasContainer.appendChild(canvas);
             canvasContainer.appendChild(modJoystick);
 
