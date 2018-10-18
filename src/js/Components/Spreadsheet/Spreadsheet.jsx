@@ -97,29 +97,7 @@ export default class Spreadsheet extends React.Component {
       preventOverflow: "horizontal",
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
-      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
-
-      // Context menu settings
-      contextMenu: {
-        items: {
-          "undo": {
-            name: "Undo (Ctrl + Z)",
-          },
-          "redo": {
-            name: "Redo (Ctrl + Y)",
-          },
-          "hsep1": "---------",
-          "borders": {},
-          "alignment": {},
-          "hsep2": "---------",
-          "mergeCells": {},
-          "hsep3": "---------",
-          "commentsAddEdit": {},
-          "commentsRemove": {},
-        }
-      },
-      customBorders: true,
-      comments: true,
+      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight
     });
 
     setTimeout(() => {
