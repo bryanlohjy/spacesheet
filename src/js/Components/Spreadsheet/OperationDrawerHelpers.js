@@ -358,15 +358,12 @@ const lerpSmartFillFn = (hotInstance, currentSelection) => {
       }
     });
 
-    let missingAnchor = "";
+    const analogyGrid = gridAnchors.TL && gridAnchors.TR && gridAnchors.BL;
+    const lerpGrid = gridAnchors.TL && gridAnchors.TR && gridAnchors.BL && gridAnchors.BR;
 
-    let knownAnchors = Object.keys(gridAnchors).filter(key => {
-      if (gridAnchors[key]) {
-        return true;
-      } else {
-        missingAnchor = key;
-      }
-    });
+    if (!analogyGrid && !lerpGrid) {
+      return output;
+    }
 
     const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
       const TL = rowIndex == 0 && colIndex == 0;
@@ -376,30 +373,23 @@ const lerpSmartFillFn = (hotInstance, currentSelection) => {
       const isAnchor = TL || TR || BR || BL;
 
       if (isAnchor) {
-        const corners = ['TL', 'TR', 'BR', 'BL'];
-
-        const baseIndex = (corners.indexOf(missingAnchor) + 1) % 4;
-        const base = gridAnchors[corners[baseIndex]];
-        const subtractee = gridAnchors[corners[(baseIndex + 2) % 4]];
-        const subtractor = gridAnchors[corners[(baseIndex + 1) % 4]];
-
-        const baseLabel = cellCoordsToLabel({
-                            row: base[0] + startRow,
-                            col: base[1] + startCol
-                          });
-
-        const subtracteeLabel = cellCoordsToLabel({
-                                  row: subtractee[0] + startRow,
-                                  col: subtractee[1] + startCol
-                                });
-
-        const subtractorLabel = cellCoordsToLabel({
-                                  row: subtractor[0] + startRow,
-                                  col: subtractor[1] + startCol
-                                });
-
         if (!val) {
-          return `=SUM(${baseLabel}, MINUS(${subtracteeLabel}, ${subtractorLabel}))`;
+          const TLLabel = cellCoordsToLabel({
+            row: gridAnchors.TL[0] + startRow,
+            col: gridAnchors.TL[1] + startCol
+          });
+
+          const TRLabel = cellCoordsToLabel({
+            row: gridAnchors.TR[0] + startRow,
+            col: gridAnchors.TR[1] + startCol
+          });
+
+          const BLLabel = cellCoordsToLabel({
+            row: gridAnchors.BL[0] + startRow,
+            col: gridAnchors.BL[1] + startCol
+          });
+
+          return `=SUM(${BLLabel}, MINUS(${TRLabel}, ${TLLabel}))`;
         } else {
           return val;
         }
