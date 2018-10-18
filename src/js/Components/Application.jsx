@@ -185,7 +185,6 @@ class BottomNav extends React.Component {
                   key={link.id}
                   className={isCurrent ? 'active' : ''}
                   href={link.href}
-                  target='_blank'
                 >{link.label}</a>
               )
             })
