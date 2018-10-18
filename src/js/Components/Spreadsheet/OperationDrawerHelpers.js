@@ -1,4 +1,4 @@
-import { cellCoordsToLabel } from './CellHelpers.js';
+import { cellCoordsToLabel, matrixForEach, matrixMap } from './CellHelpers.js';
 import { getAllIndicesInArray } from '../../lib/helpers.js';
 
 const getValidMatrix = arr => {
@@ -204,24 +204,6 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
   }
   return output;
 }
-
-const matrixForEach = (matrix, cellFn) => {
-  matrix.forEach((row, rowIndex) => {
-    row.forEach((val, colIndex) => {
-      cellFn(val, rowIndex, colIndex);
-    });
-  });
-};
-
-const matrixMap = (matrix, cellFn) => {
-  let _matrix = matrix.slice();
-  return _matrix.map((row, rowIndex) => {
-    return row.map((val, colIndex) => {
-      return cellFn(val, rowIndex, colIndex);
-    });
-  });
-};
-
 
 const lerpSmartFillFn = (hotInstance, currentSelection) => {
   const output = { cellsToHighlight: [], newData: [] };
