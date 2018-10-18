@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
-import ModelToLoad from '../Models/Colours.js';
-// import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/Colours.js';
+import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -22,11 +22,10 @@ export default class Application extends React.Component {
       model: null,
       currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
-      dataPickerGrids: false,
+      dataPickerGrids: null,
     };
 
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
-    this.setCurrentModel = this.setCurrentModel.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
   };
@@ -44,12 +43,12 @@ export default class Application extends React.Component {
         } catch (e) {
           dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
         }
-        setTimeout(() => {
+        // setTimeout(() => {
           this.setState({
             model: res.model,
             dataPickerGrids: dataPickerGrids,
           });
-        }, 5000)
+        // }, 5000)
       } else {
         console.error(res.errors);
       }
@@ -80,10 +79,6 @@ export default class Application extends React.Component {
     const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
     const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
-  };
-
-  setCurrentModel(modelType) {
-    this.setState({currentModel: modelType});
   };
 
   render() {
@@ -134,12 +129,11 @@ export default class Application extends React.Component {
         </div>
         <BottomNav
           activeLink={this.state.currentModel}
-          onLinkClick={this.setCurrentModel}
           links={[
-            {label: 'Faces', id: 'FACES'},
-            {label: 'Fonts', id: 'FONTS'},
-            {label: 'MNIST', id: 'MNIST'},
-            {label: 'Colours', id: 'COLOURS'},
+            {label: 'Faces', id: 'FACES', href: 'http://bryanlohjy.gitlab.io/spacesheet/faces.html'},
+            {label: 'Fonts', id: 'FONTS', href: 'http://bryanlohjy.gitlab.io/spacesheet/index.html'},
+            {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
+            {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
           ]}
         />
       </div>
@@ -160,11 +154,13 @@ class BottomNav extends React.Component {
           </div>
           {
             this.props.links.map(link => {
+              const isCurrent = this.props.activeLink === link.id;
               return (
                 <a
                   key={link.id}
-                  onClick={e => this.props.onLinkClick(link.id)}
-                  className={this.props.activeLink === link.id ? 'active' : ''}
+                  className={isCurrent ? 'active' : ''}
+                  href={link.href}
+                  target='_blank'
                 >{link.label}</a>
               )
             })
@@ -181,5 +177,4 @@ class BottomNav extends React.Component {
 BottomNav.propTypes = {
   activeLink: PropTypes.string.isRequired,
   links: PropTypes.array.isRequired,
-  onLinkClick: PropTypes.func.isRequired,
 };

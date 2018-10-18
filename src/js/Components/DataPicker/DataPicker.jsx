@@ -246,7 +246,7 @@ DataPicker.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   visible: PropTypes.bool,
-  model: PropTypes.object.isRequired,
+  model: PropTypes.object,
   data: PropTypes.object,
   dataPickerLabel: PropTypes.string,
   onCellClick: PropTypes.func,
