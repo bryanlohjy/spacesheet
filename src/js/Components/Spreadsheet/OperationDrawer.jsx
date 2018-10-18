@@ -8,6 +8,7 @@ import {
   highlightSmartFillArray,
   groupArgSmartFillFn,
   twoArgSmartFillFn,
+  lerpSmartFillFn,
 } from './OperationDrawerHelpers.js';
 
 export default class OperationDrawer extends React.Component {
@@ -75,54 +76,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          const output = { cellsToHighlight: [], newData: [] };
-          const selection = self.props.currentSelection;
-          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-
-          const rows = selectedCells.length;
-          const cols = selectedCells[0].length;
-
-          const validMatrix = getValidMatrix(selectedCells);
-          const hasAnchors = validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][cols - 1] && validMatrix[rows - 1][0];
-          if (!hasAnchors) { return output; }
-
-          const startRow = Math.min(selection[0], selection[2]);
-          const startCol = Math.min(selection[1], selection[3]);
-          const endRow = Math.max(selection[0], selection[2]);
-          const endCol = Math.max(selection[1], selection[3]);
-
-          let hasNewData = false;
-          const _newData = selectedCells.map((row, rowIndex) => {
-            return row.map((val, colIndex) => {
-              const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
-              if (isAnchor) { return val; }
-              if (!hasNewData) { hasNewData = true; }
-              let lerpBy;
-              let fillString;
-              if (rowIndex === 0) {
-                let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-                let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
-                lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                fillString = `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`;
-              } else if (rowIndex === rows - 1) {
-                let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-                let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
-                lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                fillString = `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`;
-              } else {
-                lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
-                const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
-                const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
-                fillString = `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`;
-              }
-              output.cellsToHighlight.push([startRow + rowIndex, startCol + colIndex]);
-              return fillString;
-            });
-          });
-          if (hasNewData) {
-            output.newData = _newData;
-          }
-          return output;
+          return lerpSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'AVERAGE');
         },
       },
       MINUS: {
