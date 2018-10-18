@@ -87,6 +87,8 @@ const FormulaParser = (hotInstance, opts) => {
         fragment.push(value);
       }
     }
+
+    // TODO: tidy up bad
     fragment.isFragment = true;
     done(fragment);
   });

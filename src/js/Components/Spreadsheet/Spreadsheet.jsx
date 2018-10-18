@@ -143,6 +143,10 @@ export default class Spreadsheet extends React.Component {
           cellProperties.renderer = cellTypes.RandVar.renderer;
           cellProperties.editor = cellTypes.RandVar.editor;
           break;
+          case 'MOD':
+          cellProperties.renderer = cellTypes.Mod.renderer;
+          cellProperties.editor = cellTypes.Mod.editor;
+          break;
           default:
           cellProperties.renderer = cellTypes.Text.renderer;
           cellProperties.editor = cellTypes.Text.editor;

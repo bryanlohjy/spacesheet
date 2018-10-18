@@ -202,6 +202,12 @@ export default class Formulae {
       return multiplied.sum();
     }).dataSync()[0];
   };
+  MOD(params) {
+    return '#N/A';
+  };
+  MOD_TENSOR(params) {
+    return params.join('');
+  };
   call(name, params, isTensorCalculation) {
     const aliases = {
       'ADD': 'SUM',
