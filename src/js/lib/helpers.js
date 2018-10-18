@@ -126,7 +126,7 @@ const helpers = {
     const hh = String(dateObj.getHours()).padStart(2, '0');
     const mm = String(dateObj.getMinutes()).padStart(2, '0');
 
-    return `${DD}-${MM}-${YYYY}_${hh}-${mm}` || dateObj.toDateString().replace(/\s/gi, '-');
+    return `${YYYY}-${mm}-${DD}_${hh}-${mm}` || `${DD}-${MM}-${YYYY}_${hh}-${mm}` || dateObj.toDateString().replace(/\s/gi, '-');
   }
 };
 module.exports = helpers;

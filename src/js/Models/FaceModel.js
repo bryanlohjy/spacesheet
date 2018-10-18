@@ -1,5 +1,4 @@
 import * as tf from '@tensorflow/tfjs';
-import {loadFrozenModel} from '@tensorflow/tfjs-converter';
 
 import { randomInt } from '../lib/helpers.js';
 

@@ -5,8 +5,8 @@ import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Colours.js';
-import ModelToLoad from '../Models/Word2Vec.js';
-// import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/Word2Vec.js';
+import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -15,20 +15,31 @@ import DataPickers from './DataPicker/DataPickers.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import { matrixForEach, cellCoordsToLabel } from './Spreadsheet/CellHelpers.js';
+import { formatDate } from '../lib/helpers.js';
+
 export default class Application extends React.Component {
   constructor(props) {
     super(props);
+
+    const debugMode = Boolean(window.location.hash && window.location.hash.toLowerCase() === '#debug');
 
     this.state = {
       model: null,
       currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
+      debugMode
     };
+
+    this.onHashChange = this.onHashChange.bind(this);
 
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
+    this.saveVectors = this.saveVectors.bind(this);
   };
 
   componentDidMount() { // Initialise model + load grid data for DataPicker
@@ -54,6 +65,55 @@ export default class Application extends React.Component {
         console.error(res.errors);
       }
     });
+
+
+    window.addEventListener('hashchange', this.onHashChange, false);
+  };
+
+  onHashChange(e) {
+    if (window.location.hash && window.location.hash.toLowerCase() === '#debug') {
+      this.setState({
+        debugMode: true,
+      });
+    } else {
+      this.setState({
+        debugMode: false,
+      });
+    }
+  };
+
+  saveVectors(e) {
+    const zip = new JSZip();
+    const img = zip.folder("images");
+
+    const vectors = {};
+
+    const sheetData = this.hotInstance.getData();
+
+    matrixForEach(sheetData, (val, row, col) => {
+      if (val && String(val).trim()[0] === '=') {
+        const cell = this.hotInstance.getCell(row, col);
+        const canvasEl = cell.querySelector('canvas');
+
+        if (canvasEl) {
+          const parsed = this.formulaParser.parse(val.trim().substring(1));
+          const label = cellCoordsToLabel({ row, col });
+
+          if (!parsed.error) {
+            vectors[label] = Array.from(parsed.result);
+            const imgData = canvasEl.toDataURL().split('base64,')[1];
+            img.file(`${label}.png`, imgData, {base64: true});
+          }
+        }
+      }
+    });
+
+    const baseName = `spacesheet_${this.state.currentModel.toLowerCase()}_${formatDate(new Date())}`;
+    zip.file(`${baseName}_vectors.json`, JSON.stringify(vectors));
+    zip.generateAsync({type: 'blob'})
+       .then(content => {
+          saveAs(content, `${baseName}.zip`);
+      	});
   };
 
   setSpreadsheetCellFromDataPicker(dataKey) {
@@ -136,6 +196,8 @@ export default class Application extends React.Component {
             {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
             {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
           ]}
+          debugMode={this.state.debugMode}
+          saveVectors={this.saveVectors}
         />
       </div>
     );
@@ -161,13 +223,16 @@ class BottomNav extends React.Component {
                   key={link.id}
                   className={isCurrent ? 'active' : ''}
                   href={link.href}
-                  target='_blank'
                 >{link.label}</a>
               )
             })
           }
         </div>
         <div>
+        {
+          this.props.debugMode &&
+          <a onClick={this.props.saveVectors}>Save vectors</a>
+        }
           <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
         </div>
       </nav>
@@ -178,4 +243,6 @@ class BottomNav extends React.Component {
 BottomNav.propTypes = {
   activeLink: PropTypes.string.isRequired,
   links: PropTypes.array.isRequired,
+  debugMode: PropTypes.bool.isRequired,
+  saveVectors: PropTypes.func
 };
