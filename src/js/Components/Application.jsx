@@ -19,12 +19,17 @@ export default class Application extends React.Component {
   constructor(props) {
     super(props);
 
+    const debugMode = Boolean(window.location.hash && window.location.hash.toLowerCase() === '#debug');
+
     this.state = {
       model: null,
       currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
+      debugMode
     };
+
+    this.onHashChange = this.onHashChange.bind(this);
 
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
@@ -54,6 +59,21 @@ export default class Application extends React.Component {
         console.error(res.errors);
       }
     });
+
+
+    window.addEventListener('hashchange', this.onHashChange, false);
+  };
+
+  onHashChange(e) {
+    if (window.location.hash && window.location.hash.toLowerCase() === '#debug') {
+      this.setState({
+        debugMode: true,
+      });
+    } else {
+      this.setState({
+        debugMode: false,
+      });
+    }
   };
 
   setSpreadsheetCellFromDataPicker(dataKey) {
@@ -136,6 +156,10 @@ export default class Application extends React.Component {
             {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
             {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
           ]}
+          debugMode={this.state.debugMode}
+          saveVectors={e => {
+            console.log(e)
+          }}
         />
       </div>
     );
@@ -168,6 +192,9 @@ class BottomNav extends React.Component {
           }
         </div>
         <div>
+          {
+            this.props.debugMode && <a onClick={this.props.saveVectors}>Save vectors</a>
+          }
           <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
         </div>
       </nav>
@@ -178,4 +205,6 @@ class BottomNav extends React.Component {
 BottomNav.propTypes = {
   activeLink: PropTypes.string.isRequired,
   links: PropTypes.array.isRequired,
+  debugMode: PropTypes.bool.isRequired,
+  saveVectors: PropTypes.func
 };
