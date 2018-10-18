@@ -5,8 +5,8 @@ import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Colours.js';
-import ModelToLoad from '../Models/Word2Vec.js';
-// import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/Word2Vec.js';
+import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
@@ -14,6 +14,9 @@ import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 import DataPickers from './DataPicker/DataPickers.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
+
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -34,6 +37,7 @@ export default class Application extends React.Component {
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
+    this.saveVectors = this.saveVectors.bind(this);
   };
 
   componentDidMount() { // Initialise model + load grid data for DataPicker
@@ -74,6 +78,24 @@ export default class Application extends React.Component {
         debugMode: false,
       });
     }
+  };
+
+  saveVectors(e) {
+    console.log(this.hotInstance)
+    const vecData = JSON.stringify(this.hotInstance.getData());
+    // console.log('Save vectors', this.hotInstance.getData());
+    const zip = new JSZip();
+    zip.file("data.json", vecData);
+
+    const img = zip.folder("images");
+
+    const imgData = this.hotInstance.getCell(0, 0).querySelector('canvas').toDataURL();
+    img.file("smile.png", imgData.split('base64,')[1], {base64: true});
+    zip.generateAsync({type:"blob"})
+    .then(function(content) {
+        // see FileSaver.js
+        saveAs(content, "example.zip");
+    });
   };
 
   setSpreadsheetCellFromDataPicker(dataKey) {
@@ -157,9 +179,7 @@ export default class Application extends React.Component {
             {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
           ]}
           debugMode={this.state.debugMode}
-          saveVectors={e => {
-            console.log(e)
-          }}
+          saveVectors={this.saveVectors}
         />
       </div>
     );
@@ -191,9 +211,10 @@ class BottomNav extends React.Component {
           }
         </div>
         <div>
-          {
-            this.props.debugMode && <a onClick={this.props.saveVectors}>Save vectors</a>
-          }
+        {
+          this.props.debugMode &&
+          <a onClick={this.props.saveVectors}>Save vectors</a>
+        }
           <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
         </div>
       </nav>
