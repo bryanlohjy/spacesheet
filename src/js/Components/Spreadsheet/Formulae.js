@@ -206,7 +206,20 @@ export default class Formulae {
     return '#N/A';
   };
   MOD_TENSOR(params) {
-    return params.join('');
+    const degOutOfBounds = params[1] && (params[1] > 360 || params[1] < 0);
+    if (params.length !== 3 || degOutOfBounds) {
+      return '#N/A';
+    }
+
+    return dl.tidy(() => {
+      let from = dl.tensor1d(params[0]);
+      let deg = dl.scalar(params[1]);
+      let dist = dl.scalar(params[2]);
+
+      return from.mul(deg).mul(dist);
+    }).dataSync();
+
+    // return params.join('');
   };
   call(name, params, isTensorCalculation) {
     const aliases = {

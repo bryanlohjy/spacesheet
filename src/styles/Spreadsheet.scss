@@ -146,6 +146,22 @@
       }
     }
 
+    .mod-container {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      top: 0;
+      left: 0;
+      .mod-joystick {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: $actionColor;
+        border-radius: 100%;
+        cursor: move;
+      }
+    }
+
     .canvas-container {
       display: flex;
       padding: 0;
