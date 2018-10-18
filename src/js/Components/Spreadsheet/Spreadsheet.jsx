@@ -10,6 +10,24 @@ import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 import { OperatorDemoSheet, BlankSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
+const OptimisedHotTable = Component => {
+  return class extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+
+    shouldComponentUpdate() {
+      return false;
+    }
+
+    render() {
+      return <Component {...this.props} ref={this.props.onRef}/>;
+    }
+  }
+}
+
+const WrappedHotTable = OptimisedHotTable(HotTable);
+
 export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
@@ -18,8 +36,27 @@ export default class Spreadsheet extends React.Component {
       inputBarValue: "",
       currentSelection: [0, 0, 0, 0],
     };
+
     this.setSelectedCellData = this.setSelectedCellData.bind(this);
+    this.initHotTable = this.initHotTable.bind(this);
+    this.updateHotTableSettings = this.updateHotTableSettings.bind(this);
+
+    this.afterSelection = this.afterSelection.bind(this);
+    this.afterRender = this.afterRender.bind(this);
+    this.afterUndoRedo = this.afterUndoRedo.bind(this);
+    this.initHotTable = this.initHotTable.bind(this);
+    this.minCellSize = 84;
   };
+
+  componentWillReceiveProps(newProps) {
+    const modelFirstLoaded = newProps.model && !this.props.model;
+    const modelChanged = newProps.currentModel !== this.props.currentModel;
+
+    if (modelFirstLoaded || modelChanged) {
+      this.updateHotTableSettings(newProps.model);
+    }
+  };
+
   setSelectedCellData(operation, closeAfterSetting) {
     if (closeAfterSetting) {
       const selection = this.hotInstance.getSelected();
@@ -30,6 +67,7 @@ export default class Spreadsheet extends React.Component {
       }
       return;
     }
+
     const editor = this.hotInstance.getActiveEditor();
     editor.beginEditing();
     editor.clearHighlightedReferences();
@@ -37,95 +75,83 @@ export default class Spreadsheet extends React.Component {
     editor.eventManager.fireEvent(editor.TEXTAREA, 'keydown');
     editor.updateTableCellCaptureClass();
   };
-  render() {
-    return (
-      <div className="spreadsheet-container">
-        <div
-          ref={ el => {
-            if (!this.state.inputBarIsMounted && !this.inputBarAndOperationDrawerEl) {
-              this.setState({ inputBarAndOperationDrawerIsMounted : true });
-              this.inputBarAndOperationDrawerEl = el;
-            }
-          }}
-        >
-          <input className="input-bar" type="text"
-            disabled
-            value={this.props.inputBarValue}
-          />
-          <OperationDrawer
-            setSelectedCellData={this.setSelectedCellData}
-            currentSelection={this.state.currentSelection}
-            hotInstance={this.hotInstance}
-          />
-        </div>
-        {
-          this.state.inputBarAndOperationDrawerIsMounted ? (
-            <div className="table-container" ref="tableContainer">
-              <HotTableContainer
-                setTableRef={ ref => {
-                  this.hotInstance = ref.hotInstance;
-                  this.props.setTableRef(ref);
-                }}
-                width={this.props.width}
-                height={this.props.height - this.inputBarAndOperationDrawerEl.offsetHeight}
-                setInputBarValue={this.props.setInputBarValue}
-                getCellFromDataPicker={this.props.getCellFromDataPicker}
-                model={this.props.model}
-                afterSelection={ (r, c, r2, c2) => {
-                  this.setState({
-                    currentSelection: [r, c , r2, c2],
-                  });
-                }}
-                afterRender={ this.props.afterRender }
-                setFormulaParserRef={this.props.setFormulaParserRef}
-              />
-            </div>) : ''
-        }
-      </div>
-    )
-  }
-}
-Spreadsheet.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
-  getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object.isRequired,
-  inputBarValue: PropTypes.string,
-  setTableRef: PropTypes.func,
-  setFormulaParserRef: PropTypes.func,
-  afterRender: PropTypes.func,
-};
 
-class HotTableContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    const cols = Math.ceil(this.props.width / this.props.model.outputWidth) + 1;
-    const rows = Math.ceil(this.props.height / this.props.model.outputHeight) + 1;
-    // this.demoSheet = this.props.model.constructor.name === 'FontModel' ? OperatorDemoSheet(rows, cols) : BlankSheet(rows, cols);
-    this.demoSheet = BlankSheet(rows, cols);
-    this.initHotTable = this.initHotTable.bind(this);
-    this.minCellSize = 84;
-  };
   initHotTable() {
-    const hotInstance = this.hotInstance;
+    const cols = Math.ceil(this.props.width / this.minCellSize) + 1;
+    const rows = Math.ceil(this.props.height / this.minCellSize) + 1;
+
+    this.defaultSheet = BlankSheet(rows, cols);
+
+    this.hotInstance.updateSettings({
+      data: this.defaultSheet ? this.defaultSheet.data : null,
+      colHeaders: true,
+      rowHeaders: true,
+      rowHeaderWidth: 32,
+      minCols: 7,
+      minRows: 10,
+      rowHeights: this.minCellSize,
+      colWidths: this.minCellSize,
+      undo: true,
+      redo: true,
+      outsideClickDeselects: false,
+      preventOverflow: "horizontal",
+      viewportColumnRenderingOffset: 26,
+      viewportRowRenderingOffset: 26,
+      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
+
+      // Context menu settings
+      contextMenu: {
+        items: {
+          "undo": {
+            name: "Undo (Ctrl + Z)",
+          },
+          "redo": {
+            name: "Redo (Ctrl + Y)",
+          },
+          "hsep1": "---------",
+          "borders": {},
+          "alignment": {},
+          "hsep2": "---------",
+          "mergeCells": {},
+          "hsep3": "---------",
+          "commentsAddEdit": {},
+          "commentsRemove": {},
+        }
+      },
+      customBorders: true,
+      comments: true,
+    });
+
+    setTimeout(() => {
+      this.hotInstance.selectCell(0, 0);
+    }, 0);
+  };
+
+  updateHotTableSettings(model) {
+    const cols = Math.ceil(this.props.width / model.outputWidth) + 1;
+    const rows = Math.ceil(this.props.height / model.outputHeight) + 1;
+
     const formulaParser = new FormulaParser(this.hotInstance, {
       getCellFromDataPicker: this.props.getCellFromDataPicker,
-      model: this.props.model,
+      model: model,
     });
+
     this.props.setFormulaParserRef(formulaParser);
+
     const cellTypes = new CellTypes({
-      drawFn: this.props.model.drawFn,
-      decodeFn: this.props.model.decodeFn,
-      outputWidth: this.props.model.outputWidth,
-      outputHeight: this.props.model.outputHeight,
+      drawFn: model.drawFn,
+      decodeFn: model.decodeFn,
+      outputWidth: model.outputWidth,
+      outputHeight: model.outputHeight,
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
       minCellSize: this.minCellSize,
     });
-    hotInstance.updateSettings({
+
+    this.hotInstance.updateSettings({
       cells: (row, col, prop) => {
         let cellProperties = {};
-        const cellData = hotInstance.getDataAtRowProp(row, prop);
+        const cellData = this.hotInstance.getDataAtRowProp(row, prop);
         switch (getCellType(cellData)) {
           case 'FORMULA':
           cellProperties.renderer = cellTypes.Formula.renderer;
@@ -145,104 +171,96 @@ class HotTableContainer extends React.Component {
         }
         return cellProperties;
       },
-      data: this.demoSheet ? this.demoSheet.data : null,
-      contextMenu: {
-        items: {
-          "undo": {
-            name: "Undo (Ctrl + Z)",
-          },
-          "redo": {
-            name: "Redo (Ctrl + Y)",
-          },
-          "hsep1": "---------",
-          "borders": {},
-          "alignment": {},
-          "hsep2": "---------",
-          "mergeCells": {},
-          "hsep3": "---------",
-          "commentsAddEdit": {},
-          "commentsRemove": {},
-        }
-      }
+
+      data: this.defaultSheet ? this.defaultSheet.data : null,
+      rowHeights: Math.max(model.outputHeight, this.minCellSize),
+      colWidths: Math.max(model.outputWidth, this.minCellSize),
     });
+
     setTimeout(() => {
-      hotInstance.selectCell(0, 0);
+      this.hotInstance.selectCell(0, 0);
     }, 0);
   };
-  shouldComponentUpdate(newProps, newState) {
-    return false;
+
+  afterSelection(r, c, r2, c2) {
+    this.setState({
+      currentSelection: [r, c , r2, c2],
+    });
   };
+
+  afterRender(forced) {
+    if (!this.props.afterRender) { return; }
+    this.props.afterRender(forced);
+  };
+
+  afterUndoRedo(changes) {
+    const selection = this.hotInstance.getSelected();
+    const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+    this.props.setInputBarValue(data);
+  };
+
   render() {
     return (
-      <HotTable
-        className="table"
-        ref={ ref => {
-          if (ref && !this.hotInstance) {
-            this.props.setTableRef(ref);
-            this.hotInstance = ref.hotInstance;
-            this.initHotTable();
-          }
-        }}
-        root='hot'
+      <div className="spreadsheet-container">
+        <div
+          ref={ el => {
+            if (!this.state.inputBarIsMounted && !this.inputBarAndOperationDrawerEl) {
+              this.setState({ inputBarAndOperationDrawerIsMounted: true });
+              this.inputBarAndOperationDrawerEl = el;
+            }
+          }}
+        >
+          <input className="input-bar" type="text"
+            disabled
+            value={this.props.inputBarValue}
+          />
+          <OperationDrawer
+            setSelectedCellData={this.setSelectedCellData}
+            currentSelection={this.state.currentSelection}
+            hotInstance={this.hotInstance}
+          />
+        </div>
+        {
+          this.state.inputBarAndOperationDrawerIsMounted &&
+          <div className="table-container" ref="tableContainer">
+            <WrappedHotTable
+              className="table"
+              onRef={ ref => {
+                if (ref && !this.hotInstance) {
+                  this.props.setTableRef(ref);
+                  this.hotInstance = ref.hotInstance;
+                  // Wait for actual heights of elements
+                  setTimeout(this.initHotTable, 0);
+                }
+              }}
 
-        mergeCells={  this.demoSheet ? this.demoSheet.mergeCells : null }
+              root='hot'
+              width={this.props.width}
+              height={this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight}
 
-        rowHeaderWidth={32}
-        colHeaderHeight={32}
+              afterRender={this.afterRender}
+              afterUndo={this.afterUndoRedo}
+              afterRedo={this.afterUndoRedo}
+              afterSelection={this.afterSelection}
 
-        colHeaders={true}
-        rowHeaders={true}
-        preventOverflow="horizontal"
-        rowHeights={Math.max(this.props.model.outputHeight, this.minCellSize)}
-        colWidths={Math.max(this.props.model.outputWidth, this.minCellSize)}
-
-        minCols={7}
-        minRows={10}
-
-        afterRender={ forced => {
-          if (!this.props.afterRender) { return; }
-          this.props.afterRender(forced);
-        }}
-
-        viewportColumnRenderingOffset={26}
-        viewportRowRenderingOffset={26}
-
-        outsideClickDeselects={false}
-
-        afterUndo={ changes => {
-          const selection = this.hotInstance.getSelected();
-          const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-          this.props.setInputBarValue(data)
-        }}
-        afterRedo={ changes => {
-          const selection = this.hotInstance.getSelected();
-          const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
-          this.props.setInputBarValue(data);
-        }}
-        afterSelection={ (r, c, r2, c2) => {
-          this.props.afterSelection(r, c, r2, c2);
-        }}
-
-        width={this.props.width}
-        height={this.props.height}
-        comments={true}
-        customBorders={true}
-
-        undo
-        redo
-      />
-    );
+              // merge cells needs to be present in render method
+              mergeCells={this.defaultSheet && this.defaultSheet.mergeCells}
+            />
+          </div>
+        }
+      </div>
+    )
   }
 }
-HotTableContainer.propTypes = {
+
+Spreadsheet.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   getCellFromDataPicker: PropTypes.func,
-  model: PropTypes.object.isRequired,
+  model: PropTypes.object,
   inputBarValue: PropTypes.string,
-  afterSelection: PropTypes.func,
-  afterRender: PropTypes.func,
-  setInputBarValue: PropTypes.func,
   setTableRef: PropTypes.func,
   setFormulaParserRef: PropTypes.func,
+  afterRender: PropTypes.func,
+  currentModel: PropTypes.string,
 };

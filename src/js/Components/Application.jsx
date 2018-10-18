@@ -5,31 +5,32 @@ import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Colours.js';
-import ModelToLoad from '../Models/FaceModel.js';
+import ModelToLoad from '../Models/Word2Vec.js';
+// import ModelToLoad from '../Models/FaceModel.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 
-import ErrorsModal from './ErrorsModal.jsx';
 import DataPickers from './DataPicker/DataPickers.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
-// import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 export default class Application extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      modelIsLoaded: false,
       model: null,
-      loadErrors: null,
+      currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
-      dataPickerGrids: false,
+      dataPickerGrids: null,
     };
+
     this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
   };
+
   componentDidMount() { // Initialise model + load grid data for DataPicker
     this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
@@ -43,18 +44,18 @@ export default class Application extends React.Component {
         } catch (e) {
           dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
         }
-        this.setState({
-          model: res.model,
-          modelIsLoaded: true,
-          dataPickerGrids: dataPickerGrids,
-        });
+        // setTimeout(() => {
+          this.setState({
+            model: res.model,
+            dataPickerGrids: dataPickerGrids,
+          });
+        // }, 5000)
       } else {
-        this.setState({
-          loadErrors: res.errors,
-        });
+        console.error(res.errors);
       }
     });
   };
+
   setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
     const cellData = `=DATAPICKER('${dataKey}')`;
@@ -64,9 +65,11 @@ export default class Application extends React.Component {
       this.setInputBarValue(cellData);
     }
   };
+
   setInputBarValue(value) {
     this.setState({ inputBarValue: value });
   };
+
   getCellFromDataPicker(dataKey) {
     if (Array.isArray(dataKey)) {
       dataKey = dataKey[0];
@@ -78,6 +81,7 @@ export default class Application extends React.Component {
     const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
     return cell.vector;
   };
+
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
@@ -86,84 +90,92 @@ export default class Application extends React.Component {
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
-        {
-          this.state.loadErrors ?
-            <ErrorsModal
-              errors={this.state.loadErrors}
-            /> : ''
-        }
-        {
-          this.state.modelIsLoaded && this.state.model && this.state.dataPickerGrids ?
-            <div className="component-container">
-              <DataPickers
-                width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-                height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
-                model={ this.state.model }
-                dataPickerGrids={this.state.dataPickerGrids}
-                onCellClick={ this.setSpreadsheetCellFromDataPicker }
-                ref='dataPickers'
-              />
-              <div className="right-container">
-                <Spreadsheet
-                  width={ spreadsheetWidth }
-                  height={ appHeight }
-                  getCellFromDataPicker={ this.getCellFromDataPicker }
-                  ref='spreadsheet'
-                  model={ this.state.model }
-                  setTableRef={ ref => {
-                    this.hotInstance = ref.hotInstance;
-                  }}
-                  setFormulaParserRef={ parser => {
-                    this.formulaParser = parser;
-                  }}
-                  inputBarValue={this.state.inputBarValue}
-                  setInputBarValue={this.setInputBarValue}
-                  afterRender={ forced => {
-                    if (!forced) { return };
-                    if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
-                    this.refs.fontDrawer.updateFontSamples();
-                    const editor = this.hotInstance.getActiveEditor();
-                    if (editor) {
-                      editor.clearHighlightedReferences();
-                      editor.highlightReferences(this.hotInstance);
-                    }
-                  }}
-                />
-                {/* { this.hotInstance && this.formulaParser && this.state.model.constructor.name === "FontModel"?
-                  <FontDrawer
-                    hotInstance={this.hotInstance}
-                    formulaParser={this.formulaParser}
-                    model={this.state.model}
-                    ref='fontDrawer'
-                  />
-                  : ""
-                } */}
-              </div>
-            </div> :
-            <div className="loader-container">
-              <div className="loader"/>
-              <span className="loading-message">Loading model ...</span>
-            </div>
-        }
-        <nav ref="bottomNav" className="bottom-nav">
-          <div>
-            <div className="logo">
-              <img
-                src='./dist/assets/logo.png'
-                alt="SpaceSheet Logo"
-              />
-            </div>
-            <a href="./faces.html">Faces</a>
-            <a href="./index.html">Fonts</a>
-            <a href="./mnist.html">MNIST</a>
-            <a href="./colours.html" className="active">Colours</a>
+        <div className="component-container">
+          <DataPickers
+            width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
+            height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
+            model={ this.state.model }
+            dataPickerGrids={this.state.dataPickerGrids}
+            onCellClick={ this.setSpreadsheetCellFromDataPicker }
+            ref='dataPickers'
+          />
+          <div className="right-container">
+            <Spreadsheet
+              width={ spreadsheetWidth }
+              height={ appHeight }
+              getCellFromDataPicker={ this.getCellFromDataPicker }
+              ref='spreadsheet'
+              model={ this.state.model }
+              setTableRef={ ref => {
+                this.hotInstance = ref.hotInstance;
+              }}
+              setFormulaParserRef={ parser => {
+                this.formulaParser = parser;
+              }}
+              inputBarValue={this.state.inputBarValue}
+              setInputBarValue={this.setInputBarValue}
+              afterRender={ forced => {
+                if (!forced) { return };
+                if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
+                this.refs.fontDrawer.updateFontSamples();
+                const editor = this.hotInstance.getActiveEditor();
+                if (editor) {
+                  editor.clearHighlightedReferences();
+                  editor.highlightReferences(this.hotInstance);
+                }
+              }}
+              currentModel={this.state.currentModel}
+            />
           </div>
-          <div>
-            <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
-          </div>
-        </nav>
+        </div>
+        <BottomNav
+          activeLink={this.state.currentModel}
+          links={[
+            {label: 'Faces', id: 'FACES', href: 'http://bryanlohjy.gitlab.io/spacesheet/faces.html'},
+            {label: 'Fonts', id: 'FONTS', href: 'http://bryanlohjy.gitlab.io/spacesheet/index.html'},
+            {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
+            {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
+          ]}
+        />
       </div>
     );
   }
 }
-Application.propTypes = {};
+
+class BottomNav extends React.Component {
+  render() {
+    return (
+      <nav ref="bottomNav" className="bottom-nav">
+        <div>
+          <div className="logo">
+            <img
+              src='./dist/assets/logo.png'
+              alt="SpaceSheet Logo"
+            />
+          </div>
+          {
+            this.props.links.map(link => {
+              const isCurrent = this.props.activeLink === link.id;
+              return (
+                <a
+                  key={link.id}
+                  className={isCurrent ? 'active' : ''}
+                  href={link.href}
+                  target='_blank'
+                >{link.label}</a>
+              )
+            })
+          }
+        </div>
+        <div>
+          <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
+        </div>
+      </nav>
+    );
+  }
+}
+
+BottomNav.propTypes = {
+  activeLink: PropTypes.string.isRequired,
+  links: PropTypes.array.isRequired,
+};

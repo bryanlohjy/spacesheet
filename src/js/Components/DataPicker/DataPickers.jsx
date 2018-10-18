@@ -17,7 +17,7 @@ export default class DataPickers extends React.Component {
   render() {
     const selectorHeight = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ? 48 : 0;
     const multipleDataPickers = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1;
-    
+
     return (
       <div className="left-container">
         { multipleDataPickers ?
@@ -58,7 +58,7 @@ export default class DataPickers extends React.Component {
   }
 }
 DataPickers.propTypes = {
-  model: PropTypes.object.isRequired,
+  model: PropTypes.object,
   onCellClick: PropTypes.func,
   dataPickerGrids: PropTypes.object,
 };
