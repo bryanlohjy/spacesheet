@@ -228,8 +228,9 @@ const CellTypes = opts => {
 
             class ModJoystick {
               constructor(callbacks) {
-                this.startDrag = false;
-
+                this.startDrag = false
+                ;
+                this.resetJoystickPos = this.resetJoystickPos.bind(this);
                 this.updateJoystickPos = this.updateJoystickPos.bind(this);
                 this.onMouseDown = this.onMouseDown.bind(this);
                 this.onMouseUp = this.onMouseUp.bind(this);
@@ -245,10 +246,6 @@ const CellTypes = opts => {
                 this.joystickY = 0;
                 this.joystickWidth = 0;
                 this.joystickHeight = 0;
-
-                this.mouseOffsetX = 0;
-                this.mouseOffsetY = 0;
-
                 this.joystickEl;
                 this.element = (() => {
                   const container = document.createElement('div');
@@ -279,13 +276,17 @@ const CellTypes = opts => {
                 })();
 
                 setTimeout(() => {
-                  this.joystickWidth = this.joystickEl.clientWidth;
-                  this.joystickHeight = this.joystickEl.clientHeight;
+                  this.resetJoystickPos();
+                });
+              }
 
-                  this.joystickX = this.element.clientWidth/2;
-                  this.joystickY = this.element.clientHeight/2;
-                  this.updateJoystickPos();
-                })
+              resetJoystickPos() {
+                this.joystickWidth = this.joystickEl.clientWidth;
+                this.joystickHeight = this.joystickEl.clientHeight;
+
+                this.joystickX = this.element.clientWidth/2;
+                this.joystickY = this.element.clientHeight/2;
+                this.updateJoystickPos();
               }
 
               updateJoystickPos() {
@@ -300,7 +301,23 @@ const CellTypes = opts => {
               }
 
               calcParams() {
-                return { rotation: this.joystickX, radius: this.joystickY };
+                const center = {
+                  x: this.element.clientWidth/2,
+                  y: this.element.clientHeight/2,
+                };
+
+                const joystick = {
+                  x: (this.joystickX+this.mouseOffsetX),
+                  y: (this.joystickY+this.mouseOffsetY),
+                };
+
+                const diffX = joystick.x-center.x;
+                const diffY = joystick.y-center.y;
+
+                const radius = (Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)))/center.x;
+                const rotation = (Math.atan2(diffY, diffX) * 180 / Math.PI) + 180;
+
+                return { rotation: rotation, radius: radius };
               }
 
               onMouseUp(e) {
@@ -328,19 +345,20 @@ const CellTypes = opts => {
                 this.startDrag = false;
 
                 const {rotation, radius} = this.calcParams();
+                this.resetJoystickPos();
                 this.onLeave(rotation, radius);
               }
             }
 
             const modJoystick = new ModJoystick({
               onChange: (rotation, rad) => {
-                console.log('change', rotation, rad);
+                // console.log('change', rotation, rad);
               },
               onLeave: (rotation, rad) => {
-                console.log('leave', rotation, rad);
+                // console.log('leave', rotation, rad);
               },
               onSet: (rotation, rad) => {
-                console.log('set', rotation, rad);
+                // console.log('set', rotation, rad);
               }
             }).element;
 
