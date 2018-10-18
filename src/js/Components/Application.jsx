@@ -17,6 +17,8 @@ import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { matrixForEach, cellCoordsToLabel } from './Spreadsheet/CellHelpers.js';
+import { formatDate } from '../lib/helpers.js';
 
 export default class Application extends React.Component {
   constructor(props) {
@@ -81,21 +83,37 @@ export default class Application extends React.Component {
   };
 
   saveVectors(e) {
-    console.log(this.hotInstance)
-    const vecData = JSON.stringify(this.hotInstance.getData());
-    // console.log('Save vectors', this.hotInstance.getData());
     const zip = new JSZip();
-    zip.file("data.json", vecData);
-
     const img = zip.folder("images");
 
-    const imgData = this.hotInstance.getCell(0, 0).querySelector('canvas').toDataURL();
-    img.file("smile.png", imgData.split('base64,')[1], {base64: true});
-    zip.generateAsync({type:"blob"})
-    .then(function(content) {
-        // see FileSaver.js
-        saveAs(content, "example.zip");
+    const vectors = {};
+
+    const sheetData = this.hotInstance.getData();
+
+    matrixForEach(sheetData, (val, row, col) => {
+      if (val && String(val).trim()[0] === '=') {
+        const cell = this.hotInstance.getCell(row, col);
+        const canvasEl = cell.querySelector('canvas');
+
+        if (canvasEl) {
+          const parsed = this.formulaParser.parse(val.trim().substring(1));
+          const label = cellCoordsToLabel({ row, col });
+
+          if (!parsed.error) {
+            vectors[label] = Array.from(parsed.result);
+            const imgData = canvasEl.toDataURL().split('base64,')[1];
+            img.file(`${label}.png`, imgData, {base64: true});
+          }
+        }
+      }
     });
+
+    const baseName = `spacesheet_${this.state.currentModel.toLowerCase()}_${formatDate(new Date())}`;
+    zip.file(`${baseName}_vectors.json`, JSON.stringify(vectors));
+    zip.generateAsync({type: 'blob'})
+       .then(content => {
+          saveAs(content, `${baseName}.zip`);
+      	});
   };
 
   setSpreadsheetCellFromDataPicker(dataKey) {
