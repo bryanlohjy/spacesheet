@@ -215,12 +215,43 @@ const CellTypes = opts => {
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
         let { result, error } = compiled;
 
-        let prevMod = td.querySelector('.mod-container');
-        let ctx;
 
         if (result && typeof result !== 'string') {
+          let ctx;
           let canvas;
-          if (!prevMod) {
+
+          const onJoystickChange = (() => {
+            return (rotation, rad) => {
+              const args = getArgumentsFromFunction(data);
+              const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
+              const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
+
+              if (compiledScrub.result) {
+                const decodedScrub = opts.decodeFn(compiledScrub.result);
+                opts.drawFn(ctx, decodedScrub);
+              } else {
+                td.innerHTML = compiledScrub.error;
+              }
+            }
+          })();
+
+          const onJoystickLeave = (() => {
+            return (rotation, rad) => { // reset
+              const args = getArgumentsFromFunction(data);
+              const newFormula = `=MOD(${args[0]}, 0, 0)`;
+              hotInstance.setDataAtCell(row, col, newFormula);
+            }
+          })();
+
+          const onJoystickSet = (() => {
+            return (rotation, rad) => { // set data at cell
+              const args = getArgumentsFromFunction(data);
+              const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
+              hotInstance.setDataAtCell(row, col, newFormula);
+            }
+          })();
+
+          if (!td.modJoystick) {
             td.innerHTML = '';
             console.log('build')
             const canvasContainer = document.createElement('div');
@@ -237,39 +268,24 @@ const CellTypes = opts => {
             const modJoystick = new ModJoystick({
               cellWidth,
               cellHeight,
-              onChange: (rotation, rad) => {
-                // set threshold to change
-                const args = getArgumentsFromFunction(data);
-                const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
-
-                const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
-
-                if (compiledScrub.result) {
-                  const decodedScrub = opts.decodeFn(compiledScrub.result);
-                  opts.drawFn(ctx, decodedScrub);
-                } else {
-                  td.innerHTML = compiledScrub.error;
-                }
-              },
-
-              onLeave: (rotation, rad) => {
-                // reset - may not need to do anything
-                // console.log('leave', rotation, rad);
-              },
-
-              onSet: (rotation, rad) => {
-                // set data at cell
-                // console.log('set', rotation, rad);
-              }
-            }).element;
+              onChange: onJoystickChange,
+              onLeave: onJoystickLeave,
+              onSet: onJoystickSet,
+            });
 
             canvasContainer.appendChild(canvas);
-            canvasContainer.appendChild(modJoystick);
+            canvasContainer.appendChild(modJoystick.element);
 
             td.appendChild(canvasContainer);
+
+            td.modJoystick = modJoystick;
           } else {
             canvas = td.querySelector('canvas');
             ctx = canvas.getContext('2d');
+
+            td.modJoystick.onChange = onJoystickChange;
+            td.modJoystick.onLeave = onJoystickLeave;
+            td.modJoystick.onSet = onJoystickSet;
           }
 
           const decodedVector = opts.decodeFn(result);

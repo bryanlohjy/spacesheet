@@ -217,7 +217,7 @@ export default class Formulae {
       // current implementation performs tiny interpolations on seeded randoms
       let from = dl.tensor1d(params[0]);
       let to = dl.tensor1d(this.model.randVectorFn(params[1]));
-      let step = params[2]/3; // max level of deviation from base
+      let step = params[2]/2; // max level of deviation from base
       return from.add(to.sub(from).mul(dl.scalar(step)));
     }).dataSync();
   };

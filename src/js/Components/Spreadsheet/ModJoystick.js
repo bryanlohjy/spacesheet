@@ -94,8 +94,12 @@ export default class ModJoystick {
     const diffX = joystick.x-center.x;
     const diffY = joystick.y-center.y;
 
-    const radius = (Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)))/center.x;
-    const rotation = (Math.atan2(diffY, diffX) * 180 / Math.PI) + 180;
+    let rotation = (Math.atan2(diffY, diffX) * 180 / Math.PI) + 180;
+    let radius = (Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)))/center.x;
+
+
+    rotation = parseInt(rotation);
+    radius = Number(String(radius).substring(0, 4)).toFixed(2);
 
     return { rotation: rotation, radius: radius };
   }
