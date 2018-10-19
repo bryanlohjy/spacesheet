@@ -2,6 +2,7 @@ import HandsOnTable from 'handsontable';
 import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
 import { getArgumentsFromFunction } from './FormulaParser.js';
+import ModJoystick from './ModJoystick.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   const CustomTextEditor = CellEditor(opts);
@@ -214,13 +215,14 @@ const CellTypes = opts => {
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
         let { result, error } = compiled;
 
-        let prevMod = td.querySelector('.mod');
+        let prevMod = td.querySelector('.mod-container');
+        let ctx;
 
         if (result && typeof result !== 'string') {
           let canvas;
           if (!prevMod) {
             td.innerHTML = '';
-
+            console.log('build')
             const canvasContainer = document.createElement('div');
             canvasContainer.classList.add('canvas-container');
             canvasContainer.style.width = `${cellWidth - 1}px`;
@@ -230,138 +232,33 @@ const CellTypes = opts => {
             canvas.width = opts.outputWidth - 1;
             canvas.height = opts.outputHeight - 1;
 
-            class ModJoystick {
-              constructor(callbacks) {
-                this.startDrag = false;
-                this.resetJoystickPos = this.resetJoystickPos.bind(this);
-                this.updateJoystickPos = this.updateJoystickPos.bind(this);
-                this.onMouseDown = this.onMouseDown.bind(this);
-                this.onMouseUp = this.onMouseUp.bind(this);
-                this.onMouseMove = this.onMouseMove.bind(this);
-                this.mouseLeave = this.mouseLeave.bind(this);
-                this.calcParams = this.calcParams.bind(this);
-
-                this.onChange = callbacks.onChange;
-                this.onLeave = callbacks.onLeave;
-                this.onSet = callbacks.onSet;
-
-                this.joystickX = 0;
-                this.joystickY = 0;
-                this.joystickWidth = 0;
-                this.joystickHeight = 0;
-                this.joystickEl;
-                this.element = (() => {
-                  const container = document.createElement('div');
-                  container.classList.add('mod-container');
-                  container.style.width = `${cellWidth - 1}px`;
-                  container.style.height = `${cellHeight - 1}px`;
-                  container.addEventListener('mouseleave', this.mouseLeave);
-                  container.addEventListener('mouseup', this.onMouseUp);
-                  container.addEventListener('mousemove', this.onMouseMove);
-
-                  const el = document.createElement('div');
-                  el.classList.add('mod-joystick');
-
-                  el.addEventListener('mousedown', this.onMouseDown);
-                  el.addEventListener('mouseup', this.onMouseUp);
-                  el.ondragstart = function() { return false };
-
-                  const markers = document.createElement('div');
-                  markers.classList.add('mod-markers');
-                  markers.innerText = '＋';
-
-                  container.appendChild(markers);
-                  container.appendChild(el);
-
-                  this.joystickEl = el;
-
-                  return container;
-                })();
-
-                setTimeout(() => {
-                  this.resetJoystickPos();
-                });
-              }
-
-              resetJoystickPos() {
-                this.joystickWidth = this.joystickEl.clientWidth;
-                this.joystickHeight = this.joystickEl.clientHeight;
-
-                this.joystickX = this.element.clientWidth/2;
-                this.joystickY = this.element.clientHeight/2;
-                this.updateJoystickPos();
-              }
-
-              updateJoystickPos() {
-                this.joystickEl.style.left = `${this.joystickX-this.joystickWidth/2}px`;
-                this.joystickEl.style.top = `${this.joystickY-this.joystickHeight/2}px`;
-              }
-
-              onMouseDown(e) {
-                this.startDrag = true;
-                this.mouseOffsetX = e.clientX-this.joystickEl.getBoundingClientRect().left-this.joystickHeight/2;
-                this.mouseOffsetY = e.clientY-this.joystickEl.getBoundingClientRect().top-this.joystickWidth/2;
-              }
-
-              calcParams() {
-                const center = {
-                  x: this.element.clientWidth/2,
-                  y: this.element.clientHeight/2,
-                };
-
-                const joystick = {
-                  x: (this.joystickX+this.mouseOffsetX),
-                  y: (this.joystickY+this.mouseOffsetY),
-                };
-
-                const diffX = joystick.x-center.x;
-                const diffY = joystick.y-center.y;
-
-                const radius = (Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)))/center.x;
-                const rotation = (Math.atan2(diffY, diffX) * 180 / Math.PI) + 180;
-
-                return { rotation: rotation, radius: radius };
-              }
-
-              onMouseUp(e) {
-                if (!this.startDrag) { return; }
-                this.startDrag = false;
-                const {rotation, radius} = this.calcParams();
-                this.onSet(rotation, radius);
-              }
-
-              onMouseMove(e) {
-                if (!this.startDrag) { return; }
-                let shiftX = e.clientX - this.joystickEl.getBoundingClientRect().left - this.joystickWidth/2;
-                let shiftY = e.clientY - this.joystickEl.getBoundingClientRect().top - this.joystickHeight/2;
-
-                this.joystickX += shiftX-this.mouseOffsetX;
-                this.joystickY += shiftY-this.mouseOffsetY;
-                this.updateJoystickPos();
-
-                const {rotation, radius} = this.calcParams();
-                this.onChange(rotation, radius);
-              }
-
-              mouseLeave(e) {
-                if (!this.startDrag) { return; }
-                this.startDrag = false;
-
-                const {rotation, radius} = this.calcParams();
-                this.resetJoystickPos();
-                this.onLeave(rotation, radius);
-              }
-            }
+            ctx = canvas.getContext('2d');
 
             const modJoystick = new ModJoystick({
+              cellWidth,
+              cellHeight,
               onChange: (rotation, rad) => {
+                // set threshold to change
+                const args = getArgumentsFromFunction(data);
+                const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
 
-                // console.log('change', rotation, rad);
+                const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
+
+                if (compiledScrub.result) {
+                  const decodedScrub = opts.decodeFn(compiledScrub.result);
+                  opts.drawFn(ctx, decodedScrub);
+                } else {
+                  td.innerHTML = compiledScrub.error;
+                }
               },
+
               onLeave: (rotation, rad) => {
+                // reset - may not need to do anything
                 // console.log('leave', rotation, rad);
               },
+
               onSet: (rotation, rad) => {
+                // set data at cell
                 // console.log('set', rotation, rad);
               }
             }).element;
@@ -371,13 +268,12 @@ const CellTypes = opts => {
 
             td.appendChild(canvasContainer);
           } else {
-            canvas = prevCanvas;
+            canvas = td.querySelector('canvas');
+            ctx = canvas.getContext('2d');
           }
 
-          const ctx = canvas.getContext('2d');
           const decodedVector = opts.decodeFn(result);
           opts.drawFn(ctx, decodedVector);
-
         } else {
           td.innerHTML = '';
           td.innerText = error || result;
