@@ -8,6 +8,7 @@ export default class ModJoystick {
         // joystickHeight
 
     this.startDrag = false;
+    this.rotAndRadToXandY = this.rotAndRadToXandY.bind(this);
     this.resetJoystickPos = this.resetJoystickPos.bind(this);
     this.updateJoystickPos = this.updateJoystickPos.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -56,14 +57,20 @@ export default class ModJoystick {
     })();
 
     setTimeout(() => {
+      this.joystickWidth = this.joystickEl.clientWidth;
+      this.joystickHeight = this.joystickEl.clientHeight;
       this.resetJoystickPos();
+      if (params.rotation && params.rad) {
+        console.log('has paramsss', params.rotation, params.rad)
+        const {x, y} = this.rotAndRadToXandY(params.rotation, params.rad);
+        this.joystickX += x;
+        this.joystickY += y;
+        this.updateJoystickPos();
+      }
     });
   }
 
   resetJoystickPos() {
-    this.joystickWidth = this.joystickEl.clientWidth;
-    this.joystickHeight = this.joystickEl.clientHeight;
-
     this.joystickX = this.element.clientWidth/2;
     this.joystickY = this.element.clientHeight/2;
     this.updateJoystickPos();
@@ -72,6 +79,13 @@ export default class ModJoystick {
   updateJoystickPos() {
     this.joystickEl.style.left = `${this.joystickX-this.joystickWidth/2}px`;
     this.joystickEl.style.top = `${this.joystickY-this.joystickHeight/2}px`;
+  }
+
+  rotAndRadToXandY(rotation, rad) {
+    const x = Math.cos((rotation-180)*(Math.PI/180))*(rad*this.element.clientWidth/2);
+    const y = Math.sin((rotation-180)*(Math.PI/180))*(rad*this.element.clientHeight/2);
+
+    return { x, y };
   }
 
   onMouseDown(e) {
@@ -96,7 +110,6 @@ export default class ModJoystick {
 
     let rotation = (Math.atan2(diffY, diffX) * 180 / Math.PI) + 180;
     let radius = (Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)))/center.x;
-
 
     rotation = parseInt(rotation);
     radius = Number(String(radius).substring(0, 4)).toFixed(2);

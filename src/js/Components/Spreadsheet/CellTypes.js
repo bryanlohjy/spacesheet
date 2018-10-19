@@ -265,7 +265,11 @@ const CellTypes = opts => {
 
             ctx = canvas.getContext('2d');
 
+            // set initial location of joystick if there are args
+            const args = getArgumentsFromFunction(data);
             const modJoystick = new ModJoystick({
+              rotation: Number(args[1]),
+              rad: Number(args[2]),
               cellWidth,
               cellHeight,
               onChange: onJoystickChange,
