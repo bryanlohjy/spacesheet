@@ -102,9 +102,11 @@ export default opts => {
     // check if operation should be closed off
     const args = getArgumentsFromFunction(str);
     if (args && args.length) {
-      const isLerpOperation = (new RegExp(/^\s*=\s*lerp\s*\(/gi)).test(str);
       // if lerp, return true if it has 3 args
-      if ((isLerpOperation && args.length >= 3) || (!isLerpOperation && args.length >= 2)) {
+      const isLerpOperation = (new RegExp(/^\s*=\s*lerp\s*\(/gi)).test(str);
+      // if mode, return true if it has 1 argument
+      const isModOperation = (new RegExp(/^\s*=\s*mod\s*\(/gi)).test(str);
+      if ((isLerpOperation && args.length >= 3) || (isModOperation && args.length == 1) || (!isLerpOperation && args.length >= 2)) {
         return str;
       }
     }
