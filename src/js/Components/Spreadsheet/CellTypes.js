@@ -207,10 +207,10 @@ const CellTypes = opts => {
       if (data && data.trim().length) {
         const args = getArgumentsFromFunction(data);
 
-        if (args.length === 1) { // if there are no arguments, create a random seed
+        if (args.length < 3) { // if there are no arguments, create a random seed
           const degree = parseInt(random(0, 360));
           const rad = random(0.5, 1).toFixed(2);
-          data = `=MOD(${args[0]}, ${degree}, ${rad})`;
+          data = `=MOD(${args[0]}, ${args[1] || degree}, ${args[2] || rad})`;
           hotInstance.setDataAtCell(row, col, data);
         }
 
