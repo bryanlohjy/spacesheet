@@ -464,7 +464,7 @@ const modSmartFillFn = (hotInstance, selection) => {
       _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
 
       const degree = parseInt(random(0, 360));
-      const rad = random(0, 1).toFixed(2);
+      const rad = random(0.5, 1).toFixed(2);
       return `=MOD(${val.replace(/=/gi, '')}, ${degree}, ${rad})`;
     });
 
@@ -494,7 +494,7 @@ const modSmartFillFn = (hotInstance, selection) => {
         return val;
       } else {
         const degree = parseInt(random(0, 360));
-        const rad = random(0, 1).toFixed(2);
+        const rad = random(0.5, 1).toFixed(2);
         return `=MOD(${modFromLabel}, ${degree}, ${rad})`;
       }
     });

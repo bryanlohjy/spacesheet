@@ -1,8 +1,24 @@
 const helpers = {
 	random: function(min, max) {
-		min = Math.ceil(min);
-		max = Math.floor(max);
-		return (Math.random() * (max - min)) + min;
+    const rand = Math.random();
+
+    if (typeof min === 'undefined') {
+      return rand;
+    } else if (typeof max === 'undefined') {
+      if (min instanceof Array) {
+        return min[Math.floor(rand * min.length)];
+      } else {
+        return rand * min;
+      }
+    } else {
+      if (min > max) {
+        let tmp = min;
+        min = max;
+        max = tmp;
+      }
+
+      return rand * (max - min) + min;
+    }
 	},
 	randomInt: function(min, max, seed) { // max is non-inclusive
     let seededRandom;

@@ -209,7 +209,7 @@ const CellTypes = opts => {
 
         if (args.length === 1) { // if there are no arguments, create a random seed
           const degree = parseInt(random(0, 360));
-          const rad = random(0, 1).toFixed(2);
+          const rad = random(0.5, 1).toFixed(2);
           data = `=MOD(${args[0]}, ${degree}, ${rad})`;
           hotInstance.setDataAtCell(row, col, data);
         }
@@ -302,60 +302,6 @@ const CellTypes = opts => {
           td.innerHTML = '';
           td.innerText = error || result;
         }
-
-
-
-        // if (result) {
-        //   td.innerHTML = result;
-          // let randomiseButton = td.querySelector('.randomise-button');
-          // let canvasElement = td.querySelector('canvas');
-          // if (!randomiseButton) {
-          //   td.innerHTML = '';
-          //
-          //   const canvasContainer = document.createElement('div');
-          //   canvasContainer.classList.add('canvas-container');
-          //   canvasContainer.style.width = `${cellWidth - 1}px`;
-          //   canvasContainer.style.height = `${cellHeight - 1}px`;
-          //
-          //   canvasElement = document.createElement('canvas');
-          //   canvasElement.width = opts.outputWidth - 1;
-          //   canvasElement.height = opts.outputHeight - 1;
-          //
-          //   randomiseButton = document.createElement('div');
-          //   randomiseButton.classList.add('randomise-button');
-          //
-          //   const randomIcon = document.createElement('img');
-          //   randomIcon.classList.add('random-icon');
-          //   randomIcon.src = 'dist/assets/ic_autorenew_black_18px.svg';
-          //   randomiseButton.appendChild(randomIcon);
-          //
-          //   HandsOnTable.dom.addEvent(td, 'mousedown', function(e) {
-          //     if (e.target === randomiseButton) {
-          //       e.stopPropagation();
-          //       e.stopImmediatePropagation();
-          //       e.preventDefault();
-          //     }
-          //   });
-          //
-          //   HandsOnTable.dom.addEvent(randomiseButton, 'click', function(e) {
-          //     e.preventDefault();
-          //     e.stopPropagation();
-          //     e.stopImmediatePropagation();
-          //     const newValue = `=RANDVAR(${ randomInt(0, 99999) })`;
-          //     opts.setInputBarValue(newValue);
-          //     hotInstance.setDataAtCell(row, col, newValue);
-          //   });
-          //
-          //   canvasContainer.appendChild(randomiseButton);
-          //   canvasContainer.appendChild(canvasElement);
-          //   td.appendChild(canvasContainer);
-          // }
-          // const imageData = opts.decodeFn(result);
-          // const ctx = canvasElement.getContext('2d');
-          // opts.drawFn(ctx, imageData);
-        // } else {
-        //   td.innerHTML = error;
-        // }
       }
     },
     editor: CustomTextEditor,
