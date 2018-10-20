@@ -1,4 +1,4 @@
-import { cellCoordsToLabel, matrixForEach, matrixMap } from './CellHelpers.js';
+import { cellCoordsToLabel, matrixForEach, matrixMap, getCellType } from './CellHelpers.js';
 import { getAllIndicesInArray } from '../../lib/helpers.js';
 
 const getValidMatrix = arr => {
@@ -409,6 +409,51 @@ const lerpSmartFillFn = (hotInstance, currentSelection) => {
   return output;
 }
 
+const modSmartFillFn = (hotInstance, selection) => {
+  let output = { cellsToHighlight: [], newData: [] };
+
+  const selectedCells = hotInstance.getData.apply(self, selection);
+
+  const startRow = Math.min(selection[0], selection[2]);
+  const startCol = Math.min(selection[1], selection[3]);
+
+  // if all cells aren't sliders, and have not been modded, suggest cells to highlight
+  let allCellsCanBeModded = true;
+
+  const _cellsToHighlight = [];
+
+  const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+    const cellType = getCellType(val);
+
+    const canBeModded = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
+
+    if (canBeModded) {
+      const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
+      const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
+
+      if (cellHasCanvas) {
+        _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
+        return `=MOD(${val.replace(/=/gi, '')}, 0, 0)`;
+      }
+
+      return val;
+    } else {
+      allCellsCanBeModded = false;
+      return val;
+    }
+  });
+
+  if (allCellsCanBeModded) {
+    output = {
+      cellsToHighlight: _cellsToHighlight,
+      newData: _newData
+    };
+  }
+  return output;
+}
+
+
+
 
 module.exports = {
   getValidMatrix,
@@ -417,4 +462,5 @@ module.exports = {
   groupArgSmartFillFn,
   twoArgSmartFillFn,
   lerpSmartFillFn,
+  modSmartFillFn
 };

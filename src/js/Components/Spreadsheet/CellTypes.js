@@ -251,6 +251,8 @@ const CellTypes = opts => {
             }
           })();
 
+          // TODO: when copying and pasting into existing joystick, it breaks
+
           if (!td.modJoystick) {
             td.innerHTML = '';
             console.log('build')
