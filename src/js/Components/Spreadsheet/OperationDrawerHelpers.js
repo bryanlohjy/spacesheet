@@ -417,38 +417,128 @@ const modSmartFillFn = (hotInstance, selection) => {
   const startRow = Math.min(selection[0], selection[2]);
   const startCol = Math.min(selection[1], selection[3]);
 
-  // if all cells aren't sliders, and have not been modded, suggest cells to highlight
+  // mod if all cells can be modded, or if one moddable cell is in selection, mod from it
+  const convertableCells = [];
+  const cellsThatCanBeModdedFrom = [];
+  const empties = [];
   let allCellsCanBeModded = true;
 
-  const _cellsToHighlight = [];
-
-  const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+  matrixForEach(selectedCells, (val, rowIndex, colIndex) => {
     const cellType = getCellType(val);
 
-    const canBeModded = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
+    let canBeConverted = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
+    let canBeModdedFrom = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR' || cellType === 'MOD');
 
-    if (canBeModded) {
+    if (canBeConverted || canBeModdedFrom) { // perform DOM check only if it passes
       const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
       const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
-
-      if (cellHasCanvas) {
-        _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
-        return `=MOD(${val.replace(/=/gi, '')}, 0, 0)`;
+      if (!cellHasCanvas) {
+        canBeConverted = false;
+        canBeModdedFrom = false;
       }
-
-      return val;
-    } else {
-      allCellsCanBeModded = false;
-      return val;
     }
+
+    const cellCoord = [startRow+rowIndex, startCol+colIndex];
+    if (canBeConverted) {
+      convertableCells.push(cellCoord);
+    }
+
+    if (canBeModdedFrom) {
+      cellsThatCanBeModdedFrom.push(cellCoord);
+    }
+
+    if (!canBeConverted) {
+      allCellsCanBeModded = false;
+    }
+
+    if (!val || val.trim().length === 0) {
+      empties.push(cellCoord);
+    }
+
+    // if (canBeConverted || canBeModdedFrom) {
+    //   const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
+    //   const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
+    //   if (cellHasCanvas) {
+    //     if (canBeConverted) {
+    //       convertableCells.push();
+    //     } else if (canBeModdedFrom) {
+    //       cellsThatCanBeModdedFrom.push([startRow+rowIndex, startCol+colIndex]);
+    //     }
+    //   } else {
+    //     allCellsCanBeModded = false;
+    //   }
+    // } else {
+    //   allCellsCanBeModded = false;
+    // }
   });
 
+  // turn all cells into mod cells
   if (allCellsCanBeModded) {
-    output = {
+    const _cellsToHighlight = [];
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
+      return `=MOD(${val.replace(/=/gi, '')}, 0, 0)`;
+    });
+
+    return {
       cellsToHighlight: _cellsToHighlight,
-      newData: _newData
+      newData: _newData,
     };
   }
+
+  // turn empty cells into MOD cells which refer to a single moddable cell
+  const rows = selectedCells.length;
+  const cols = selectedCells[0].length;
+
+  const numSelected = rows * cols;
+
+  if (numSelected-empties.length === 1 && cellsThatCanBeModdedFrom.length === 1) {
+    const _cellsToHighlight = empties;
+
+    const modFrom = cellsThatCanBeModdedFrom[0];
+    const modFromLabel = cellCoordsToLabel({
+                          row: modFrom[0],
+                          col: modFrom[1]
+                        });
+
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      if (val) {
+        return val;
+      } else {
+        return `=MOD(${modFromLabel}, 0, 0)`;
+      }
+    });
+
+    return {
+      cellsToHighlight: _cellsToHighlight,
+      newData: _newData,
+    };
+  }
+
+
+  // let allCellsCanBeModded = true;
+  // const _cellsToHighlight = [];
+  //
+  // const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+  //   const cellType = getCellType(val);
+  //
+  //   const canBeModded = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
+  //
+  //   if (canBeModded) {
+  //     const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
+  //     const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
+  //
+  //     if (cellHasCanvas) {
+  //       _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
+  //       return `=MOD(${val.replace(/=/gi, '')}, 0, 0)`;
+  //     }
+  //
+  //     return val;
+  //   } else {
+  //     allCellsCanBeModded = false;
+  //     return val;
+  //   }
+  // });
   return output;
 }
 
