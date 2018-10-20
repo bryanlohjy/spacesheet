@@ -1,5 +1,5 @@
 import { cellCoordsToLabel, matrixForEach, matrixMap, getCellType } from './CellHelpers.js';
-import { getAllIndicesInArray } from '../../lib/helpers.js';
+import { getAllIndicesInArray, random } from '../../lib/helpers.js';
 
 const getValidMatrix = arr => {
   if (!arr) { return; }
@@ -439,6 +439,7 @@ const modSmartFillFn = (hotInstance, selection) => {
     }
 
     const cellCoord = [startRow+rowIndex, startCol+colIndex];
+
     if (canBeConverted) {
       convertableCells.push(cellCoord);
     }
@@ -454,22 +455,6 @@ const modSmartFillFn = (hotInstance, selection) => {
     if (!val || val.trim().length === 0) {
       empties.push(cellCoord);
     }
-
-    // if (canBeConverted || canBeModdedFrom) {
-    //   const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
-    //   const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
-    //   if (cellHasCanvas) {
-    //     if (canBeConverted) {
-    //       convertableCells.push();
-    //     } else if (canBeModdedFrom) {
-    //       cellsThatCanBeModdedFrom.push([startRow+rowIndex, startCol+colIndex]);
-    //     }
-    //   } else {
-    //     allCellsCanBeModded = false;
-    //   }
-    // } else {
-    //   allCellsCanBeModded = false;
-    // }
   });
 
   // turn all cells into mod cells
@@ -477,7 +462,10 @@ const modSmartFillFn = (hotInstance, selection) => {
     const _cellsToHighlight = [];
     const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
       _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
-      return `=MOD(${val.replace(/=/gi, '')}, 0, 0)`;
+
+      const degree = parseInt(random(0, 360));
+      const rad = random(0, 1).toFixed(2);
+      return `=MOD(${val.replace(/=/gi, '')}, ${degree}, ${rad})`;
     });
 
     return {
@@ -505,7 +493,9 @@ const modSmartFillFn = (hotInstance, selection) => {
       if (val) {
         return val;
       } else {
-        return `=MOD(${modFromLabel}, 0, 0)`;
+        const degree = parseInt(random(0, 360));
+        const rad = random(0, 1).toFixed(2);
+        return `=MOD(${modFromLabel}, ${degree}, ${rad})`;
       }
     });
 
@@ -515,30 +505,6 @@ const modSmartFillFn = (hotInstance, selection) => {
     };
   }
 
-
-  // let allCellsCanBeModded = true;
-  // const _cellsToHighlight = [];
-  //
-  // const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
-  //   const cellType = getCellType(val);
-  //
-  //   const canBeModded = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
-  //
-  //   if (canBeModded) {
-  //     const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
-  //     const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
-  //
-  //     if (cellHasCanvas) {
-  //       _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
-  //       return `=MOD(${val.replace(/=/gi, '')}, 0, 0)`;
-  //     }
-  //
-  //     return val;
-  //   } else {
-  //     allCellsCanBeModded = false;
-  //     return val;
-  //   }
-  // });
   return output;
 }
 

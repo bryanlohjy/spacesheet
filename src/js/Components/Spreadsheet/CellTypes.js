@@ -1,5 +1,5 @@
 import HandsOnTable from 'handsontable';
-import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
+import { countDecimalPlaces, randomInt, random } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
 import { getArgumentsFromFunction } from './FormulaParser.js';
 import ModJoystick from './ModJoystick.js';
@@ -208,7 +208,9 @@ const CellTypes = opts => {
         const args = getArgumentsFromFunction(data);
 
         if (args.length === 1) { // if there are no arguments, create a random seed
-          data = `=MOD(${args[0]}, 0, 0)`;
+          const degree = parseInt(random(0, 360));
+          const rad = random(0, 1).toFixed(2);
+          data = `=MOD(${args[0]}, ${degree}, ${rad})`;
           hotInstance.setDataAtCell(row, col, data);
         }
 

@@ -252,35 +252,8 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          // console.log(modSmartFillFn(self.props.hotInstance, self.props.currentSelection))
           return modSmartFillFn(self.props.hotInstance, self.props.currentSelection);
-        },
-
-        // onMouseOver: e => {
-        //   const selection = self.props.hotInstance.getSelected();
-        //   highlightCellsFromSelection(self.props.hotInstance, selection);
-        // },
-        // onClick: e => {
-        //   const selection = self.props.hotInstance.getSelected();
-        //   const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-        //   const startRow = Math.min(selection[0], selection[2]);
-        //   const startCol = Math.min(selection[1], selection[3]);
-        //   const newData = selectedCells.map(row => {
-        //     return row.map(col => {
-        //       return `=RANDVAR(${randomInt(0, 9999)})`;
-        //     });
-        //   });
-        //   if (!arraysAreSimilar(selectedCells, newData)) {
-        //     self.props.hotInstance.populateFromArray(startRow, startCol, newData);
-        //   }
-        // },
-        // shouldHighlight: () => {
-        //   return false;
-        // },
-        // get smartFillCells() {
-        //   return modSmartFillFn(self.props.hotInstance, self.props.currentSelection);
-        //   // return [];
-        // },
+        }
       },
       // DIST: {
       //   onMouseOver: e => {
