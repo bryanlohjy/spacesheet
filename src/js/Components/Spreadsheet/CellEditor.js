@@ -132,7 +132,6 @@ export default opts => {
       const cellLabel = cellCoordsToLabel(cellCoords);
 
       let newString;
-
       switch (capturePos) {
         case 'BEFORE':
           const replace = this.shouldCloseOff();
@@ -142,14 +141,20 @@ export default opts => {
             postCaret = postCaret.substring(referenceToReplace.length, postCaret.length);
             newString = `${preCaret}${cellLabel}${postCaret}`;
           } else { // add to string
-            newString = `${preCaret}${cellLabel}, ${postCaret}`;
-            if (this.shouldCloseOff(newString)) {
+            const singleCell = preCaret.trim() === '=';
+
+            newString = `${preCaret}${cellLabel}${!singleCell ? ',' : ''} ${postCaret}`;
+
+            if (singleCell) {
+              caretPosition = Number(caretPosition) + Number(cellLabel.length);
+            } else if (this.shouldCloseOff(newString)) {
               const endsWithBracket = postCaret.trim()[postCaret.trim().length - 1] === ")";
               newString = `${preCaret}${cellLabel}${postCaret}${!endsWithBracket ? ')' : ''}`;
               caretPosition = Number(caretPosition) + Number(cellLabel.length);
             } else {
               caretPosition = Number(caretPosition) + Number(cellLabel.length) + 2;
             }
+
           }
           break;
         case 'BETWEEN':
@@ -172,6 +177,7 @@ export default opts => {
           newString = shouldClose;
         }
       }
+
       opts.setInputBarValue(newString);
       this.TEXTAREA.value = newString;
       HandsOnTable.dom.setCaretPosition(this.TEXTAREA, caretPosition);
