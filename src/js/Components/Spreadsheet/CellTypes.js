@@ -254,10 +254,9 @@ const CellTypes = opts => {
           })();
 
           // TODO: when copying and pasting into existing joystick, it breaks
-
-          if (!td.modJoystick) {
+          const hasModCanvas = td.querySelector('.mod-container');
+          if (!hasModCanvas) {
             td.innerHTML = '';
-            console.log('build')
             const canvasContainer = document.createElement('div');
             canvasContainer.classList.add('canvas-container');
             canvasContainer.style.width = `${cellWidth - 1}px`;

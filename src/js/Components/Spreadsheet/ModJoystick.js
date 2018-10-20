@@ -61,7 +61,6 @@ export default class ModJoystick {
       this.joystickHeight = this.joystickEl.clientHeight;
       this.resetJoystickPos();
       if (params.rotation && params.rad) {
-        console.log('has paramsss', params.rotation, params.rad)
         const {x, y} = this.rotAndRadToXandY(params.rotation, params.rad);
         this.joystickX += x;
         this.joystickY += y;
