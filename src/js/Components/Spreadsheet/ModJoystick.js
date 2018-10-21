@@ -141,7 +141,6 @@ export default class ModJoystick {
     this.startDrag = false;
 
     const {rotation, radius} = this.calcParams();
-    this.resetJoystickPos();
     this.onLeave(rotation, radius);
   }
 }

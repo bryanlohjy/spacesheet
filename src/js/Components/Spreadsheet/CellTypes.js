@@ -240,7 +240,7 @@ const CellTypes = opts => {
           const onJoystickLeave = (() => {
             return (rotation, rad) => { // reset
               const args = getArgumentsFromFunction(data);
-              const newFormula = `=MOD(${args[0]}, 0, 0)`;
+              const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
               hotInstance.setDataAtCell(row, col, newFormula);
             }
           })();
