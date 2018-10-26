@@ -11,8 +11,17 @@ export default class DataPickers extends React.Component {
   constructor(props) {
     super(props);
     this.state = { // used to manage highlighter
-      selectedGrid: 'V1',
+      selectedGrid: null,
     };
+  };
+  componentWillReceiveProps(newProps) {
+    const grids = newProps.dataPickerGrids;
+    if (!this.state.selectedGrid && grids) {
+      const firstKey = Object.keys(grids)[0];
+      this.setState({
+        selectedGrid: firstKey
+      });
+    }
   };
   render() {
     const selectorHeight = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ? 48 : 0;
