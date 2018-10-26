@@ -1,5 +1,7 @@
-import FEM from './faces_fem.json';
 import V from './faces_variety.json';
+import FEM from './faces_fem.json';
+import MAS from './faces_fem.json';
+import NOVEL from './faces_fem.json';
 
 module.exports = {
   V: {
@@ -7,7 +9,15 @@ module.exports = {
     data: V,
   },
   FEM: {
-    label: 'Feminine',
+    label: 'Fem',
     data: FEM,
+  },
+  MAS: {
+    label: 'Mas',
+    data: MAS,
+  },
+  NOVEL: {
+    label: 'Novel',
+    data: MAS,
   },
 };
