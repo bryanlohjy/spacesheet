@@ -17,6 +17,9 @@ export default class ModJoystick {
     this.mouseLeave = this.mouseLeave.bind(this);
     this.calcParams = this.calcParams.bind(this);
 
+    this.onJoystickMouseOver = this.onJoystickMouseOver.bind(this);
+    this.onJoystickMouseLeave = this.onJoystickMouseLeave.bind(this);
+
     this.onChange = params.onChange;
     this.onLeave = params.onLeave;
     this.onSet = params.onSet;
@@ -26,6 +29,9 @@ export default class ModJoystick {
     this.joystickWidth = 0;
     this.joystickHeight = 0;
 
+    this.numSlices = 5;
+
+    this.markers;
     this.joystickEl;
 
     this.element = (() => {
@@ -42,15 +48,31 @@ export default class ModJoystick {
 
       el.addEventListener('mousedown', this.onMouseDown);
       el.addEventListener('mouseup', this.onMouseUp);
+      el.addEventListener('mouseover', this.onJoystickMouseOver);
+      el.addEventListener('mouseleave', this.onJoystickMouseLeave);
+
       el.ondragstart = function() { return false };
 
       const markers = document.createElement('div');
       markers.classList.add('mod-markers');
       markers.innerText = '＋';
 
+      const sliceFragment = document.createDocumentFragment();
+      for (let sliceIndex = 0; sliceIndex < this.numSlices; sliceIndex++) {
+        const newSlice = document.createElement('div');
+        newSlice.classList.add('slice');
+
+        const sliceRotation = sliceIndex*(180/(this.numSlices));
+        newSlice.style.transform = `rotate(${sliceRotation}deg)`;
+
+        sliceFragment.appendChild(newSlice);
+      }
+
+      markers.append(sliceFragment);
       container.appendChild(markers);
       container.appendChild(el);
 
+      this.markers = markers;
       this.joystickEl = el;
 
       return container;
@@ -67,6 +89,14 @@ export default class ModJoystick {
         this.updateJoystickPos();
       }
     });
+  }
+
+  onJoystickMouseLeave() {
+    this.markers.classList.remove('slices-visible');
+  }
+
+  onJoystickMouseOver() {
+    this.markers.classList.add('slices-visible');
   }
 
   resetJoystickPos() {
