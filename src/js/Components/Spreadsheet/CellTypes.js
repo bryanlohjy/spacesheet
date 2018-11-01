@@ -228,6 +228,7 @@ const CellTypes = opts => {
             return (rotation, rad) => {
               const args = getArgumentsFromFunction(data);
               const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
+              opts.setInputBarValue(newFormula);
               const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
 
               if (compiledScrub.result) {
@@ -273,8 +274,8 @@ const CellTypes = opts => {
             // set initial location of joystick if there are args
             const args = getArgumentsFromFunction(data);
             const modJoystick = new ModJoystick({
-              rotation: Number(args[1]),
-              rad: Number(args[2]),
+              segment: Number(args[1]),
+              dist: Number(args[2]),
               cellWidth,
               cellHeight,
               onChange: onJoystickChange,

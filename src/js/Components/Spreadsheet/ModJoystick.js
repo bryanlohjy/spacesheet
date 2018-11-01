@@ -92,8 +92,8 @@ export default class ModJoystick {
       this.joystickWidth = this.joystickEl.clientWidth;
       this.joystickHeight = this.joystickEl.clientHeight;
       this.resetJoystickPos();
-      if (params.rotation && params.rad) {
-        const {x, y} = this.polarToCartesian(params.rotation, params.rad);
+      if (params.segment && params.dist) {
+        const {x, y} = this.polarToCartesian(params.segment, params.dist);
         this.joystickX += x;
         this.joystickY += y;
         this.updateJoystickPos();
@@ -120,17 +120,17 @@ export default class ModJoystick {
     this.joystickEl.style.top = `${this.joystickY-this.joystickHeight/2}px`;
   }
 
-  polarToCartesian(segment, degree) {
-    // const coord = new Coordinate.polar()
-    console.log(segment, degree)
+  polarToCartesian(segment, dist) {
+    const segmentArc = 180/this.segments
+    let rotation = (segment*segmentArc)-segmentArc-180;
 
-    // find degree to rotate by, and distance from center;
+    rotation = rotation + segmentArc/2; // to make joystick land on segment
+    rotation = toRadians(rotation);
 
+    const coord = new Coordinate.polar([dist, rotation]);
 
-
-
-    const x = Math.cos((segment-180)*(Math.PI/180))*(degree*this.element.clientWidth/2);
-    const y = Math.sin((segment-180)*(Math.PI/180))*(degree*this.element.clientHeight/2);
+    const x = coord.cartesian()[0]*(this.element.clientWidth/2);
+    const y = coord.cartesian()[1]*(this.element.clientWidth/2);
 
     return { x, y };
   }

@@ -1,5 +1,5 @@
 import { cellCoordsToLabel, matrixForEach, matrixMap, getCellType } from './CellHelpers.js';
-import { getAllIndicesInArray, random } from '../../lib/helpers.js';
+import { getAllIndicesInArray, random, randomPick } from '../../lib/helpers.js';
 
 const getValidMatrix = arr => {
   if (!arr) { return; }
