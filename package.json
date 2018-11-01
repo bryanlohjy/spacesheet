@@ -6,6 +6,7 @@
   "dependencies": {
     "@tensorflow/tfjs": "^0.13.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "coordinate-systems": "^1.1.0",
     "deeplearn": "^0.5.1",
     "file-saver": "^2.0.0-rc.3",
     "hot-formula-parser": "^2.3.3",

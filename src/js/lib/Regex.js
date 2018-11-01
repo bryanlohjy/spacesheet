@@ -2,6 +2,7 @@ module.exports = {
   CELLS: {
     RANDVAR: new RegExp(/=\s*randvar\(.*\)$/ig),
     SLIDER: new RegExp(/=\s*slider\(.*\)$/ig),
+    MOD: new RegExp(/=\s*mod\(.*\)$/ig),
   },
   RANDVAR: {
     isValid: new RegExp(/RANDVAR\(\s*[\d]+\s*\)/ig),

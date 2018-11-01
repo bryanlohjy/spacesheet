@@ -5,6 +5,7 @@ export default class Formulae {
   constructor(opts) {
     this.getCellFromDataPicker = opts.getCellFromDataPicker;
     this.model = opts.model;
+    this.modSegmentCount = opts.modSegmentCount;
   };
   DATAPICKER(params) {
     return this.getCellFromDataPicker(params);
@@ -202,6 +203,31 @@ export default class Formulae {
       return multiplied.sum();
     }).dataSync()[0];
   };
+  MOD(params) {
+    return '#N/A';
+  };
+  MOD_TENSOR(params) {
+    /*
+      [from, segment, dist]
+      interpolates between [from] and a RANDVAR seeded by [segment] by [dist] amount
+    */
+
+    const segment = params[1];
+    const dist = params[2];
+    const segmentOutOfBounds = segment && (segment > this.modSegmentCount || segment < 0);
+
+    if (params.length !== 3) {
+      return '#N/A';
+    }
+
+    return dl.tidy(() => {
+      let from = dl.tensor1d(params[0]);
+      let to = dl.tensor1d(this.model.randVectorFn(segment));
+      let step = dist/1.5; // max level of deviation from base
+      return from.add(to.sub(from).mul(dl.scalar(step)));
+    }).dataSync();
+  };
+
   call(name, params, isTensorCalculation) {
     const aliases = {
       'ADD': 'SUM',

@@ -8,8 +8,11 @@ import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/Word2Vec.js';
 import ModelToLoad from '../Models/FaceModel.js';
 
-import GenerateDataPicker from '../lib/DataPickerGenerator.js';
+// import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
+// import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
+// import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
 
 import DataPickers from './DataPicker/DataPickers.jsx';
 
@@ -28,7 +31,7 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-      currentModel: 'COLOURS', // FACES, FONTS, MNIST, COLOURS
+      currentModel: 'FACES', // FACES, FONTS, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode

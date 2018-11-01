@@ -1,11 +1,12 @@
-import { cellCoordsToLabel, matrixForEach, matrixMap } from './CellHelpers.js';
-import { getAllIndicesInArray } from '../../lib/helpers.js';
+import { cellCoordsToLabel, matrixForEach, matrixMap, getCellType } from './CellHelpers.js';
+import { getAllIndicesInArray, random, randomPick } from '../../lib/helpers.js';
+import { randDist } from './ModJoystick.js';
 
 const getValidMatrix = arr => {
   if (!arr) { return; }
   return arr.map(row => {
     return row.map(val => {
-      return val.trim().length > 0;
+      return val && val.trim().length > 0;
     });
   });
 };
@@ -409,6 +410,104 @@ const lerpSmartFillFn = (hotInstance, currentSelection) => {
   return output;
 }
 
+const modSmartFillFn = (hotInstance, selection, modSegmentCount) => {
+  let output = { cellsToHighlight: [], newData: [] };
+
+  const selectedCells = hotInstance.getData.apply(self, selection);
+
+  const startRow = Math.min(selection[0], selection[2]);
+  const startCol = Math.min(selection[1], selection[3]);
+
+  // mod if all cells can be modded, or if one moddable cell is in selection, mod from it
+  const convertableCells = [];
+  const cellsThatCanBeModdedFrom = [];
+  const empties = [];
+  let allCellsCanBeModded = true;
+
+  matrixForEach(selectedCells, (val, rowIndex, colIndex) => {
+    const cellType = getCellType(val);
+
+    let canBeConverted = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
+    let canBeModdedFrom = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR' || cellType === 'MOD');
+
+    if (canBeConverted || canBeModdedFrom) { // perform DOM check only if it passes
+      const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
+      const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
+      if (!cellHasCanvas) {
+        canBeConverted = false;
+        canBeModdedFrom = false;
+      }
+    }
+
+    const cellCoord = [startRow+rowIndex, startCol+colIndex];
+
+    if (canBeConverted) {
+      convertableCells.push(cellCoord);
+    }
+
+    if (canBeModdedFrom) {
+      cellsThatCanBeModdedFrom.push(cellCoord);
+    }
+
+    if (!canBeConverted) {
+      allCellsCanBeModded = false;
+    }
+
+    if (!val || val.trim().length === 0) {
+      empties.push(cellCoord);
+    }
+  });
+
+  // turn all cells into mod cells
+  if (allCellsCanBeModded) {
+    const _cellsToHighlight = [];
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
+
+      const segment = parseInt(random(1, modSegmentCount+1));
+      return `=MOD(${val.replace(/=/gi, '')}, ${segment}, ${randDist()})`;
+    });
+    return {
+      cellsToHighlight: _cellsToHighlight,
+      newData: _newData,
+    };
+  }
+
+  // turn empty cells into MOD cells which refer to a single moddable cell
+  const rows = selectedCells.length;
+  const cols = selectedCells[0].length;
+
+  const numSelected = rows * cols;
+
+  if (numSelected-empties.length === 1 && cellsThatCanBeModdedFrom.length === 1) {
+    const _cellsToHighlight = empties;
+
+    const modFrom = cellsThatCanBeModdedFrom[0];
+    const modFromLabel = cellCoordsToLabel({
+                          row: modFrom[0],
+                          col: modFrom[1]
+                        });
+
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      if (val) {
+        return val;
+      } else {
+        const segment = parseInt(random(1, modSegmentCount+1));
+        return `=MOD(${modFromLabel}, ${segment}, ${randDist()})`;
+      }
+    });
+
+    return {
+      cellsToHighlight: _cellsToHighlight,
+      newData: _newData,
+    };
+  }
+
+  return output;
+}
+
+
+
 
 module.exports = {
   getValidMatrix,
@@ -417,4 +516,5 @@ module.exports = {
   groupArgSmartFillFn,
   twoArgSmartFillFn,
   lerpSmartFillFn,
+  modSmartFillFn
 };

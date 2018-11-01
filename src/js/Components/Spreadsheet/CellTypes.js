@@ -1,7 +1,8 @@
 import HandsOnTable from 'handsontable';
-import { countDecimalPlaces, randomInt } from '../../lib/helpers.js';
+import { countDecimalPlaces, randomInt, random } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
 import { getArgumentsFromFunction } from './FormulaParser.js';
+import { ModJoystick, randDist } from './ModJoystick.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   const CustomTextEditor = CellEditor(opts);
@@ -56,8 +57,8 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
-      const randArgs = getArgumentsFromFunction(data);
-      if (randArgs.length === 0) { // if there are no arguments, use a smart default
+      const initialArgs = getArgumentsFromFunction(data);
+      if (initialArgs.length === 0) { // if there are no arguments, use a smart default
         data = `=SLIDER(0, 1, 0.05)`;
         hotInstance.setDataAtCell(row, col, data);
       }
@@ -141,7 +142,7 @@ const CellTypes = opts => {
       if (data && data.trim().length) {
         const randArgs = getArgumentsFromFunction(data);
         if (randArgs.length === 0) { // if there are no arguments, create a random seed
-          data = `=RANDVAR${ randomInt(0, 99999) })`;
+          data = `=RANDVAR(${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
         }
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
@@ -201,11 +202,120 @@ const CellTypes = opts => {
     editor: CustomTextEditor,
   };
 
+  const Mod = {
+    renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
+      if (data && data.trim().length) {
+        const args = getArgumentsFromFunction(data);
+
+        const modSegmentCount = opts.modSegmentCount || 2;
+
+        if (args.length < 3) { // if there are no arguments, create a random seed
+          const segment = parseInt(random(1, modSegmentCount+1));
+          data = `=MOD(${args[0]}, ${args[1] || segment}, ${args[2] || randDist()})`;
+          hotInstance.setDataAtCell(row, col, data);
+        }
+
+        const compiled = opts.formulaParser.parse(data.replace('=', ''));
+        let { result, error } = compiled;
+
+
+        if (result && typeof result !== 'string') {
+          let ctx;
+          let canvas;
+
+          const onJoystickChange = (() => {
+            return (segment, dist) => {
+              const args = getArgumentsFromFunction(data);
+              const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
+              opts.setInputBarValue(newFormula);
+              const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
+
+              if (compiledScrub.result) {
+                const decodedScrub = opts.decodeFn(compiledScrub.result);
+                opts.drawFn(ctx, decodedScrub);
+              } else {
+                td.innerHTML = compiledScrub.error;
+              }
+            }
+          })();
+
+          const onJoystickLeave = (() => {
+            return (segment, dist) => { // reset
+              const args = getArgumentsFromFunction(data);
+              const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
+              hotInstance.setDataAtCell(row, col, newFormula);
+            }
+          })();
+
+          const onJoystickSet = (() => {
+            return (segment, dist) => { // set data at cell
+              const args = getArgumentsFromFunction(data);
+              const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
+              hotInstance.setDataAtCell(row, col, newFormula);
+            }
+          })();
+
+          // TODO: when copying and pasting into existing joystick, it breaks
+          const hasModCanvas = td.querySelector('.mod-container');
+          if (!hasModCanvas) {
+            td.innerHTML = '';
+            const canvasContainer = document.createElement('div');
+            canvasContainer.classList.add('canvas-container');
+            canvasContainer.style.width = `${cellWidth - 1}px`;
+            canvasContainer.style.height = `${cellHeight - 1}px`;
+
+            canvas = document.createElement('canvas');
+            canvas.width = opts.outputWidth - 1;
+            canvas.height = opts.outputHeight - 1;
+
+            ctx = canvas.getContext('2d');
+
+            // set initial location of joystick if there are args
+            const args = getArgumentsFromFunction(data);
+            const modJoystick = new ModJoystick({
+              segment: Number(args[1]),
+              dist: Number(args[2]),
+              cellWidth,
+              cellHeight,
+              onChange: onJoystickChange,
+              onLeave: onJoystickLeave,
+              onSet: onJoystickSet,
+              segments: modSegmentCount
+            });
+
+            canvasContainer.appendChild(canvas);
+            canvasContainer.appendChild(modJoystick.element);
+
+            td.appendChild(canvasContainer);
+
+            td.modJoystick = modJoystick;
+          } else {
+            canvas = td.querySelector('canvas');
+            ctx = canvas.getContext('2d');
+
+            td.modJoystick.onChange = onJoystickChange;
+            td.modJoystick.onLeave = onJoystickLeave;
+            td.modJoystick.onSet = onJoystickSet;
+          }
+
+          const decodedVector = opts.decodeFn(result);
+          opts.drawFn(ctx, decodedVector);
+        } else {
+          td.innerHTML = '';
+          td.innerText = error || result;
+        }
+      }
+    },
+    editor: CustomTextEditor,
+  };
+
+
   return {
     Formula,
     Text,
     Slider,
     RandVar,
+    Mod,
   };
 }
 

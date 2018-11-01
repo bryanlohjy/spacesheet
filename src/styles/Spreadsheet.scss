@@ -146,6 +146,69 @@
       }
     }
 
+    .mod-container {
+      position: absolute;
+      opacity: 0;
+
+      transition: opacity 0.1s;
+
+      &:hover {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      background: rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+
+      .mod-markers {
+        color: rgba(255, 255, 255, 0.4);
+        border: 1px dotted rgba(255, 255, 255, 0.2);
+        border-radius: 100%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        font-size: 12px;
+        &.segments-visible {
+          .segment {
+            opacity: 1;
+          }
+        }
+        .segment {
+          &.segment-highlighted {
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+          }
+          transition: opacity 0.3s;
+          width: 95%;
+          height: 50%;
+          bottom: 0;
+          transform-origin: 50% 0;
+          position: absolute;
+          border-top: 1px dotted rgba(255, 255, 255, 0.2);
+          opacity: 0;
+        }
+      }
+
+      .mod-joystick {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: $actionColor;
+        border-radius: 100%;
+        cursor: move;
+      }
+
+    }
+
     .canvas-container {
       display: flex;
       padding: 0;

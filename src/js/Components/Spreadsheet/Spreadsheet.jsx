@@ -45,7 +45,8 @@ export default class Spreadsheet extends React.Component {
     this.afterRender = this.afterRender.bind(this);
     this.afterUndoRedo = this.afterUndoRedo.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
-    this.minCellSize = 84;
+    this.minCellSize = 90;
+    this.modSegmentCount = 7;
   };
 
   componentWillReceiveProps(newProps) {
@@ -112,9 +113,11 @@ export default class Spreadsheet extends React.Component {
     const formulaParser = new FormulaParser(this.hotInstance, {
       getCellFromDataPicker: this.props.getCellFromDataPicker,
       model: model,
+      modSegmentCount: this.modSegmentCount
     });
 
     this.props.setFormulaParserRef(formulaParser);
+
 
     const cellTypes = new CellTypes({
       drawFn: model.drawFn,
@@ -124,7 +127,10 @@ export default class Spreadsheet extends React.Component {
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
       minCellSize: this.minCellSize,
+      modSegmentCount: this.modSegmentCount,
     });
+
+    this.cellTypes = cellTypes;
 
     this.hotInstance.updateSettings({
       cells: (row, col, prop) => {
@@ -142,6 +148,10 @@ export default class Spreadsheet extends React.Component {
           case 'RANDVAR':
           cellProperties.renderer = cellTypes.RandVar.renderer;
           cellProperties.editor = cellTypes.RandVar.editor;
+          break;
+          case 'MOD':
+          cellProperties.renderer = cellTypes.Mod.renderer;
+          cellProperties.editor = cellTypes.Mod.editor;
           break;
           default:
           cellProperties.renderer = cellTypes.Text.renderer;
@@ -196,6 +206,9 @@ export default class Spreadsheet extends React.Component {
             setSelectedCellData={this.setSelectedCellData}
             currentSelection={this.state.currentSelection}
             hotInstance={this.hotInstance}
+            cellTypes={this.cellTypes}
+            modSegmentCount={this.modSegmentCount}
+            setInputBarValue={this.props.setInputBarValue}
           />
         </div>
         {
@@ -241,4 +254,5 @@ Spreadsheet.propTypes = {
   setFormulaParserRef: PropTypes.func,
   afterRender: PropTypes.func,
   currentModel: PropTypes.string,
+  setInputBarValue: PropTypes.func,
 };
