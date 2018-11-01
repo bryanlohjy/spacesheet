@@ -208,6 +208,7 @@ export default class Spreadsheet extends React.Component {
             hotInstance={this.hotInstance}
             cellTypes={this.cellTypes}
             modSegmentCount={this.modSegmentCount}
+            setInputBarValue={this.props.setInputBarValue}
           />
         </div>
         {
@@ -253,4 +254,5 @@ Spreadsheet.propTypes = {
   setFormulaParserRef: PropTypes.func,
   afterRender: PropTypes.func,
   currentModel: PropTypes.string,
+  setInputBarValue: PropTypes.func,
 };

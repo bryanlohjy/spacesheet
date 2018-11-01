@@ -188,6 +188,9 @@ export default class OperationDrawer extends React.Component {
           });
           if (!arraysAreSimilar(selectedCells, newData)) {
             self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+
+            const selectedValue = self.props.hotInstance.getDataAtCell(selection[0], selection[1]);
+            self.props.setInputBarValue(selectedValue);
           }
         },
         shouldHighlight: () => {
@@ -214,6 +217,9 @@ export default class OperationDrawer extends React.Component {
           });
           if (!arraysAreSimilar(selectedCells, newData)) {
             self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+
+            const selectedValue = self.props.hotInstance.getDataAtCell(selection[0], selection[1]);
+            self.props.setInputBarValue(selectedValue);
           }
         },
         shouldHighlight: () => {
@@ -243,6 +249,9 @@ export default class OperationDrawer extends React.Component {
             const selectedCells = self.props.hotInstance.getData.apply(self, selection);
             if (!arraysAreSimilar(selectedCells, newData)) {
               self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+
+              const selectedValue = self.props.hotInstance.getDataAtCell(selection[0], selection[1]);
+              self.props.setInputBarValue(selectedValue);
             }
           } else {
             self.props.setSelectedCellData(`=MOD(`);
@@ -360,4 +369,5 @@ OperationDrawer.propTypes = {
   hotInstance: PropTypes.object,
   cellTypes: PropTypes.object,
   modSegmentCount: PropTypes.number,
+  setInputBarValue: PropTypes.func,
 };
