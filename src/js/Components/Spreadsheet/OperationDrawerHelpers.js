@@ -409,7 +409,7 @@ const lerpSmartFillFn = (hotInstance, currentSelection) => {
   return output;
 }
 
-const modSmartFillFn = (hotInstance, selection) => {
+const modSmartFillFn = (hotInstance, selection, modSegmentCount) => {
   let output = { cellsToHighlight: [], newData: [] };
 
   const selectedCells = hotInstance.getData.apply(self, selection);
@@ -463,8 +463,8 @@ const modSmartFillFn = (hotInstance, selection) => {
     const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
       _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
 
-      const degree = parseInt(random(0, 360));
-      const rad = random(0.5, 1).toFixed(2);
+      const degree = parseInt(random(1, modSegmentCount+1));
+      const rad = random(-1, 1).toFixed(2);
       return `=MOD(${val.replace(/=/gi, '')}, ${degree}, ${rad})`;
     });
     return {
@@ -492,8 +492,8 @@ const modSmartFillFn = (hotInstance, selection) => {
       if (val) {
         return val;
       } else {
-        const degree = parseInt(random(0, 360));
-        const rad = random(0.5, 1).toFixed(2);
+        const degree = parseInt(random(1, modSegmentCount+1));
+        const rad = random(-1, 1).toFixed(2);
         return `=MOD(${modFromLabel}, ${degree}, ${rad})`;
       }
     });

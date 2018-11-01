@@ -29,7 +29,7 @@ export default class ModJoystick {
     this.joystickWidth = 0;
     this.joystickHeight = 0;
 
-    this.numSlices = 5;
+    this.segments = params.segments;
 
     this.markers;
     this.joystickEl;
@@ -57,18 +57,18 @@ export default class ModJoystick {
       markers.classList.add('mod-markers');
       markers.innerText = '＋';
 
-      const sliceFragment = document.createDocumentFragment();
-      for (let sliceIndex = 0; sliceIndex < this.numSlices; sliceIndex++) {
-        const newSlice = document.createElement('div');
-        newSlice.classList.add('slice');
+      const segmentFragment = document.createDocumentFragment();
+      for (let segmentIndex = 0; segmentIndex < this.segments; segmentIndex++) {
+        const newSegment = document.createElement('div');
+        newSegment.classList.add('segment');
 
-        const sliceRotation = sliceIndex*(180/(this.numSlices));
-        newSlice.style.transform = `rotate(${sliceRotation}deg)`;
+        const segmentRotation = segmentIndex*(180/(this.segments));
+        newSegment.style.transform = `rotate(${segmentRotation}deg)`;
 
-        sliceFragment.appendChild(newSlice);
+        segmentFragment.appendChild(newSegment);
       }
 
-      markers.append(sliceFragment);
+      markers.append(segmentFragment);
       container.appendChild(markers);
       container.appendChild(el);
 
@@ -92,11 +92,11 @@ export default class ModJoystick {
   }
 
   onJoystickMouseLeave() {
-    this.markers.classList.remove('slices-visible');
+    this.markers.classList.remove('segments-visible');
   }
 
   onJoystickMouseOver() {
-    this.markers.classList.add('slices-visible');
+    this.markers.classList.add('segments-visible');
   }
 
   resetJoystickPos() {

@@ -57,8 +57,8 @@ const CellTypes = opts => {
 
   const Slider = {
     renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
-      const randArgs = getArgumentsFromFunction(data);
-      if (randArgs.length === 0) { // if there are no arguments, use a smart default
+      const initialArgs = getArgumentsFromFunction(data);
+      if (initialArgs.length === 0) { // if there are no arguments, use a smart default
         data = `=SLIDER(0, 1, 0.05)`;
         hotInstance.setDataAtCell(row, col, data);
       }
@@ -207,10 +207,12 @@ const CellTypes = opts => {
       if (data && data.trim().length) {
         const args = getArgumentsFromFunction(data);
 
+        const modSegmentCount = opts.modSegmentCount || 2;
+
         if (args.length < 3) { // if there are no arguments, create a random seed
-          const degree = parseInt(random(0, 360));
-          const rad = random(0.5, 1).toFixed(2);
-          data = `=MOD(${args[0]}, ${args[1] || degree}, ${args[2] || rad})`;
+          const segment = parseInt(random(1, modSegmentCount+1));
+          const rad = random(-1, 1).toFixed(2);
+          data = `=MOD(${args[0]}, ${args[1] || segment}, ${args[2] || rad})`;
           hotInstance.setDataAtCell(row, col, data);
         }
 
@@ -278,6 +280,7 @@ const CellTypes = opts => {
               onChange: onJoystickChange,
               onLeave: onJoystickLeave,
               onSet: onJoystickSet,
+              segments: modSegmentCount
             });
 
             canvasContainer.appendChild(canvas);

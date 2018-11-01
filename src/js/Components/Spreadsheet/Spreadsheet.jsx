@@ -45,7 +45,7 @@ export default class Spreadsheet extends React.Component {
     this.afterRender = this.afterRender.bind(this);
     this.afterUndoRedo = this.afterUndoRedo.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
-    this.minCellSize = 84;
+    this.minCellSize = 90;
   };
 
   componentWillReceiveProps(newProps) {
@@ -116,6 +116,8 @@ export default class Spreadsheet extends React.Component {
 
     this.props.setFormulaParserRef(formulaParser);
 
+    this.modSegmentCount = 5;
+
     const cellTypes = new CellTypes({
       drawFn: model.drawFn,
       decodeFn: model.decodeFn,
@@ -124,7 +126,10 @@ export default class Spreadsheet extends React.Component {
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
       minCellSize: this.minCellSize,
+      modSegmentCount: this.modSegmentCount,
     });
+
+    this.cellTypes = cellTypes;
 
     this.hotInstance.updateSettings({
       cells: (row, col, prop) => {
@@ -200,6 +205,8 @@ export default class Spreadsheet extends React.Component {
             setSelectedCellData={this.setSelectedCellData}
             currentSelection={this.state.currentSelection}
             hotInstance={this.hotInstance}
+            cellTypes={this.cellTypes}
+            modSegmentCount={this.modSegmentCount}
           />
         </div>
         {

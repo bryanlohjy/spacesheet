@@ -178,12 +178,12 @@
         justify-content: center;
         pointer-events: none;
         font-size: 12px;
-        &.slices-visible {
-          .slice {
+        &.segments-visible {
+          .segment {
             opacity: 1;
           }
         }
-        .slice {
+        .segment {
           transition: opacity 0.3s;
           width: 100%;
           height: 50%;

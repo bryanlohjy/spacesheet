@@ -252,7 +252,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return modSmartFillFn(self.props.hotInstance, self.props.currentSelection);
+          return modSmartFillFn(self.props.hotInstance, self.props.currentSelection, self.props.modSegmentCount);
         }
       },
       // DIST: {
@@ -357,4 +357,6 @@ OperationDrawer.propTypes = {
   currentSelection: PropTypes.array,
   setSelectedCellData: PropTypes.func,
   hotInstance: PropTypes.object,
+  cellTypes: PropTypes.object,
+  modSegmentCount: PropTypes.number,
 };
