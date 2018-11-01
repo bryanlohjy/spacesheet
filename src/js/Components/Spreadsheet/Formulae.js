@@ -5,6 +5,7 @@ export default class Formulae {
   constructor(opts) {
     this.getCellFromDataPicker = opts.getCellFromDataPicker;
     this.model = opts.model;
+    this.modSegmentCount = opts.modSegmentCount;
   };
   DATAPICKER(params) {
     return this.getCellFromDataPicker(params);
@@ -206,18 +207,23 @@ export default class Formulae {
     return '#N/A';
   };
   MOD_TENSOR(params) {
-    const degOutOfBounds = params[1] && (params[1] > 360 || params[1] < 0);
+    /*
+      [from, segment, dist]
+      interpolates between [from] and a RANDVAR seeded by [segment] by [dist] amount
+    */
 
-    if (params.length !== 3 || degOutOfBounds) {
+    const segment = params[1];
+    const dist = params[2];
+    const segmentOutOfBounds = segment && (segment > this.modSegmentCount || segment < 0);
+
+    if (params.length !== 3) {
       return '#N/A';
     }
 
     return dl.tidy(() => {
-      // TODO: use rotation so there is continuity along the joystick's rotation
-      // current implementation performs tiny interpolations on seeded randoms
       let from = dl.tensor1d(params[0]);
-      let to = dl.tensor1d(this.model.randVectorFn(params[1]));
-      let step = params[2]/2; // max level of deviation from base
+      let to = dl.tensor1d(this.model.randVectorFn(segment));
+      let step = dist/1.5; // max level of deviation from base
       return from.add(to.sub(from).mul(dl.scalar(step)));
     }).dataSync();
   };

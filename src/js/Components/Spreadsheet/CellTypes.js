@@ -2,7 +2,7 @@ import HandsOnTable from 'handsontable';
 import { countDecimalPlaces, randomInt, random } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
 import { getArgumentsFromFunction } from './FormulaParser.js';
-import ModJoystick from './ModJoystick.js';
+import { ModJoystick, randDist } from './ModJoystick.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
   const CustomTextEditor = CellEditor(opts);
@@ -211,8 +211,7 @@ const CellTypes = opts => {
 
         if (args.length < 3) { // if there are no arguments, create a random seed
           const segment = parseInt(random(1, modSegmentCount+1));
-          const rad = random(-1, 1).toFixed(2);
-          data = `=MOD(${args[0]}, ${args[1] || segment}, ${args[2] || rad})`;
+          data = `=MOD(${args[0]}, ${args[1] || segment}, ${args[2] || randDist()})`;
           hotInstance.setDataAtCell(row, col, data);
         }
 
@@ -225,9 +224,9 @@ const CellTypes = opts => {
           let canvas;
 
           const onJoystickChange = (() => {
-            return (rotation, rad) => {
+            return (segment, dist) => {
               const args = getArgumentsFromFunction(data);
-              const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
+              const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               opts.setInputBarValue(newFormula);
               const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
 
@@ -241,17 +240,17 @@ const CellTypes = opts => {
           })();
 
           const onJoystickLeave = (() => {
-            return (rotation, rad) => { // reset
+            return (segment, dist) => { // reset
               const args = getArgumentsFromFunction(data);
-              const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
+              const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               hotInstance.setDataAtCell(row, col, newFormula);
             }
           })();
 
           const onJoystickSet = (() => {
-            return (rotation, rad) => { // set data at cell
+            return (segment, dist) => { // set data at cell
               const args = getArgumentsFromFunction(data);
-              const newFormula = `=MOD(${args[0]}, ${rotation}, ${rad})`;
+              const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               hotInstance.setDataAtCell(row, col, newFormula);
             }
           })();

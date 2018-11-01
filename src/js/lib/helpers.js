@@ -32,10 +32,10 @@ const helpers = {
 	},
 	randomPick: function(arr, cb) {
 		if (cb) { // return random picked and index of element
-			const randomIndex = helpers.randomInt(0, arr.length-1);
+			const randomIndex = helpers.randomInt(0, arr.length);
 			cb(arr[randomIndex], randomIndex);
 		} else {
-			return (arr[helpers.randomInt(0, arr.length-1)]);
+			return (arr[helpers.randomInt(0, arr.length)]);
 		}
 	},
   getData: function(url) { // function to get data from server

@@ -1,5 +1,6 @@
 import { cellCoordsToLabel, matrixForEach, matrixMap, getCellType } from './CellHelpers.js';
 import { getAllIndicesInArray, random, randomPick } from '../../lib/helpers.js';
+import { randDist } from './ModJoystick.js';
 
 const getValidMatrix = arr => {
   if (!arr) { return; }
@@ -463,9 +464,8 @@ const modSmartFillFn = (hotInstance, selection, modSegmentCount) => {
     const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
       _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
 
-      const degree = parseInt(random(1, modSegmentCount+1));
-      const rad = random(-1, 1).toFixed(2);
-      return `=MOD(${val.replace(/=/gi, '')}, ${degree}, ${rad})`;
+      const segment = parseInt(random(1, modSegmentCount+1));
+      return `=MOD(${val.replace(/=/gi, '')}, ${segment}, ${randDist()})`;
     });
     return {
       cellsToHighlight: _cellsToHighlight,
@@ -492,9 +492,8 @@ const modSmartFillFn = (hotInstance, selection, modSegmentCount) => {
       if (val) {
         return val;
       } else {
-        const degree = parseInt(random(1, modSegmentCount+1));
-        const rad = random(-1, 1).toFixed(2);
-        return `=MOD(${modFromLabel}, ${degree}, ${rad})`;
+        const segment = parseInt(random(1, modSegmentCount+1));
+        return `=MOD(${modFromLabel}, ${segment}, ${randDist()})`;
       }
     });
 

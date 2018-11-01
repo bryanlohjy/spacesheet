@@ -1,4 +1,5 @@
 import Coordinate from 'coordinate-systems';
+import {random, randomPick} from '../../lib/helpers.js';
 
 const toRadians = degree => {
   return degree*(Math.PI/180);
@@ -8,7 +9,7 @@ const toDegrees = rad => {
   return rad/(Math.PI/180);
 };
 
-export default class ModJoystick {
+class ModJoystick {
   constructor(params) {
     // if it has params.rotation and params.radius,
       // do inverse calculations to work out:
@@ -232,3 +233,9 @@ export default class ModJoystick {
     this.onLeave(segment, degree);
   }
 }
+
+const randDist = () => {
+  return randomPick([random(-0.85, -0.4), random(0.4, 0.85)]).toFixed(2);
+};
+
+export {ModJoystick, randDist}
