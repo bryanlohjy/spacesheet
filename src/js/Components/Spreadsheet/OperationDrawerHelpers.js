@@ -5,7 +5,7 @@ const getValidMatrix = arr => {
   if (!arr) { return; }
   return arr.map(row => {
     return row.map(val => {
-      return val.trim().length > 0;
+      return val && val.trim().length > 0;
     });
   });
 };
@@ -467,7 +467,6 @@ const modSmartFillFn = (hotInstance, selection) => {
       const rad = random(0.5, 1).toFixed(2);
       return `=MOD(${val.replace(/=/gi, '')}, ${degree}, ${rad})`;
     });
-
     return {
       cellsToHighlight: _cellsToHighlight,
       newData: _newData,
