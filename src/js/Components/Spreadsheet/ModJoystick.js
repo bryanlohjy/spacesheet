@@ -1,3 +1,13 @@
+import Coordinate from 'coordinate-systems';
+
+const toRadians = degree => {
+  return degree*(Math.PI/180);
+};
+
+const toDegrees = rad => {
+  return rad/(Math.PI/180);
+};
+
 export default class ModJoystick {
   constructor(params) {
     // if it has params.rotation and params.radius,
@@ -8,7 +18,7 @@ export default class ModJoystick {
         // joystickHeight
 
     this.startDrag = false;
-    this.rotAndRadToXandY = this.rotAndRadToXandY.bind(this);
+    this.polarToCartesian = this.polarToCartesian.bind(this);
     this.resetJoystickPos = this.resetJoystickPos.bind(this);
     this.updateJoystickPos = this.updateJoystickPos.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -83,7 +93,7 @@ export default class ModJoystick {
       this.joystickHeight = this.joystickEl.clientHeight;
       this.resetJoystickPos();
       if (params.rotation && params.rad) {
-        const {x, y} = this.rotAndRadToXandY(params.rotation, params.rad);
+        const {x, y} = this.polarToCartesian(params.rotation, params.rad);
         this.joystickX += x;
         this.joystickY += y;
         this.updateJoystickPos();
@@ -110,9 +120,17 @@ export default class ModJoystick {
     this.joystickEl.style.top = `${this.joystickY-this.joystickHeight/2}px`;
   }
 
-  rotAndRadToXandY(rotation, rad) {
-    const x = Math.cos((rotation-180)*(Math.PI/180))*(rad*this.element.clientWidth/2);
-    const y = Math.sin((rotation-180)*(Math.PI/180))*(rad*this.element.clientHeight/2);
+  polarToCartesian(segment, degree) {
+    // const coord = new Coordinate.polar()
+    console.log(segment, degree)
+
+    // find degree to rotate by, and distance from center;
+
+
+
+
+    const x = Math.cos((segment-180)*(Math.PI/180))*(degree*this.element.clientWidth/2);
+    const y = Math.sin((segment-180)*(Math.PI/180))*(degree*this.element.clientHeight/2);
 
     return { x, y };
   }
@@ -130,27 +148,35 @@ export default class ModJoystick {
     };
 
     const joystick = {
-      x: (this.joystickX+this.mouseOffsetX),
-      y: (this.joystickY+this.mouseOffsetY),
+      x: this.joystickX+this.mouseOffsetX,
+      y: this.joystickY+this.mouseOffsetY,
     };
 
     const diffX = joystick.x-center.x;
     const diffY = joystick.y-center.y;
 
-    let rotation = (Math.atan2(diffY, diffX) * 180 / Math.PI) + 180;
-    let radius = (Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)))/center.x;
+    const coord = new Coordinate.cart([diffX, diffY]);
 
-    rotation = parseInt(rotation);
-    radius = Number(String(radius).substring(0, 4)).toFixed(2);
+    const rotation = toDegrees(coord.polar()[1])+180;
 
-    return { rotation: rotation, radius: radius };
+    let segment = parseInt(rotation/(360/(this.segments*2))) + 1;
+    let degree = coord.polar()[0]/(this.element.clientWidth/2)
+
+    if (segment > this.segments) { // inverse segments
+      segment = segment-this.segments;
+      degree = degree*-1;
+    }
+
+    degree = Number(String(degree).substring(0, 4)).toFixed(2);
+
+    return { segment, degree };
   }
 
   onMouseUp(e) {
     if (!this.startDrag) { return; }
     this.startDrag = false;
-    const {rotation, radius} = this.calcParams();
-    this.onSet(rotation, radius);
+    const {segment, degree} = this.calcParams();
+    this.onSet(segment, degree);
   }
 
   onMouseMove(e) {
@@ -162,15 +188,15 @@ export default class ModJoystick {
     this.joystickY += shiftY-this.mouseOffsetY;
     this.updateJoystickPos();
 
-    const {rotation, radius} = this.calcParams();
-    this.onChange(rotation, radius);
+    const {segment, degree} = this.calcParams();
+    this.onChange(segment, degree);
   }
 
   mouseLeave(e) {
     if (!this.startDrag) { return; }
     this.startDrag = false;
 
-    const {rotation, radius} = this.calcParams();
-    this.onLeave(rotation, radius);
+    const {segment, degree} = this.calcParams();
+    this.onLeave(segment, degree);
   }
 }
