@@ -21,6 +21,7 @@ export default class ModJoystick {
     this.polarToCartesian = this.polarToCartesian.bind(this);
     this.resetJoystickPos = this.resetJoystickPos.bind(this);
     this.updateJoystickPos = this.updateJoystickPos.bind(this);
+    this.updateSegmentHighlight = this.updateSegmentHighlight.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -43,6 +44,9 @@ export default class ModJoystick {
 
     this.markers;
     this.joystickEl;
+
+    this.currentSegment;
+    this.segmentEls = [];
 
     this.element = (() => {
       const container = document.createElement('div');
@@ -75,6 +79,7 @@ export default class ModJoystick {
         const segmentRotation = segmentIndex*(180/(this.segments));
         newSegment.style.transform = `rotate(${segmentRotation}deg)`;
 
+        this.segmentEls.push(newSegment);
         segmentFragment.appendChild(newSegment);
       }
 
@@ -97,6 +102,8 @@ export default class ModJoystick {
         this.joystickX += x;
         this.joystickY += y;
         this.updateJoystickPos();
+
+        this.updateSegmentHighlight(params.segment);
       }
     });
   }
@@ -118,6 +125,28 @@ export default class ModJoystick {
   updateJoystickPos() {
     this.joystickEl.style.left = `${this.joystickX-this.joystickWidth/2}px`;
     this.joystickEl.style.top = `${this.joystickY-this.joystickHeight/2}px`;
+  }
+
+  updateSegmentHighlight(newSegment) {
+    const prevSegment = this.currentSegment;
+
+    if (prevSegment != newSegment) {
+      if (prevSegment) {
+        const prevSegmentBottom = prevSegment-1;
+        const prevSegmentTop = prevSegment%this.segmentEls.length;
+
+        this.segmentEls[prevSegmentTop].classList.remove('segment-highlighted');
+        this.segmentEls[prevSegmentBottom].classList.remove('segment-highlighted');
+      }
+
+      const newSegmentBottom = newSegment-1;
+      const newSegmentTop = newSegment%this.segmentEls.length;
+
+      this.segmentEls[newSegmentTop].classList.add('segment-highlighted');
+      this.segmentEls[newSegmentBottom].classList.add('segment-highlighted');
+
+      this.currentSegment = newSegment;
+    }
   }
 
   polarToCartesian(segment, dist) {
@@ -189,6 +218,9 @@ export default class ModJoystick {
     this.updateJoystickPos();
 
     const {segment, degree} = this.calcParams();
+
+    this.updateSegmentHighlight(segment);
+
     this.onChange(segment, degree);
   }
 

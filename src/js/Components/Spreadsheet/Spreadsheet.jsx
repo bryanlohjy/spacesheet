@@ -116,7 +116,7 @@ export default class Spreadsheet extends React.Component {
 
     this.props.setFormulaParserRef(formulaParser);
 
-    this.modSegmentCount = 6;
+    this.modSegmentCount = 7;
 
     const cellTypes = new CellTypes({
       drawFn: model.drawFn,
