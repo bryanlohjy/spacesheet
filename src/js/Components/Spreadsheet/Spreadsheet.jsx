@@ -95,7 +95,7 @@ export default class Spreadsheet extends React.Component {
       preventOverflow: "horizontal",
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
-      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight
+      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
     });
 
     setTimeout(() => {
@@ -114,7 +114,6 @@ export default class Spreadsheet extends React.Component {
     });
 
     this.props.setFormulaParserRef(formulaParser);
-
 
     const cellTypes = new CellTypes({
       drawFn: model.drawFn,
@@ -164,6 +163,9 @@ export default class Spreadsheet extends React.Component {
       data: this.defaultSheet ? this.defaultSheet.data : null,
       rowHeights: Math.max(model.outputHeight, this.minCellSize),
       colWidths: Math.max(model.outputWidth, this.minCellSize),
+      comments: true,
+      cell: this.defaultSheet ? this.defaultSheet.comments : [],
+      contextMenu: ['commentsAddEdit', 'commentsRemove', 'commentsReadOnly']
     });
 
     setTimeout(() => {

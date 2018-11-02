@@ -114,6 +114,12 @@ const FontDemoSheet = (rows, cols) => {
       ["", "", "", "=SLIDER(-1, 1, 0.05)"],
       ["", "", "=DATAPICKER('V1-1-4-6-0-0')", "=MUL(D2, D3)", "=SUM(C4:D4)"],
     ],
+    comments: [
+      {row: 1, col: 3, comment: {value: 'An italic attribute vector', readOnly: true}},
+      {row: 2, col: 3, comment: {value: 'Scaling the attribute before applying it', readOnly: true}},
+      {row: 3, col: 2, comment: {value: 'Input font', readOnly: true}},
+      {row: 3, col: 4, comment: {value: 'Applying the italic vector to the input font', readOnly: true}}
+    ]
   };
   // make sure that a full grid is returned. Empties should be ""
   for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
