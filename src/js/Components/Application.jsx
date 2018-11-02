@@ -211,6 +211,7 @@ export default class Application extends React.Component {
           links={[
             {label: 'Faces', id: 'FACES', href: 'http://bryanlohjy.gitlab.io/spacesheet/faces.html'},
             {label: 'Fonts', id: 'FONTS', href: 'http://bryanlohjy.gitlab.io/spacesheet/index.html'},
+            {label: 'WORD2VEC', id: 'WORD2VEC', href: 'http://bryanlohjy.gitlab.io/spacesheet/word2vec.html'},
             {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
             {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
           ]}
