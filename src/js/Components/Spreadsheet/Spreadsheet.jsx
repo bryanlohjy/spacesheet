@@ -7,7 +7,7 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { FontDemoSheet, FaceDemoSheet, MNISTDemoSheet, BlankSheet } from './SpreadsheetData.js';
+import { FontDemoSheet, FaceDemoSheet, MNISTDemoSheet, Word2VecDemoSheet, BlankSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 const OptimisedHotTable = Component => {
@@ -181,6 +181,9 @@ export default class Spreadsheet extends React.Component {
         break;
       case 'MNIST':
         this.defaultSheet = MNISTDemoSheet(this.rows, this.cols);
+        break;
+      case 'WORD2VEC':
+        this.defaultSheet = Word2VecDemoSheet(this.rows, this.cols);
         break;
       default:
         this.defaultSheet = BlankSheet(this.rows, this.cols);

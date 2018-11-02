@@ -214,4 +214,40 @@ const MNISTDemoSheet = (rows, cols) => {
   return data;
 }
 
-module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet, FaceDemoSheet, MNISTDemoSheet};
+const Word2VecDemoSheet = (rows, cols) => {
+  const emptyRow = [];
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
+    emptyRow.push('');
+  }
+  let data = {
+    data: [
+      emptyRow.slice(),
+      ["", "=DATAPICKER('WORDS-1-0-5-0-0')", "=DATAPICKER('WORDS-1-6-9-0-0')"],
+      ["", "=DATAPICKER('WORDS-1-3-4-0-0')", "=SUM(B3, MINUS(C2, B2))"],
+    ],
+    comments: [
+      {row: 1, col: 1, comment: {value: 'Computing analogies using word vectors. "man" is to "woman" as "king" is to "queen".', readOnly: true}},
+      {row: 2, col: 2, comment: {value: 'A list of closest matches are displayed when there isn\'t an exact match.', readOnly: true}},
+    ]
+  };
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
+      data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
+    }
+  }
+  return data;
+}
+
+module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet, FaceDemoSheet, MNISTDemoSheet, Word2VecDemoSheet};
