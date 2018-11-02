@@ -176,4 +176,42 @@ const FaceDemoSheet = (rows, cols) => {
   return data;
 }
 
-module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet, FaceDemoSheet};
+const MNISTDemoSheet = (rows, cols) => {
+  const emptyRow = [];
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
+    emptyRow.push('');
+  }
+  let data = {
+    data: [
+      emptyRow.slice(),
+      ["","=DATAPICKER('MNIST-1-8-5-0-0')","=MOD(B2, 4, -0.20)","=MOD(B2, 5, -0.60)","=MOD(B2, 5, -0.78)","=AVERAGE(B2:E5)"],
+      [ "", "=MOD(B2, 1, 0.40)", "=MOD(B2, 5, -0.70)", "=MOD(B2, 3, -0.50)", "=MOD(B2, 3, -0.47)"],
+      [ "", "=MOD(B2, 1, 0.35)", "=MOD(B2, 3, -0.55)", "=MOD(B2, 1, 0.35)", "=MOD(B2, 2, -0.50)"],
+      [ "", "=MOD(B2, 1, 0.52)", "=MOD(B2, 3, -0.50)", "=MOD(B2, 5, -0.60)", "=MOD(B2, 1, 0.51)"]
+    ],
+    comments: [
+      {row: 1, col: 1, comment: {value: 'A grid of random neighbours are created from this cell using the MOD operation.', readOnly: true}},
+      {row: 1, col: 5, comment: {value: 'The average result of the group.', readOnly: true}},
+    ]
+  };
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
+      data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
+    }
+  }
+  return data;
+}
+
+module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet, FaceDemoSheet, MNISTDemoSheet};

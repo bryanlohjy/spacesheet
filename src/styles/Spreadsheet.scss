@@ -34,6 +34,10 @@
       }
     }
   }
+  .htCommentCell:after {
+    border-top: 10px solid $actionColor;
+    border-left: 10px solid transparent;
+  }
 }
 .htCommentTextArea {
   line-height: 18px;
@@ -41,6 +45,7 @@
 
   &[readonly] {
     background: rgba($lightGrey, 0.8);
+    resize: none;
     cursor: default;
   }
 }
