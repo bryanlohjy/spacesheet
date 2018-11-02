@@ -25,8 +25,10 @@ export default class FontDrawer extends React.Component {
     this.clearSampleFont = this.clearSampleFont.bind(this);
   };
   componentDidMount() {
-    this.updateFontSamples();
-    this.props.hotInstance.render();
+    setTimeout(() => {
+      this.updateFontSamples();
+      this.props.hotInstance.render();
+    });
   };
   updateFontSamples() {
     if (!this.props.hotInstance || !this.props.formulaParser) { return; }

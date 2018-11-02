@@ -116,7 +116,7 @@ const FontDemoSheet = (rows, cols) => {
     ],
     comments: [
       {row: 1, col: 3, comment: {value: 'Isolating an italic operator by subtracting an italicised glyph with a similar non-italicised glyph.', readOnly: true}},
-      {row: 2, col: 3, comment: {value: 'Scaling the operator with a slider element.', readOnly: true}},
+      {row: 3, col: 3, comment: {value: 'Scaling the operator with a slider element.', readOnly: true}},
       {row: 3, col: 2, comment: {value: 'Input font.', readOnly: true}},
       {row: 3, col: 4, comment: {value: 'Applying the italic operator to the input font.', readOnly: true}}
     ]
