@@ -257,23 +257,6 @@ class FontSample extends React.Component {
               <div className={`cell-reference ${inputClasses} ${this.props.locked && 'disabled'}`}>
                 {this.props.cell}
               </div>
-              {/* <input
-                type="text"
-                value={this.props.cell}
-                onKeyDown={ e => {
-                  // let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                  // acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
-                  // if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
-                  //   e.preventDefault();
-                  //   return;
-                  // };
-                }}
-                onChange={ e => {
-                  this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
-                }}
-                className={`cell-reference ${inputClasses}`}
-                disabled={this.props.locked}
-              /> */}
               { !this.props.cell ? (
                   <button onClick={ e => {
                     this.props.setSampleFontFromSelection(this.props.itemIndex);
