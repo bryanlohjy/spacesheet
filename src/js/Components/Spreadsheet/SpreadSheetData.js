@@ -250,4 +250,51 @@ const Word2VecDemoSheet = (rows, cols) => {
   return data;
 }
 
-module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet, FaceDemoSheet, MNISTDemoSheet, Word2VecDemoSheet};
+const ColourDemoSheet = (rows, cols) => {
+  const emptyRow = [];
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
+    emptyRow.push('');
+  }
+  let data = {
+    data:[
+      emptyRow.slice(),
+      ["", "=DATAPICKER('COL-1-5-3-0-0')", "=LERP(B2, F2, 0.25)", "=LERP(B2, F2, 0.50)", "=LERP(B2, F2, 0.75)", "=DATAPICKER('COL-1-1-1-0-0')"],
+      ["", "=LERP(B2, B6, 0.25)", "=LERP(C2, C6, 0.25)", "=LERP(D2, D6, 0.25)", "=LERP(E2, E6, 0.25)", "=LERP(F2, F6, 0.25)"],
+      ["", "=LERP(B2, B6, 0.50)", "=LERP(C2, C6, 0.50)", "=LERP(D2, D6, 0.50)", "=LERP(E2, E6, 0.50)", "=LERP(F2, F6, 0.50)"],
+      ["", "=LERP(B2, B6, 0.75)", "=LERP(C2, C6, 0.75)", "=LERP(D2, D6, 0.75)", "=LERP(E2, E6, 0.75)", "=LERP(F2, F6, 0.75)"],
+      ["", "=RANDVAR(3250)", "=LERP(B6, F6, 0.25)", "=LERP(B6, F6, 0.50)", "=LERP(B6, F6, 0.75)", "=DATAPICKER('COL-1-2-0-0-0')"]
+    ],
+    comments: [
+      {row: 1, col: 1, comment: {value: 'The same interface can be used to explore colour spaces. This isn\'t a generative model, but makes for an effective tool to generate colour palettes.', readOnly: true}},
+      {row: 5, col: 1, comment: {value: 'Click on the button in the bottom-right corner to randomise this cell\'s colour.', readOnly: true}},
+    ]
+  };
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
+      data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
+    }
+  }
+  return data;
+}
+
+module.exports = {
+  BlankSheet,
+  OperatorDemoSheet,
+  FontDemoSheet,
+  FaceDemoSheet,
+  MNISTDemoSheet,
+  Word2VecDemoSheet,
+  ColourDemoSheet
+};
