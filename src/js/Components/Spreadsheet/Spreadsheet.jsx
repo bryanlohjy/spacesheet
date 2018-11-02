@@ -45,7 +45,7 @@ export default class Spreadsheet extends React.Component {
     this.afterRender = this.afterRender.bind(this);
     this.afterUndoRedo = this.afterUndoRedo.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
-    this.minCellSize = 90;
+    this.minCellSize = props.currentModel === 'FACES' ? 82 : 64;
     this.modSegmentCount = 7;
   };
 

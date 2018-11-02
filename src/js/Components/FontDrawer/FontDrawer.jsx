@@ -13,7 +13,7 @@ export default class FontDrawer extends React.Component {
     this.state = {
       sampleText: 'handgloves',
       items: [
-        { locked: false, cell: 'F8', vector: [], id: uuidv4() },
+        { locked: false, cell: 'C2', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
       ],
@@ -171,7 +171,7 @@ const FontSampleList = SortableContainer(props => {
   );
 });
 
-const DragHandle = SortableHandle(() => <span className="sort-handle">::</span>); // This can be any component you want
+const DragHandle = SortableHandle(() => <span className="sort-handle">:</span>); // This can be any component you want
 class FontSample extends React.Component {
   constructor(props) {
     super(props);
@@ -254,23 +254,9 @@ class FontSample extends React.Component {
               : ""
             }
             <div className="font-sample-reference">
-              <input
-                type="text"
-                value={this.props.cell}
-                onKeyDown={ e => {
-                  // let acceptedKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                  // acceptedKeys = acceptedKeys.split('').concat(['BACKSPACE']);
-                  // if (acceptedKeys.indexOf(e.key.toUpperCase()) < 0) {
-                  //   e.preventDefault();
-                  //   return;
-                  // };
-                }}
-                onChange={ e => {
-                  this.props.setItemProperty(this.props.itemIndex, { cell: e.target.value });
-                }}
-                className={`cell-reference ${inputClasses}`}
-                disabled={this.props.locked}
-              />
+              <div className={`cell-reference ${inputClasses} ${this.props.locked && 'disabled'}`}>
+                {this.props.cell}
+              </div>
               { !this.props.cell ? (
                   <button onClick={ e => {
                     this.props.setSampleFontFromSelection(this.props.itemIndex);

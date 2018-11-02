@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
-// import ModelToLoad from '../Models/FontModel.js';
+import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Colours.js';
-import ModelToLoad from '../Models/Word2Vec.js';
+// import ModelToLoad from '../Models/Word2Vec.js';
 // import ModelToLoad from '../Models/FaceModel.js';
 
 // import GenerateDataPicker from '../lib/DataPickerGenerator.js';
-// import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
-import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
+// import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
 
 import DataPickers from './DataPicker/DataPickers.jsx';
+import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
@@ -32,7 +33,9 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-      currentModel: 'FACES', // FACES, FONTS, MNIST, COLOURS
+      currentModel: 'FONTS', // FACES, FONTS, MNIST, COLOURS
+      // currentModel: 'FACES', // FACES, FONTS, MNIST, COLOURS
+
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode
@@ -151,6 +154,7 @@ export default class Application extends React.Component {
     const navHeight = 50;
     const appHeight = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - appHeight;
+    const fontDrawerHeight = 250;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
@@ -166,7 +170,7 @@ export default class Application extends React.Component {
           <div className="right-container">
             <Spreadsheet
               width={ spreadsheetWidth }
-              height={ appHeight }
+              height={ this.state.currentModel === 'FONTS' ? appHeight-fontDrawerHeight : appHeight }
               getCellFromDataPicker={ this.getCellFromDataPicker }
               ref='spreadsheet'
               model={ this.state.model }
@@ -190,6 +194,15 @@ export default class Application extends React.Component {
               }}
               currentModel={this.state.currentModel}
             />
+            {
+              this.state.currentModel === 'FONTS' && this.state.model &&
+              <FontDrawer
+                hotInstance={this.hotInstance}
+                formulaParser={this.formulaParser}
+                model={this.state.model}
+                ref='fontDrawer'
+              />
+            }
           </div>
         </div>
         <BottomNav
