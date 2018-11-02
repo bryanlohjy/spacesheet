@@ -17,7 +17,7 @@ export default class Model {
     this.latentDims = 300;
   }
   init(loadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters
-    const MODEL_URL = './dist/data/Word2Vec/wordvecs1000.json';
+    const MODEL_URL = './dist/data/Word2Vec/wordvecs-curated.json';
     getData(MODEL_URL).then(data => {
       const vectors = JSON.parse(data);
       this.vectors = vectors;
