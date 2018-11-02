@@ -35,6 +35,13 @@
     }
   }
 }
+.htCommentTextArea {
+  line-height: 18px;
+  &[readonly] {
+    background: $lightGrey;
+    cursor: default;
+  }
+}
 
 .spreadsheet-container {
   .input-bar, .operation-button {
