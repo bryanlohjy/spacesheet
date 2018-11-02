@@ -13,7 +13,7 @@ export default class FontDrawer extends React.Component {
     this.state = {
       sampleText: 'handgloves',
       items: [
-        { locked: false, cell: 'F8', vector: [], id: uuidv4() },
+        { locked: false, cell: 'C2', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
       ],
@@ -171,7 +171,7 @@ const FontSampleList = SortableContainer(props => {
   );
 });
 
-const DragHandle = SortableHandle(() => <span className="sort-handle">::</span>); // This can be any component you want
+const DragHandle = SortableHandle(() => <span className="sort-handle">:</span>); // This can be any component you want
 class FontSample extends React.Component {
   constructor(props) {
     super(props);
@@ -254,7 +254,10 @@ class FontSample extends React.Component {
               : ""
             }
             <div className="font-sample-reference">
-              <input
+              <div className={`cell-reference ${inputClasses} ${this.props.locked && 'disabled'}`}>
+                {this.props.cell}
+              </div>
+              {/* <input
                 type="text"
                 value={this.props.cell}
                 onKeyDown={ e => {
@@ -270,7 +273,7 @@ class FontSample extends React.Component {
                 }}
                 className={`cell-reference ${inputClasses}`}
                 disabled={this.props.locked}
-              />
+              /> */}
               { !this.props.cell ? (
                   <button onClick={ e => {
                     this.props.setSampleFontFromSelection(this.props.itemIndex);

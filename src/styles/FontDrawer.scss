@@ -1,26 +1,31 @@
 @import "./variables.scss";
 
 .font-drawer {
-  height: 400px;
+  height: 200px;
   width: 100%;
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
   box-sizing: border-box;
   display: flex;
+  flex-grow: 1;
+
   flex-direction: column;
   background-color: $grey;
+
   .sample-font-input {
     border: none;
     border-bottom: 1px solid $grey;
-    height: 30px;
+    height: 37px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 1px;
     padding: 0 12px;
     color: $darkerGrey;
-
   }
+
   .font-samples {
     overflow-y: auto;
     display: flex;
-    justify-content: space-evenly;
     flex-direction: column;
     height: 100%;
     padding: 5px;
@@ -33,7 +38,7 @@
   margin: 5px;
   background-color: white;
   border-radius: 2px;
-  min-height: 50px;
+  min-height: 80px;
   .font-sample-controls {
     display: flex;
     width: 100px;
@@ -44,7 +49,9 @@
     .sort-handle {
       display: flex;
       align-items: center;
+      justify-content: center;
       cursor: row-resize;
+      width: 15px;
       height: 100%;
       background-color: $darkerGrey;
       color: $lightGrey;
@@ -78,13 +85,20 @@
         border: 1px solid $darkGrey;
         color: $darkerGrey;
         border-radius: 2px;
+        width: 100%;
         > * {
           margin: 0;
           padding: 0;
           height: 20px;
         }
-        input {
+        .cell-reference {
           flex-grow: 1;
+          font-weight: 500;
+          cursor: default;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
           &.invalid {
             background-color: rgba(255, 0, 0, 0.4);
           }
