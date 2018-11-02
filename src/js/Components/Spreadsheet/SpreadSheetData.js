@@ -138,4 +138,42 @@ const FontDemoSheet = (rows, cols) => {
   return data;
 }
 
-module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet};
+const FaceDemoSheet = (rows, cols) => {
+  const emptyRow = [];
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
+    emptyRow.push('');
+  }
+  let data = {
+    data: [
+      emptyRow.slice(),
+      ["","","=DATAPICKER('V-1-1-2-0-0')","=LERP(C2, E2, 0.50)","=DATAPICKER('V-1-3-4-0-0')"],
+      ["", "", "=LERP(C2, C4, 0.50)", "=LERP(D2, D4, 0.50)", "=LERP(E2, E4, 0.50)"],
+      ["", "=LERP(C4, D4, -1.00)", "=DATAPICKER('V-1-5-4-0-0')", "=LERP(C4, E4, 0.50)", "=MOD(DATAPICKER('V-1-5-4-0-0'), 5, -0.70)"],
+    ],
+    comments: [
+      {row: 1, col: 2, comment: {value: 'This grid is contructed by interpolating between four corners. These corners have been selected from the data picker to the left.', readOnly: true}},
+      {row: 3, col: 1, comment: {value: 'Extrpolating in the direction of darker hair.', readOnly: true}},
+      {row: 3, col: 4, comment: {value: 'Click and drag the circle to scrub the surrounding area for similar faces.', readOnly: true}},
+    ]
+  };
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
+      data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
+    }
+  }
+  return data;
+}
+
+module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet, FaceDemoSheet};
