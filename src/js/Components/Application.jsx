@@ -154,7 +154,7 @@ export default class Application extends React.Component {
     const navHeight = 50;
     const appHeight = docHeight - navHeight;
     const spreadsheetWidth = document.body.offsetWidth - appHeight;
-    const fontDrawerHeight = 200;
+    const fontDrawerHeight = 250;
     return (
       <div className="application-container">
         <canvas className='memory-canvas' ref="memoryCanvas"/>
