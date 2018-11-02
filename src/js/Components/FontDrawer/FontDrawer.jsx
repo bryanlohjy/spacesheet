@@ -13,7 +13,7 @@ export default class FontDrawer extends React.Component {
     this.state = {
       sampleText: 'handgloves',
       items: [
-        { locked: false, cell: 'C2', vector: [], id: uuidv4() },
+        { locked: false, cell: 'E4', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
         { locked: false, cell: '', vector: [], id: uuidv4() },
       ],

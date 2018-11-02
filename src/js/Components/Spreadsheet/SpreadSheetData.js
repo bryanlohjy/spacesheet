@@ -98,4 +98,38 @@ const OperatorDemoSheet = (rows, cols) => {
   }
   return data;
 }
-module.exports = { BlankSheet, OperatorDemoSheet};
+
+const FontDemoSheet = (rows, cols) => {
+  const emptyRow = [];
+  const numRows = rows || 17;
+  const numCols = cols || 10;
+
+  for (let col = 0; col < numCols; col++) {
+    emptyRow.push('');
+  }
+  let data = {
+    data: [
+      emptyRow.slice(),
+      ["", "=DATAPICKER('V1-1-4-7-0-0')", "=DATAPICKER('V1-1-2-6-0-0')", "=MINUS(B2, C2)"],
+      ["", "", "", "=SLIDER(-1, 1, 0.05)"],
+      ["", "", "=DATAPICKER('V1-1-4-6-0-0')", "=MUL(D2, D3)", "=SUM(C4:D4)"],
+    ],
+  };
+  // make sure that a full grid is returned. Empties should be ""
+  for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
+    let row = data.data[rowIndex];
+    if (!row) {
+      data.data.push(emptyRow.slice());
+    } else {
+      if (row.length < numCols) {
+        const colsToAdd = numCols - row.length;
+        for (let colCount = 0; colCount < colsToAdd; colCount++) {
+          row.push('');
+        }
+      }
+    }
+  }
+  return data;
+}
+
+module.exports = { BlankSheet, OperatorDemoSheet, FontDemoSheet};

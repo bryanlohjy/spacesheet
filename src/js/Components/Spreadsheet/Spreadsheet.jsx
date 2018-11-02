@@ -7,7 +7,7 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { OperatorDemoSheet, BlankSheet } from './SpreadsheetData.js';
+import { FontDemoSheet, BlankSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 const OptimisedHotTable = Component => {
@@ -81,10 +81,7 @@ export default class Spreadsheet extends React.Component {
     const cols = Math.ceil(this.props.width / this.minCellSize) + 1;
     const rows = Math.ceil(this.props.height / this.minCellSize) + 1;
 
-    this.defaultSheet = BlankSheet(rows, cols);
-
     this.hotInstance.updateSettings({
-      data: this.defaultSheet ? this.defaultSheet.data : null,
       colHeaders: true,
       rowHeaders: true,
       rowHeaderWidth: 32,
@@ -131,6 +128,10 @@ export default class Spreadsheet extends React.Component {
     });
 
     this.cellTypes = cellTypes;
+
+
+    // this.defaultSheet = BlankSheet(rows, cols);
+    this.defaultSheet = FontDemoSheet(rows, cols);
 
     this.hotInstance.updateSettings({
       cells: (row, col, prop) => {

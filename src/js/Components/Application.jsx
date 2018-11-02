@@ -176,6 +176,7 @@ export default class Application extends React.Component {
               model={ this.state.model }
               setTableRef={ ref => {
                 this.hotInstance = ref.hotInstance;
+                window.hotInstance = this.hotInstance;
               }}
               setFormulaParserRef={ parser => {
                 this.formulaParser = parser;
