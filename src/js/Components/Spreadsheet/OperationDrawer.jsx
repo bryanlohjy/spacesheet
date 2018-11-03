@@ -2,12 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isFormula, cellCoordsToLabel } from './CellHelpers.js';
 import { removeInstancesOfClassName, randomInt, getAllIndicesInArray, arraysAreSimilar } from '../../lib/helpers.js';
+
 import {
   getValidMatrix,
   highlightCellsFromSelection,
   highlightSmartFillArray,
   groupArgSmartFillFn,
   twoArgSmartFillFn,
+  lerpSmartFillFn,
+  modSmartFillFn,
 } from './OperationDrawerHelpers.js';
 
 export default class OperationDrawer extends React.Component {
@@ -75,54 +78,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          const output = { cellsToHighlight: [], newData: [] };
-          const selection = self.props.currentSelection;
-          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-
-          const rows = selectedCells.length;
-          const cols = selectedCells[0].length;
-
-          const validMatrix = getValidMatrix(selectedCells);
-          const hasAnchors = validMatrix[0][0] && validMatrix[0][cols - 1] && validMatrix[rows - 1][cols - 1] && validMatrix[rows - 1][0];
-          if (!hasAnchors) { return output; }
-
-          const startRow = Math.min(selection[0], selection[2]);
-          const startCol = Math.min(selection[1], selection[3]);
-          const endRow = Math.max(selection[0], selection[2]);
-          const endCol = Math.max(selection[1], selection[3]);
-
-          let hasNewData = false;
-          const _newData = selectedCells.map((row, rowIndex) => {
-            return row.map((val, colIndex) => {
-              const isAnchor = (rowIndex === 0 && (colIndex === 0 || colIndex === cols - 1)) || (rowIndex === rows - 1 && (colIndex === 0 || colIndex === cols - 1));
-              if (isAnchor) { return val; }
-              if (!hasNewData) { hasNewData = true; }
-              let lerpBy;
-              let fillString;
-              if (rowIndex === 0) {
-                let tlLabel = cellCoordsToLabel({ row: startRow, col: startCol });
-                let trLabel = cellCoordsToLabel({ row: startRow, col: endCol });
-                lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                fillString = `=LERP(${tlLabel}, ${trLabel}, ${lerpBy})`;
-              } else if (rowIndex === rows - 1) {
-                let brLabel = cellCoordsToLabel({ row: endRow, col: endCol });
-                let blLabel = cellCoordsToLabel({ row: endRow, col: startCol });
-                lerpBy = Number((1 / (cols - 1)) * colIndex).toFixed(2);
-                fillString = `=LERP(${blLabel}, ${brLabel}, ${lerpBy})`;
-              } else {
-                lerpBy = Number((1 / (rows - 1)) * rowIndex).toFixed(2);
-                const topLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
-                const bottomLabel = cellCoordsToLabel({ row: startRow + rows - 1, col: startCol + colIndex });
-                fillString = `=LERP(${topLabel}, ${bottomLabel}, ${lerpBy})`;
-              }
-              output.cellsToHighlight.push([startRow + rowIndex, startCol + colIndex]);
-              return fillString;
-            });
-          });
-          if (hasNewData) {
-            output.newData = _newData;
-          }
-          return output;
+          return lerpSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'AVERAGE');
         },
       },
       MINUS: {
@@ -212,8 +168,102 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'MUL');
+          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'MUL');
         },
+      },
+      SLIDER: {
+        onMouseOver: e => {
+          const selection = self.props.hotInstance.getSelected();
+          highlightCellsFromSelection(self.props.hotInstance, selection);
+        },
+        onClick: e => {
+          const selection = self.props.hotInstance.getSelected();
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const newData = selectedCells.map(row => {
+            return row.map(col => {
+              return `=SLIDER(0, 1, 0.05)`;
+            });
+          });
+          if (!arraysAreSimilar(selectedCells, newData)) {
+            self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+
+            const selectedValue = self.props.hotInstance.getDataAtCell(selection[0], selection[1]);
+            self.props.setInputBarValue(selectedValue);
+          }
+        },
+        shouldHighlight: () => {
+          return false;
+        },
+        get smartFillCells() {
+          return [];
+        },
+      },
+      RANDVAR: {
+        onMouseOver: e => {
+          const selection = self.props.hotInstance.getSelected();
+          highlightCellsFromSelection(self.props.hotInstance, selection);
+        },
+        onClick: e => {
+          const selection = self.props.hotInstance.getSelected();
+          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+          const startRow = Math.min(selection[0], selection[2]);
+          const startCol = Math.min(selection[1], selection[3]);
+          const newData = selectedCells.map(row => {
+            return row.map(col => {
+              return `=RANDVAR(${randomInt(0, 9999)})`;
+            });
+          });
+          if (!arraysAreSimilar(selectedCells, newData)) {
+            self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+
+            const selectedValue = self.props.hotInstance.getDataAtCell(selection[0], selection[1]);
+            self.props.setInputBarValue(selectedValue);
+          }
+        },
+        shouldHighlight: () => {
+          return false;
+        },
+        get smartFillCells() {
+          return [];
+        },
+      },
+      MOD: {
+        onMouseOver: e => {
+          const smartFill = self.operations.MOD.smartFillCells;
+          if (smartFill && smartFill.cellsToHighlight.length > 0) {
+            highlightSmartFillArray(self.props.hotInstance, smartFill.cellsToHighlight);
+          } else {
+            const selection = self.props.hotInstance.getSelected();
+            highlightCellsFromSelection(self.props.hotInstance, [selection[0], selection[1], selection[0], selection[1]]);
+          }
+        },
+        onClick: e => {
+          const smartFill = self.operations.MOD.smartFillCells;
+          const newData = smartFill.newData;
+          if (newData && newData.length > 0) {
+            const selection = self.props.currentSelection;
+            const startRow = Math.min(selection[0], selection[2]);
+            const startCol = Math.min(selection[1], selection[3]);
+            const selectedCells = self.props.hotInstance.getData.apply(self, selection);
+            if (!arraysAreSimilar(selectedCells, newData)) {
+              self.props.hotInstance.populateFromArray(startRow, startCol, newData);
+
+              const selectedValue = self.props.hotInstance.getDataAtCell(selection[0], selection[1]);
+              self.props.setInputBarValue(selectedValue);
+            }
+          } else {
+            self.props.setSelectedCellData(`=MOD(`);
+          }
+        },
+        shouldHighlight: () => {
+          const smartFill = self.operations.MOD.smartFillCells;
+          return smartFill && smartFill.cellsToHighlight.length > 0;
+        },
+        get smartFillCells() {
+          return modSmartFillFn(self.props.hotInstance, self.props.currentSelection, self.props.modSegmentCount);
+        }
       },
       // DIST: {
       //   onMouseOver: e => {
@@ -245,58 +295,6 @@ export default class OperationDrawer extends React.Component {
       //     return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'DIST');
       //   },
       // },
-      SLIDER: {
-        onMouseOver: e => {
-          const selection = self.props.hotInstance.getSelected();
-          highlightCellsFromSelection(self.props.hotInstance, selection);
-        },
-        onClick: e => {
-          const selection = self.props.hotInstance.getSelected();
-          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-          const startRow = Math.min(selection[0], selection[2]);
-          const startCol = Math.min(selection[1], selection[3]);
-          const newData = selectedCells.map(row => {
-            return row.map(col => {
-              return `=SLIDER(0, 1, 0.05)`;
-            });
-          });
-          if (!arraysAreSimilar(selectedCells, newData)) {
-            self.props.hotInstance.populateFromArray(startRow, startCol, newData);
-          }
-        },
-        shouldHighlight: () => {
-          return false;
-        },
-        get smartFillCells() {
-          return [];
-        },
-      },
-      RANDVAR: {
-        onMouseOver: e => {
-          const selection = self.props.hotInstance.getSelected();
-          highlightCellsFromSelection(self.props.hotInstance, selection);
-        },
-        onClick: e => {
-          const selection = self.props.hotInstance.getSelected();
-          const selectedCells = self.props.hotInstance.getData.apply(self, selection);
-          const startRow = Math.min(selection[0], selection[2]);
-          const startCol = Math.min(selection[1], selection[3]);
-          const newData = selectedCells.map(row => {
-            return row.map(col => {
-              return `=RANDVAR(${randomInt(0, 9999)})`;
-            });
-          });
-          if (!arraysAreSimilar(selectedCells, newData)) {
-            self.props.hotInstance.populateFromArray(startRow, startCol, newData);
-          }
-        },
-        shouldHighlight: () => {
-          return false;
-        },
-        get smartFillCells() {
-          return [];
-        },
-      },
     }
     this.state = {
       highlighted: {
@@ -308,6 +306,7 @@ export default class OperationDrawer extends React.Component {
         SLIDER: false,
         RANDVAR: false,
         // DIST: false,
+        MOD: false,
       }
     };
     this.updateHighlights = this.updateHighlights.bind(this);
@@ -325,6 +324,7 @@ export default class OperationDrawer extends React.Component {
       SLIDER: false,
       RANDVAR: false,
       // DIST: false,
+      MOD: false,
     };
     if (this.props.currentSelection && this.props.hotInstance) { // add in highlighted selection logic
       const operations = Object.keys(this.operations);
@@ -367,4 +367,7 @@ OperationDrawer.propTypes = {
   currentSelection: PropTypes.array,
   setSelectedCellData: PropTypes.func,
   hotInstance: PropTypes.object,
+  cellTypes: PropTypes.object,
+  modSegmentCount: PropTypes.number,
+  setInputBarValue: PropTypes.func,
 };

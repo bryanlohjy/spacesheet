@@ -16,8 +16,10 @@ const arrayContainsArray = arr => {
 
 const getArgumentsFromFunction = (string) => {
   let res = [];
+
   const openBracketIndices = getIndicesOf('(', string);
   const closeBracketIndices = getIndicesOf(')', string);
+  
   if (openBracketIndices.length && closeBracketIndices.length) {
     const startIndex = openBracketIndices[0];
     const endIndex = closeBracketIndices[closeBracketIndices.length - 1];
@@ -27,15 +29,27 @@ const getArgumentsFromFunction = (string) => {
     let args = [];
     if (betweenBrackets && betweenBrackets.trim().length > 0) {
       const split = betweenBrackets.split(',');
-      let concat = false;
+
+      // flag to group arguments which have been split within nested brackets
+      let captureGroup = false;
       for (let index = 0; index < split.length; index++) {
         const argFragment = split[index];
-        if (concat && args.length > 0) {
+
+        if (captureGroup && args.length > 0) {
           args[args.length - 1] += `,${argFragment}`;
         } else {
           args.push(argFragment);
         }
-        concat = (/\(/gi).test(argFragment) && !(/\)/gi).test(argFragment);
+
+        if (!captureGroup) { // start capturing if there is an unclosed set of brackets
+          captureGroup = (/\(/gi).test(argFragment) && !(/\)/gi).test(argFragment);
+        } else { // stop capturing if prev argument has a closed bracket
+          var prevArg = args[args.length - 1];
+          if (prevArg && prevArg.indexOf(')') > -1) {
+            captureGroup = false;
+          }
+        }
+
       }
     }
     for (let argIndex = 0; argIndex < args.length; argIndex++) {
@@ -45,6 +59,7 @@ const getArgumentsFromFunction = (string) => {
       }
     }
   }
+
   return res;
 };
 
@@ -87,6 +102,8 @@ const FormulaParser = (hotInstance, opts) => {
         fragment.push(value);
       }
     }
+
+    // TODO: tidy up bad
     fragment.isFragment = true;
     done(fragment);
   });
