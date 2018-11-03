@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const CompressionPlugin = require('compression-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 // new BundleAnalyzerPlugin()
 
@@ -9,7 +10,7 @@ let config = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle-other-prod-optimizers-2.js',
+    filename: 'bundle.js',
     publicPath: 'dist/',
   },
   node: {
@@ -37,6 +38,13 @@ let config = {
         if_return: true,
         join_vars: true
       }
+    }),
+    new CompressionPlugin({
+      filename: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
+      threshold: 10240,
+      minRatio: 0.8
     })
   ]
 }
