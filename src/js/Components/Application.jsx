@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-// import ModelToLoad from '../Models/MNISTModel.js';
-import ModelToLoad from '../Models/FontModel.js';
-// import ModelToLoad from '../Models/Colours.js';
+import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Word2Vec.js';
-// import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/MNISTModel.js';
+// import ModelToLoad from '../Models/Colours.js';
 
 // import GenerateDataPicker from '../lib/DataPickerGenerator.js';
-import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
-// import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
-// import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
+import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
+// import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
+// import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
 
 import DataPickers from './DataPicker/DataPickers.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
@@ -33,9 +33,7 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-      currentModel: 'FONTS', // FACES, FONTS, MNIST, COLOURS
-      // currentModel: 'FACES', // FACES, FONTS, MNIST, COLOURS
-
+      currentModel: 'FACES', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode
@@ -176,6 +174,7 @@ export default class Application extends React.Component {
               model={ this.state.model }
               setTableRef={ ref => {
                 this.hotInstance = ref.hotInstance;
+                window.hotInstance = this.hotInstance;
               }}
               setFormulaParserRef={ parser => {
                 this.formulaParser = parser;
@@ -210,6 +209,7 @@ export default class Application extends React.Component {
           links={[
             {label: 'Faces', id: 'FACES', href: 'http://bryanlohjy.gitlab.io/spacesheet/faces.html'},
             {label: 'Fonts', id: 'FONTS', href: 'http://bryanlohjy.gitlab.io/spacesheet/index.html'},
+            {label: 'WORD2VEC', id: 'WORD2VEC', href: 'http://bryanlohjy.gitlab.io/spacesheet/word2vec.html'},
             {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
             {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
           ]}

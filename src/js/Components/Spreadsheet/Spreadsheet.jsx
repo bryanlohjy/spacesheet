@@ -7,7 +7,7 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { OperatorDemoSheet, BlankSheet } from './SpreadsheetData.js';
+import { FontDemoSheet, FaceDemoSheet, MNISTDemoSheet, Word2VecDemoSheet, ColourDemoSheet, BlankSheet } from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
 const OptimisedHotTable = Component => {
@@ -40,6 +40,7 @@ export default class Spreadsheet extends React.Component {
     this.setSelectedCellData = this.setSelectedCellData.bind(this);
     this.initHotTable = this.initHotTable.bind(this);
     this.updateHotTableSettings = this.updateHotTableSettings.bind(this);
+    this.updateHotTableData = this.updateHotTableData.bind(this);
 
     this.afterSelection = this.afterSelection.bind(this);
     this.afterRender = this.afterRender.bind(this);
@@ -81,10 +82,7 @@ export default class Spreadsheet extends React.Component {
     const cols = Math.ceil(this.props.width / this.minCellSize) + 1;
     const rows = Math.ceil(this.props.height / this.minCellSize) + 1;
 
-    this.defaultSheet = BlankSheet(rows, cols);
-
     this.hotInstance.updateSettings({
-      data: this.defaultSheet ? this.defaultSheet.data : null,
       colHeaders: true,
       rowHeaders: true,
       rowHeaderWidth: 32,
@@ -98,7 +96,7 @@ export default class Spreadsheet extends React.Component {
       preventOverflow: "horizontal",
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
-      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight
+      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
     });
 
     setTimeout(() => {
@@ -107,8 +105,14 @@ export default class Spreadsheet extends React.Component {
   };
 
   updateHotTableSettings(model) {
-    const cols = Math.ceil(this.props.width / model.outputWidth) + 1;
-    const rows = Math.ceil(this.props.height / model.outputHeight) + 1;
+    const cellWidth = Math.max(this.minCellSize, model.outputWidth);
+    const cellHeight = Math.max(this.minCellSize, model.outputHeight);
+
+    const cols = Math.ceil(this.props.width / cellWidth) + 1;
+    const rows = Math.ceil(this.props.height / cellHeight) + 1;
+
+    this.cols = cols;
+    this.rows = rows;
 
     const formulaParser = new FormulaParser(this.hotInstance, {
       getCellFromDataPicker: this.props.getCellFromDataPicker,
@@ -117,7 +121,6 @@ export default class Spreadsheet extends React.Component {
     });
 
     this.props.setFormulaParserRef(formulaParser);
-
 
     const cellTypes = new CellTypes({
       drawFn: model.drawFn,
@@ -159,16 +162,44 @@ export default class Spreadsheet extends React.Component {
         }
         return cellProperties;
       },
-
-      data: this.defaultSheet ? this.defaultSheet.data : null,
       rowHeights: Math.max(model.outputHeight, this.minCellSize),
       colWidths: Math.max(model.outputWidth, this.minCellSize),
+      comments: true,
+      contextMenu: ['commentsAddEdit', 'commentsRemove', 'commentsReadOnly']
     });
 
     setTimeout(() => {
       this.hotInstance.selectCell(0, 0);
+      this.updateHotTableData();
     }, 0);
   };
+
+  updateHotTableData() {
+    switch (this.props.currentModel) {
+      case 'FONTS':
+        this.defaultSheet = FontDemoSheet(this.rows, this.cols);
+        break;
+      case 'FACES':
+        this.defaultSheet = FaceDemoSheet(this.rows, this.cols);
+        break;
+      case 'MNIST':
+        this.defaultSheet = MNISTDemoSheet(this.rows, this.cols);
+        break;
+      case 'WORD2VEC':
+        this.defaultSheet = Word2VecDemoSheet(this.rows, this.cols);
+        break;
+      case 'COLOURS':
+        this.defaultSheet = ColourDemoSheet(this.rows, this.cols);
+        break;
+      default:
+        this.defaultSheet = BlankSheet(this.rows, this.cols);
+    }
+
+    this.hotInstance.updateSettings({
+      data: this.defaultSheet ? this.defaultSheet.data : null,
+      cell: this.defaultSheet ? this.defaultSheet.comments : [],
+    });
+  }
 
   afterSelection(r, c, r2, c2) {
     this.setState({

@@ -168,7 +168,7 @@ export default class OperationDrawer extends React.Component {
           return smartFill && smartFill.cellsToHighlight.length > 0;
         },
         get smartFillCells() {
-          return groupArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'MUL');
+          return twoArgSmartFillFn(self.props.hotInstance, self.props.currentSelection, 'MUL');
         },
       },
       SLIDER: {
