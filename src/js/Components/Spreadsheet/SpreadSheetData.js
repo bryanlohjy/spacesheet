@@ -107,7 +107,7 @@ const FaceDemoSheet = (rows, cols) => {
     ],
     comments: [
       {row: 1, col: 2, comment: {value: 'This grid is contructed by interpolating between four corners. These corners have been selected from the data picker to the left.', readOnly: true}},
-      {row: 3, col: 1, comment: {value: 'Extrpolating in the direction of darker hair.', readOnly: true}},
+      {row: 3, col: 1, comment: {value: 'Extrapolating in the direction of darker hair.', readOnly: true}},
       {row: 3, col: 4, comment: {value: 'Click and drag the circle to scrub the surrounding area for similar faces.', readOnly: true}},
     ]
   };
