@@ -105,8 +105,11 @@ export default class Spreadsheet extends React.Component {
   };
 
   updateHotTableSettings(model) {
-    const cols = Math.ceil(this.props.width / model.outputWidth) + 1;
-    const rows = Math.ceil(this.props.height / model.outputHeight) + 1;
+    const cellWidth = Math.max(this.minCellSize, model.outputWidth);
+    const cellHeight = Math.max(this.minCellSize, model.outputHeight);
+
+    const cols = Math.ceil(this.props.width / cellWidth) + 1;
+    const rows = Math.ceil(this.props.height / cellHeight) + 1;
 
     this.cols = cols;
     this.rows = rows;
