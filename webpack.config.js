@@ -1,5 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// new BundleAnalyzerPlugin()
 
 let config = {
   entry: {
@@ -7,7 +9,7 @@ let config = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: 'bundle-other-prod-optimizers-2.js',
     publicPath: 'dist/',
   },
   node: {
@@ -20,6 +22,22 @@ let config = {
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
       { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
     ]
-  }
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        screw_ie8: true,
+        conditionals: true,
+        unused: true,
+        comparisons: true,
+        sequences: true,
+        dead_code: true,
+        evaluate: true,
+        if_return: true,
+        join_vars: true
+      }
+    })
+  ]
 }
 module.exports = config;
