@@ -16,7 +16,7 @@ import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
 
 import DataPickers from './DataPicker/DataPickers.jsx';
-import FontDrawer from './FontDrawer/FontDrawer.jsx';
+// import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 
@@ -193,7 +193,7 @@ export default class Application extends React.Component {
               }}
               currentModel={this.state.currentModel}
             />
-            {
+            {/* {
               this.state.currentModel === 'FONTS' && this.state.model &&
               <FontDrawer
                 hotInstance={this.hotInstance}
@@ -201,7 +201,7 @@ export default class Application extends React.Component {
                 model={this.state.model}
                 ref='fontDrawer'
               />
-            }
+            } */}
           </div>
         </div>
         <BottomNav
