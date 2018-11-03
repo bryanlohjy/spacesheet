@@ -227,10 +227,12 @@ class BottomNav extends React.Component {
       <nav ref="bottomNav" className="bottom-nav">
         <div>
           <div className="logo">
-            <img
-              src='./dist/assets/logo.png'
-              alt="SpaceSheet Logo"
-            />
+            <a href="http://vusd.github.io/spacesheet" target="_blank" className="logo-link">
+              <img
+                src='./dist/assets/logo.png'
+                alt="SpaceSheet Logo"
+              />
+            </a>
           </div>
           {
             this.props.links.map(link => {

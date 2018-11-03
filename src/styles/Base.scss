@@ -82,8 +82,11 @@
           img {
             max-width: 160px;
           }
+          .logo-link {
+            padding: 0;
+          }
         }
-        a:not(.logo) {
+        a:not(.logo-link) {
           &:visited {
             color: $darkGrey;
           }
