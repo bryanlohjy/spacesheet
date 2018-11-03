@@ -218,7 +218,6 @@ const CellTypes = opts => {
         const compiled = opts.formulaParser.parse(data.replace('=', ''));
         let { result, error } = compiled;
 
-
         if (result && typeof result !== 'string') {
           let ctx;
           let canvas;
@@ -255,8 +254,9 @@ const CellTypes = opts => {
             }
           })();
 
-          // TODO: when copying and pasting into existing joystick, it breaks
           const hasModCanvas = td.querySelector('.mod-container');
+          const args = getArgumentsFromFunction(data);
+
           if (!hasModCanvas) {
             td.innerHTML = '';
             const canvasContainer = document.createElement('div');
@@ -271,7 +271,6 @@ const CellTypes = opts => {
             ctx = canvas.getContext('2d');
 
             // set initial location of joystick if there are args
-            const args = getArgumentsFromFunction(data);
             const modJoystick = new ModJoystick({
               segment: Number(args[1]),
               dist: Number(args[2]),
@@ -292,6 +291,10 @@ const CellTypes = opts => {
           } else {
             canvas = td.querySelector('canvas');
             ctx = canvas.getContext('2d');
+
+            if (args[1] && Boolean(String(args[2]))) {
+              td.modJoystick.updateElFromParams(args[1], args[2]);
+            }
 
             td.modJoystick.onChange = onJoystickChange;
             td.modJoystick.onLeave = onJoystickLeave;

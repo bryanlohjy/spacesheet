@@ -28,6 +28,7 @@ class ModJoystick {
     this.onMouseMove = this.onMouseMove.bind(this);
     this.mouseLeave = this.mouseLeave.bind(this);
     this.calcParams = this.calcParams.bind(this);
+    this.updateElFromParams = this.updateElFromParams.bind(this);
 
     this.onJoystickMouseOver = this.onJoystickMouseOver.bind(this);
     this.onJoystickMouseLeave = this.onJoystickMouseLeave.bind(this);
@@ -97,16 +98,21 @@ class ModJoystick {
     setTimeout(() => {
       this.joystickWidth = this.joystickEl.clientWidth;
       this.joystickHeight = this.joystickEl.clientHeight;
-      this.resetJoystickPos();
-      if (params.segment && params.dist) {
-        const {x, y} = this.polarToCartesian(params.segment, params.dist);
-        this.joystickX += x;
-        this.joystickY += y;
-        this.updateJoystickPos();
-
-        this.updateSegmentHighlight(params.segment);
+      if (params.segment && Boolean(String(params.dist))) {
+        this.updateElFromParams(params.segment, params.dist);
       }
     });
+  }
+
+  updateElFromParams(segment, dist) {
+    this.resetJoystickPos();
+    
+    const {x, y} = this.polarToCartesian(segment, dist);
+    this.joystickX += x;
+    this.joystickY += y;
+    this.updateJoystickPos();
+
+    this.updateSegmentHighlight(segment);
   }
 
   onJoystickMouseLeave() {
