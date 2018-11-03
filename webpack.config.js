@@ -10,7 +10,7 @@ let config = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: 'bundle-fonts.js',
     publicPath: 'dist/',
   },
   node: {
@@ -25,27 +25,14 @@ let config = {
     ]
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-        conditionals: true,
-        unused: true,
-        comparisons: true,
-        sequences: true,
-        dead_code: true,
-        evaluate: true,
-        if_return: true,
-        join_vars: true
-      }
-    }),
     new CompressionPlugin({
       filename: '[path].gz[query]',
       algorithm: 'gzip',
       test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
       threshold: 10240,
       minRatio: 0.8
-    })
+    }),
+    // new webpack.HotModuleReplacementPlugin()
   ]
 }
 module.exports = config;
