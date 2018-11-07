@@ -10,7 +10,7 @@ let config = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle-fonts.js',
+    filename: 'bundle.js',
     publicPath: 'dist/',
   },
   node: {

@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/FaceModel.js';
-import ModelToLoad from '../Models/FontModel.js';
+// import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Word2Vec.js';
-// import ModelToLoad from '../Models/MNISTModel.js';
+import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/Colours.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
-import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+// import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
@@ -33,7 +33,7 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-      currentModel: 'FONTS', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
+      currentModel: 'MNIST', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode

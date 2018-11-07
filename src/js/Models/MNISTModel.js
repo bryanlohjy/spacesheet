@@ -1,9 +1,8 @@
 // define model here
-import * as dl from 'deeplearn';
-import { randomInt } from '../lib/helpers.js';
-import { inputTimesWeightAddBias } from '../lib/tensorUtils.js';
+// import * as dl from 'deeplearn';
+import * as tf from '@tensorflow/tfjs';
 
-const math = dl.ENV.math;
+import { randomInt } from '../lib/helpers.js';
 
 // init
 // outputWidth
@@ -18,6 +17,7 @@ export default class Model {
   constructor() {
     this.outputWidth = 28;
     this.outputHeight = 28;
+    this.latentDims = 2;
     try {
       this.init = this.init.bind(this);
       this.drawFn = this.drawFn.bind(this);
@@ -28,14 +28,9 @@ export default class Model {
     }
   }
   init(loadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters
-    const checkpointPath = './dist/data/MNISTModel'; // path to model checkpoint;
-    const varLoader = new dl.CheckpointLoader(checkpointPath);
-    varLoader.getAllVariables().then(vars => {
-      this.modelVars = {
-        dense: { biases: vars['gen/dense/bias'], weights: vars['gen/dense/kernel']},
-        dense_1: { biases: vars['gen/dense_1/bias'], weights: vars['gen/dense_1/kernel']},
-        dense_2: { biases: vars['gen/dense_2/bias'], weights: vars['gen/dense_2/kernel']},
-      }
+    const MODEL_URL = './dist/data/MNISTModel/model.json';
+    const model = tf.loadModel(MODEL_URL).then(model => {
+      this.loadedModel = model;
       loadedCallback(this);
     });
   }
@@ -53,41 +48,22 @@ export default class Model {
     ctx.putImageData(ctxData, 0, 0);
   }
   decodeFn(inputVector) { // vector to image
-    return dl.tidy(() => {
-      const inputTensor = dl.tidy(() => {
-        return math.leakyRelu(
-          inputTimesWeightAddBias({
-            input: inputVector,
-            weights: this.modelVars.dense.weights,
-            biases: this.modelVars.dense.biases,
-          }),
-          0.01);
-        });
-      const hidden1 = dl.tidy(() => {
-        return math.leakyRelu(
-          inputTimesWeightAddBias({
-            input: inputTensor,
-            weights: this.modelVars.dense_1.weights,
-            biases: this.modelVars.dense_1.biases,
-          }),
-          0.01);
-        });
-      const output = dl.tidy(() => {
-        return math.tanh(
-          inputTimesWeightAddBias({
-            input: hidden1,
-            weights: this.modelVars.dense_2.weights,
-            biases: this.modelVars.dense_2.biases,
-          }),
-        );
-      });
-      return output.dataSync();
+    const output = tf.tidy(() => {
+      const z = tf.tensor(inputVector, [1, this.latentDims]);
+      return this.loadedModel
+                 .predict(z)
+                 .reshape([28, 28]);
     });
+
+    return output.dataSync();
   }
   randVectorFn(params) {
-    let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
-    return dl.tidy(() => {
-      return dl.randomNormal([100], 0, 1, null, randomSeed);;
-    }).dataSync();
+    const randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
+
+    const vec = tf.tidy(() => {
+      return tf.randomNormal([1, this.latentDims], -1, 1, null, randomSeed); ;
+    });
+
+    return vec.dataSync();
   }
 }
