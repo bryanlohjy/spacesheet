@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-84682580-3"></script>
+    <script>
+      // ignore dev analytics
+      if (/bryanlohjy\.gitlab\.io/.test(window.location.hostname)) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-84682580-3');
+      }
+    </script>
     <meta charset="utf-8">
     <title>SpaceSheet—Word2Vec</title>
     <link rel="shortcut icon" type="image/png" href="./dist/assets/favicon.png"/>
