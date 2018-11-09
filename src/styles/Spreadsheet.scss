@@ -60,7 +60,7 @@
     font-weight: 500;
     padding: 0 12px;
     height: 37px;
-    border: 1px solid #ccc;
+    border: 1px solid $outlineGrey;
     letter-spacing: 1px;
 
     width: 100%;
@@ -69,8 +69,8 @@
     display: flex;
     justify-content: space-between;
     height: 37px;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-left: 1px solid $outlineGrey;
+    border-right: 1px solid $outlineGrey;
 
     .operation-button {
       background: $lightGrey;
@@ -85,7 +85,7 @@
       padding-top: 2px;
 
       &:not(:last-child) {
-        border-right: 1px solid #ccc;
+        border-right: 1px solid $outlineGrey;
       }
 
       &:hover {
