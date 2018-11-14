@@ -70,6 +70,27 @@
     font-size: 15px;
     font-weight: 500;
 
+    .info-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: $lightGrey !important;
+      text-transform: none;
+      font-family: 'Lucida Console', 'Courier New', monospace;
+      font-weight: bold;
+
+      background: $darkGrey;
+      height: 25px;
+      width: 25px;
+      border-radius: 100%;
+
+      transition: background 0.2s !important;
+      &:hover {
+        background: $actionColor;
+      }
+    }
+
     div {
       a {
         color: $darkGrey;

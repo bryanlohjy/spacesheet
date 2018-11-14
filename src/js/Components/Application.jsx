@@ -278,7 +278,7 @@ class BottomNav extends React.Component {
           <a onClick={this.props.saveVectors}>Save vectors</a>
         }
           {/* <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a> */}
-          <a onClick={e => { this.props.setModalSection('INFO'); }}>Info</a>
+          <a onClick={e => { this.props.setModalSection('INFO'); }} className="info-button">i</a>
         </div>
       </nav>
     );
