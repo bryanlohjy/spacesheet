@@ -31,6 +31,10 @@
 
     color: $darkGrey;
 
+    // &.info {
+      text-align: center;
+    // }
+
     .title {
       font-size: 22px;
       text-transform: uppercase;
@@ -57,11 +61,11 @@
       .message {
         font-size: 16px;
         line-height: 22px;
+        margin-bottom: 30px;
       }
 
       .button {
         border: none;
-        margin-top: 30px;
         padding: 10px 20px;
 
         color: $darkGrey;

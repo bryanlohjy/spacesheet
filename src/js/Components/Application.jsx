@@ -47,7 +47,7 @@ export default class Application extends React.Component {
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode,
-      modalSection: isMobileSection || isUnsupportedSection,
+      modalSection: isMobileSection || isUnsupportedSection, // MOBILE, UNSSUPORTED, INFO
     };
 
     this.onHashChange = this.onHashChange.bind(this);
@@ -177,6 +177,7 @@ export default class Application extends React.Component {
         <Modal
           modalSection={this.state.modalSection}
           setModalSection={this.setModalSection}
+          currentModel={this.state.currentModel}
         />
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         <div className="component-container">
@@ -238,6 +239,7 @@ export default class Application extends React.Component {
           ]}
           debugMode={this.state.debugMode}
           saveVectors={this.saveVectors}
+          setModalSection={this.setModalSection}
         />
       </div>
     );
@@ -275,7 +277,8 @@ class BottomNav extends React.Component {
           this.props.debugMode &&
           <a onClick={this.props.saveVectors}>Save vectors</a>
         }
-          <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
+          {/* <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a> */}
+          <a onClick={e => { this.props.setModalSection('INFO'); }}>Info</a>
         </div>
       </nav>
     );
@@ -286,5 +289,6 @@ BottomNav.propTypes = {
   activeLink: PropTypes.string.isRequired,
   links: PropTypes.array.isRequired,
   debugMode: PropTypes.bool.isRequired,
-  saveVectors: PropTypes.func
+  saveVectors: PropTypes.func,
+  setModalSection: PropTypes.func.isRequired
 };
