@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-// import ModelToLoad from '../Models/FaceModel.js';
-import ModelToLoad from '../Models/FontModel.js';
+import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Word2Vec.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/Colours.js';
 
 import GenerateDataPicker from '../lib/DataPickerGenerator.js';
-// import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
-import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
+import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
+// import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
@@ -19,6 +19,9 @@ import DataPickers from './DataPicker/DataPickers.jsx';
 import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
+import Modal from './Modal/Modal.jsx';
+
+import browser from 'browser-detect';
 
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -31,12 +34,20 @@ export default class Application extends React.Component {
 
     const debugMode = Boolean(window.location.hash && window.location.hash.toLowerCase() === '#debug');
 
+    const sess = browser();
+    const isMobileSection = sess.mobile ? 'MOBILE' : '';
+
+    const sessBrowser = sess.name.toUpperCase();
+    const unsupportedBrowsers = ['SAFARI'];
+    const isUnsupportedSection = unsupportedBrowsers.indexOf(sessBrowser) > -1 ? 'UNSUPPORTED' : '';
+
     this.state = {
       model: null,
-      currentModel: 'FONTS', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
+      currentModel: 'FACES', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
-      debugMode
+      debugMode,
+      modalSection: isMobileSection || isUnsupportedSection, // MOBILE, UNSSUPORTED, INFO
     };
 
     this.onHashChange = this.onHashChange.bind(this);
@@ -45,9 +56,12 @@ export default class Application extends React.Component {
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
     this.saveVectors = this.saveVectors.bind(this);
+    this.setModalSection = this.setModalSection.bind(this);
   };
 
   componentDidMount() { // Initialise model + load grid data for DataPicker
+    if (this.state.modalSection === 'MOBILE') { return; }
+
     this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
 
@@ -70,7 +84,6 @@ export default class Application extends React.Component {
         console.error(res.errors);
       }
     });
-
 
     window.addEventListener('hashchange', this.onHashChange, false);
   };
@@ -147,6 +160,12 @@ export default class Application extends React.Component {
     return cell.vector;
   };
 
+  setModalSection(modalSection) {
+    this.setState({
+      modalSection
+    });
+  }
+
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
@@ -155,6 +174,11 @@ export default class Application extends React.Component {
     const fontDrawerHeight = 250;
     return (
       <div className="application-container">
+        <Modal
+          modalSection={this.state.modalSection}
+          setModalSection={this.setModalSection}
+          currentModel={this.state.currentModel}
+        />
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         <div className="component-container">
           <DataPickers
@@ -215,6 +239,7 @@ export default class Application extends React.Component {
           ]}
           debugMode={this.state.debugMode}
           saveVectors={this.saveVectors}
+          setModalSection={this.setModalSection}
         />
       </div>
     );
@@ -252,7 +277,8 @@ class BottomNav extends React.Component {
           this.props.debugMode &&
           <a onClick={this.props.saveVectors}>Save vectors</a>
         }
-          <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a>
+          {/* <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a> */}
+          <a onClick={e => { this.props.setModalSection('INFO'); }} className="info-button">i</a>
         </div>
       </nav>
     );
@@ -263,5 +289,6 @@ BottomNav.propTypes = {
   activeLink: PropTypes.string.isRequired,
   links: PropTypes.array.isRequired,
   debugMode: PropTypes.bool.isRequired,
-  saveVectors: PropTypes.func
+  saveVectors: PropTypes.func,
+  setModalSection: PropTypes.func.isRequired
 };
