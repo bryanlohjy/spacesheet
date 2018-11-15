@@ -8,8 +8,14 @@ export default class Modal extends React.Component {
   }
 
   onClose() {
-    if (this.props.modalSection === 'MOBILE') { return; }
-    this.props.setModalSection('');
+    if (this.props.modalSection === 'MOBILE' || this.props.modalSection === 'LOADING') { return; }
+
+    if (this.props.modalSection === 'UNSUPPORTED' && !this.props.model) {
+      // display loading modal if user continues, and the model is not loaded
+      this.props.setModalSection('LOADING');
+    } else {
+      this.props.setModalSection('');
+    }
   }
 
   render() {
@@ -38,6 +44,12 @@ export default class Modal extends React.Component {
               currentModel={this.props.currentModel}
             />
           }
+          {
+            this.props.modalSection === 'LOADING' &&
+            <LoadingModal
+              closeModal={this.onClose}
+            />
+          }
         </div>
       </div>
     )
@@ -47,6 +59,7 @@ Modal.propTypes = {
   modalSection: PropTypes.string,
   currentModel: PropTypes.string.isRequired,
   setModalSection: PropTypes.func.isRequired,
+  model: PropTypes.object
 };
 
 class MobileModal extends React.Component {
@@ -151,5 +164,32 @@ class InfoModal extends React.Component {
 };
 InfoModal.propTypes = {
   currentModel: PropTypes.string.isRequired,
+  closeModal: PropTypes.func.isRequired,
+};
+
+class LoadingModal extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="modal">
+        <div className="title">Loading model...
+          <div className="lds-ring">
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+          </div>
+        </div>
+        <div className="content">
+          <p className="message">Welcome to the SpaceSheet!<br/><br/>Before we begin, a model has to be preloaded. These are large files and may take a couple of minutes.</p>
+        </div>
+      </div>
+    )
+  }
+};
+LoadingModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
 };
