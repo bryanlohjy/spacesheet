@@ -47,7 +47,7 @@ export default class Application extends React.Component {
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode,
-      modalSection: isMobileSection || isUnsupportedSection, // MOBILE, UNSSUPORTED, INFO
+      modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO
     };
 
     this.onHashChange = this.onHashChange.bind(this);
@@ -66,6 +66,7 @@ export default class Application extends React.Component {
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
 
     const loader = new ModelLoader(this, ModelToLoad);
+
     loader.load(res => {
       if (!res.errors) {
         let dataPickerGrids;
@@ -74,12 +75,19 @@ export default class Application extends React.Component {
         } catch (e) {
           dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
         }
-        // setTimeout(() => {
-          this.setState({
-            model: res.model,
-            dataPickerGrids: dataPickerGrids,
-          });
-        // }, 5000)
+
+        this.setState({
+          model: res.model,
+          dataPickerGrids: dataPickerGrids,
+        });
+
+        if (this.state.modalSection === 'LOADING') {
+          setTimeout(() => { // prevent flickering modal
+            this.setState({
+              modalSection: ''
+            });
+          }, 2500);
+        }
       } else {
         console.error(res.errors);
       }
@@ -178,6 +186,7 @@ export default class Application extends React.Component {
           modalSection={this.state.modalSection}
           setModalSection={this.setModalSection}
           currentModel={this.state.currentModel}
+          model={this.state.model}
         />
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         <div className="component-container">
