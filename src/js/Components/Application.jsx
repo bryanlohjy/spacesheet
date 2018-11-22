@@ -43,11 +43,7 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-<<<<<<< HEAD
       currentModel: 'MNIST', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
-=======
-      currentModel: 'FACES', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
->>>>>>> master
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode,
