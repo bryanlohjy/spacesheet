@@ -1,7 +1,7 @@
 import V from './faces_variety.json';
 import FEM from './faces_fem.json';
-import MAS from './faces_fem.json';
-import NOVEL from './faces_fem.json';
+import MAS from './faces_mas.json';
+import NOVEL from './faces_novel.json';
 
 module.exports = {
   V: {
@@ -18,6 +18,6 @@ module.exports = {
   },
   NOVEL: {
     label: 'Novel',
-    data: MAS,
+    data: NOVEL,
   },
 };
