@@ -147,11 +147,10 @@ class InfoModal extends React.Component {
         <div className="content">
           <p className="message">
             Thanks for checking out the SpaceSheet.
-            { this.props.currentModel !== 'MNIST' &&
-              <span><br/><br/>
+            <span><br/><br/>
               {modelCredit}
-              </span>
-            }<br/><br/>
+            </span>
+            <br/><br/>
             This is an ongoing project, and we welcome feedback.<br/>Get in touch at bryanlohjy@hotmail.com.
           </p>
           <a href="http://vusd.github.io/spacesheet" className="button">
