@@ -147,11 +147,10 @@ class InfoModal extends React.Component {
         <div className="content">
           <p className="message">
             Thanks for checking out the SpaceSheet.
-            { this.props.currentModel !== 'MNIST' &&
-              <span><br/><br/>
+            <span><br/><br/>
               {modelCredit}
-              </span>
-            }<br/><br/>
+            </span>
+            <br/><br/>
             This is an ongoing project, and we welcome feedback.<br/>Get in touch at bryanlohjy@hotmail.com.
           </p>
           <a href="http://vusd.github.io/spacesheet" className="button">
@@ -175,13 +174,14 @@ class LoadingModal extends React.Component {
   render() {
     return (
       <div className="modal">
-        <div className="title">Loading model...
+        <div className="title">
           <div className="lds-ring">
             <div/>
             <div/>
             <div/>
             <div/>
           </div>
+          Loading model...
         </div>
         <div className="content">
           <p className="message">Welcome to the SpaceSheet!<br/><br/>Before we begin, a model has to be preloaded. These are large files and may take a couple of minutes.</p>
