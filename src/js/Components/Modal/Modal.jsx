@@ -175,13 +175,14 @@ class LoadingModal extends React.Component {
   render() {
     return (
       <div className="modal">
-        <div className="title">Loading model...
+        <div className="title">
           <div className="lds-ring">
             <div/>
             <div/>
             <div/>
             <div/>
           </div>
+          Loading model...
         </div>
         <div className="content">
           <p className="message">Welcome to the SpaceSheet!<br/><br/>Before we begin, a model has to be preloaded. These are large files and may take a couple of minutes.</p>
