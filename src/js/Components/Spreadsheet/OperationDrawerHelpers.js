@@ -1,11 +1,12 @@
-import { cellCoordsToLabel } from './CellHelpers.js';
-import { getAllIndicesInArray } from '../../lib/helpers.js';
+import { cellCoordsToLabel, matrixForEach, matrixMap, getCellType } from './CellHelpers.js';
+import { getAllIndicesInArray, random, randomPick } from '../../lib/helpers.js';
+import { randDist } from './ModJoystick.js';
 
 const getValidMatrix = arr => {
   if (!arr) { return; }
   return arr.map(row => {
     return row.map(val => {
-      return val.trim().length > 0;
+      return val && val.trim().length > 0;
     });
   });
 };
@@ -202,11 +203,311 @@ const twoArgSmartFillFn = (hotInstance, currentSelection, operationName) => {
       }
     }
   }
+  return output;
+}
 
+const lerpSmartFillFn = (hotInstance, currentSelection) => {
+  const output = { cellsToHighlight: [], newData: [] };
+  const selection = currentSelection;
+  const selectedCells = hotInstance.getData.apply(self, selection);
 
+  const validMatrix = getValidMatrix(selectedCells);
+
+  let anchors = [];
+  let empties = [];
+  let cornerAnchors = [];
+
+  const rows = selectedCells.length;
+  const cols = selectedCells[0].length;
+
+  matrixForEach(validMatrix, (val, rowIndex, colIndex) => {
+    const cellCoord = [rowIndex, colIndex];
+
+    if (val) {
+      anchors.push(cellCoord);
+    } else {
+      empties.push(cellCoord);
+    }
+
+    const topLeft = rowIndex == 0 && colIndex == 0;
+    const topRight = rowIndex == 0 && colIndex == cols - 1;
+    const bottomLeft = rowIndex == rows - 1 && colIndex == 0;
+    const bottomRight = rowIndex == rows - 1 && colIndex == cols - 1;
+
+    if (topLeft || topRight || bottomLeft || bottomRight) {
+      if (val) {
+        cornerAnchors.push([rowIndex, colIndex]);
+      }
+    }
+  });
+
+  const isHorizontal = (rows == 1 && cols > 1);
+  const isVertical = (rows > 1 && cols == 1);
+
+  const isLinear = isHorizontal || isVertical;
+  const extrapolate = anchors.length == 2 && cornerAnchors.length != 2 && isLinear;
+  const interpolate = cornerAnchors.length == 2 && isLinear;
+  const isGrid = cornerAnchors.length >= 3;
+
+  const startRow = Math.min(selection[0], selection[2]);
+  const startCol = Math.min(selection[1], selection[3]);
+  const endRow = Math.max(selection[0], selection[2]);
+  const endCol = Math.max(selection[1], selection[3]);
+
+  if (isLinear && (extrapolate || interpolate)) {
+    const lerpAnchors = extrapolate ? anchors : cornerAnchors;
+    let cellsBetweenAnchors;
+
+    if (isHorizontal) {
+      cellsBetweenAnchors = Math.abs(lerpAnchors[0][1] - lerpAnchors[1][1]) - 1;
+    } else if (isVertical) {
+      cellsBetweenAnchors = Math.abs(lerpAnchors[0][0] - lerpAnchors[1][0]) - 1;
+    }
+
+    const startLabel = cellCoordsToLabel({
+                        row: lerpAnchors[0][0] + startRow,
+                        col: lerpAnchors[0][1] + startCol,
+                      });
+
+    const endLabel =  cellCoordsToLabel({
+                        row: lerpAnchors[1][0] + startRow,
+                        col: lerpAnchors[1][1] + startCol,
+                      });
+
+    let nonAnchors = [];
+
+    const _newData =  matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      const isStartCell = rowIndex == lerpAnchors[0][0] && colIndex == lerpAnchors[0][1];
+      const isEndCell = rowIndex == lerpAnchors[1][0] && colIndex == lerpAnchors[1][1];
+
+      if (isStartCell || isEndCell) {
+        return val;
+      } else {
+        nonAnchors.push([rowIndex, colIndex]);
+      }
+
+      const startLabel = cellCoordsToLabel({
+                          row: lerpAnchors[0][0] + startRow,
+                          col: lerpAnchors[0][1] + startCol,
+                        });
+
+      const endLabel =  cellCoordsToLabel({
+                          row: lerpAnchors[1][0] + startRow,
+                          col: lerpAnchors[1][1] + startCol,
+                        });
+
+      const interval = 1 / (cellsBetweenAnchors + 1);
+      const distFromFirstAnchor = isHorizontal ? colIndex - lerpAnchors[0][1] : rowIndex - lerpAnchors[0][0];
+      const degree = interval * distFromFirstAnchor;
+
+      return `=LERP(${startLabel}, ${endLabel}, ${Number(degree).toFixed(2)})`;
+    });
+
+    const _cellsToHighlight = nonAnchors;
+
+    return {
+      cellsToHighlight: _cellsToHighlight.map(coord => {
+        return [coord[0] + startRow, coord[1] + startCol];
+      }),
+      newData: _newData
+    };
+  } else if (isGrid) {
+    const gridAnchors = {
+      TL: null,
+      TR: null,
+      BR: null,
+      BL: null,
+    };
+
+    let nonAnchors = [];
+
+    matrixForEach(selectedCells, (val, rowIndex, colIndex) => {
+      const validCell = validMatrix[rowIndex][colIndex];
+
+      const TL = rowIndex == 0 && colIndex == 0;
+      const TR = rowIndex == 0 && colIndex == cols - 1;
+      const BR = rowIndex == rows - 1 && colIndex == cols - 1;
+      const BL = rowIndex == rows - 1 && colIndex == 0;
+
+      const cellCoord = [rowIndex, colIndex];
+      const isAnchor = TL || TR || BR || BL;
+      if (isAnchor && validCell) {
+        if (TL) { gridAnchors.TL = cellCoord; }
+        if (TR) { gridAnchors.TR = cellCoord; }
+        if (BR) { gridAnchors.BR = cellCoord; }
+        if (BL) { gridAnchors.BL = cellCoord; }
+      } else {
+        nonAnchors.push(cellCoord);
+      }
+    });
+
+    const analogyGrid = gridAnchors.TL && gridAnchors.TR && gridAnchors.BL;
+    const lerpGrid = gridAnchors.TL && gridAnchors.TR && gridAnchors.BL && gridAnchors.BR;
+
+    if (!analogyGrid && !lerpGrid) {
+      return output;
+    }
+
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      const TL = rowIndex == 0 && colIndex == 0;
+      const TR = rowIndex == 0 && colIndex == cols - 1;
+      const BR = rowIndex == rows - 1 && colIndex == cols - 1;
+      const BL = rowIndex == rows - 1 && colIndex == 0;
+      const isAnchor = TL || TR || BR || BL;
+
+      if (isAnchor) {
+        if (!val) {
+          const TLLabel = cellCoordsToLabel({
+            row: gridAnchors.TL[0] + startRow,
+            col: gridAnchors.TL[1] + startCol
+          });
+
+          const TRLabel = cellCoordsToLabel({
+            row: gridAnchors.TR[0] + startRow,
+            col: gridAnchors.TR[1] + startCol
+          });
+
+          const BLLabel = cellCoordsToLabel({
+            row: gridAnchors.BL[0] + startRow,
+            col: gridAnchors.BL[1] + startCol
+          });
+
+          return `=SUM(${BLLabel}, MINUS(${TRLabel}, ${TLLabel}))`;
+        } else {
+          return val;
+        }
+      } else {
+        if (rowIndex == 0 || rowIndex == rows - 1) {
+          const startLabel = cellCoordsToLabel({ row: startRow + rowIndex, col: startCol });
+          const endLabel = cellCoordsToLabel({ row: startRow + rowIndex, col: endCol });
+
+          const interval = 1 / (cols - 1);
+          const degree = colIndex * interval;
+
+          return `=LERP(${startLabel}, ${endLabel}, ${Number(degree).toFixed(2)})`;
+        } else {
+          const startLabel = cellCoordsToLabel({ row: startRow, col: startCol + colIndex });
+          const endLabel = cellCoordsToLabel({ row: endRow, col: startCol + colIndex });
+
+          const interval = 1 / (rows - 1);
+          const degree = rowIndex * interval;
+
+          return `=LERP(${startLabel}, ${endLabel}, ${Number(degree).toFixed(2)})`;
+        }
+      }
+    });
+
+    const _cellsToHighlight = nonAnchors;
+
+    return {
+      cellsToHighlight: _cellsToHighlight.map(coord => {
+        return [coord[0] + startRow, coord[1] + startCol];
+      }),
+      newData: _newData
+    };
+  }
 
   return output;
 }
+
+const modSmartFillFn = (hotInstance, selection, modSegmentCount) => {
+  let output = { cellsToHighlight: [], newData: [] };
+
+  const selectedCells = hotInstance.getData.apply(self, selection);
+
+  const startRow = Math.min(selection[0], selection[2]);
+  const startCol = Math.min(selection[1], selection[3]);
+
+  // mod if all cells can be modded, or if one moddable cell is in selection, mod from it
+  const convertableCells = [];
+  const cellsThatCanBeModdedFrom = [];
+  const empties = [];
+  let allCellsCanBeModded = true;
+
+  matrixForEach(selectedCells, (val, rowIndex, colIndex) => {
+    const cellType = getCellType(val);
+
+    let canBeConverted = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR');
+    let canBeModdedFrom = val && val.trim().length > 0 && (cellType === 'FORMULA' || cellType === 'RANDVAR' || cellType === 'MOD');
+
+    if (canBeConverted || canBeModdedFrom) { // perform DOM check only if it passes
+      const cell = hotInstance.getCell(rowIndex+startRow, colIndex+startCol);
+      const cellHasCanvas = cell.querySelectorAll('canvas') && cell.querySelectorAll('canvas').length > 0;
+      if (!cellHasCanvas) {
+        canBeConverted = false;
+        canBeModdedFrom = false;
+      }
+    }
+
+    const cellCoord = [startRow+rowIndex, startCol+colIndex];
+
+    if (canBeConverted) {
+      convertableCells.push(cellCoord);
+    }
+
+    if (canBeModdedFrom) {
+      cellsThatCanBeModdedFrom.push(cellCoord);
+    }
+
+    if (!canBeConverted) {
+      allCellsCanBeModded = false;
+    }
+
+    if (!val || val.trim().length === 0) {
+      empties.push(cellCoord);
+    }
+  });
+
+  // turn all cells into mod cells
+  if (allCellsCanBeModded) {
+    const _cellsToHighlight = [];
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      _cellsToHighlight.push([rowIndex+startRow, colIndex+startCol]);
+
+      const segment = parseInt(random(1, modSegmentCount+1));
+      return `=MOD(${val.replace(/=/gi, '')}, ${segment}, ${randDist()})`;
+    });
+    return {
+      cellsToHighlight: _cellsToHighlight,
+      newData: _newData,
+    };
+  }
+
+  // turn empty cells into MOD cells which refer to a single moddable cell
+  const rows = selectedCells.length;
+  const cols = selectedCells[0].length;
+
+  const numSelected = rows * cols;
+
+  if (numSelected-empties.length === 1 && cellsThatCanBeModdedFrom.length === 1) {
+    const _cellsToHighlight = empties;
+
+    const modFrom = cellsThatCanBeModdedFrom[0];
+    const modFromLabel = cellCoordsToLabel({
+                          row: modFrom[0],
+                          col: modFrom[1]
+                        });
+
+    const _newData = matrixMap(selectedCells, (val, rowIndex, colIndex) => {
+      if (val) {
+        return val;
+      } else {
+        const segment = parseInt(random(1, modSegmentCount+1));
+        return `=MOD(${modFromLabel}, ${segment}, ${randDist()})`;
+      }
+    });
+
+    return {
+      cellsToHighlight: _cellsToHighlight,
+      newData: _newData,
+    };
+  }
+
+  return output;
+}
+
+
+
 
 module.exports = {
   getValidMatrix,
@@ -214,4 +515,6 @@ module.exports = {
   highlightSmartFillArray,
   groupArgSmartFillFn,
   twoArgSmartFillFn,
+  lerpSmartFillFn,
+  modSmartFillFn
 };

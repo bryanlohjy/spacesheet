@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-84682580-3"></script>
+    <script>
+      // ignore dev analytics
+      if (/bryanlohjy\.gitlab\.io/.test(window.location.hostname)) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-84682580-3');
+      }
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>SpaceSheet—Word2Vec</title>
+    <link rel="shortcut icon" type="image/png" href="./dist/assets/favicon.png"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,500" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./dist/base.css">
+    <link rel="stylesheet" type="text/css" href="./dist/loading-state.css">
+  </head>
+  <body>
+    <div id="react-container">
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="./dist/bundle-word2vec.js"></script>
+  </body>
+</html>

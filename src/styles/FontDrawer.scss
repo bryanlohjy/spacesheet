@@ -1,26 +1,31 @@
 @import "./variables.scss";
 
 .font-drawer {
-  height: 400px;
+  height: 250px;
   width: 100%;
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
   box-sizing: border-box;
   display: flex;
+  flex-grow: 1;
+
   flex-direction: column;
-  background-color: $grey;
+  background-color: $darkGrey;
+
   .sample-font-input {
     border: none;
     border-bottom: 1px solid $grey;
-    height: 30px;
+    min-height: 39px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 1px;
     padding: 0 12px;
     color: $darkerGrey;
-
   }
+
   .font-samples {
     overflow-y: auto;
     display: flex;
-    justify-content: space-evenly;
     flex-direction: column;
     height: 100%;
     padding: 5px;
@@ -32,19 +37,21 @@
   display: flex;
   margin: 5px;
   background-color: white;
-  border-radius: 2px;
-  min-height: 50px;
+  min-height: 80px;
+  box-shadow: 0 3px 3px -3px $darkerGrey;
+
   .font-sample-controls {
     display: flex;
     width: 100px;
     background-color: $lightGrey;
-    border-radius: 2px 0 0 2px;
     overflow: hidden;
-    box-shadow: 1px 0 0 $darkGrey;
+    box-shadow: 1px 0 0 $darkerGrey;
     .sort-handle {
       display: flex;
       align-items: center;
+      justify-content: center;
       cursor: row-resize;
+      width: 18px;
       height: 100%;
       background-color: $darkerGrey;
       color: $lightGrey;
@@ -75,21 +82,30 @@
       }
       .font-sample-reference {
         display: flex;
-        border: 1px solid $darkGrey;
+        border: 1px solid $darkerGrey;
         color: $darkerGrey;
-        border-radius: 2px;
+        width: 100%;
         > * {
           margin: 0;
           padding: 0;
           height: 20px;
         }
-        input {
+        .cell-reference {
           flex-grow: 1;
+          font-weight: 500;
+          cursor: default;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          &.disabled {
+            background: $grey;
+          }
           &.invalid {
             background-color: rgba(255, 0, 0, 0.4);
           }
           &.valid {
-            background-color: rgba(0, 255, 0, 0.4);
+            background: white;
           }
           width: 100%;
           max-width: 50px;
@@ -103,7 +119,10 @@
           padding: 0;
           width: 20px;
           border: none;
-          border-left: 1px solid $darkGrey;
+          border-left: 1px solid $darkerGrey;
+          padding-bottom: 2px;
+          font-weight: 500;
+          background: $grey;
           cursor: pointer;
         }
         align-items: center;

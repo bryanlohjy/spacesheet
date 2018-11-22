@@ -34,6 +34,20 @@
       }
     }
   }
+  .htCommentCell:after {
+    border-top: 10px solid $actionColor;
+    border-left: 10px solid transparent;
+  }
+}
+.htCommentTextArea {
+  line-height: 18px;
+  background: rgba(255, 255, 255, 0.8);
+
+  &[readonly] {
+    background: rgba($lightGrey, 0.8);
+    resize: none;
+    cursor: default;
+  }
 }
 
 .spreadsheet-container {
@@ -46,7 +60,7 @@
     font-weight: 500;
     padding: 0 12px;
     height: 37px;
-    border: 1px solid #ccc;
+    border: 1px solid $outlineGrey;
     letter-spacing: 1px;
 
     width: 100%;
@@ -55,8 +69,8 @@
     display: flex;
     justify-content: space-between;
     height: 37px;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-left: 1px solid $outlineGrey;
+    border-right: 1px solid $outlineGrey;
 
     .operation-button {
       background: $lightGrey;
@@ -71,7 +85,7 @@
       padding-top: 2px;
 
       &:not(:last-child) {
-        border-right: 1px solid #ccc;
+        border-right: 1px solid $outlineGrey;
       }
 
       &:hover {
@@ -144,6 +158,69 @@
         }
         background-color: rgb(90, 154, 255);
       }
+    }
+
+    .mod-container {
+      position: absolute;
+      opacity: 0;
+
+      transition: opacity 0.1s;
+
+      &:hover {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      background: rgba(0, 0, 0, 0.25);
+      z-index: 1;
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px;
+
+      .mod-markers {
+        color: rgba(255, 255, 255, 0.5);
+        border: 1px dotted rgba(255, 255, 255, 0.3);
+        border-radius: 100%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        font-size: 12px;
+        &.segments-visible {
+          .segment {
+            opacity: 1;
+          }
+        }
+        .segment {
+          &.segment-highlighted {
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+          }
+          transition: opacity 0.3s;
+          width: 95%;
+          height: 50%;
+          bottom: 0;
+          transform-origin: 50% 0;
+          position: absolute;
+          border-top: 1px dotted rgba(255, 255, 255, 0.3);
+          opacity: 0;
+        }
+      }
+
+      .mod-joystick {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: $actionColor;
+        border-radius: 100%;
+        cursor: move;
+      }
+
     }
 
     .canvas-container {

@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-84682580-3"></script>
+    <script>
+      // ignore dev analytics
+      if (/bryanlohjy\.gitlab\.io/.test(window.location.hostname)) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-84682580-3');
+      }
+    </script>
     <meta charset="utf-8">
-    <title>SpaceSheet—Fonts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceSheet—Faces</title>
     <link rel="shortcut icon" type="image/png" href="./dist/assets/favicon.png"/>
 
     <link href="https://fonts.googleapis.com/css?family=Rubik:400,500" rel="stylesheet">

@@ -1,8 +1,24 @@
 const helpers = {
 	random: function(min, max) {
-		min = Math.ceil(min);
-		max = Math.floor(max);
-		return (Math.random() * (max - min)) + min;
+    const rand = Math.random();
+
+    if (typeof min === 'undefined') {
+      return rand;
+    } else if (typeof max === 'undefined') {
+      if (min instanceof Array) {
+        return min[Math.floor(rand * min.length)];
+      } else {
+        return rand * min;
+      }
+    } else {
+      if (min > max) {
+        let tmp = min;
+        min = max;
+        max = tmp;
+      }
+
+      return rand * (max - min) + min;
+    }
 	},
 	randomInt: function(min, max, seed) { // max is non-inclusive
     let seededRandom;
@@ -16,10 +32,10 @@ const helpers = {
 	},
 	randomPick: function(arr, cb) {
 		if (cb) { // return random picked and index of element
-			const randomIndex = helpers.randomInt(0, arr.length-1);
+			const randomIndex = helpers.randomInt(0, arr.length);
 			cb(arr[randomIndex], randomIndex);
 		} else {
-			return (arr[helpers.randomInt(0, arr.length-1)]);
+			return (arr[helpers.randomInt(0, arr.length)]);
 		}
 	},
   getData: function(url) { // function to get data from server
@@ -126,7 +142,7 @@ const helpers = {
     const hh = String(dateObj.getHours()).padStart(2, '0');
     const mm = String(dateObj.getMinutes()).padStart(2, '0');
 
-    return `${DD}-${MM}-${YYYY}_${hh}-${mm}` || dateObj.toDateString().replace(/\s/gi, '-');
+    return `${YYYY}-${mm}-${DD}_${hh}-${mm}` || `${DD}-${MM}-${YYYY}_${hh}-${mm}` || dateObj.toDateString().replace(/\s/gi, '-');
   }
 };
 module.exports = helpers;

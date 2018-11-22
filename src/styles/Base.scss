@@ -13,6 +13,7 @@
   height: 100vh;
   max-width: 100%;
   max-height: 100%;
+  overflow: hidden;
 }
 .application-container {
   display: flex;
@@ -20,9 +21,11 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+
   .component-container { // holds datapicker and spreadsheet
     display: flex;
     flex-grow: 1;
+    height: calc(100% - 50px);
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -38,7 +41,7 @@
       .spreadsheet-container {
         width: 100%;
         display: flex;
-        flex-grow: 1;
+        // flex-grow: 1;
         flex-direction: column;
         overflow: hidden;
         z-index: 1;
@@ -67,6 +70,27 @@
     font-size: 15px;
     font-weight: 500;
 
+    .info-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: $lightGrey !important;
+      text-transform: none;
+      font-family: 'Lucida Console', 'Courier New', monospace;
+      font-weight: bold;
+
+      background: $darkGrey;
+      height: 25px;
+      width: 25px;
+      border-radius: 100%;
+
+      transition: background 0.2s !important;
+      &:hover {
+        background: $actionColor;
+      }
+    }
+
     div {
       a {
         color: $darkGrey;
@@ -81,8 +105,11 @@
           img {
             max-width: 160px;
           }
+          .logo-link {
+            padding: 0;
+          }
         }
-        a:not(.logo) {
+        a:not(.logo-link) {
           &:visited {
             color: $darkGrey;
           }
