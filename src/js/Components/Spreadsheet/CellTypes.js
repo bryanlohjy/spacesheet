@@ -2,6 +2,7 @@ import HandsOnTable from 'handsontable';
 import { countDecimalPlaces, randomInt, random } from '../../lib/helpers.js';
 import CellEditor from './CellEditor';
 import { getArgumentsFromFunction } from './FormulaParser.js';
+import { cellCoordsToLabel } from './CellHelpers.js';
 import { ModJoystick, randDist } from './ModJoystick.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
 const CellTypes = opts => {
@@ -16,7 +17,10 @@ const CellTypes = opts => {
       if (data && data.trim().length) {
         td.innerHTML = '';
         try {
-          const compiled = opts.formulaParser.parse(data.replace('=', ''));
+          const cellLabel = cellCoordsToLabel({row, col});
+
+          const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
+
           const { result, error } = compiled;
           if (result || result === 0) {
             if (typeof result === 'object') { // it is a vector
@@ -42,7 +46,7 @@ const CellTypes = opts => {
             td.innerText = error || "#ERROR!";
           }
         } catch (e) {
-          console.error(`Could not calculate. Row: ${row}, Col: ${col}`);
+          console.error(`Could not calculate. Row: ${row}, Col: ${col}`, e);
         }
       }
     },
@@ -63,7 +67,9 @@ const CellTypes = opts => {
         hotInstance.setDataAtCell(row, col, data);
       }
 
-      const compiled = opts.formulaParser.parse(data.replace('=', ''))
+      const cellLabel = cellCoordsToLabel({row, col});
+
+      const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
       const { result, error } = compiled;
 
       let prevSliderValue;
@@ -145,7 +151,11 @@ const CellTypes = opts => {
           data = `=RANDVAR(${ randomInt(0, 99999) })`;
           hotInstance.setDataAtCell(row, col, data);
         }
-        const compiled = opts.formulaParser.parse(data.replace('=', ''));
+
+        const cellLabel = cellCoordsToLabel({row, col});
+
+        const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
+
         let { result, error } = compiled;
         if (result) {
           let randomiseButton = td.querySelector('.randomise-button');
@@ -215,7 +225,9 @@ const CellTypes = opts => {
           hotInstance.setDataAtCell(row, col, data);
         }
 
-        const compiled = opts.formulaParser.parse(data.replace('=', ''));
+        const cellLabel = cellCoordsToLabel({row, col});
+
+        const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
         let { result, error } = compiled;
 
         if (result && typeof result !== 'string') {
@@ -227,7 +239,7 @@ const CellTypes = opts => {
               const args = getArgumentsFromFunction(data);
               const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               opts.setInputBarValue(newFormula);
-              const compiledScrub = opts.formulaParser.parse(newFormula.substring(1));
+              const compiledScrub = opts.formulaParser.parse(newFormula.substring(1), cellLabel);
 
               if (compiledScrub.result) {
                 const decodedScrub = opts.decodeFn(compiledScrub.result);

@@ -20,7 +20,7 @@ const getArgumentsFromFunction = (string) => {
 
   const openBracketIndices = getIndicesOf('(', string);
   const closeBracketIndices = getIndicesOf(')', string);
-  
+
   if (openBracketIndices.length && closeBracketIndices.length) {
     const startIndex = openBracketIndices[0];
     const endIndex = closeBracketIndices[closeBracketIndices.length - 1];
@@ -66,99 +66,91 @@ const getArgumentsFromFunction = (string) => {
 
 const FormulaParser = (hotInstance, opts) => {
   const parser = new Parser();
+
   const CustomFormula = new Formulae({
     getCellFromDataPicker: opts.getCellFromDataPicker,
     model: opts.model,
   });
 
-  console.log('parser:', parser, parser.parser.lexer)
-  // let seenCells = [];
-  // let seenCells = {};
-
+  let parseCount = 0;
+  let circRef = false;
   let cellBeingParsed = "";
-  // let isCircular = false;
+  let seenCells = {};
 
-  let formulaToBeParsed = "";
-
-  const parseDecorator = function(func) { // runs once
-    return function() {
-      formulaToBeParsed = arguments[0];
-
-      if (arguments.length > 1) {
-        cellBeingParsed = arguments[1];
-      }
-
-
-
-      // search for cell references to be parsed recursively and store indices
-
-      // when a cell is recursively parsed, update the string and search for the cell which had been parsed.
-      // if that cell matches its stored index, assume that it has been parsed successfully and move on.
-
-
-
-      console.log(cellBeingParsed, ':start parse', parser.parser.lexer);
-
-
-      // if (!seenCells[cellBeingParsed]) { seenCells[cellBeingParsed] = {} };
-      // seenCells.push(cellBeingParsed);
+  const parseDecorator = function(func) { // runs once per cell
+    return function(value, srcCellLabel) {
+      parseCount = 0;
+      circRef = false;
+      cellBeingParsed = srcCellLabel;
+      seenCells = {};
+      seenCells[srcCellLabel] = value;
 
       const result = func.apply(this, arguments);
 
-      console.log(cellBeingParsed, ':finish parse')
+      // if (result.error) {
+      //   console.log(srcCellLabel, result.error, result.result)
+      // }
 
-      // seenCells = {};
+      if (result.error && circRef) {
+        result.error = '#CIRCREF';
+      }
+
+      if (typeof result.result === 'boolean') {
+        result.error = '#CIRCREF';
+        result.result = null;
+      }
 
       return result;
     }
   };
 
   const recursiveParseDecorator = function(func) {
-    return function() {
-      let cellLabel = arguments[1];
-      console.log('|_', cellLabel, 'within', cellBeingParsed)
+    return function(cellVal, cellLabel) {
+      parseCount++;
 
-      // if (seenCells[cellBeingParsed][cellLabel])
+      for (const label in seenCells) {
+        circRef = cellVal.indexOf(label) > -1 && seenCells[label].indexOf(cellLabel) > -1;
 
-      // if (cellLabel === undefined || seenCells.indexOf(cellLabel) > -1) {
-      //   // console.log(cellBeingParsed, 'circref ')
-      //   return { error: "#CIRCREF", result: null };
-      // } else {
-      //   seenCells.push(cellLabel);
-      // }
+        if (circRef) {
+          break;
+        }
+      }
 
-      const result = func.apply(this, arguments);
+      if (circRef || parseCount > 999) {
+        circRef = true;
+        return { result: null, error: '#CIRCREF' };
+      } else {
+        seenCells[cellLabel] = cellVal;
+      }
 
-      return result;
+      if (!circRef) {
+        const result = func.apply(this, arguments);
+        return result;
+      }
     }
   };
 
   parser.recursiveParse = recursiveParseDecorator(parser.parse);
   parser.parse = parseDecorator(parser.parse);
 
-
-
-  let subCellBeingParsed = '';
-
   parser.on('callCellValue', (cellCoord, done) => {
-    console.log(parser)
     const rowIndex = cellCoord.row.index;
     const columnIndex = cellCoord.column.index;
     const val = hotInstance.getDataAtCell(rowIndex, columnIndex);
 
-    let newVal;
+    let cellVal;
+
     if (new RegExp(Regex.SLIDER).test(val)) {
       const input = hotInstance.getCell(rowIndex, columnIndex).querySelector('input');
-      newVal = input.value;
+      cellVal = input.value;
     } else {
-      newVal = val.replace('=', '');
+      cellVal = val.replace('=', '');
     }
-    // console.log(cellCoord)
-    // if (!subCellBeing)
-    const parsed = parser.recursiveParse(newVal,  cellCoord.label);
+
+    let parsed = parser.recursiveParse(cellVal, cellCoord.label);
 
     if (parsed.error) {
-      return;
+      return parsed.error;
     } else {
       done(parsed.result);
     }
