@@ -87,10 +87,6 @@ const FormulaParser = (hotInstance, opts) => {
 
       const result = func.apply(this, arguments);
 
-      // if (result.error) {
-      //   console.log(srcCellLabel, result.error, result.result)
-      // }
-
       if (result.error && circRef) {
         result.error = '#CIRCREF';
       }
@@ -108,25 +104,29 @@ const FormulaParser = (hotInstance, opts) => {
     return function(cellVal, cellLabel) {
       parseCount++;
 
-      for (const label in seenCells) {
-        circRef = cellVal.indexOf(label) > -1 && seenCells[label].indexOf(cellLabel) > -1;
+      seenCells[cellLabel] = cellVal;
 
-        if (circRef) {
-          break;
+      const selfReferential = cellVal.indexOf(cellLabel) > -1;
+
+      if (selfReferential) { circRef = true }
+
+      if (!circRef) {
+        for (const label in seenCells) {
+          circRef = cellVal.indexOf(label) > -1 && seenCells[label].indexOf(cellLabel) > -1;
+
+          if (circRef) {
+            break;
+          }
         }
       }
 
       if (circRef || parseCount > 999) {
-        circRef = true;
         return { result: null, error: '#CIRCREF' };
       } else {
-        seenCells[cellLabel] = cellVal;
-      }
-
-      if (!circRef) {
         const result = func.apply(this, arguments);
         return result;
       }
+
     }
   };
 
@@ -150,7 +150,7 @@ const FormulaParser = (hotInstance, opts) => {
     let parsed = parser.recursiveParse(cellVal, cellCoord.label);
 
     if (parsed.error) {
-      return parsed.error;
+      done();
     } else {
       done(parsed.result);
     }
@@ -168,11 +168,13 @@ const FormulaParser = (hotInstance, opts) => {
       const rowData = hotInstance.getDataAtRow(row);
       for (let col = startColIndex; col <= endColIndex; col++) {
         let value = rowData[col];
+
         if (isFormula(value.toString())) {
           const cellLabel = cellCoordsToLabel({row, col});
           const result = parser.recursiveParse(rowData[col].slice(1), cellLabel);
           value = result.error || result.result;
         }
+
         fragment.push(value);
       }
     }
