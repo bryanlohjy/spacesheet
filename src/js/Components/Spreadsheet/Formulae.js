@@ -59,6 +59,7 @@ export default class Formulae {
     }).dataSync();
   };
   SUM(params) {
+    if (!params || params.length < 2) { return '#N/A'; }
     let total = 0;
     for (let index = 0; index < params.length; index++) {
       total += Number(params[index]);
@@ -66,6 +67,7 @@ export default class Formulae {
     return total;
   };
   SUM_TENSOR(params) {
+    if (!params || params.length < 2) { return '#N/A'; }
     return dl.tidy(() => {
       let total;
       for (let count = 0; count < params.length; count++) {
@@ -245,12 +247,8 @@ export default class Formulae {
     if (!this[formulaKey]) {
       return;
     } else {
-      params = params.filter(param => {
-        if (!isNaN(param) && param !== null) {
-          return true;
-        }
-        return param;
-      });
+      params = params.filter(param => param);
+      console.log(params)
       return this[formulaKey](params);
     }
   };
