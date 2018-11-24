@@ -150,8 +150,8 @@ export default class Formulae {
       return '#N/A';
     }
     return dl.tidy(() => {
-      const from = isNaN(params[0]) ? dl.tensor1d(params[0]) : dl.scalar(params[0]);
-      const to = isNaN(params[1]) ? dl.tensor1d(params[1]) : dl.scalar(params[1]);
+      const from = dl.tensor1d(params[0]);
+      const to = dl.tensor1d(params[1]);
       const step = params[2];
       const omega = dl.acos(from.mul(to));
       const so = dl.sin(omega);
@@ -246,7 +246,7 @@ export default class Formulae {
     if (!this[formulaKey]) {
       return;
     } else {
-      params = params.filter(param => (!isNaN(param) || param));
+      params = params.filter(param => (!isNaN(parseInt(param)) || param));
       return this[formulaKey](params);
     }
   };
