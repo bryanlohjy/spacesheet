@@ -172,6 +172,13 @@ const FormulaParser = (hotInstance, opts) => {
         if (isFormula(value.toString())) {
           const cellLabel = cellCoordsToLabel({row, col});
           const result = parser.recursiveParse(rowData[col].slice(1), cellLabel);
+          const selfReferential = cellLabel === cellBeingParsed;
+
+          if (result.error === '#CIRCREF' || selfReferential) {
+            circRef = true;
+            done();
+          }
+
           value = result.error || result.result;
         }
 
