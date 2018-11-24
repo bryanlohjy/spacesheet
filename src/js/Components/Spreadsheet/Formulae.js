@@ -93,12 +93,11 @@ export default class Formulae {
     return from + ((to - from) * by);
   };
   LERP_TENSOR(params) {
-    if (params.length !== 3) {
-      return '#N/A';
-    }
+    if (params.length !== 3) { return '#N/A'; }
+
     return dl.tidy(() => {
-      const from = isNaN(params[0]) ? dl.tensor1d(params[0]) : dl.scalar(params[0]);
-      const to = isNaN(params[1]) ? dl.tensor1d(params[1]) : dl.scalar(params[1]);
+      const from = dl.tensor1d(params[0]);
+      const to = dl.tensor1d(params[1]);
       const step = params[2];
       return from.add(to.sub(from).mul(dl.scalar(step)));
     }).dataSync();
@@ -247,8 +246,7 @@ export default class Formulae {
     if (!this[formulaKey]) {
       return;
     } else {
-      params = params.filter(param => param);
-      console.log(params)
+      params = params.filter(param => (!isNaN(param) || param));
       return this[formulaKey](params);
     }
   };
