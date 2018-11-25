@@ -59,6 +59,7 @@ export default class Formulae {
     }).dataSync();
   };
   SUM(params) {
+    if (!params || params.length < 2) { return '#N/A'; }
     let total = 0;
     for (let index = 0; index < params.length; index++) {
       total += Number(params[index]);
@@ -66,6 +67,7 @@ export default class Formulae {
     return total;
   };
   SUM_TENSOR(params) {
+    if (!params || params.length < 2) { return '#N/A'; }
     return dl.tidy(() => {
       let total;
       for (let count = 0; count < params.length; count++) {
@@ -91,12 +93,11 @@ export default class Formulae {
     return from + ((to - from) * by);
   };
   LERP_TENSOR(params) {
-    if (params.length !== 3) {
-      return '#N/A';
-    }
+    if (params.length !== 3) { return '#N/A'; }
+
     return dl.tidy(() => {
-      const from = isNaN(params[0]) ? dl.tensor1d(params[0]) : dl.scalar(params[0]);
-      const to = isNaN(params[1]) ? dl.tensor1d(params[1]) : dl.scalar(params[1]);
+      const from = dl.tensor1d(params[0]);
+      const to = dl.tensor1d(params[1]);
       const step = params[2];
       return from.add(to.sub(from).mul(dl.scalar(step)));
     }).dataSync();
@@ -149,8 +150,8 @@ export default class Formulae {
       return '#N/A';
     }
     return dl.tidy(() => {
-      const from = isNaN(params[0]) ? dl.tensor1d(params[0]) : dl.scalar(params[0]);
-      const to = isNaN(params[1]) ? dl.tensor1d(params[1]) : dl.scalar(params[1]);
+      const from = dl.tensor1d(params[0]);
+      const to = dl.tensor1d(params[1]);
       const step = params[2];
       const omega = dl.acos(from.mul(to));
       const so = dl.sin(omega);
@@ -245,12 +246,7 @@ export default class Formulae {
     if (!this[formulaKey]) {
       return;
     } else {
-      params = params.filter(param => {
-        if (!isNaN(param) && param !== null) {
-          return true;
-        }
-        return param;
-      });
+      params = params.filter(param => (!isNaN(parseInt(param)) || param));
       return this[formulaKey](params);
     }
   };
