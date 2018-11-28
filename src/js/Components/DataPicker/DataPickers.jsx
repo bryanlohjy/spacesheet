@@ -28,7 +28,7 @@ export default class DataPickers extends React.Component {
     const multipleDataPickers = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1;
 
     return (
-      <div className="left-container">
+      <div>
         { multipleDataPickers ?
             <DataPickerSelector
               dataPickerGrids={this.props.dataPickerGrids}
@@ -41,7 +41,7 @@ export default class DataPickers extends React.Component {
               height={selectorHeight}
             /> : ""
         }
-        <div className="datapicker-container" style={{ width: this.props.width, height: this.props.height - selectorHeight}}>
+        <div className="datapicker-container">
           { this.props.dataPickerGrids ?
               Object.keys(this.props.dataPickerGrids).map(key => {
                 return (

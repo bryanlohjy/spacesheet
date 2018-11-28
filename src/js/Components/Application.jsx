@@ -200,14 +200,19 @@ export default class Application extends React.Component {
         />
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         <div className="component-container">
-          <DataPickers
-            width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-            height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
-            model={ this.state.model }
-            dataPickerGrids={this.state.dataPickerGrids}
-            onCellClick={ this.setSpreadsheetCellFromDataPicker }
-            ref='dataPickers'
-          />
+          <div
+            className="left-container"
+            style={{ maxWidth: appHeight }}
+          >
+            <DataPickers
+              width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
+              height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
+              model={ this.state.model }
+              dataPickerGrids={this.state.dataPickerGrids}
+              onCellClick={ this.setSpreadsheetCellFromDataPicker }
+              ref='dataPickers'
+            />
+          </div>
           <div className="right-container">
             <Spreadsheet
               width={ spreadsheetWidth }

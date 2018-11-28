@@ -32,12 +32,15 @@
     .left-container {
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
+      overflow: hidden;
     }
     .right-container {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
       height: 100%;
+      min-width: 600px;
       .spreadsheet-container {
         width: 100%;
         display: flex;
