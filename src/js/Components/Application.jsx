@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { WindowResizeListener } from 'react-window-resize-listener'
+
 import ModelLoader from '../lib/ModelLoader.js';
 import ModelToLoad from '../Models/FaceModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
@@ -32,6 +34,8 @@ export default class Application extends React.Component {
   constructor(props) {
     super(props);
 
+    // WindowResizeListener.DEBOUNCE_TIME = 10;
+
     const debugMode = Boolean(window.location.hash && window.location.hash.toLowerCase() === '#debug');
 
     const sess = browser();
@@ -57,6 +61,7 @@ export default class Application extends React.Component {
     this.setInputBarValue = this.setInputBarValue.bind(this);
     this.saveVectors = this.saveVectors.bind(this);
     this.setModalSection = this.setModalSection.bind(this);
+    this.onResize = this.onResize.bind(this);
   };
 
   componentDidMount() { // Initialise model + load grid data for DataPicker
@@ -174,6 +179,10 @@ export default class Application extends React.Component {
     });
   }
 
+  onResize(window) {
+    console.log(window);
+  }
+
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
@@ -182,6 +191,7 @@ export default class Application extends React.Component {
     const fontDrawerHeight = 250;
     return (
       <div className="application-container">
+        <WindowResizeListener onResize={this.onResize}/>
         <Modal
           modalSection={this.state.modalSection}
           setModalSection={this.setModalSection}
