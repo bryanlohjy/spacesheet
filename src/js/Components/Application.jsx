@@ -52,6 +52,7 @@ export default class Application extends React.Component {
       dataPickerGrids: null,
       debugMode,
       modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO
+      width: window.innerWidth,
     };
 
     this.onHashChange = this.onHashChange.bind(this);
@@ -179,16 +180,19 @@ export default class Application extends React.Component {
     });
   }
 
-  onResize(window) {
-    console.log(window);
+  onResize(obj) {
+    // this.setState({
+    //   width: obj.windowWidth
+    // });
   }
 
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
     const appHeight = docHeight - navHeight;
-    const spreadsheetWidth = document.body.offsetWidth - appHeight;
-    const fontDrawerHeight = 250;
+    // const spreadsheetWidth = this.refs.rightContainer && this.refs.rightContainer.clientWidth;
+    // const spreadsheetWidth = document.body.offsetWidth - appHeight;
+    // const fontDrawerHeight = 250;
     return (
       <div className="application-container">
         <WindowResizeListener onResize={this.onResize}/>
@@ -213,9 +217,9 @@ export default class Application extends React.Component {
               ref='dataPickers'
             />
           </div>
-          <div className="right-container">
+          <div className="right-container" ref="rightContainer">
             <Spreadsheet
-              width={ spreadsheetWidth }
+              // width={ spreadsheetWidth }
               height={ this.state.currentModel === 'FONTS' ? appHeight-fontDrawerHeight : appHeight }
               getCellFromDataPicker={ this.getCellFromDataPicker }
               ref='spreadsheet'

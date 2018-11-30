@@ -57,6 +57,7 @@ export default class Spreadsheet extends React.Component {
     if (modelFirstLoaded || modelChanged) {
       this.updateHotTableSettings(newProps.model);
     }
+
   };
 
   setSelectedCellData(operation, closeAfterSetting) {
@@ -93,10 +94,10 @@ export default class Spreadsheet extends React.Component {
       undo: true,
       redo: true,
       outsideClickDeselects: false,
-      preventOverflow: "horizontal",
+      // preventOverflow: 'vertical',
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
-      height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
+      // height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
     });
 
     setTimeout(() => {
@@ -162,6 +163,7 @@ export default class Spreadsheet extends React.Component {
         }
         return cellProperties;
       },
+      // stretchH: 'all',
       rowHeights: Math.max(model.outputHeight, this.minCellSize),
       colWidths: Math.max(model.outputWidth, this.minCellSize),
       comments: true,
@@ -257,8 +259,8 @@ export default class Spreadsheet extends React.Component {
               }}
 
               root='hot'
-              width={this.props.width}
-              height={this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight}
+              // width={this.props.width}
+              // height={this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight}
 
               afterRender={this.afterRender}
               afterUndo={this.afterUndoRedo}
