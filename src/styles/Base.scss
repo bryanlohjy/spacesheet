@@ -34,7 +34,14 @@
       flex-direction: column;
       flex-grow: 1;
       overflow: hidden;
+      height: 100%;
+      > div {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
     }
+    
     .right-container {
       display: flex;
       flex-direction: column;

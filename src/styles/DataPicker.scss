@@ -66,6 +66,7 @@
 .datapicker-container {
   overflow: hidden;
   display: flex;
+  flex-grow: 1;
   position: relative;
   background-color: white;
   z-index: 1;
