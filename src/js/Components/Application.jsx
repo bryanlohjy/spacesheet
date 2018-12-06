@@ -48,7 +48,8 @@ export default class Application extends React.Component {
       dataPickerGrids: null,
       debugMode,
       modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO
-      width: window.innerWidth,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
     };
 
     this.onHashChange = this.onHashChange.bind(this);
@@ -187,7 +188,14 @@ export default class Application extends React.Component {
 
   afterResize(e) {
     if (!this.hotInstance) { return; }
+    // updates DataPicker
+    this.setState({
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+    });
+    
     this.hotInstance.render();
+
   }
 
   render() {
@@ -214,6 +222,9 @@ export default class Application extends React.Component {
             <DataPickers
               // width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
               // height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
+              windowWidth={this.state.windowWidth}
+              windowHeight={this.state.windowHeight}
+
               model={ this.state.model }
               dataPickerGrids={this.state.dataPickerGrids}
               onCellClick={ this.setSpreadsheetCellFromDataPicker }

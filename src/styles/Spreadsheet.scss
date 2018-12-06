@@ -68,6 +68,7 @@
   }
   .operation-drawer {
     display: flex;
+    flex-grow: 1;
     justify-content: space-between;
     height: 37px;
     border-left: 1px solid $outlineGrey;
@@ -110,14 +111,16 @@
     }
   }
   .table-container {
-    overflow: scroll;
+    overflow: hidden !important;
+    width: 100%;
     height: 100%;
+    overflow: auto;
     background-color: #dcdcdc;
     background-image: $checkeredBackground;
 
-    .table .wtHolder {
-      overflow: visible;
-    }
+    // .table .ht_master > .wtHolder {
+    //   overflow: visible;
+    // }
 
     textarea.capture-cells {
       cursor: pointer !important;

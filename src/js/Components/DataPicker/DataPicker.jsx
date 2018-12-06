@@ -29,11 +29,39 @@ export default class DataPicker extends React.Component {
   componentDidMount() {
     this.initDataPicker();
     if (this.props.visible) {
+      const container = this.refs.container;
+
+      const greaterLength = Math.max(container.clientWidth, container.clientHeight);
+
+      this.dataPicker.width = greaterLength;
+      this.dataPicker.height= greaterLength;
+
+      this.dataPicker.ctx.canvas.width = greaterLength;
+      this.dataPicker.ctx.canvas.height= greaterLength;
+
+      this.dataPicker.updateTransform();
       this.dataPicker.draw();
     }
   };
   componentWillReceiveProps(newProps) {
-    if (!this.props.visible && newProps.visible) {
+    const visiblityChanged = !this.props.visible && newProps.visible;
+    const windowResized = newProps.windowWidth != this.props.windowWidth || newProps.windowHeight != this.props.windowHeight;
+
+    if (newProps.visible && (visiblityChanged || windowResized)) {
+      if (windowResized) {
+        const container = this.refs.container;
+        console.log(container)
+        const greaterLength = Math.max(container.clientWidth, container.clientHeight);
+
+        this.dataPicker.width = greaterLength;
+        this.dataPicker.height= greaterLength;
+
+        this.dataPicker.ctx.canvas.width = greaterLength;
+        this.dataPicker.ctx.canvas.height= greaterLength;
+
+        this.dataPicker.updateTransform();
+        console.log(container.clientWidth, container.clientHeight, this.dataPicker)
+      }
       this.dataPicker.draw();
     }
   };
@@ -58,12 +86,12 @@ export default class DataPicker extends React.Component {
     // takes in mouse coords and returns row and col index
     let { a: scale, b, c, d, e: translateX, f: translateY } = dataPicker.ctx.getTransform();
 
-    const drawnScaleX = canvasEl.width / (dataPicker.outputWidth * dataPicker.columns);
+    const drawnScaleX = dataPicker.width / (dataPicker.outputWidth * dataPicker.columns);
     const subdivisionWidth = dataPicker.outputWidth / dataPicker.subdivisions * scale * drawnScaleX;
 
     const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
 
-    const drawnScaleY = canvasEl.height / (dataPicker.outputHeight * dataPicker.rows);
+    const drawnScaleY = dataPicker.height / (dataPicker.outputHeight * dataPicker.rows);
     const subdivisionHeight = dataPicker.outputHeight / dataPicker.subdivisions * scale * drawnScaleY;
     const row = Math.floor(((mouseY - translateY)) / subdivisionHeight);
 
@@ -193,9 +221,11 @@ export default class DataPicker extends React.Component {
         break;
     }
   };
+
   render() {
+    console.log('update canvas')
     return (
-      <div>
+      <div ref="container">
         <canvas
           ref='dataPickerCanvas'
           style={!this.props.visible ? { visibility: 'hidden', display: 'none' } : null}
@@ -204,8 +234,8 @@ export default class DataPicker extends React.Component {
           onMouseOut={ this.handleMouse }
           onMouseUp={ this.handleMouse }
           onWheel={ this.handleMouseWheel }
-          width={this.props.width}
-          height={this.props.height}
+          // width={this.props.width}
+          // height={this.props.height}
         />
         { this.state.showHighlighter ?
           <DataPickerHighlighter
@@ -251,6 +281,9 @@ DataPicker.propTypes = {
   dataPickerLabel: PropTypes.string,
   onCellClick: PropTypes.func,
   onDataPickerInit: PropTypes.func,
+
+  windowWidth: PropTypes.number,
+  windowHeight: PropTypes.number
 };
 
 class ZoomButtons extends React.Component {
