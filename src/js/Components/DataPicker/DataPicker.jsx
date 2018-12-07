@@ -97,6 +97,9 @@ export default class DataPicker extends React.Component {
     this.dataPicker.width = greaterLength;
     this.dataPicker.height= greaterLength;
 
+
+    console.log(greaterLength)
+
     this.dataPicker.ctx.canvas.width = greaterLength;
     this.dataPicker.ctx.canvas.height= greaterLength;
 
