@@ -79,17 +79,21 @@
     &.visible {
       width: 100%;
       height: 100%;
+      display: block;
     }
+
+    display: none;
 
     canvas {
       cursor: pointer;
+      transform-origin: 0 0;
 
       &.stretch-h {
-        width: 100%;
+        // width: 100%;
       }
 
       &.stretch-v {
-        height: 100%;
+        // height: 100%;
       }
     }
     .datapicker-ui {
