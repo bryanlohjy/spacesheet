@@ -76,11 +76,21 @@
   height: 100%;
 
   > div {
-    width: 100%;
-    height: 100%;
+    &.visible {
+      width: 100%;
+      height: 100%;
+    }
 
     canvas {
       cursor: pointer;
+
+      &.stretch-h {
+        width: 100%;
+      }
+
+      &.stretch-v {
+        height: 100%;
+      }
     }
     .datapicker-ui {
       position: absolute;

@@ -13,6 +13,9 @@ export default class DataPicker {
     this.drawFn = opts.model.drawFn;
     this.decodeFn = opts.model.decodeFn;
 
+    this.viewportWidth;
+    this.viewportHeight;
+
     const gridData = opts.gridData;
     this.grid = gridData.data; // keys are [ column-row ]
     this.rows = gridData.grid.rows;
@@ -67,6 +70,8 @@ export default class DataPicker {
     const topFloat = translateY;
     const rightFloat = this.width - (translateX + this.width * scale);
     const bottomFloat = this.height - (translateY + this.height * scale);
+    // const rightFloat = this.viewportWidth - (translateX + this.viewportWidth * scale);
+    // const bottomFloat = this.viewportHeight - (translateY + this.viewportHeight * scale);
     const leftFloat = translateX;
 
     let exceedingBounds = false;

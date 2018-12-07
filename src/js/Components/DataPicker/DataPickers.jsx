@@ -44,10 +44,12 @@ export default class DataPickers extends React.Component {
         <div className="datapicker-container" ref="dataPickerContainer">
           { this.props.dataPickerGrids ?
               Object.keys(this.props.dataPickerGrids).map(key => {
+                const visible = multipleDataPickers ? key === this.state.selectedGrid : true;
+
                 return (
                   <DataPicker
                     key={key}
-                    visible={ multipleDataPickers ? key === this.state.selectedGrid : true }
+                    visible={visible}
                     // width={this.props.width}
                     // height={this.props.height - selectorHeight}
                     data={this.props.dataPickerGrids[key].data}
