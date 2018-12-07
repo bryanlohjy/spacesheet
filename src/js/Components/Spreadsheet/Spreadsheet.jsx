@@ -45,20 +45,21 @@ export default class Spreadsheet extends React.Component {
     this.afterSelection = this.afterSelection.bind(this);
     this.afterRender = this.afterRender.bind(this);
     this.afterUndoRedo = this.afterUndoRedo.bind(this);
-    this.initHotTable = this.initHotTable.bind(this);
+
     this.minCellSize = props.currentModel === 'FACES' ? 82 : 64;
+    this.minCols = 10;
+    this.minRows = 10;
+
     this.modSegmentCount = 7;
   };
 
   componentWillReceiveProps(newProps) {
     const modelFirstLoaded = newProps.model && !this.props.model;
-    const modelChanged = newProps.currentModel !== this.props.currentModel;
 
-    if (modelFirstLoaded || modelChanged) {
+    if (modelFirstLoaded) {
       this.updateHotTableSettings(newProps.model);
     }
-
-  };
+  }
 
   setSelectedCellData(operation, closeAfterSetting) {
     if (closeAfterSetting) {
@@ -77,43 +78,44 @@ export default class Spreadsheet extends React.Component {
     editor.TEXTAREA.value = operation;
     editor.eventManager.fireEvent(editor.TEXTAREA, 'keydown');
     editor.updateTableCellCaptureClass();
-  };
+  }
 
-  initHotTable() {
-    const cols = Math.ceil(this.props.width / this.minCellSize) + 1;
-    const rows = Math.ceil(this.props.height / this.minCellSize) + 1;
-
+  initHotTable() { // initial settings, pre receiving model
     this.hotInstance.updateSettings({
       colHeaders: true,
       rowHeaders: true,
       rowHeaderWidth: 32,
-      minCols: 7,
-      minRows: 10,
+
+      minCols: this.minCols,
+      minRows: this.minRows,
+      maxCols: 20, // make sure it doesn't get to 2 letters
+
       rowHeights: this.minCellSize,
       colWidths: this.minCellSize,
+
       undo: true,
       redo: true,
       outsideClickDeselects: false,
-      // preventOverflow: 'vertical',
       viewportColumnRenderingOffset: 26,
       viewportRowRenderingOffset: 26,
-      // height: this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight,
     });
 
     setTimeout(() => {
       this.hotInstance.selectCell(0, 0);
     }, 0);
-  };
+  }
 
-  updateHotTableSettings(model) {
+  updateHotTableSettings(model) { // runs once when model is loaded
     const cellWidth = Math.max(this.minCellSize, model.outputWidth);
     const cellHeight = Math.max(this.minCellSize, model.outputHeight);
 
-    const cols = Math.ceil(this.props.width / cellWidth) + 1;
-    const rows = Math.ceil(this.props.height / cellHeight) + 1;
+    const tableContainer = this.refs.tableContainer;
 
-    this.cols = cols;
-    this.rows = rows;
+    let cols = Math.ceil(tableContainer.clientWidth / cellWidth) + 1;
+    let rows = Math.ceil(tableContainer.clientHeight / cellHeight) + 1;
+
+    cols = Math.max(this.minCols, cols);
+    rows = Math.max(this.minRows, rows);
 
     const formulaParser = new FormulaParser(this.hotInstance, {
       getCellFromDataPicker: this.props.getCellFromDataPicker,
@@ -163,7 +165,6 @@ export default class Spreadsheet extends React.Component {
         }
         return cellProperties;
       },
-      // stretchH: 'all',
       rowHeights: Math.max(model.outputHeight, this.minCellSize),
       colWidths: Math.max(model.outputWidth, this.minCellSize),
       comments: true,
@@ -172,29 +173,29 @@ export default class Spreadsheet extends React.Component {
 
     setTimeout(() => {
       this.hotInstance.selectCell(0, 0);
-      this.updateHotTableData();
+      this.updateHotTableData(rows, cols);
     }, 0);
-  };
+  }
 
-  updateHotTableData() {
+  updateHotTableData(rows, cols) {
     switch (this.props.currentModel) {
       case 'FONTS':
-        this.defaultSheet = FontDemoSheet(this.rows, this.cols);
+        this.defaultSheet = FontDemoSheet(rows, cols);
         break;
       case 'FACES':
-        this.defaultSheet = FaceDemoSheet(this.rows, this.cols);
+        this.defaultSheet = FaceDemoSheet(rows, cols);
         break;
       case 'MNIST':
-        this.defaultSheet = MNISTDemoSheet(this.rows, this.cols);
+        this.defaultSheet = MNISTDemoSheet(rows, cols);
         break;
       case 'WORD2VEC':
-        this.defaultSheet = Word2VecDemoSheet(this.rows, this.cols);
+        this.defaultSheet = Word2VecDemoSheet(rows, cols);
         break;
       case 'COLOURS':
-        this.defaultSheet = ColourDemoSheet(this.rows, this.cols);
+        this.defaultSheet = ColourDemoSheet(rows, cols);
         break;
       default:
-        this.defaultSheet = BlankSheet(this.rows, this.cols);
+        this.defaultSheet = BlankSheet(rows, cols);
     }
 
     this.hotInstance.updateSettings({
@@ -207,7 +208,7 @@ export default class Spreadsheet extends React.Component {
     this.setState({
       currentSelection: [r, c , r2, c2],
     });
-  };
+  }
 
   afterRender(forced) {
     if (!this.props.afterRender) { return; }
@@ -259,8 +260,6 @@ export default class Spreadsheet extends React.Component {
               }}
 
               root='hot'
-              // width={this.props.width}
-              // height={this.props.height-this.inputBarAndOperationDrawerEl.offsetHeight}
 
               afterRender={this.afterRender}
               afterUndo={this.afterUndoRedo}
@@ -278,8 +277,6 @@ export default class Spreadsheet extends React.Component {
 }
 
 Spreadsheet.propTypes = {
-  width: PropTypes.number,
-  height: PropTypes.number,
   getCellFromDataPicker: PropTypes.func,
   model: PropTypes.object,
   inputBarValue: PropTypes.string,

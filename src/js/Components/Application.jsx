@@ -233,10 +233,6 @@ export default class Application extends React.Component {
           </div>
           <div className="right-container" ref="rightContainer">
             <Spreadsheet
-              // width={ spreadsheetWidth }
-              // height={ this.state.currentModel === 'FONTS' ? appHeight-fontDrawerHeight : appHeight }
-              height={ appHeight }
-
               getCellFromDataPicker={ this.getCellFromDataPicker }
               ref='spreadsheet'
               model={ this.state.model }
