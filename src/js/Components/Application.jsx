@@ -193,7 +193,7 @@ export default class Application extends React.Component {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
     });
-    
+
     this.hotInstance.render();
 
   }
@@ -204,7 +204,7 @@ export default class Application extends React.Component {
     const appHeight = docHeight - navHeight;
     // const spreadsheetWidth = this.refs.rightContainer && this.refs.rightContainer.clientWidth;
     // const spreadsheetWidth = document.body.offsetWidth - appHeight;
-    // const fontDrawerHeight = 250;
+    // const fontDrawerHeight = appHeight/2;
     return (
       <div className="application-container">
         <Modal
@@ -234,7 +234,9 @@ export default class Application extends React.Component {
           <div className="right-container" ref="rightContainer">
             <Spreadsheet
               // width={ spreadsheetWidth }
-              height={ this.state.currentModel === 'FONTS' ? appHeight-fontDrawerHeight : appHeight }
+              // height={ this.state.currentModel === 'FONTS' ? appHeight-fontDrawerHeight : appHeight }
+              height={ appHeight }
+
               getCellFromDataPicker={ this.getCellFromDataPicker }
               ref='spreadsheet'
               model={ this.state.model }
