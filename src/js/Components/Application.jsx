@@ -195,16 +195,13 @@ export default class Application extends React.Component {
     });
 
     this.hotInstance.render();
-
   }
 
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
     const appHeight = docHeight - navHeight;
-    // const spreadsheetWidth = this.refs.rightContainer && this.refs.rightContainer.clientWidth;
-    // const spreadsheetWidth = document.body.offsetWidth - appHeight;
-    // const fontDrawerHeight = appHeight/2;
+
     return (
       <div className="application-container">
         <Modal
@@ -220,8 +217,6 @@ export default class Application extends React.Component {
             style={{ maxWidth: appHeight }}
           >
             <DataPickers
-              // width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-              // height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
               windowWidth={this.state.windowWidth}
               windowHeight={this.state.windowHeight}
 

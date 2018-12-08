@@ -13,7 +13,8 @@ export default class DataPickers extends React.Component {
     this.state = { // used to manage highlighter
       selectedGrid: null,
     };
-  };
+  }
+
   componentWillReceiveProps(newProps) {
     const grids = newProps.dataPickerGrids;
     if (!this.state.selectedGrid && grids) {
@@ -22,7 +23,8 @@ export default class DataPickers extends React.Component {
         selectedGrid: firstKey
       });
     }
-  };
+  }
+
   render() {
     const selectorHeight = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ? 48 : 0;
     const multipleDataPickers = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1;
@@ -50,14 +52,13 @@ export default class DataPickers extends React.Component {
                   <DataPicker
                     key={key}
                     visible={visible}
-                    // width={this.props.width}
-                    // height={this.props.height - selectorHeight}
                     data={this.props.dataPickerGrids[key].data}
                     dataPickerLabel={key}
                     model={this.props.model}
                     onDataPickerInit={ dataPickerObject => {
                       this.props.dataPickerGrids[key].dataPicker = dataPickerObject;
                     }}
+
                     onCellClick={ this.props.onCellClick }
 
                     windowWidth={this.props.windowWidth}
@@ -82,7 +83,8 @@ DataPickers.propTypes = {
 class DataPickerSelector extends React.Component {
   constructor(props) {
     super(props);
-  };
+  }
+
   render() {
     return (
       <div className="datapicker-selector" style={{ height: this.props.height }}>
@@ -105,8 +107,9 @@ class DataPickerSelector extends React.Component {
         </ul>
       </div>
     )
-  };
+  }
 }
+
 DataPickerSelector.propTypes = {
   dataPickerGrids: PropTypes.object,
   onSelectGrid: PropTypes.func,

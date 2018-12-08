@@ -9,7 +9,7 @@ export default class DataPicker extends React.Component {
     this.dragStart = null;
     this.dragged = null;
     this.mouseDownOnDataPicker = false;
-    //
+
     this.state = {
       showHighlighter: false,
       highlighterColumn: 0,
@@ -114,6 +114,7 @@ export default class DataPicker extends React.Component {
     // takes in mouse coords and returns row and col index
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
+
     const canvasEl = this.refs.dataPickerCanvas.getBoundingClientRect();
     mouseX -= canvasEl.left;
     mouseY -= canvasEl.top;
@@ -135,11 +136,13 @@ export default class DataPicker extends React.Component {
     });
 
     return { row, column };
-  };
+  }
+
   handleMouseWheel(e) {
     e.preventDefault();
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
+
     const delta = e.deltaY;
     if (delta) {
       if (delta < 0) {
@@ -147,13 +150,15 @@ export default class DataPicker extends React.Component {
       } else {
         dataPicker.zoom(-1);
       }
+
       const { row, column } = this.mouseToDataCoordinates(e.clientX, e.clientY);
       this.setState({
         highlighterColumn: column,
         highlighterRow: row,
       });
     }
-  };
+  }
+
   handleZoomClick(direction) {
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
@@ -170,7 +175,8 @@ export default class DataPicker extends React.Component {
       highlighterColumn: column,
       highlighterRow: row,
     });
-  };
+  }
+
   resetZoom() {
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
@@ -183,7 +189,8 @@ export default class DataPicker extends React.Component {
       highlighterColumn: column,
       highlighterRow: row,
     });
-  };
+  }
+
   handleMouse(e) {
     e.stopPropagation();
     const dataPicker = this.dataPicker;
@@ -222,6 +229,7 @@ export default class DataPicker extends React.Component {
           showHighlighter: showHighlighter,
         });
         break;
+
       case 'mousedown':
         e.preventDefault();
         this.mouseDownOnDataPicker = true;
@@ -230,6 +238,7 @@ export default class DataPicker extends React.Component {
         this.dragStart = dataPicker.ctx.transformedPoint(dataPicker.originX, dataPicker.originY);
         this.dragged = false;
         break;
+
       case 'mouseup':
         this.dragStart = null;
         if (this.state.showHighlighter) {
@@ -251,6 +260,7 @@ export default class DataPicker extends React.Component {
           }
         }
         break;
+
       case 'mouseout':
         this.dragStart = null;
         this.setState({
@@ -260,7 +270,7 @@ export default class DataPicker extends React.Component {
         });
         break;
     }
-  };
+  }
 
   render() {
     return (
@@ -332,7 +342,8 @@ DataPicker.propTypes = {
 class ZoomButtons extends React.Component {
   constructor(props) {
     super(props);
-  };
+  }
+
   render() {
     return (
       <div
@@ -367,7 +378,8 @@ class MiniMap extends React.Component {
   constructor(props) {
     super(props);
     this.drawScale = 1/10;
-  };
+  }
+
   render() {
     return (
       <div className="datapicker-minimap">
@@ -408,13 +420,12 @@ class DataPickerHighlighter extends React.Component {
   constructor(props) {
     super(props);
     this.computeStyle = this.computeStyle.bind(this);
-  };
+  }
+
   computeStyle() {
     let { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
     translateX *= this.props.fittingScale;
     translateY *= this.props.fittingScale;
-// this.props.fittingScale
-
 
     const top = `${(translateY + this.props.highlighterRow * this.props.drawnHeight)}px`;
     const left = `${(translateX + this.props.highlighterColumn * this.props.drawnWidth)}px`;
@@ -422,7 +433,8 @@ class DataPickerHighlighter extends React.Component {
     const height = `${this.props.drawnHeight}px`;
 
     return { top, left, width, height, };
-  };
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const newColumn = nextProps.highlighterColumn !== this.props.highlighterColumn;
     const newRow = nextProps.highlighterRow !== this.props.highlighterRow;
@@ -431,7 +443,8 @@ class DataPickerHighlighter extends React.Component {
     const newFittingScale = nextProps.fittingScale !== this.props.fittingScale;
 
     return newColumn || newRow || newDrawnWidth || newDrawnHeight || newFittingScale;
-  };
+  }
+
   render() {
     return (
       <div
@@ -442,6 +455,7 @@ class DataPickerHighlighter extends React.Component {
     )
   }
 }
+
 DataPickerHighlighter.propTypes = {
   dataPicker: PropTypes.object,
   highlighterColumn: PropTypes.number,
