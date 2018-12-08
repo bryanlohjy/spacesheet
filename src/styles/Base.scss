@@ -51,12 +51,10 @@
       flex-grow: 1;
       height: 100%;
       max-width: 60vw;
-      // min-width: 600px;
-      // width: 600px;
+
       .spreadsheet-container {
         width: 100%;
         display: flex;
-        // flex-grow: 1;
         flex-direction: column;
         overflow: hidden;
         z-index: 1;
