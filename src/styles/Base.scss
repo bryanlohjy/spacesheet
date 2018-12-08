@@ -24,24 +24,37 @@
 
   .component-container { // holds datapicker and spreadsheet
     display: flex;
-    flex-grow: 1;
+    // flex-grow: 1;
     height: calc(100% - 50px);
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+
     .left-container {
       display: flex;
       flex-direction: column;
+      // flex-grow: 1;
+      overflow: hidden;
+      height: 100%;
+      width: 50%;
+      min-width: 40vw;
+      > div {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
     }
+
     .right-container {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
       height: 100%;
+      max-width: 60vw;
+
       .spreadsheet-container {
         width: 100%;
         display: flex;
-        // flex-grow: 1;
         flex-direction: column;
         overflow: hidden;
         z-index: 1;

@@ -13,6 +13,9 @@ export default class DataPicker {
     this.drawFn = opts.model.drawFn;
     this.decodeFn = opts.model.decodeFn;
 
+    this.viewportWidth = 0;
+    this.viewportHeight = 0;
+
     const gridData = opts.gridData;
     this.grid = gridData.data; // keys are [ column-row ]
     this.rows = gridData.grid.rows;
@@ -26,6 +29,8 @@ export default class DataPicker {
     this.maxScale = 15;
 
     this.minSize = 10;
+
+    this.fittingScale = 1;
 
     initCanvas(ctx);
     /*
@@ -65,8 +70,8 @@ export default class DataPicker {
     let { scale, b, c, d, translateX, translateY } = transform;
 
     const topFloat = translateY;
-    const rightFloat = this.width - (translateX + this.width * scale);
-    const bottomFloat = this.height - (translateY + this.height * scale);
+    const rightFloat = this.viewportWidth/this.fittingScale-(translateX+this.width*scale);
+    const bottomFloat = this.viewportHeight/this.fittingScale-(translateY+this.height*scale);
     const leftFloat = translateX;
 
     let exceedingBounds = false;
@@ -75,14 +80,17 @@ export default class DataPicker {
       translateY -= topFloat;
       exceedingBounds = true;
     }
+
     if (bottomFloat > 0) {
       translateY += bottomFloat;
       exceedingBounds = true;
     }
+
     if (leftFloat > 0) {
       translateX -= leftFloat;
       exceedingBounds = true;
     }
+
     if (rightFloat > 0) {
       translateX += rightFloat;
       exceedingBounds = true;
@@ -91,6 +99,7 @@ export default class DataPicker {
     if (exceedingBounds) {
       return { scale, b, c, d, translateX, translateY }
     }
+
     return false;
   };
   cellIsOutOfBounds(cellParams) {

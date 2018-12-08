@@ -48,6 +48,8 @@ export default class Application extends React.Component {
       dataPickerGrids: null,
       debugMode,
       modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight
     };
 
     this.onHashChange = this.onHashChange.bind(this);
@@ -57,6 +59,10 @@ export default class Application extends React.Component {
     this.setInputBarValue = this.setInputBarValue.bind(this);
     this.saveVectors = this.saveVectors.bind(this);
     this.setModalSection = this.setModalSection.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.afterResize = this.afterResize.bind(this);
+
+    this.resizeTimer;
   };
 
   componentDidMount() { // Initialise model + load grid data for DataPicker
@@ -94,6 +100,7 @@ export default class Application extends React.Component {
     });
 
     window.addEventListener('hashchange', this.onHashChange, false);
+    window.addEventListener('resize', this.onResize);
   };
 
   onHashChange(e) {
@@ -174,12 +181,27 @@ export default class Application extends React.Component {
     });
   }
 
+  onResize(e) {
+    clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(this.afterResize, 300);
+  }
+
+  afterResize(e) {
+    if (!this.hotInstance) { return; }
+    // updates DataPicker
+    this.setState({
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+    });
+
+    this.hotInstance.render();
+  }
+
   render() {
     const docHeight = document.body.offsetHeight;
     const navHeight = 50;
     const appHeight = docHeight - navHeight;
-    const spreadsheetWidth = document.body.offsetWidth - appHeight;
-    const fontDrawerHeight = 250;
+
     return (
       <div className="application-container">
         <Modal
@@ -190,18 +212,22 @@ export default class Application extends React.Component {
         />
         <canvas className='memory-canvas' ref="memoryCanvas"/>
         <div className="component-container">
-          <DataPickers
-            width={ appHeight || this.state.dataPickerGrids.grid.columns * this.state.model.outputWidth }
-            height={ appHeight || this.state.dataPickerGrids.grid.rows * this.state.model.outputHeight }
-            model={ this.state.model }
-            dataPickerGrids={this.state.dataPickerGrids}
-            onCellClick={ this.setSpreadsheetCellFromDataPicker }
-            ref='dataPickers'
-          />
-          <div className="right-container">
+          <div
+            className="left-container"
+            style={{ maxWidth: appHeight }}
+          >
+            <DataPickers
+              windowWidth={this.state.windowWidth}
+              windowHeight={this.state.windowHeight}
+
+              model={ this.state.model }
+              dataPickerGrids={this.state.dataPickerGrids}
+              onCellClick={ this.setSpreadsheetCellFromDataPicker }
+              ref='dataPickers'
+            />
+          </div>
+          <div className="right-container" ref="rightContainer">
             <Spreadsheet
-              width={ spreadsheetWidth }
-              height={ this.state.currentModel === 'FONTS' ? appHeight-fontDrawerHeight : appHeight }
               getCellFromDataPicker={ this.getCellFromDataPicker }
               ref='spreadsheet'
               model={ this.state.model }
