@@ -65,77 +65,103 @@
 
 .datapicker-container {
   overflow: hidden;
-  display: flex;
   position: relative;
   background-color: white;
   z-index: 1;
   user-select: none;
-  canvas {
-    cursor: pointer;
-  }
-  .datapicker-ui {
+
+  width: 100%;
+  height: 100%;
+
+  background-color: #dcdcdc;
+  background-image: $checkeredBackground;
+
+  > div {
     position: absolute;
-    margin: 20px;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    .datapicker-minimap {
-      background-color: rgba(255, 255, 255, 0.8);
-      cursor: default;
-      z-index: 0;
-      display: flex;
-      .whole {
-        align-items: center;
-        justify-content: center;
-        display: flex;
-        outline: 1px solid $darkGrey;
-        position: relative;
-        span {
-          font-weight: 500;
-          color: $darkerGrey;
-          z-index: 1;
-          text-shadow: -1px -1px 0 $lightGrey, 1px -1px 0 $lightGrey, -1px 1px 0 $lightGrey, 1px 1px 0 $lightGrey;
-        }
-        .window {
-          position: absolute;
-          left: 10px;
-          outline: 2px solid $darkerGrey;
-          outline-offset: -1px;
-          background-color: rgba(0, 0, 0, 0.2);
-          width: 20px;
-          height: 10px;
-        }
-      }
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    &.visible {
+      z-index: 2;
+      opacity: 1;
     }
-    .scale-buttons {
+
+    opacity: 0;
+    z-index: 1;
+
+    canvas {
       cursor: pointer;
-      z-index: 1;
-      border: 1px solid $darkerGrey;
-      color: $darkerGrey;
-      background-color: $lightGrey;
+      transform-origin: 0 0;
+      background: white;
+    }
+
+    .datapicker-ui {
+      position: absolute;
+      margin: 20px;
+      right: 0;
+      bottom: 0;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      margin-left: 10px;
-      font-weight: 500;
-      span {
+      .datapicker-minimap {
+        background-color: rgba(255, 255, 255, 0.8);
+        cursor: default;
+        z-index: 0;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-grow: 1;
-        &:not(:first-child) {
-          border-top: 1px solid $darkerGrey;
+        .whole {
+          align-items: center;
+          justify-content: center;
+          display: flex;
+          outline: 1px solid $darkGrey;
+          position: relative;
+          span {
+            font-weight: 500;
+            color: $darkerGrey;
+            z-index: 1;
+            text-shadow: -1px -1px 0 $lightGrey, 1px -1px 0 $lightGrey, -1px 1px 0 $lightGrey, 1px 1px 0 $lightGrey;
+          }
+          .window {
+            position: absolute;
+            left: 10px;
+            outline: 2px solid $darkerGrey;
+            outline-offset: -1px;
+            background-color: rgba(0, 0, 0, 0.2);
+            width: 20px;
+            height: 10px;
+          }
         }
-        &:hover {
-          background-color: $grey;
-        }
-        &:first-child {
-        }
-        &:last-child {
-          font-size: 12px;
+      }
+      .scale-buttons {
+        cursor: pointer;
+        z-index: 1;
+        border: 1px solid $darkerGrey;
+        color: $darkerGrey;
+        background-color: $lightGrey;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-left: 10px;
+        font-weight: 500;
+        span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-grow: 1;
+          &:not(:first-child) {
+            border-top: 1px solid $darkerGrey;
+          }
+          &:hover {
+            background-color: $grey;
+          }
+          &:first-child {
+          }
+          &:last-child {
+            font-size: 12px;
+          }
         }
       }
     }
+
   }
   .highlighter {
     position: absolute;

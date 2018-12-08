@@ -51,6 +51,7 @@
 }
 
 .spreadsheet-container {
+  height: 100%;
   .input-bar, .operation-button {
     font-size: 15px;
   }
@@ -67,6 +68,7 @@
   }
   .operation-drawer {
     display: flex;
+    flex-grow: 1;
     justify-content: space-between;
     height: 37px;
     border-left: 1px solid $outlineGrey;
@@ -109,6 +111,17 @@
     }
   }
   .table-container {
+    overflow: hidden !important;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: #dcdcdc;
+    background-image: $checkeredBackground;
+
+    // .table .ht_master > .wtHolder {
+    //   overflow: visible;
+    // }
+
     textarea.capture-cells {
       cursor: pointer !important;
     }
@@ -118,9 +131,7 @@
         box-shadow: inset 0 0 0 1px $cellHighlight;
       }
     }
-    overflow: hidden;
-    height: 100%;
-    width: 100%;
+
     .highlighted-reference {
       background-color: $actionColorTransparent;
 

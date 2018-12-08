@@ -9,14 +9,19 @@ export default class DataPicker extends React.Component {
     this.dragStart = null;
     this.dragged = null;
     this.mouseDownOnDataPicker = false;
-    //
+
     this.state = {
       showHighlighter: false,
       highlighterColumn: 0,
       highlighterRow: 0,
+      isLoaded: false,
       drawnWidth: 0,
       drawnHeight: 0,
-      isLoaded: false,
+      viewportWidth: 0,
+      viewportHeight: 0,
+      canvasWidth: 0,
+      canvasHeight: 0,
+      fittingScale: 1, // scale transform to fit canvas to container
     };
 
     this.initDataPicker = this.initDataPicker.bind(this);
@@ -25,18 +30,46 @@ export default class DataPicker extends React.Component {
     this.mouseToDataCoordinates = this.mouseToDataCoordinates.bind(this);
     this.handleZoomClick = this.handleZoomClick.bind(this);
     this.resetZoom = this.resetZoom.bind(this);
-  };
+  }
+
   componentDidMount() {
     this.initDataPicker();
-    if (this.props.visible) {
-      this.dataPicker.draw();
-    }
-  };
+  }
+
   componentWillReceiveProps(newProps) {
-    if (!this.props.visible && newProps.visible) {
+    const visiblityChanged = !this.props.visible && newProps.visible;
+    const windowResized = newProps.windowWidth != this.props.windowWidth || newProps.windowHeight != this.props.windowHeight;
+
+    if (newProps.visible && (visiblityChanged || windowResized)) {
+      const container = this.refs.container.parentNode;
+
+      const stretchH = container.clientWidth < container.clientHeight;
+
+      let fittingScale = 1;
+
+      if (stretchH) {
+        fittingScale = container.clientHeight/this.refs.dataPickerCanvas.height;
+      } else {
+        fittingScale = container.clientWidth/this.refs.dataPickerCanvas.width;
+      }
+
+      this.refs.dataPickerCanvas.width
+
+      this.setState({
+        viewportWidth: container.clientWidth,
+        viewportHeight: container.clientHeight,
+        fittingScale
+      });
+
+      this.dataPicker.viewportWidth = container.clientWidth;
+      this.dataPicker.viewportHeight = container.clientHeight;
+
+      this.dataPicker.fittingScale = fittingScale;
+
       this.dataPicker.draw();
     }
-  };
+  }
+
   initDataPicker() {
     this.dataPicker = new DataPickerCanvas(
       this.refs.dataPickerCanvas.getContext('2d'),
@@ -45,27 +78,57 @@ export default class DataPicker extends React.Component {
         model: this.props.model,
       }
     );
+
+    const container = this.refs.container;
+
+    const greaterLength = Math.max(container.clientWidth, container.clientHeight);
+
+    this.dataPicker.width = greaterLength;
+    this.dataPicker.height= greaterLength;
+
+    this.dataPicker.ctx.canvas.width = greaterLength;
+    this.dataPicker.ctx.canvas.height= greaterLength;
+
+    if (this.props.visible) {
+      this.dataPicker.updateTransform();
+      const container = this.refs.container.parentNode;
+
+      this.dataPicker.viewportWidth = container.clientWidth;
+      this.dataPicker.viewportHeight = container.clientHeight;
+
+      this.dataPicker.draw();
+    }
+
     this.props.onDataPickerInit(this.dataPicker);
-    this.setState({ isLoaded: true })
-  };
+
+    this.setState({
+      isLoaded: true,
+      viewportWidth: container.clientWidth,
+      viewportHeight: container.clientHeight,
+      canvasWidth: greaterLength,
+      canvasHeight: greaterLength
+    });
+  }
+
   mouseToDataCoordinates(mouseX, mouseY) {
+    // takes in mouse coords and returns row and col index
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
+
     const canvasEl = this.refs.dataPickerCanvas.getBoundingClientRect();
     mouseX -= canvasEl.left;
     mouseY -= canvasEl.top;
 
-    // takes in mouse coords and returns row and col index
     let { a: scale, b, c, d, e: translateX, f: translateY } = dataPicker.ctx.getTransform();
 
-    const drawnScaleX = canvasEl.width / (dataPicker.outputWidth * dataPicker.columns);
+    const drawnScaleX = (dataPicker.width/(dataPicker.outputWidth*dataPicker.columns))*this.state.fittingScale;
     const subdivisionWidth = dataPicker.outputWidth / dataPicker.subdivisions * scale * drawnScaleX;
 
-    const column = Math.floor(((mouseX - translateX)) / subdivisionWidth);
+    const column = Math.floor((mouseX-(translateX*this.state.fittingScale)) / subdivisionWidth);
 
-    const drawnScaleY = canvasEl.height / (dataPicker.outputHeight * dataPicker.rows);
+    const drawnScaleY = (dataPicker.height/(dataPicker.outputHeight*dataPicker.rows))*this.state.fittingScale;
     const subdivisionHeight = dataPicker.outputHeight / dataPicker.subdivisions * scale * drawnScaleY;
-    const row = Math.floor(((mouseY - translateY)) / subdivisionHeight);
+    const row = Math.floor((mouseY-(translateY*this.state.fittingScale)) / subdivisionHeight);
 
     this.setState({
       drawnWidth: subdivisionWidth,
@@ -73,11 +136,13 @@ export default class DataPicker extends React.Component {
     });
 
     return { row, column };
-  };
+  }
+
   handleMouseWheel(e) {
     e.preventDefault();
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
+
     const delta = e.deltaY;
     if (delta) {
       if (delta < 0) {
@@ -85,13 +150,15 @@ export default class DataPicker extends React.Component {
       } else {
         dataPicker.zoom(-1);
       }
+
       const { row, column } = this.mouseToDataCoordinates(e.clientX, e.clientY);
       this.setState({
         highlighterColumn: column,
         highlighterRow: row,
       });
     }
-  };
+  }
+
   handleZoomClick(direction) {
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
@@ -108,7 +175,8 @@ export default class DataPicker extends React.Component {
       highlighterColumn: column,
       highlighterRow: row,
     });
-  };
+  }
+
   resetZoom() {
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
@@ -121,11 +189,13 @@ export default class DataPicker extends React.Component {
       highlighterColumn: column,
       highlighterRow: row,
     });
-  };
+  }
+
   handleMouse(e) {
     e.stopPropagation();
     const dataPicker = this.dataPicker;
     if (!dataPicker) { return; }
+
     switch (e.type) {
       case 'mousemove':
         if (this.dragStart) { // prevents mousemove from firing, if it hasn't moved at all - can sometimes be a problem
@@ -134,14 +204,19 @@ export default class DataPicker extends React.Component {
             return;
           }
         }
+
         dataPicker.originX = e.clientX;
         dataPicker.originY = e.clientY;
         this.dragged = true;
+
         let showHighlighter = false;
 
         if (this.dragStart) {
           const pt = dataPicker.ctx.transformedPoint(dataPicker.originX, dataPicker.originY);
           dataPicker.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
+          dataPicker.viewportWidth = this.state.viewportWidth;
+          dataPicker.viewportHeight = this.state.viewportHeight;
+          dataPicker.fittingScale = this.state.fittingScale;
           dataPicker.draw();
         } else {
           showHighlighter = true;
@@ -154,6 +229,7 @@ export default class DataPicker extends React.Component {
           showHighlighter: showHighlighter,
         });
         break;
+
       case 'mousedown':
         e.preventDefault();
         this.mouseDownOnDataPicker = true;
@@ -162,6 +238,7 @@ export default class DataPicker extends React.Component {
         this.dragStart = dataPicker.ctx.transformedPoint(dataPicker.originX, dataPicker.originY);
         this.dragged = false;
         break;
+
       case 'mouseup':
         this.dragStart = null;
         if (this.state.showHighlighter) {
@@ -183,6 +260,7 @@ export default class DataPicker extends React.Component {
           }
         }
         break;
+
       case 'mouseout':
         this.dragStart = null;
         this.setState({
@@ -192,10 +270,11 @@ export default class DataPicker extends React.Component {
         });
         break;
     }
-  };
+  }
+
   render() {
     return (
-      <div>
+      <div ref="container" className={this.props.visible ? 'visible' : ''}>
         <canvas
           ref='dataPickerCanvas'
           style={!this.props.visible ? { visibility: 'hidden', display: 'none' } : null}
@@ -204,9 +283,11 @@ export default class DataPicker extends React.Component {
           onMouseOut={ this.handleMouse }
           onMouseUp={ this.handleMouse }
           onWheel={ this.handleMouseWheel }
-          width={this.props.width}
-          height={this.props.height}
+          style={{
+            transform: `scale(${this.state.fittingScale})`
+          }}
         />
+
         { this.state.showHighlighter ?
           <DataPickerHighlighter
             dataPicker={ this.dataPicker }
@@ -214,14 +295,16 @@ export default class DataPicker extends React.Component {
             highlighterRow={ this.state.highlighterRow }
             drawnWidth={ this.state.drawnWidth }
             drawnHeight={ this.state.drawnHeight }
+            fittingScale={ this.state.fittingScale }
           /> : "" }
+
         { this.props.visible && this.state.isLoaded ?
           <div className="datapicker-ui">
             <MiniMap
-              width={this.props.width}
-              height={this.props.height}
-              viewportWidth={Math.floor(this.props.width / this.dataPicker.scale)}
-              viewportHeight={Math.floor(this.props.height / this.dataPicker.scale)}
+              width={this.state.canvasWidth}
+              height={this.state.canvasHeight}
+              viewportWidth={Math.floor(this.state.viewportWidth / this.dataPicker.scale / this.state.fittingScale)}
+              viewportHeight={Math.floor(this.state.viewportHeight / this.dataPicker.scale / this.state.fittingScale)}
               viewportX={Math.floor(-this.dataPicker.translateX / this.dataPicker.scale)}
               viewportY={Math.floor(-this.dataPicker.translateY / this.dataPicker.scale)}
               displayScale={Math.round(this.dataPicker.scale * 100)}
@@ -251,12 +334,16 @@ DataPicker.propTypes = {
   dataPickerLabel: PropTypes.string,
   onCellClick: PropTypes.func,
   onDataPickerInit: PropTypes.func,
+
+  windowWidth: PropTypes.number,
+  windowHeight: PropTypes.number
 };
 
 class ZoomButtons extends React.Component {
   constructor(props) {
     super(props);
-  };
+  }
+
   render() {
     return (
       <div
@@ -291,7 +378,8 @@ class MiniMap extends React.Component {
   constructor(props) {
     super(props);
     this.drawScale = 1/10;
-  };
+  }
+
   render() {
     return (
       <div className="datapicker-minimap">
@@ -332,24 +420,31 @@ class DataPickerHighlighter extends React.Component {
   constructor(props) {
     super(props);
     this.computeStyle = this.computeStyle.bind(this);
-  };
+  }
+
   computeStyle() {
-    const { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
-    const top = `${translateY + this.props.highlighterRow * this.props.drawnHeight}px`;
-    const left = `${translateX + this.props.highlighterColumn * this.props.drawnWidth}px`;
+    let { a, b, c, d, e: translateX, f: translateY } = this.props.dataPicker.ctx.getTransform();
+    translateX *= this.props.fittingScale;
+    translateY *= this.props.fittingScale;
+
+    const top = `${(translateY + this.props.highlighterRow * this.props.drawnHeight)}px`;
+    const left = `${(translateX + this.props.highlighterColumn * this.props.drawnWidth)}px`;
     const width = `${this.props.drawnWidth}px`;
     const height = `${this.props.drawnHeight}px`;
 
     return { top, left, width, height, };
-  };
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const newColumn = nextProps.highlighterColumn !== this.props.highlighterColumn;
     const newRow = nextProps.highlighterRow !== this.props.highlighterRow;
     const newDrawnWidth = nextProps.drawnWidth !== this.props.drawnWidth;
     const newDrawnHeight = nextProps.drawnHeight !== this.props.drawnHeight;
+    const newFittingScale = nextProps.fittingScale !== this.props.fittingScale;
 
-    return newColumn || newRow || newDrawnWidth || newDrawnHeight;
-  };
+    return newColumn || newRow || newDrawnWidth || newDrawnHeight || newFittingScale;
+  }
+
   render() {
     return (
       <div
@@ -360,10 +455,12 @@ class DataPickerHighlighter extends React.Component {
     )
   }
 }
+
 DataPickerHighlighter.propTypes = {
   dataPicker: PropTypes.object,
   highlighterColumn: PropTypes.number,
   highlighterRow: PropTypes.number,
   drawnWidth: PropTypes.number,
   drawnHeight: PropTypes.number,
+  fittingScale: PropTypes.number,
 };
