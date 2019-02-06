@@ -1,0 +1,34 @@
+{"data":
+  {
+    "0-0": { "column": 0, "row": 0, "image": "a5c64b390c307bccb304f79c.jpeg", "vector": null },
+    "0-1": { "column": 0, "row": 1, "image": "8cf4fb6d95056ab88c394f5c.jpeg", "vector": null },
+    "0-2": { "column": 0, "row": 2, "image": "7b7e155e5f2da3894c4da58c.jpeg", "vector": null },
+    "0-3": { "column": 0, "row": 3, "image": "392fd7530d4c0c4bad018a4b.jpeg", "vector": null },
+    "0-4": { "column": 0, "row": 4, "image": "fc7a4cc97047c1527e0a69fb.jpeg", "vector": null },
+    "1-0": { "column": 1, "row": 0, "image": "c059169f5c247ad55b858dc8.jpeg", "vector": null },
+    "1-1": { "column": 1, "row": 1, "image": "5f3fbb8d3eab57dfc0c4b050.jpeg", "vector": null },
+    "1-2": { "column": 1, "row": 2, "image": "3fdc1c4766e107f206d6706f.jpeg", "vector": null },
+    "1-3": { "column": 1, "row": 3, "image": "76ad0bb7e9eed47116c2c5f9.jpeg", "vector": null },
+    "1-4": { "column": 1, "row": 4, "image": "f5eb1d716eff3ef62ade5c13.jpeg", "vector": null },
+    "2-0": { "column": 2, "row": 0, "image": "787d764321ff9b65e595a0c8.jpeg", "vector": null },
+    "2-1": { "column": 2, "row": 1, "image": "584c9424d1da654954f6160a.jpeg", "vector": null },
+    "2-2": { "column": 2, "row": 2, "image": "19e561eb8909c275d746a103.jpeg", "vector": null },
+    "2-3": { "column": 2, "row": 3, "image": "1101176625388d797e2b95c3.jpeg", "vector": null },
+    "2-4": { "column": 2, "row": 4, "image": "d78217dc30f32a95f4363ea1.jpeg", "vector": null },
+    "3-0": { "column": 3, "row": 0, "image": "fd9c5a29b750c98490b17b2a.jpeg", "vector": null },
+    "3-1": { "column": 3, "row": 1, "image": "75548d5e310043f46c331387.jpeg", "vector": null },
+    "3-2": { "column": 3, "row": 2, "image": "69264b55b40c3454a0ce2c9e.jpeg", "vector": null },
+    "3-3": { "column": 3, "row": 3, "image": "83a2dc1ea8fcba848f5a01d7.jpeg", "vector": null },
+    "3-4": { "column": 3, "row": 4, "image": "c6605cf6217d24e2fe40738d.jpeg", "vector": null },
+    "4-0": { "column": 4, "row": 0, "image": "a504d96babc9306486ff5c6a.jpeg", "vector": null },
+    "4-1": { "column": 4, "row": 1, "image": "fe447e18c95ecc51357ea394.jpeg", "vector": null },
+    "4-2": { "column": 4, "row": 2, "image": "d3c090d43376a98c106bf0d3.jpeg", "vector": null },
+    "4-3": { "column": 4, "row": 3, "image": "480e9e1a5512dbc9f19187ae.jpeg", "vector": null },
+    "4-4": { "column": 4, "row": 4, "image": "ea31a82cf1049fb78cf2e54f.jpeg", "vector": null }
+  },
+  "grid": {
+    "rows": 5,
+    "columns": 5,
+    "decodeFromServer": true
+  }
+}
