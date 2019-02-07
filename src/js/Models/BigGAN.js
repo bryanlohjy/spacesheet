@@ -15,8 +15,8 @@ const math = dl.ENV.math;
 // randVectorFn
 export default class BigGANModel {
   constructor() {
-    this.outputWidth = 64;
-    this.outputHeight = 64;
+    this.outputWidth = 128;
+    this.outputHeight = 128;
     try {
       this.init = this.init.bind(this);
       this.drawFn = this.drawFn.bind(this);
@@ -32,9 +32,10 @@ export default class BigGANModel {
 
   cacheDatapicker(dp) {
     /*
-      iterates through datapicker and caches images by checksum keys of tensors
+      iterates through datapicker and preloads and caches images by checksum hashes of tensors
     */
     const cache = {};
+    let promises = [];
 
     for (let dpKey in dp) {
       const data = dp[dpKey].data.data;
@@ -42,19 +43,36 @@ export default class BigGANModel {
         const cell = data[cellKey];
         const hashedVector = hash.MD5(cell.vector);
         cache[hashedVector] = cell.base64;
+
+        const imgPromise = new Promise((res, rej) => {
+          const img = new Image();
+          img.onload = () => {
+            cache[hashedVector] = img;
+            res();
+          }
+          img.src = cell.base64;
+        });
+        promises.push(imgPromise);
       }
     }
 
     this.imageCache = cache;
+
+    return Promise.all(promises);
   }
 
   init(loadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters
     loadedCallback(this);
   }
-  drawFn(ctx, decodedData) { // logic to draw decoded vectors onto HTML canvas element.
-    const [ r, g, b ] = decodedData;
-    ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-    ctx.fillRect(0, 0, this.outputWidth, this.outputHeight);
+  drawFn(ctx, decodedData) { // logic to draw decoded vectors onto HTML canvas element
+    if (decodedData instanceof HTMLImageElement) {
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(decodedData, 0, 0, this.outputWidth, this.outputHeight);
+    } else {
+      const [ r, g, b ] = decodedData;
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      ctx.fillRect(0, 0, this.outputWidth, this.outputHeight);
+    }
   }
   decodeFn(vector) {
     /*
@@ -65,11 +83,16 @@ export default class BigGANModel {
           store in cache, and decode from server
         }
     */
+    const hashedVector = hash.MD5(vector);
+    let image = this.imageCache[hashedVector];
+
+    if (image) {
+      console.log('image exists');
+      return image;
+    }
 
     // turn vector into image
-
-
-
+    console.log('ímage does not exist, load from server');
     vector = vector.map(val => {
       return parseInt(val * 255);
     });

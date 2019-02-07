@@ -44,7 +44,7 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-      currentModel: 'BIGGAN', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
+      currentModel: 'BIGGAN', // FACES, FONTS, WORD2VEC, MNIST, COLOURS, BIGGAN
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode,
@@ -74,7 +74,7 @@ export default class Application extends React.Component {
 
     const loader = new ModelLoader(this, ModelToLoad);
 
-    loader.load(res => {
+    loader.load(async res => {
       if (!res.errors) {
         let dataPickerGrids;
         try {
@@ -83,9 +83,8 @@ export default class Application extends React.Component {
           dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
         }
 
-        // TODO: tidy up model loader and include this
         if (res.model.cacheDatapicker) {
-          res.model.cacheDatapicker(dataPickerGrids);
+          await res.model.cacheDatapicker(dataPickerGrids);
         }
 
         this.setState({
@@ -100,6 +99,7 @@ export default class Application extends React.Component {
             });
           }, 2500);
         }
+
       } else {
         console.error(res.errors);
       }
