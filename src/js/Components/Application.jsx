@@ -2,21 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import ModelLoader from '../lib/ModelLoader.js';
-import ModelToLoad from '../Models/FaceModel.js';
+// import ModelToLoad from '../Models/FaceModel.js';
 // import ModelToLoad from '../Models/FontModel.js';
 // import ModelToLoad from '../Models/Word2Vec.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/Colours.js';
+import ModelToLoad from '../Models/BigGAN.js';
 
-import GenerateDataPicker from '../lib/DataPickerGenerator.js';
-import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
+// import GenerateDataPicker from '../lib/DataPickerGenerator.js';
+// import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
-
+import DataPickerGrids from './DataPickerGrids/BigGAN/BigGANDataPickers.js';
 import DataPickers from './DataPicker/DataPickers.jsx';
-import FontDrawer from './FontDrawer/FontDrawer.jsx';
+// import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
 import Spreadsheet from './Spreadsheet/Spreadsheet.jsx';
 import Modal from './Modal/Modal.jsx';
@@ -43,7 +44,7 @@ export default class Application extends React.Component {
 
     this.state = {
       model: null,
-      currentModel: 'FACES', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
+      currentModel: 'BIGGAN', // FACES, FONTS, WORD2VEC, MNIST, COLOURS
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode,
@@ -80,6 +81,11 @@ export default class Application extends React.Component {
           dataPickerGrids = DataPickerGrids;
         } catch (e) {
           dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
+        }
+
+        // TODO: tidy up model loader and include this
+        if (res.model.cacheDatapicker) {
+          res.model.cacheDatapicker(dataPickerGrids);
         }
 
         this.setState({
