@@ -1,9 +1,10 @@
 export default class ModelLoader {
   // use this to parse and check model definitions
   // spit out warnings for undefined fields
-  constructor(app, modelConstructor) {
+  constructor(app, modelConstructor, modelOpts) {
     this.app = app;
     this.modelConstructor = modelConstructor;
+    this.modelOpts = modelOpts;
   };
   load(modelLoadedCallback) {
     let res = { errors: null, model: null };
@@ -16,7 +17,7 @@ export default class ModelLoader {
       return;
     }
 
-    const model = new this.modelConstructor();
+    const model = new this.modelConstructor(this.modelOpts);
     if (!model.init) {
       errors.push('The model constructor does not have an init function.');
       res.errors = errors;

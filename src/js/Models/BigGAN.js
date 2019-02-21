@@ -1,4 +1,4 @@
-// define model here
+  // define model here
 import * as dl from 'deeplearn';
 import { randomInt } from '../lib/helpers.js';
 import { inputTimesWeightAddBias } from '../lib/tensorUtils.js';
@@ -45,7 +45,7 @@ const loadImg = (base64, imgElCallback) => {
 // decodeFn
 // randVectorFn
 export default class BigGANModel {
-  constructor() {
+  constructor(opts) {
     this.outputWidth = 128;
     this.outputHeight = 128;
     try {
@@ -54,6 +54,11 @@ export default class BigGANModel {
       this.decodeFn = this.decodeFn.bind(this);
       this.randVectorFn = this.randVectorFn.bind(this);
       this.cacheDatapicker = this.cacheDatapicker.bind(this);
+
+      if (opts.afterDecode) {
+        this.afterDecode = opts.afterDecode.bind(this);
+      }
+
     } catch (e) {
       console.error(e);
     }
@@ -119,14 +124,16 @@ export default class BigGANModel {
 
     decodeVector(Array.from(vector)).then(async res => {
       const base64 = await res.json();
-
+      // TODO: logic from being redecoded if it is waiting for a response
       await loadImg(base64, imgEl => {
         this.imageCache[hashedVector] = imgEl;
+        if (this.afterDecode) { this.afterDecode(imgEl); }
         return imgEl;
       });
     });
 
     // turn vector into image
+    // intermediate image
     vector = vector.map(val => {
       return parseInt(val * 255);
     });

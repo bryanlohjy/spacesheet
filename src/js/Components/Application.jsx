@@ -72,7 +72,12 @@ export default class Application extends React.Component {
     this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
 
-    const loader = new ModelLoader(this, ModelToLoad);
+    const modelOpts = {
+      afterDecode: (el) => {
+        this.hotInstance.render();
+      }
+    };
+    const loader = new ModelLoader(this, ModelToLoad, modelOpts);
 
     loader.load(async res => {
       if (!res.errors) {
