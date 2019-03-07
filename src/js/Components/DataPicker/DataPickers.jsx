@@ -26,12 +26,14 @@ export default class DataPickers extends React.Component {
   }
 
   render() {
-    const selectorHeight = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1 ? 48 : 0;
+    const isBigGAN = this.props.currentModel == "BIGGAN";
+
+    const selectorHeight = isBigGAN || (this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1) ? 50 : 0;
     const multipleDataPickers = this.props.dataPickerGrids && Object.keys(this.props.dataPickerGrids).length > 1;
 
     return (
       <div>
-        { multipleDataPickers ?
+        { multipleDataPickers || isBigGAN ?
             <DataPickerSelector
               dataPickerGrids={this.props.dataPickerGrids}
               onSelectGrid={gridName => {
@@ -41,6 +43,7 @@ export default class DataPickers extends React.Component {
               }}
               selectedGrid={this.state.selectedGrid}
               height={selectorHeight}
+              enableCreation={isBigGAN}
             /> : ""
         }
         <div className="datapicker-container" ref="dataPickerContainer">
@@ -74,6 +77,7 @@ export default class DataPickers extends React.Component {
 }
 DataPickers.propTypes = {
   model: PropTypes.object,
+  currentModel: PropTypes.string,
   onCellClick: PropTypes.func,
   dataPickerGrids: PropTypes.object,
   windowWidth: PropTypes.number,
@@ -86,12 +90,15 @@ class DataPickerSelector extends React.Component {
   }
 
   render() {
+    const enableCreation = this.props.enableCreation;
+    const dataPickers = this.props.dataPickerGrids;
+
     return (
       <div className="datapicker-selector" style={{ height: this.props.height }}>
-        <ul>
+        <ul className={`${!enableCreation ? "equal-spaced-tabs" : ""}`}>
           {
-            Object.keys(this.props.dataPickerGrids).map(key => {
-              const label = this.props.dataPickerGrids[key].label;
+            dataPickers && Object.keys(dataPickers).map(key => {
+              const label = dataPickers[key].label;
               return (
                 <li key={label}
                   onClick={() => {
@@ -104,6 +111,14 @@ class DataPickerSelector extends React.Component {
               )
             })
           }
+          {
+            enableCreation &&
+            <li
+              className="datapicker-creator"
+            >
+              <span className="datapicker-creator-icon">+</span>
+            </li>
+          }
         </ul>
       </div>
     )
@@ -115,4 +130,5 @@ DataPickerSelector.propTypes = {
   onSelectGrid: PropTypes.func,
   selectedGrid: PropTypes.string,
   height: PropTypes.number,
+  enableCreation: PropTypes.bool
 };

@@ -231,6 +231,7 @@ export default class Application extends React.Component {
               windowWidth={this.state.windowWidth}
               windowHeight={this.state.windowHeight}
 
+              currentModel={this.state.currentModel}
               model={ this.state.model }
               dataPickerGrids={this.state.dataPickerGrids}
               onCellClick={ this.setSpreadsheetCellFromDataPicker }
