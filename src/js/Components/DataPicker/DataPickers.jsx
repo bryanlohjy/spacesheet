@@ -43,7 +43,9 @@ export default class DataPickers extends React.Component {
               }}
               selectedGrid={this.state.selectedGrid}
               height={selectorHeight}
+
               enableCreation={isBigGAN}
+              setModalSection={this.props.setModalSection}
             /> : ""
         }
         <div className="datapicker-container" ref="dataPickerContainer">
@@ -81,12 +83,17 @@ DataPickers.propTypes = {
   onCellClick: PropTypes.func,
   dataPickerGrids: PropTypes.object,
   windowWidth: PropTypes.number,
-  windowHeight: PropTypes.number
+  windowHeight: PropTypes.number,
+  setModalSection: PropTypes.func
 };
 
 class DataPickerSelector extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  handleCreatorClick(e) {
+    this.props.setModalSection('CREATE_DATAPICKER');
   }
 
   render() {
@@ -115,6 +122,7 @@ class DataPickerSelector extends React.Component {
             enableCreation &&
             <li
               className="datapicker-creator"
+              onClick={this.handleCreatorClick.bind(this)}
             >
               <span className="datapicker-creator-icon">+</span>
             </li>
@@ -130,5 +138,6 @@ DataPickerSelector.propTypes = {
   onSelectGrid: PropTypes.func,
   selectedGrid: PropTypes.string,
   height: PropTypes.number,
-  enableCreation: PropTypes.bool
+  enableCreation: PropTypes.bool,
+  setModalSection: PropTypes.func
 };

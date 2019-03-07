@@ -48,7 +48,7 @@ export default class Application extends React.Component {
       inputBarValue: "",
       dataPickerGrids: null,
       debugMode,
-      modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO
+      modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO, CREATE_DATAPICKER
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight
     };
@@ -235,6 +235,8 @@ export default class Application extends React.Component {
               model={ this.state.model }
               dataPickerGrids={this.state.dataPickerGrids}
               onCellClick={ this.setSpreadsheetCellFromDataPicker }
+
+              setModalSection={this.setModalSection}
               ref='dataPickers'
             />
           </div>
