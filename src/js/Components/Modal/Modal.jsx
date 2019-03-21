@@ -26,36 +26,38 @@ export default class Modal extends React.Component {
         className={`modal-overlay ${this.props.modalSection ? 'visible' : ''}`}
         onClick={this.onClose}
       >
-        {
-          this.props.modalSection === 'MOBILE' &&
-          <MobileModal/>
-        }
-        {
-          this.props.modalSection === 'UNSUPPORTED' &&
-          <UnsupportedModal
-            closeModal={this.onClose}
-          />
-        }
-        {
-          this.props.modalSection === 'INFO' &&
-          <InfoModal
-            closeModal={this.onClose}
-            currentModel={this.props.currentModel}
-          />
-        }
-        {
-          this.props.modalSection === 'LOADING' &&
-          <LoadingModal
-            closeModal={this.onClose}
-          />
-        }
-        {
-          this.props.modalSection === 'CREATE_DATAPICKER' &&
-          <DataPickerCreator
-            closeModal={this.onClose}
-            currentModel={this.props.currentModel}
-          />
-        }
+        <div onClick={e => { e.stopPropagation(); }}>
+          {
+            this.props.modalSection === 'MOBILE' &&
+            <MobileModal/>
+          }
+          {
+            this.props.modalSection === 'UNSUPPORTED' &&
+            <UnsupportedModal
+              closeModal={this.onClose}
+            />
+          }
+          {
+            this.props.modalSection === 'INFO' &&
+            <InfoModal
+              closeModal={this.onClose}
+              currentModel={this.props.currentModel}
+            />
+          }
+          {
+            this.props.modalSection === 'LOADING' &&
+            <LoadingModal
+              closeModal={this.onClose}
+            />
+          }
+          {
+            this.props.modalSection === 'CREATE_DATAPICKER' &&
+            <DataPickerCreator
+              closeModal={this.onClose}
+              currentModel={this.props.currentModel}
+            />
+          }
+        </div>
       </div>
     )
   }
