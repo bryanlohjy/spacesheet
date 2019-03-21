@@ -9,7 +9,7 @@ export default class Modal extends React.Component {
     this.onClose = this.onClose.bind(this);
   }
 
-  onClose() {
+  onClose(e) {
     if (this.props.modalSection === 'MOBILE' || this.props.modalSection === 'LOADING') { return; }
 
     if (this.props.modalSection === 'UNSUPPORTED' && !this.props.model) {
