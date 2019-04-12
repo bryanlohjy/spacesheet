@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ClassTreeSelector from './ClassTreeSelector/ClassTreeSelector';
+import SelectedClass from './SelectedClass';
 
 export default class DataPickerCreator extends React.Component {
   constructor(props) {
@@ -8,9 +9,50 @@ export default class DataPickerCreator extends React.Component {
 
     this.state = {
       selectedClasses: [
-        { name: "", index: 0, amount: 0 }
+      /*
+        { id, name, amount }
+      */
       ]
     }
+  }
+
+  onCheckToggle(nodes, depth) {
+    let selectedClasses = this.state.selectedClasses.slice();
+
+    let changes = {};
+    nodes.forEach(node => {
+      changes[node.id] = node;
+    });
+
+    selectedClasses = selectedClasses.filter(_class => {
+      const existingChange = changes[_class.id];
+      let removeExisting = existingChange && !existingChange.isChecked;
+
+      if (existingChange) {
+        delete changes[_class.id];
+      }
+
+      if (removeExisting) {
+        return false;
+      }
+
+      return true;
+    });
+
+    const newClasses = Object.keys(changes).map(id => {
+      const _class = changes[id];
+      return {
+        id: _class.id,
+        name: _class.name,
+        amount: 1
+      }
+    });
+
+    selectedClasses = selectedClasses.concat(newClasses);
+
+    this.setState({
+      selectedClasses
+    });
   }
 
   render() {
@@ -32,12 +74,27 @@ export default class DataPickerCreator extends React.Component {
             <section>
               <ClassTreeSelector
                 currentModel={this.props.currentModel}
+                onCheckToggle={this.onCheckToggle.bind(this)}
               />
             </section>
           </div>
 
           <div className="creator-section selected">
             <header>Selected classes</header>
+            <section>
+            {
+              this.state.selectedClasses.map((_class, i) => {
+                return (
+                  <SelectedClass
+                    key={_class.id}
+                    id={_class.id}
+                    name={_class.name}
+                    amount={_class.amount}
+                  />
+                )
+              })
+            }
+            </section>
           </div>
 
           <div className="creator-section creator">

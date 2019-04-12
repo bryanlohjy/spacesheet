@@ -1,0 +1,164 @@
+@import "./variables.scss";
+
+.class-tree-selector {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  height: 100%;
+
+  .class-tree-search {
+    border: none;
+    border-bottom: 1px solid $outlineGrey;
+    height: 37px;
+    min-height: 37px;
+    display: flex;
+    padding: 0 24px;
+    font-size: 16px;
+
+    &::placeholder {
+      color: $darkGrey;
+    }
+  }
+}
+
+/* treeview component */
+
+$node-h-padding: 20px;
+
+.super-treeview * {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.super-treeview {
+  display: flex;
+  font-size: 100%;
+  overflow: auto;
+  position: relative;
+
+  > div {
+    width: 100%;
+    // > .super-treeview-no-children-transition {
+    //   transition-property: all;
+    // }
+
+    // > .super-treeview-no-children-transition-enter {
+    //   opacity: 0;
+    //   height: 0;
+    //   overflow: hidden;
+    //
+    //   &.super-treeview-no-children-transition-enter-active {
+    //     opacity: 1;
+    //     height: 0;
+    //   }
+    // }
+
+    > .super-treeview-no-children {
+      overflow: hidden;
+      > .super-treeview-no-children-content {
+        margin: 2px 0;
+      }
+    }
+
+    > .super-treeview-node {
+      overflow: hidden;
+
+      > .super-treeview-children-container {
+        $node-arrow-offset: 4px;
+        background: rgba(0,0,0,0.04);
+
+        border-radius: 4px 0 0 4px;
+        margin-left: $node-arrow-offset+$node-h-padding;
+        // margin-bottom: 12px;
+
+        > .super-treeview-loading {
+          padding: 15px $node-h-padding;
+          margin: 2px 0;
+        }
+      }
+
+      > .super-treeview-node-content {
+        padding: 15px $node-h-padding;
+
+        margin: 2px 0;
+
+        > label {
+          text-align: left;
+          vertical-align: top;
+          text-overflow: ellipsis;
+          width: calc(100% - 55px);
+          overflow: hidden;
+          white-space: nowrap;
+          display: inline-block;
+          margin: 0;
+          font-weight: normal;
+          font-size: 100%;
+          cursor: pointer;
+        }
+
+        > input[type=checkbox] {
+          float: right;
+          margin: -3px 0px 0 0;
+          width: 20px;
+          height: 20px;
+          line-height: normal;
+        }
+
+        > .super-treeview-triangle-btn {
+          position: absolute;
+          float: left;
+          margin-right: 5px;
+          cursor: pointer;
+        }
+
+        > .super-treeview-triangle-btn-none {
+          cursor: none;
+        }
+
+        > .super-treeview-triangle-btn-right {
+          width: 8px;
+          height: 10px;
+          margin-top: 2px;
+          margin-left: 2px;
+          border-top: 5px solid transparent;
+          border-left: 6px solid $darkGrey;
+          border-bottom: 5px solid transparent;
+        }
+
+        > .super-treeview-triangle-btn-down {
+          width: 10px;
+          height: 8px;
+          margin-top: 5px;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+          border-top: 6px solid $darkGrey;
+        }
+
+        > .delete-btn {
+          float: right;
+          cursor: pointer;
+        }
+      }
+    }
+
+    > .super-treeview-node-transition {
+      transition-property: all;
+    }
+
+    > .super-treeview-node-transition-enter {
+      opacity: 0;
+
+      &.super-treeview-node-transition-enter-active {
+        opacity: 1;
+      }
+    }
+
+    > .super-treeview-node-transition-exit {
+      opacity: 1;
+
+      &.super-treeview-node-transition-exit-active {
+        opacity: 0;
+        background-color: red;
+      }
+    }
+  }
+}

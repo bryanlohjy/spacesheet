@@ -3,7 +3,6 @@
 .datapicker-creator.modal {
   max-width: none !important;
   flex-grow: 1;
-  height: 100%;
 
   .title {
     justify-content: flex-start;
@@ -24,10 +23,17 @@
     width: 100%;
 
     .creator-section {
+      display: flex;
+      flex-direction: column;
       flex-grow: 1;
+
       &.available {
         width: 40%;
-        // flex-grow: 4;
+
+        section {
+          display: flex;
+          align-items: flex-start;
+        }
       }
 
       &.selected {
@@ -40,7 +46,8 @@
       header {
         border-bottom: 1px solid $outlineGrey;
         padding: 15px 0 15px 25px;
-        display: flex;
+        display: block;
+        text-align: left;
         text-transform: uppercase;
         letter-spacing: 1px;
       }

@@ -7,7 +7,7 @@ import hash from 'object-hash';
 // https://www.npmjs.com/package/object-hash
 const math = dl.ENV.math;
 
-const modelUrl = "http://localhost:5000";
+const modelUrl = "http://deeptom.staff.vuw.ac.nz:5000";
 
 const decodeUrl = `${modelUrl}/decode`;
 const decodeVector = (vec, label) => {

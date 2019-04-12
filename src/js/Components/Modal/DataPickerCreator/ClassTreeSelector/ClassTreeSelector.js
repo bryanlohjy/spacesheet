@@ -26,13 +26,21 @@ export default class ClassTreeSelector extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="class-tree-selector">
+        <input type="text" placeholder="Search for a class..." className="class-tree-search"/>
         <SuperTreeview
           data={this.state.classes}
           onUpdateCb={updatedData => {
-            console.log(updatedData)
-            // this.setState({data: updatedData})
+            this.setState({classes: updatedData})
           }}
+          isExpandable={(node, depth) => {
+            if (!node.children || node.children.length == 0) {
+              return false;
+            }
+            return true;
+          }}
+          isDeletable={() => false}
+          onCheckToggleCb={this.props.onCheckToggle}
         />
       </div>
     )
@@ -40,5 +48,6 @@ export default class ClassTreeSelector extends React.Component {
 }
 
 ClassTreeSelector.propTypes = {
-  currentModel: PropTypes.string.isRequired
+  currentModel: PropTypes.string.isRequired,
+  onCheckToggle: PropTypes.func.isRequired,
 };
