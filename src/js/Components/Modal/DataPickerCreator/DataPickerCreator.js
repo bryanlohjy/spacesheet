@@ -55,6 +55,21 @@ export default class DataPickerCreator extends React.Component {
     });
   }
 
+  onClassAmountChange(id, amount) {
+    let selectedClasses = this.state.selectedClasses.slice();
+
+    selectedClasses = selectedClasses.map(_class => {
+      if (_class.id === id) {
+        _class.amount = Number(amount);
+      }
+      return _class;
+    });
+
+    this.setState({
+      selectedClasses
+    });
+  }
+
   render() {
     let modelName;
 
@@ -90,6 +105,7 @@ export default class DataPickerCreator extends React.Component {
                     id={_class.id}
                     name={_class.name}
                     amount={_class.amount}
+                    onClassAmountChange={this.onClassAmountChange.bind(this)}
                   />
                 )
               })

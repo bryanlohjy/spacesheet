@@ -2,6 +2,7 @@
 
 .datapicker-creator.modal {
   max-width: none !important;
+  height: 100%;
   flex-grow: 1;
 
   .title {
@@ -25,7 +26,6 @@
     .creator-section {
       display: flex;
       flex-direction: column;
-      flex-grow: 1;
 
       &.available {
         width: 40%;
@@ -37,10 +37,40 @@
       }
 
       &.selected {
-        flex-grow: 2;
+        width: 30%;
+
+        section {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+
+          .selected-class {
+            width: 100%;
+            display: flex;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid $outlineGrey;
+            padding: 12px 24px;
+
+            .amount {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              // input {
+              //   margin-right: 10px;
+              // }
+              span {
+                font-size: 12px;
+              }
+            }
+          }
+        }
       }
 
       &.creator {
+        width: 30%;
       }
 
       header {
