@@ -22,6 +22,7 @@
     justify-content: flex-start;
     flex-grow: 1;
     width: 100%;
+    height: 0;
 
     .creator-section {
       display: flex;
@@ -33,17 +34,19 @@
         section {
           display: flex;
           align-items: flex-start;
+          overflow: hidden;
         }
       }
 
       &.selected {
-        width: 30%;
+        flex-grow: 1;
 
         section {
           display: flex;
           flex-direction: column;
           align-items: flex-start;
           justify-content: flex-start;
+          overflow: auto;
 
           .selected-class {
             width: 100%;
@@ -58,9 +61,7 @@
               display: flex;
               flex-direction: column;
               align-items: center;
-              // input {
-              //   margin-right: 10px;
-              // }
+
               span {
                 font-size: 12px;
               }
@@ -70,7 +71,64 @@
       }
 
       &.creator {
-        width: 30%;
+        $resultingClassSize: 300px;
+
+        width: $resultingClassSize;
+        overflow: hidden;
+
+        section {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          overflow: hidden;
+
+          .resulting-class {
+            width: $resultingClassSize;
+            height: $resultingClassSize;
+            box-shadow: 1px 1px 5px $grey;
+            border-bottom: 1px solid $outlineGrey;
+            background: rgba(255, 255, 255, 0.8);
+          }
+
+          .composition-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: calc(100% - #{$resultingClassSize});
+            min-height: 100px;
+
+            p {
+              font-size: 16px;
+              border-bottom: 1px solid $outlineGrey;
+              width: 100%;
+              text-align: left;
+              box-sizing: border-box;
+              padding: 12px 16px;
+            }
+
+            ul {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              width: 100%;
+              padding: 0 12px 6px 12px;
+              box-sizing: border-box;
+              overflow: auto;
+
+              li {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 4px;
+                box-sizing: border-box;
+
+                &:not(:last-child) {
+                  border-bottom: 1px solid $outlineGrey;
+                }
+              }
+            }
+          }
+        }
       }
 
       header {

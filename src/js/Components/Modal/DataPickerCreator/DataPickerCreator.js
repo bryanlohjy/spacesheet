@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassTreeSelector from './ClassTreeSelector/ClassTreeSelector';
 import SelectedClass from './SelectedClass';
+import ClassCompositionList from './ClassCompositionList';
 
 export default class DataPickerCreator extends React.Component {
   constructor(props) {
@@ -62,7 +63,7 @@ export default class DataPickerCreator extends React.Component {
       if (_class.id === id) {
         _class.amount = Number(amount);
       }
-      return _class;
+      return Object.assign({}, _class);
     });
 
     this.setState({
@@ -115,6 +116,12 @@ export default class DataPickerCreator extends React.Component {
 
           <div className="creator-section creator">
             <header>Resulting class</header>
+            <section>
+              <div className="resulting-class"/>
+              <ClassCompositionList
+                selectedClasses={this.state.selectedClasses}
+              />
+            </section>
           </div>
 
         </section>
