@@ -115,13 +115,26 @@ export default class DataPickerCreator extends React.Component {
           </div>
 
           <div className="creator-section creator">
-            <header>Resulting class</header>
+            <header>Resulting class sample</header>
             <section>
               <div className="resulting-class"/>
-              <ClassCompositionList
-                selectedClasses={this.state.selectedClasses}
-              />
+              <div className="details">
+                <header>Details</header>
+                <section>
+                  <div>
+                    <label>Name</label>
+                    <input type="text" placeholder="BigGAN DataPicker"/>
+                  </div>
+                  <div>
+                    <label>Size</label>
+                    <input type="number" min="3" max="10"/>
+                  </div>
+                </section>
+              </div>
             </section>
+              {/* <ClassCompositionList
+                selectedClasses={this.state.selectedClasses}
+              /> */}
           </div>
 
         </section>
