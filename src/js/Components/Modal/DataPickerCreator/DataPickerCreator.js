@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassTreeSelector from './ClassTreeSelector/ClassTreeSelector';
 import SelectedClass from './SelectedClass';
-import ClassCompositionList from './ClassCompositionList';
+import ClassCompositionBar from './ClassCompositionBar';
 
 export default class DataPickerCreator extends React.Component {
   constructor(props) {
@@ -117,7 +117,12 @@ export default class DataPickerCreator extends React.Component {
           <div className="creator-section creator">
             <header>Resulting class sample</header>
             <section>
-              <div className="resulting-class"/>
+              <div className="resulting-class">
+                <div className="sample-image"/>
+                <ClassCompositionBar
+                  selectedClasses={this.state.selectedClasses}
+                />
+              </div>
               <div className="details">
                 <header>Details</header>
                 <section>
@@ -132,9 +137,6 @@ export default class DataPickerCreator extends React.Component {
                 </section>
               </div>
             </section>
-              {/* <ClassCompositionList
-                selectedClasses={this.state.selectedClasses}
-              /> */}
           </div>
 
         </section>

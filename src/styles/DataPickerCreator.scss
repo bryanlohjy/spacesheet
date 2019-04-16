@@ -87,11 +87,28 @@
           overflow: hidden;
 
           .resulting-class {
+            display: flex;
             width: $resultingClassSize;
             height: $resultingClassSize;
-            box-shadow: 1px 1px 5px $grey;
             border-bottom: 1px solid $outlineGrey;
             background: rgba(255, 255, 255, 0.8);
+
+            .composition-bar {
+              align-self: flex-end;
+              background: $grey;
+              border: 1px solid $darkGrey;
+              width: 100%;
+              height: 10px;
+              display: flex;
+
+              .composition-span {
+                height: 100%;
+
+                &:not(:last-child) {
+                  border-right: 1px solid $darkGrey;
+                }
+              }
+            }
           }
 
           .details {
@@ -117,45 +134,6 @@
               }
             }
           }
-
-          // .composition-section {
-          //   display: flex;
-          //   flex-direction: column;
-          //   align-items: flex-start;
-          //   height: calc(100% - #{$resultingClassSize});
-          //   min-height: 100px;
-          //
-          //   p {
-          //     font-size: 16px;
-          //     border-bottom: 1px solid $outlineGrey;
-          //     width: 100%;
-          //     text-align: left;
-          //     box-sizing: border-box;
-          //     padding: 12px 16px;
-          //   }
-          //
-          //   ul {
-          //     display: flex;
-          //     flex-direction: column;
-          //     align-items: flex-start;
-          //     width: 100%;
-          //     padding: 0 12px 6px 12px;
-          //     box-sizing: border-box;
-          //     overflow: auto;
-          //
-          //     li {
-          //       width: 100%;
-          //       display: flex;
-          //       justify-content: space-between;
-          //       padding: 12px 4px;
-          //       box-sizing: border-box;
-          //
-          //       &:not(:last-child) {
-          //         border-bottom: 1px solid $outlineGrey;
-          //       }
-          //     }
-          //   }
-          // }
         }
       }
 
