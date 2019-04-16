@@ -10,7 +10,7 @@ export default class SelectedClass extends React.Component {
           <span>{this.props.amount.toFixed(1)*100}%</span>
           <input
             type="range"
-            min={0}
+            min={0.1}
             max={1}
             value={this.props.amount}
             step={0.1}
