@@ -7,21 +7,9 @@ import hash from 'object-hash';
 // https://www.npmjs.com/package/object-hash
 const math = dl.ENV.math;
 
-const modelUrl = "http://deeptom.staff.vuw.ac.nz:5000";
-
+// const modelUrl = "http://deeptom.staff.vuw.ac.nz:5000";
+const modelUrl = "http://localhost:5000";
 const decodeUrl = `${modelUrl}/decode`;
-const decodeVector = (vec, label) => {
-  label=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-
-  return fetch(decodeUrl, {
-    method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: `vector=${JSON.stringify(vec)}&label=${JSON.stringify(label)}`
-  });
-};
 
 const loadImg = (base64, imgElCallback) => {
   const imgPromise = new Promise((res, rej) => {
@@ -48,6 +36,9 @@ export default class BigGANModel {
   constructor(opts) {
     this.outputWidth = 128;
     this.outputHeight = 128;
+
+    this.latentDim = 140;
+
     try {
       this.init = this.init.bind(this);
       this.drawFn = this.drawFn.bind(this);
@@ -106,7 +97,29 @@ export default class BigGANModel {
       ctx.fillRect(0, 0, this.outputWidth, this.outputHeight);
     }
   }
-  decodeFn(vector) {
+
+  decoupleVectorLabel(vec) {
+    const vector = vec.slice(0, this.latentDim);
+    const label = vec.slice(this.latentDim);
+
+    return {
+      vector,
+      label
+    };
+  }
+
+  decodeVector(vec, label) {
+    return fetch(decodeUrl, {
+      method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `vector=${JSON.stringify(vec)}&label=${JSON.stringify(label)}`
+    });
+  }
+
+  decodeFn(vec) {
     /*
       check if vector has been decoded before
         if yes {
@@ -115,14 +128,16 @@ export default class BigGANModel {
           store in cache, and decode from server
         }
     */
-    const hashedVector = hash.MD5(vector);
+    const hashedVector = hash.MD5(vec);
     let image = this.imageCache[hashedVector];
 
     if (image) {
       return image;
     }
 
-    decodeVector(Array.from(vector)).then(async res => {
+    const { vector, label } = this.decoupleVectorLabel(Array.from(vec));
+
+    this.decodeVector(vector, label).then(async res => {
       const base64 = await res.json();
       // TODO: logic from being redecoded if it is waiting for a response
       await loadImg(base64, imgEl => {
@@ -134,10 +149,10 @@ export default class BigGANModel {
 
     // turn vector into image
     // intermediate image
-    vector = vector.map(val => {
+    vec = vec.map(val => {
       return parseInt(val * 255);
     });
-    return vector;
+    return vec;
   }
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
