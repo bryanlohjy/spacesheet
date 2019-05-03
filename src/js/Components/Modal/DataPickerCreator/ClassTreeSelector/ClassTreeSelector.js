@@ -29,6 +29,9 @@ export default class ClassTreeSelector extends React.Component {
           transitionEnterTimeout={0}
           isDeletable={() => false}
           onCheckToggleCb={this.props.onCheckToggle}
+          getStyleClassCb={(node, depth) => {
+            return ` ${node.isChecked ? 'selected' : ''} `;
+          }}
         />
       </div>
     )

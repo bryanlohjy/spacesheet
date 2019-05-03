@@ -81,6 +81,16 @@ $node-h-padding: 20px;
         }
       }
 
+      &.selected {
+        > .super-treeview-node-content {
+          label {
+            font-weight: 500;
+            color: $darkerGrey;
+          }
+        }
+      }
+
+
       > .super-treeview-node-content {
         padding: 15px $node-h-padding;
         height: 46px;
