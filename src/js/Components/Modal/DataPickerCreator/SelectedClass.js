@@ -5,7 +5,7 @@ export default class SelectedClass extends React.Component {
   render() {
     return (
       <div className="selected-class">
-        <div>Name: {this.props.name}</div>
+        <div>{this.props.name}</div>
         <div className="amount">
           <span>{this.props.amount.toFixed(1)*100}%</span>
           <input
