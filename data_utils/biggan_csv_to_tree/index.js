@@ -32,7 +32,7 @@ fs.readFile('./classes.tsv', 'utf8', (err, tsv) => {
   let tree = [];
 
   data.forEach((row, rowIndex) => {
-    let [name, aliases, ...classes] = row;
+    let [bigGANClassIndex, name, aliases, ...classes] = row;
 
     let pointer = tree;
     // Create parent classes
@@ -60,7 +60,8 @@ fs.readFile('./classes.tsv', 'utf8', (err, tsv) => {
           id: Math.random(),
           trailId: `${trailId}-${name}`,
           name,
-          children: []
+          children: [],
+          bigGANClassIndex: Number(bigGANClassIndex)
         };
 
         pointer.push(newClass);
