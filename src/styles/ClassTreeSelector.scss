@@ -61,6 +61,7 @@ $node-h-padding: 20px;
 
     > .super-treeview-node {
       overflow: hidden;
+      position: relative;
 
       > .super-treeview-children-container {
         $node-arrow-offset: 4px;
@@ -78,14 +79,20 @@ $node-h-padding: 20px;
 
       > .super-treeview-node-content {
         padding: 15px $node-h-padding;
+        height: 46px;
 
         margin: 2px 0;
 
         > label {
+          position: absolute;
+          left: 0;
+          top: 0;
+          padding: 15px 60px 15px 45px;
+          height: 100%;
           text-align: left;
           vertical-align: top;
           text-overflow: ellipsis;
-          width: calc(100% - 55px);
+          width: 100%;
           overflow: hidden;
           white-space: nowrap;
           display: inline-block;
@@ -103,10 +110,16 @@ $node-h-padding: 20px;
           line-height: normal;
         }
 
+        position: relative;
+
         > .super-treeview-triangle-btn {
+          width: 100% !important;
           position: absolute;
+          top: 0;
+          left: 0;
           float: left;
           margin-right: 5px;
+          z-index: 1;
           cursor: pointer;
         }
 
@@ -115,22 +128,36 @@ $node-h-padding: 20px;
         }
 
         > .super-treeview-triangle-btn-right {
-          width: 8px;
-          height: 10px;
-          margin-top: 2px;
-          margin-left: 2px;
-          border-top: 5px solid transparent;
-          border-left: 6px solid $darkGrey;
-          border-bottom: 5px solid transparent;
+          &::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            margin-top: 2px;
+            margin-left: 2px;
+            border-top: 5px solid transparent;
+            border-left: 6px solid $darkGrey;
+            border-bottom: 5px solid transparent;
+          }
+
+          width: 100%;
+          height: 100%;
         }
 
         > .super-treeview-triangle-btn-down {
-          width: 10px;
-          height: 8px;
-          margin-top: 5px;
-          border-left: 5px solid transparent;
-          border-right: 5px solid transparent;
-          border-top: 6px solid $darkGrey;
+          width: 100%;
+          height: 100%;
+
+          &::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 15px;
+            margin-top: 5px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid $darkGrey;
+          }
         }
 
         > .delete-btn {
