@@ -63,13 +63,17 @@ $node-h-padding: 20px;
       overflow: hidden;
       position: relative;
 
+      &:hover {
+        box-shadow: 0 2px 10px rgba($darkGrey, 0.5);
+        background: rgba($lightGrey, 0.4);
+      }
+
       > .super-treeview-children-container {
         $node-arrow-offset: 4px;
         background: rgba(0,0,0,0.04);
 
         border-radius: 4px 0 0 4px;
         margin-left: $node-arrow-offset+$node-h-padding;
-        // margin-bottom: 12px;
 
         > .super-treeview-loading {
           padding: 15px $node-h-padding;
@@ -81,6 +85,7 @@ $node-h-padding: 20px;
         padding: 15px $node-h-padding;
         height: 46px;
 
+        border-radius: 5px 0 0 5px;
         margin: 2px 0;
 
         > label {
