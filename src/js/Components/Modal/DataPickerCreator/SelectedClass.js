@@ -6,7 +6,8 @@ export default class SelectedClass extends React.Component {
   render() {
     return (
       <div className="selected-class">
-        <div className="name">{this.props.name}</div>
+        <div className={`indicator class-color-${this.props.colorIndex}`}/>
+        <div className="name" title={this.props.name}>{this.props.name}</div>
         <div className="amount">
           <span>{this.props.amount.toFixed(1)*100}%</span>
           <input
@@ -38,6 +39,7 @@ SelectedClass.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
+  colorIndex: PropTypes.number.isRequired,
   onClassAmountChange: PropTypes.func.isRequired,
   onRemoveSelectedClass: PropTypes.func.isRequired
 };

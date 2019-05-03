@@ -58,6 +58,7 @@ export default class DataPickerCreator extends React.Component {
 
     const newClasses = Object.keys(changes).map(id => {
       const _class = changes[id];
+
       return {
         id: _class.id,
         name: _class.name,
@@ -144,12 +145,14 @@ export default class DataPickerCreator extends React.Component {
             <section>
             {
               this.state.selectedClasses.map((_class, i) => {
+                const numClassColors = 7;
                 return (
                   <SelectedClass
                     key={_class.id}
                     id={_class.id}
                     name={_class.name}
                     amount={_class.amount}
+                    colorIndex={i%numClassColors}
                     onClassAmountChange={this.onClassAmountChange.bind(this)}
                     onRemoveSelectedClass={this.onRemoveSelectedClass.bind(this)}
                   />

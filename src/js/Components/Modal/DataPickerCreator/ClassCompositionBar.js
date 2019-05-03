@@ -16,9 +16,12 @@ export default class ClassCompositionBar extends React.Component {
           const { id, name, amount } = _class;
           let percentage = amount/this.compositionSum;
           percentage *= 100;
+
+          const numClassColors = 7;
+          const colorIndex = i%7;
           return (
             <span
-              className="composition-span"
+              className={`composition-span class-color-${colorIndex}`}
               key={id}
               style={{
                 width: `${percentage}%`
