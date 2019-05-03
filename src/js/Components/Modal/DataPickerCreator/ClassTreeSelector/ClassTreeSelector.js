@@ -12,7 +12,7 @@ export default class ClassTreeSelector extends React.Component {
       <div className="class-tree-selector">
         {/* TODO: search through tre <input type="text" placeholder="Search for a class..." className="class-tree-search"/> */}
         <SuperTreeview
-          data={this.props.classes}
+          data={this.props.classTree}
           onUpdateCb={this.props.onUpdateCb}
           isExpandable={(node, depth) => {
             if (!node.children || node.children.length == 0) {
@@ -39,5 +39,5 @@ ClassTreeSelector.propTypes = {
   currentModel: PropTypes.string.isRequired,
   onCheckToggle: PropTypes.func.isRequired,
   onUpdateCb: PropTypes.func.isRequired,
-  classes: PropTypes.array.isRequired
+  classTree: PropTypes.array.isRequired
 };

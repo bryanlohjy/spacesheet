@@ -89,13 +89,24 @@ export default class DataPickerCreator extends React.Component {
 
   onRemoveSelectedClass(removedClassName) {
     let selectedClasses = this.state.selectedClasses.slice();
-    console.log(trailMap[removedClassName])
 
     selectedClasses = selectedClasses.filter(_class => {
       return _class.name !== removedClassName;
     });
 
+    let classTree = JSON.parse(JSON.stringify(this.state.classTree));
+
+    const treeTrail = trailMap[removedClassName.toUpperCase()];
+    let pointer = classTree;
+    treeTrail.forEach(trailId => {
+      pointer = pointer.find(node => node.trailId === trailId).children;
+    });
+
+    let node = pointer.find(_class => _class.name === removedClassName);
+    node.isChecked = false;
+
     this.setState({
+      classTree,
       selectedClasses
     });
   }
@@ -120,7 +131,7 @@ export default class DataPickerCreator extends React.Component {
               <ClassTreeSelector
                 currentModel={this.props.currentModel}
                 onCheckToggle={this.onCheckToggle.bind(this)}
-                classes={this.state.classTree}
+                classTree={this.state.classTree}
                 onUpdateCb={updatedData => {
                   this.setState({classTree: updatedData})
                 }}
