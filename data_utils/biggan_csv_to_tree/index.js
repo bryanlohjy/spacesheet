@@ -72,7 +72,7 @@ fs.readFile('./classes.tsv', 'utf8', (err, tsv) => {
       }
     });
 
-    trailMap[name] = trailIds;
+    trailMap[String(name).toUpperCase()] = trailIds;
   });
 
   fs.writeFile('tree.json', JSON.stringify(tree, null, 2), 'utf8', () => {});

@@ -1,4337 +1,4336 @@
 {
-  "Tench": [
+  "TENCH": [
     "animal",
     "animal-fish"
   ],
-  "Goldfish": [
+  "GOLDFISH": [
     "animal",
     "animal-fish"
   ],
-  "Great White Shark": [
+  "GREAT WHITE SHARK": [
     "animal",
     "animal-fish"
   ],
-  "Tiger Shark": [
+  "TIGER SHARK": [
     "animal",
     "animal-fish"
   ],
-  "Hammerhead Shark": [
+  "HAMMERHEAD SHARK": [
     "animal",
     "animal-fish"
   ],
-  "Electric Ray": [
+  "ELECTRIC RAY": [
     "animal",
     "animal-fish"
   ],
-  "Stingray": [
+  "STINGRAY": [
     "animal",
     "animal-fish"
   ],
-  "Cock": [
+  "COCK": [
     "animal",
     "animal-bird"
   ],
-  "Hen": [
+  "HEN": [
     "animal",
     "animal-bird"
   ],
-  "Ostrich": [
+  "OSTRICH": [
     "animal",
     "animal-bird"
   ],
-  "Brambling": [
+  "BRAMBLING": [
     "animal",
     "animal-bird"
   ],
-  "Goldfinch": [
+  "GOLDFINCH": [
     "animal",
     "animal-bird"
   ],
-  "House Finch": [
+  "HOUSE FINCH": [
     "animal",
     "animal-bird"
   ],
-  "Junco": [
+  "JUNCO": [
     "animal",
     "animal-bird"
   ],
-  "Indigo Bunting": [
+  "INDIGO BUNTING": [
     "animal",
     "animal-bird"
   ],
-  "American Robin": [
+  "AMERICAN ROBIN": [
     "animal",
     "animal-bird"
   ],
-  "Bulbul": [
+  "BULBUL": [
     "animal",
     "animal-bird"
   ],
-  "Jay": [
+  "JAY": [
     "animal",
     "animal-bird"
   ],
-  "Magpie": [
+  "MAGPIE": [
     "animal",
     "animal-bird"
   ],
-  "Chickadee": [
+  "CHICKADEE": [
     "animal",
     "animal-bird"
   ],
-  "American Dipper": [
+  "AMERICAN DIPPER": [
     "animal",
     "animal-bird"
   ],
-  "Kite": [
+  "KITE": [
     "animal",
     "animal-bird"
   ],
-  "Bald Eagle": [
+  "BALD EAGLE": [
     "animal",
     "animal-bird"
   ],
-  "Vulture": [
+  "VULTURE": [
     "animal",
     "animal-bird"
   ],
-  "Great Grey Owl": [
+  "GREAT GREY OWL": [
     "animal",
     "animal-bird"
   ],
-  "Fire Salamander": [
+  "FIRE SALAMANDER": [
     "animal",
     "animal-amphibian"
   ],
-  "Smooth Newt": [
+  "SMOOTH NEWT": [
     "animal",
     "animal-amphibian"
   ],
-  "Newt": [
+  "NEWT": [
     "animal",
     "animal-amphibian"
   ],
-  "Spotted Salamander": [
+  "SPOTTED SALAMANDER": [
     "animal",
     "animal-amphibian"
   ],
-  "Axolotl": [
+  "AXOLOTL": [
     "animal",
     "animal-amphibian"
   ],
-  "American Bullfrog": [
+  "AMERICAN BULLFROG": [
     "animal",
     "animal-amphibian"
   ],
-  "Tree Frog": [
+  "TREE FROG": [
     "animal",
     "animal-amphibian"
   ],
-  "Tailed Frog": [
+  "TAILED FROG": [
     "animal",
     "animal-amphibian"
   ],
-  "Loggerhead Sea Turtle": [
+  "LOGGERHEAD SEA TURTLE": [
     "animal",
     "animal-amphibian"
   ],
-  "Leatherback Sea Turtle": [
+  "LEATHERBACK SEA TURTLE": [
     "animal",
     "animal-amphibian"
   ],
-  "Mud Turtle": [
+  "MUD TURTLE": [
     "animal",
     "animal-amphibian"
   ],
-  "Terrapin": [
+  "TERRAPIN": [
     "animal",
     "animal-amphibian"
   ],
-  "Box Turtle": [
+  "BOX TURTLE": [
     "animal",
     "animal-amphibian"
   ],
-  "Banded Gecko": [
+  "BANDED GECKO": [
     "animal",
     "animal-reptile"
   ],
-  "Green Iguana": [
+  "GREEN IGUANA": [
     "animal",
     "animal-reptile"
   ],
-  "Carolina Anole": [
+  "CAROLINA ANOLE": [
     "animal",
     "animal-reptile"
   ],
-  "Desert Grassland Whiptail Lizard": [
+  "DESERT GRASSLAND WHIPTAIL LIZARD": [
     "animal",
     "animal-reptile"
   ],
-  "Agama": [
+  "AGAMA": [
     "animal",
     "animal-reptile"
   ],
-  "Frilled-necked Lizard": [
+  "FRILLED-NECKED LIZARD": [
     "animal",
     "animal-reptile"
   ],
-  "Alligator Lizard": [
+  "ALLIGATOR LIZARD": [
     "animal",
     "animal-reptile"
   ],
-  "Gila Monster": [
+  "GILA MONSTER": [
     "animal",
     "animal-reptile"
   ],
-  "European Green Lizard": [
+  "EUROPEAN GREEN LIZARD": [
     "animal",
     "animal-reptile"
   ],
-  "Chameleon": [
+  "CHAMELEON": [
     "animal",
     "animal-reptile"
   ],
-  "Komodo Dragon": [
+  "KOMODO DRAGON": [
     "animal",
     "animal-reptile"
   ],
-  "Nile Crocodile": [
+  "NILE CROCODILE": [
     "animal",
     "animal-reptile"
   ],
-  "American Alligator": [
+  "AMERICAN ALLIGATOR": [
     "animal",
     "animal-reptile"
   ],
-  "Triceratops": [
+  "TRICERATOPS": [
     "animal",
     "animal-reptile"
   ],
-  "Worm Snake": [
+  "WORM SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Ring-necked Snake": [
+  "RING-NECKED SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Eastern Hog-nosed Snake": [
+  "EASTERN HOG-NOSED SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Smooth Green Snake": [
+  "SMOOTH GREEN SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Kingsnake": [
+  "KINGSNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Garter Snake": [
+  "GARTER SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Water Snake": [
+  "WATER SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Vine Snake": [
+  "VINE SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Night Snake": [
+  "NIGHT SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Boa Constrictor": [
+  "BOA CONSTRICTOR": [
     "animal",
     "animal-reptile"
   ],
-  "African Rock Python": [
+  "AFRICAN ROCK PYTHON": [
     "animal",
     "animal-reptile"
   ],
-  "Indian Cobra": [
+  "INDIAN COBRA": [
     "animal",
     "animal-reptile"
   ],
-  "Green Mamba": [
+  "GREEN MAMBA": [
     "animal",
     "animal-reptile"
   ],
-  "Sea Snake": [
+  "SEA SNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Saharan Horned Viper": [
+  "SAHARAN HORNED VIPER": [
     "animal",
     "animal-reptile"
   ],
-  "Eastern Diamondback Rattlesnake": [
+  "EASTERN DIAMONDBACK RATTLESNAKE": [
     "animal",
     "animal-reptile"
   ],
-  "Sidewinder": [
+  "SIDEWINDER": [
     "animal",
     "animal-reptile"
   ],
-  "Trilobite": [
+  "TRILOBITE": [
     "animal",
     "animal-arthopod"
   ],
-  "Harvestman": [
+  "HARVESTMAN": [
     "animal",
     "animal-arthopod"
   ],
-  "Scorpion": [
+  "SCORPION": [
     "animal",
     "animal-arthopod"
   ],
-  "Yellow Garden Spider": [
+  "YELLOW GARDEN SPIDER": [
     "animal",
     "animal-arthopod"
   ],
-  "Barn Spider": [
+  "BARN SPIDER": [
     "animal",
     "animal-arthopod"
   ],
-  "European Garden Spider": [
+  "EUROPEAN GARDEN SPIDER": [
     "animal",
     "animal-arthopod"
   ],
-  "Southern Black Widow": [
+  "SOUTHERN BLACK WIDOW": [
     "animal",
     "animal-arthopod"
   ],
-  "Tarantula": [
+  "TARANTULA": [
     "animal",
     "animal-arthopod"
   ],
-  "Wolf Spider": [
+  "WOLF SPIDER": [
     "animal",
     "animal-arthopod"
   ],
-  "Tick": [
+  "TICK": [
     "animal",
     "animal-arthopod"
   ],
-  "Centipede": [
+  "CENTIPEDE": [
     "animal",
     "animal-arthopod"
   ],
-  "Black Grouse": [
+  "BLACK GROUSE": [
     "animal",
     "animal-bird"
   ],
-  "Ptarmigan": [
+  "PTARMIGAN": [
     "animal",
     "animal-bird"
   ],
-  "Ruffed Grouse": [
+  "RUFFED GROUSE": [
     "animal",
     "animal-bird"
   ],
-  "Prairie Grouse": [
+  "PRAIRIE GROUSE": [
     "animal",
     "animal-bird"
   ],
-  "Peacock": [
+  "PEACOCK": [
     "animal",
     "animal-bird"
   ],
-  "Quail": [
+  "QUAIL": [
     "animal",
     "animal-bird"
   ],
-  "Partridge": [
+  "PARTRIDGE": [
     "animal",
     "animal-bird"
   ],
-  "Grey Parrot": [
+  "GREY PARROT": [
     "animal",
     "animal-bird"
   ],
-  "Macaw": [
+  "MACAW": [
     "animal",
     "animal-bird"
   ],
-  "Sulphur-crested Cockatoo": [
+  "SULPHUR-CRESTED COCKATOO": [
     "animal",
     "animal-bird"
   ],
-  "Lorikeet": [
+  "LORIKEET": [
     "animal",
     "animal-bird"
   ],
-  "Coucal": [
+  "COUCAL": [
     "animal",
     "animal-bird"
   ],
-  "Bee Eater": [
+  "BEE EATER": [
     "animal",
     "animal-bird"
   ],
-  "Hornbill": [
+  "HORNBILL": [
     "animal",
     "animal-bird"
   ],
-  "Hummingbird": [
+  "HUMMINGBIRD": [
     "animal",
     "animal-bird"
   ],
-  "Jacamar": [
+  "JACAMAR": [
     "animal",
     "animal-bird"
   ],
-  "Toucan": [
+  "TOUCAN": [
     "animal",
     "animal-bird"
   ],
-  "Duck": [
+  "DUCK": [
     "animal",
     "animal-bird"
   ],
-  "Red-breasted Merganser": [
+  "RED-BREASTED MERGANSER": [
     "animal",
     "animal-bird"
   ],
-  "Goose": [
+  "GOOSE": [
     "animal",
     "animal-bird"
   ],
-  "Black Swan": [
+  "BLACK SWAN": [
     "animal",
     "animal-bird"
   ],
-  "Tusker": [
+  "TUSKER": [
     "animal",
     "animal-mammal"
   ],
-  "Echidna": [
+  "ECHIDNA": [
     "animal",
     "animal-mammal"
   ],
-  "Platypus": [
+  "PLATYPUS": [
     "animal",
     "animal-mammal"
   ],
-  "Wallaby": [
+  "WALLABY": [
     "animal",
     "animal-mammal"
   ],
-  "Koala": [
+  "KOALA": [
     "animal",
     "animal-mammal"
   ],
-  "Wombat": [
+  "WOMBAT": [
     "animal",
     "animal-mammal"
   ],
-  "Jellyfish": [
+  "JELLYFISH": [
     "animal",
     "animal-invertebrate"
   ],
-  "Sea Anemone": [
+  "SEA ANEMONE": [
     "animal",
     "animal-invertebrate"
   ],
-  "Brain Coral": [
+  "BRAIN CORAL": [
     "animal",
     "animal-invertebrate"
   ],
-  "Flatworm": [
+  "FLATWORM": [
     "animal",
     "animal-invertebrate"
   ],
-  "Nematode": [
+  "NEMATODE": [
     "animal",
     "animal-invertebrate"
   ],
-  "Conch": [
+  "CONCH": [
     "animal",
     "animal-mollusc"
   ],
-  "Snail": [
+  "SNAIL": [
     "animal",
     "animal-mollusc"
   ],
-  "Slug": [
+  "SLUG": [
     "animal",
     "animal-mollusc"
   ],
-  "Sea Slug": [
+  "SEA SLUG": [
     "animal",
     "animal-mollusc"
   ],
-  "Chiton": [
+  "CHITON": [
     "animal",
     "animal-mollusc"
   ],
-  "Chambered Nautilus": [
+  "CHAMBERED NAUTILUS": [
     "animal",
     "animal-mollusc"
   ],
-  "Dungeness Crab": [
+  "DUNGENESS CRAB": [
     "animal",
     "animal-crustacean"
   ],
-  "Rock Crab": [
+  "ROCK CRAB": [
     "animal",
     "animal-crustacean"
   ],
-  "Fiddler Crab": [
+  "FIDDLER CRAB": [
     "animal",
     "animal-crustacean"
   ],
-  "Red King Crab": [
+  "RED KING CRAB": [
     "animal",
     "animal-crustacean"
   ],
-  "American Lobster": [
+  "AMERICAN LOBSTER": [
     "animal",
     "animal-crustacean"
   ],
-  "Spiny Lobster": [
+  "SPINY LOBSTER": [
     "animal",
     "animal-crustacean"
   ],
-  "Crayfish": [
+  "CRAYFISH": [
     "animal",
     "animal-crustacean"
   ],
-  "Hermit Crab": [
+  "HERMIT CRAB": [
     "animal",
     "animal-crustacean"
   ],
-  "Isopod": [
+  "ISOPOD": [
     "animal",
     "animal-crustacean"
   ],
-  "White Stork": [
+  "WHITE STORK": [
     "animal",
     "animal-bird"
   ],
-  "Black Stork": [
+  "BLACK STORK": [
     "animal",
     "animal-bird"
   ],
-  "Spoonbill": [
+  "SPOONBILL": [
     "animal",
     "animal-bird"
   ],
-  "Flamingo": [
+  "FLAMINGO": [
     "animal",
     "animal-bird"
   ],
-  "Little Blue Heron": [
+  "LITTLE BLUE HERON": [
     "animal",
     "animal-bird"
   ],
-  "Great Egret": [
+  "GREAT EGRET": [
     "animal",
     "animal-bird"
   ],
-  "Bittern": [
+  "BITTERN": [
     "animal",
     "animal-bird"
   ],
-  "Crane": [
+  "CRANE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Limpkin": [
+  "LIMPKIN": [
     "animal",
     "animal-bird"
   ],
-  "Common Gallinule": [
+  "COMMON GALLINULE": [
     "animal",
     "animal-bird"
   ],
-  "American Coot": [
+  "AMERICAN COOT": [
     "animal",
     "animal-bird"
   ],
-  "Bustard": [
+  "BUSTARD": [
     "animal",
     "animal-bird"
   ],
-  "Ruddy Turnstone": [
+  "RUDDY TURNSTONE": [
     "animal",
     "animal-bird"
   ],
-  "Dunlin": [
+  "DUNLIN": [
     "animal",
     "animal-bird"
   ],
-  "Common Redshank": [
+  "COMMON REDSHANK": [
     "animal",
     "animal-bird"
   ],
-  "Dowitcher": [
+  "DOWITCHER": [
     "animal",
     "animal-bird"
   ],
-  "Oystercatcher": [
+  "OYSTERCATCHER": [
     "animal",
     "animal-bird"
   ],
-  "Pelican": [
+  "PELICAN": [
     "animal",
     "animal-bird"
   ],
-  "King Penguin": [
+  "KING PENGUIN": [
     "animal",
     "animal-bird"
   ],
-  "Albatross": [
+  "ALBATROSS": [
     "animal",
     "animal-bird"
   ],
-  "Grey Whale": [
+  "GREY WHALE": [
     "animal",
     "animal-mammal"
   ],
-  "Killer Whale": [
+  "KILLER WHALE": [
     "animal",
     "animal-mammal"
   ],
-  "Dugong": [
+  "DUGONG": [
     "animal",
     "animal-mammal"
   ],
-  "Sea Lion": [
+  "SEA LION": [
     "animal",
     "animal-mammal"
   ],
-  "Chihuahua": [
+  "CHIHUAHUA": [
     "animal",
     "animal-mammal"
   ],
-  "Japanese Chin": [
+  "JAPANESE CHIN": [
     "animal",
     "animal-mammal"
   ],
-  "Maltese": [
+  "MALTESE": [
     "animal",
     "animal-mammal"
   ],
-  "Pekingese": [
+  "PEKINGESE": [
     "animal",
     "animal-mammal"
   ],
-  "Shih Tzu": [
+  "SHIH TZU": [
     "animal",
     "animal-mammal"
   ],
-  "King Charles Spaniel": [
+  "KING CHARLES SPANIEL": [
     "animal",
     "animal-mammal"
   ],
-  "Papillon": [
+  "PAPILLON": [
     "animal",
     "animal-mammal"
   ],
-  "Toy Terrier": [
+  "TOY TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Rhodesian Ridgeback": [
+  "RHODESIAN RIDGEBACK": [
     "animal",
     "animal-mammal"
   ],
-  "Afghan Hound": [
+  "AFGHAN HOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Basset Hound": [
+  "BASSET HOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Beagle": [
+  "BEAGLE": [
     "animal",
     "animal-mammal"
   ],
-  "Bloodhound": [
+  "BLOODHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Bluetick Coonhound": [
+  "BLUETICK COONHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Black And Tan Coonhound": [
+  "BLACK AND TAN COONHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Treeing Walker Coonhound": [
+  "TREEING WALKER COONHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "English Foxhound": [
+  "ENGLISH FOXHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Redbone Coonhound": [
+  "REDBONE COONHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Borzoi": [
+  "BORZOI": [
     "animal",
     "animal-mammal"
   ],
-  "Irish Wolfhound": [
+  "IRISH WOLFHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Italian Greyhound": [
+  "ITALIAN GREYHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Whippet": [
+  "WHIPPET": [
     "animal",
     "animal-mammal"
   ],
-  "Ibizan Hound": [
+  "IBIZAN HOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Norwegian Elkhound": [
+  "NORWEGIAN ELKHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Otterhound": [
+  "OTTERHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Saluki": [
+  "SALUKI": [
     "animal",
     "animal-mammal"
   ],
-  "Scottish Deerhound": [
+  "SCOTTISH DEERHOUND": [
     "animal",
     "animal-mammal"
   ],
-  "Weimaraner": [
+  "WEIMARANER": [
     "animal",
     "animal-mammal"
   ],
-  "Staffordshire Bull Terrier": [
+  "STAFFORDSHIRE BULL TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "American Staffordshire Terrier": [
+  "AMERICAN STAFFORDSHIRE TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Bedlington Terrier": [
+  "BEDLINGTON TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Border Terrier": [
+  "BORDER TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Kerry Blue Terrier": [
+  "KERRY BLUE TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Irish Terrier": [
+  "IRISH TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Norfolk Terrier": [
+  "NORFOLK TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Norwich Terrier": [
+  "NORWICH TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Yorkshire Terrier": [
+  "YORKSHIRE TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Wire Fox Terrier": [
+  "WIRE FOX TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Lakeland Terrier": [
+  "LAKELAND TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Sealyham Terrier": [
+  "SEALYHAM TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Airedale Terrier": [
+  "AIREDALE TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Cairn Terrier": [
+  "CAIRN TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Australian Terrier": [
+  "AUSTRALIAN TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Dandie Dinmont Terrier": [
+  "DANDIE DINMONT TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Boston Terrier": [
+  "BOSTON TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Miniature Schnauzer": [
+  "MINIATURE SCHNAUZER": [
     "animal",
     "animal-mammal"
   ],
-  "Giant Schnauzer": [
+  "GIANT SCHNAUZER": [
     "animal",
     "animal-mammal"
   ],
-  "Standard Schnauzer": [
+  "STANDARD SCHNAUZER": [
     "animal",
     "animal-mammal"
   ],
-  "Scottish Terrier": [
+  "SCOTTISH TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Tibetan Terrier": [
+  "TIBETAN TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Australian Silky Terrier": [
+  "AUSTRALIAN SILKY TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Soft-coated Wheaten Terrier": [
+  "SOFT-COATED WHEATEN TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "West Highland White Terrier": [
+  "WEST HIGHLAND WHITE TERRIER": [
     "animal",
     "animal-mammal"
   ],
-  "Lhasa Apso": [
+  "LHASA APSO": [
     "animal",
     "animal-mammal"
   ],
-  "Flat-Coated Retriever": [
+  "FLAT-COATED RETRIEVER": [
     "animal",
     "animal-mammal"
   ],
-  "Curly-coated Retriever": [
+  "CURLY-COATED RETRIEVER": [
     "animal",
     "animal-mammal"
   ],
-  "Golden Retriever": [
+  "GOLDEN RETRIEVER": [
     "animal",
     "animal-mammal"
   ],
-  "Labrador Retriever": [
+  "LABRADOR RETRIEVER": [
     "animal",
     "animal-mammal"
   ],
-  "Chesapeake Bay Retriever": [
+  "CHESAPEAKE BAY RETRIEVER": [
     "animal",
     "animal-mammal"
   ],
-  "German Shorthaired Pointer": [
+  "GERMAN SHORTHAIRED POINTER": [
     "animal",
     "animal-mammal"
   ],
-  "Vizsla": [
+  "VIZSLA": [
     "animal",
     "animal-mammal"
   ],
-  "English Setter": [
+  "ENGLISH SETTER": [
     "animal",
     "animal-mammal"
   ],
-  "Irish Setter": [
+  "IRISH SETTER": [
     "animal",
     "animal-mammal"
   ],
-  "Gordon Setter": [
+  "GORDON SETTER": [
     "animal",
     "animal-mammal"
   ],
-  "Brittany": [
+  "BRITTANY": [
     "animal",
     "animal-mammal"
   ],
-  "Clumber Spaniel": [
+  "CLUMBER SPANIEL": [
     "animal",
     "animal-mammal"
   ],
-  "English Springer Spaniel": [
+  "ENGLISH SPRINGER SPANIEL": [
     "animal",
     "animal-mammal"
   ],
-  "Welsh Springer Spaniel": [
+  "WELSH SPRINGER SPANIEL": [
     "animal",
     "animal-mammal"
   ],
-  "Cocker Spaniels": [
+  "COCKER SPANIELS": [
     "animal",
     "animal-mammal"
   ],
-  "Sussex Spaniel": [
+  "SUSSEX SPANIEL": [
     "animal",
     "animal-mammal"
   ],
-  "Irish Water Spaniel": [
+  "IRISH WATER SPANIEL": [
     "animal",
     "animal-mammal"
   ],
-  "Kuvasz": [
+  "KUVASZ": [
     "animal",
     "animal-mammal"
   ],
-  "Schipperke": [
+  "SCHIPPERKE": [
     "animal",
     "animal-mammal"
   ],
-  "Groenendael": [
+  "GROENENDAEL": [
     "animal",
     "animal-mammal"
   ],
-  "Malinois": [
+  "MALINOIS": [
     "animal",
     "animal-mammal"
   ],
-  "Briard": [
+  "BRIARD": [
     "animal",
     "animal-mammal"
   ],
-  "Australian Kelpie": [
+  "AUSTRALIAN KELPIE": [
     "animal",
     "animal-mammal"
   ],
-  "Komondor": [
+  "KOMONDOR": [
     "animal",
     "animal-mammal"
   ],
-  "Old English Sheepdog": [
+  "OLD ENGLISH SHEEPDOG": [
     "animal",
     "animal-mammal"
   ],
-  "Shetland Sheepdog": [
+  "SHETLAND SHEEPDOG": [
     "animal",
     "animal-mammal"
   ],
-  "Collie": [
+  "COLLIE": [
     "animal",
     "animal-mammal"
   ],
-  "Border Collie": [
+  "BORDER COLLIE": [
     "animal",
     "animal-mammal"
   ],
-  "Bouvier Des Flandres": [
+  "BOUVIER DES FLANDRES": [
     "animal",
     "animal-mammal"
   ],
-  "Rottweiler": [
+  "ROTTWEILER": [
     "animal",
     "animal-mammal"
   ],
-  "German Shepherd Dog": [
+  "GERMAN SHEPHERD DOG": [
     "animal",
     "animal-mammal"
   ],
-  "Dobermann": [
+  "DOBERMANN": [
     "animal",
     "animal-mammal"
   ],
-  "Miniature Pinscher": [
+  "MINIATURE PINSCHER": [
     "animal",
     "animal-mammal"
   ],
-  "Greater Swiss Mountain Dog": [
+  "GREATER SWISS MOUNTAIN DOG": [
     "animal",
     "animal-mammal"
   ],
-  "Bernese Mountain Dog": [
+  "BERNESE MOUNTAIN DOG": [
     "animal",
     "animal-mammal"
   ],
-  "Appenzeller Sennenhund": [
+  "APPENZELLER SENNENHUND": [
     "animal",
     "animal-mammal"
   ],
-  "Entlebucher Sennenhund": [
+  "ENTLEBUCHER SENNENHUND": [
     "animal",
     "animal-mammal"
   ],
-  "Boxer": [
+  "BOXER": [
     "animal",
     "animal-mammal"
   ],
-  "Bullmastiff": [
+  "BULLMASTIFF": [
     "animal",
     "animal-mammal"
   ],
-  "Tibetan Mastiff": [
+  "TIBETAN MASTIFF": [
     "animal",
     "animal-mammal"
   ],
-  "French Bulldog": [
+  "FRENCH BULLDOG": [
     "animal",
     "animal-mammal"
   ],
-  "Great Dane": [
+  "GREAT DANE": [
     "animal",
     "animal-mammal"
   ],
-  "St. Bernard": [
+  "ST. BERNARD": [
     "animal",
     "animal-mammal"
   ],
-  "Husky": [
+  "HUSKY": [
     "animal",
     "animal-mammal"
   ],
-  "Alaskan Malamute": [
+  "ALASKAN MALAMUTE": [
     "animal",
     "animal-mammal"
   ],
-  "Siberian Husky": [
+  "SIBERIAN HUSKY": [
     "animal",
     "animal-mammal"
   ],
-  "Dalmatian": [
+  "DALMATIAN": [
     "animal",
     "animal-mammal"
   ],
-  "Affenpinscher": [
+  "AFFENPINSCHER": [
     "animal",
     "animal-mammal"
   ],
-  "Basenji": [
+  "BASENJI": [
     "animal",
     "animal-mammal"
   ],
-  "Pug": [
+  "PUG": [
     "animal",
     "animal-mammal"
   ],
-  "Leonberger": [
+  "LEONBERGER": [
     "animal",
     "animal-mammal"
   ],
-  "Newfoundland": [
+  "NEWFOUNDLAND": [
     "animal",
     "animal-mammal"
   ],
-  "Pyrenean Mountain Dog": [
+  "PYRENEAN MOUNTAIN DOG": [
     "animal",
     "animal-mammal"
   ],
-  "Samoyed": [
+  "SAMOYED": [
     "animal",
     "animal-mammal"
   ],
-  "Pomeranian": [
+  "POMERANIAN": [
     "animal",
     "animal-mammal"
   ],
-  "Chow Chow": [
+  "CHOW CHOW": [
     "animal",
     "animal-mammal"
   ],
-  "Keeshond": [
+  "KEESHOND": [
     "animal",
     "animal-mammal"
   ],
-  "Griffon Bruxellois": [
+  "GRIFFON BRUXELLOIS": [
     "animal",
     "animal-mammal"
   ],
-  "Pembroke Welsh Corgi": [
+  "PEMBROKE WELSH CORGI": [
     "animal",
     "animal-mammal"
   ],
-  "Cardigan Welsh Corgi": [
+  "CARDIGAN WELSH CORGI": [
     "animal",
     "animal-mammal"
   ],
-  "Toy Poodle": [
+  "TOY POODLE": [
     "animal",
     "animal-mammal"
   ],
-  "Miniature Poodle": [
+  "MINIATURE POODLE": [
     "animal",
     "animal-mammal"
   ],
-  "Standard Poodle": [
+  "STANDARD POODLE": [
     "animal",
     "animal-mammal"
   ],
-  "Mexican Hairless Dog": [
+  "MEXICAN HAIRLESS DOG": [
     "animal",
     "animal-mammal"
   ],
-  "Grey Wolf": [
+  "GREY WOLF": [
     "animal",
     "animal-mammal"
   ],
-  "Alaskan Tundra Wolf": [
+  "ALASKAN TUNDRA WOLF": [
     "animal",
     "animal-mammal"
   ],
-  "Red Wolf": [
+  "RED WOLF": [
     "animal",
     "animal-mammal"
   ],
-  "Coyote": [
+  "COYOTE": [
     "animal",
     "animal-mammal"
   ],
-  "Dingo": [
+  "DINGO": [
     "animal",
     "animal-mammal"
   ],
-  "Dhole": [
+  "DHOLE": [
     "animal",
     "animal-mammal"
   ],
-  "African Wild Dog": [
+  "AFRICAN WILD DOG": [
     "animal",
     "animal-mammal"
   ],
-  "Hyena": [
+  "HYENA": [
     "animal",
     "animal-mammal"
   ],
-  "Red Fox": [
+  "RED FOX": [
     "animal",
     "animal-mammal"
   ],
-  "Kit Fox": [
+  "KIT FOX": [
     "animal",
     "animal-mammal"
   ],
-  "Arctic Fox": [
+  "ARCTIC FOX": [
     "animal",
     "animal-mammal"
   ],
-  "Grey Fox": [
+  "GREY FOX": [
     "animal",
     "animal-mammal"
   ],
-  "Tabby Cat": [
+  "TABBY CAT": [
     "animal",
     "animal-mammal"
   ],
-  "Tiger Cat": [
+  "TIGER CAT": [
     "animal",
     "animal-mammal"
   ],
-  "Persian Cat": [
+  "PERSIAN CAT": [
     "animal",
     "animal-mammal"
   ],
-  "Siamese Cat": [
+  "SIAMESE CAT": [
     "animal",
     "animal-mammal"
   ],
-  "Egyptian Mau": [
+  "EGYPTIAN MAU": [
     "animal",
     "animal-mammal"
   ],
-  "Cougar": [
+  "COUGAR": [
     "animal",
     "animal-mammal"
   ],
-  "Lynx": [
+  "LYNX": [
     "animal",
     "animal-mammal"
   ],
-  "Leopard": [
+  "LEOPARD": [
     "animal",
     "animal-mammal"
   ],
-  "Snow Leopard": [
+  "SNOW LEOPARD": [
     "animal",
     "animal-mammal"
   ],
-  "Jaguar": [
+  "JAGUAR": [
     "animal",
     "animal-mammal"
   ],
-  "Lion": [
+  "LION": [
     "animal",
     "animal-mammal"
   ],
-  "Tiger": [
+  "TIGER": [
     "animal",
     "animal-mammal"
   ],
-  "Cheetah": [
+  "CHEETAH": [
     "animal",
     "animal-mammal"
   ],
-  "Brown Bear": [
+  "BROWN BEAR": [
     "animal",
     "animal-mammal"
   ],
-  "American Black Bear": [
+  "AMERICAN BLACK BEAR": [
     "animal",
     "animal-mammal"
   ],
-  "Polar Bear": [
+  "POLAR BEAR": [
     "animal",
     "animal-mammal"
   ],
-  "Sloth Bear": [
+  "SLOTH BEAR": [
     "animal",
     "animal-mammal"
   ],
-  "Mongoose": [
+  "MONGOOSE": [
     "animal",
     "animal-mammal"
   ],
-  "Meerkat": [
+  "MEERKAT": [
     "animal",
     "animal-mammal"
   ],
-  "Tiger Beetle": [
+  "TIGER BEETLE": [
     "animal",
     "animal-insect"
   ],
-  "Ladybug": [
+  "LADYBUG": [
     "animal",
     "animal-insect"
   ],
-  "Ground Beetle": [
+  "GROUND BEETLE": [
     "animal",
     "animal-insect"
   ],
-  "Longhorn Beetle": [
+  "LONGHORN BEETLE": [
     "animal",
     "animal-insect"
   ],
-  "Leaf Beetle": [
+  "LEAF BEETLE": [
     "animal",
     "animal-insect"
   ],
-  "Dung Beetle": [
+  "DUNG BEETLE": [
     "animal",
     "animal-insect"
   ],
-  "Rhinoceros Beetle": [
+  "RHINOCEROS BEETLE": [
     "animal",
     "animal-insect"
   ],
-  "Weevil": [
+  "WEEVIL": [
     "animal",
     "animal-insect"
   ],
-  "Fly": [
+  "FLY": [
     "animal",
     "animal-insect"
   ],
-  "Bee": [
+  "BEE": [
     "animal",
     "animal-insect"
   ],
-  "Ant": [
+  "ANT": [
     "animal",
     "animal-insect"
   ],
-  "Grasshopper": [
+  "GRASSHOPPER": [
     "animal",
     "animal-insect"
   ],
-  "Cricket": [
+  "CRICKET": [
     "animal",
     "animal-insect"
   ],
-  "Stick Insect": [
+  "STICK INSECT": [
     "animal",
     "animal-insect"
   ],
-  "Cockroach": [
+  "COCKROACH": [
     "animal",
     "animal-insect"
   ],
-  "Mantis": [
+  "MANTIS": [
     "animal",
     "animal-insect"
   ],
-  "Cicada": [
+  "CICADA": [
     "animal",
     "animal-insect"
   ],
-  "Leafhopper": [
+  "LEAFHOPPER": [
     "animal",
     "animal-insect"
   ],
-  "Lacewing": [
+  "LACEWING": [
     "animal",
     "animal-insect"
   ],
-  "Dragonfly": [
+  "DRAGONFLY": [
     "animal",
     "animal-insect"
   ],
-  "Damselfly": [
+  "DAMSELFLY": [
     "animal",
     "animal-insect"
   ],
-  "Red Admiral": [
+  "RED ADMIRAL": [
     "animal",
     "animal-insect"
   ],
-  "Ringlet": [
+  "RINGLET": [
     "animal",
     "animal-insect"
   ],
-  "Monarch Butterfly": [
+  "MONARCH BUTTERFLY": [
     "animal",
     "animal-insect"
   ],
-  "Small White": [
+  "SMALL WHITE": [
     "animal",
     "animal-insect"
   ],
-  "Sulphur Butterfly": [
+  "SULPHUR BUTTERFLY": [
     "animal",
     "animal-insect"
   ],
-  "Gossamer-winged Butterfly": [
+  "GOSSAMER-WINGED BUTTERFLY": [
     "animal",
     "animal-insect"
   ],
-  "Starfish": [
+  "STARFISH": [
     "animal",
     "animal-starfish and sea urchins"
   ],
-  "Sea Urchin": [
+  "SEA URCHIN": [
     "animal",
     "animal-starfish and sea urchins"
   ],
-  "Sea Cucumber": [
+  "SEA CUCUMBER": [
     "animal",
     "animal-starfish and sea urchins"
   ],
-  "Cottontail Rabbit": [
+  "COTTONTAIL RABBIT": [
     "animal",
     "animal-mammal"
   ],
-  "Hare": [
+  "HARE": [
     "animal",
     "animal-mammal"
   ],
-  "Angora Rabbit": [
+  "ANGORA RABBIT": [
     "animal",
     "animal-mammal"
   ],
-  "Hamster": [
+  "HAMSTER": [
     "animal",
     "animal-mammal"
   ],
-  "Porcupine": [
+  "PORCUPINE": [
     "animal",
     "animal-mammal"
   ],
-  "Fox Squirrel": [
+  "FOX SQUIRREL": [
     "animal",
     "animal-mammal"
   ],
-  "Marmot": [
+  "MARMOT": [
     "animal",
     "animal-mammal"
   ],
-  "Beaver": [
+  "BEAVER": [
     "animal",
     "animal-mammal"
   ],
-  "Guinea Pig": [
+  "GUINEA PIG": [
     "animal",
     "animal-mammal"
   ],
-  "Common Sorrel": [
+  "COMMON SORREL": [
     "animal",
     "animal-mammal"
   ],
-  "Zebra": [
+  "ZEBRA": [
     "animal",
     "animal-mammal"
   ],
-  "Pig": [
+  "PIG": [
     "animal",
     "animal-mammal"
   ],
-  "Wild Boar": [
+  "WILD BOAR": [
     "animal",
     "animal-mammal"
   ],
-  "Warthog": [
+  "WARTHOG": [
     "animal",
     "animal-mammal"
   ],
-  "Hippopotamus": [
+  "HIPPOPOTAMUS": [
     "animal",
     "animal-mammal"
   ],
-  "Ox": [
+  "OX": [
     "animal",
     "animal-mammal"
   ],
-  "Water Buffalo": [
+  "WATER BUFFALO": [
     "animal",
     "animal-mammal"
   ],
-  "Bison": [
+  "BISON": [
     "animal",
     "animal-mammal"
   ],
-  "Ram": [
+  "RAM": [
     "animal",
     "animal-mammal"
   ],
-  "Bighorn Sheep": [
+  "BIGHORN SHEEP": [
     "animal",
     "animal-mammal"
   ],
-  "Alpine Ibex": [
+  "ALPINE IBEX": [
     "animal",
     "animal-mammal"
   ],
-  "Hartebeest": [
+  "HARTEBEEST": [
     "animal",
     "animal-mammal"
   ],
-  "Impala": [
+  "IMPALA": [
     "animal",
     "animal-mammal"
   ],
-  "Gazelle": [
+  "GAZELLE": [
     "animal",
     "animal-mammal"
   ],
-  "Dromedary": [
+  "DROMEDARY": [
     "animal",
     "animal-mammal"
   ],
-  "Llama": [
+  "LLAMA": [
     "animal",
     "animal-mammal"
   ],
-  "Weasel": [
+  "WEASEL": [
     "animal",
     "animal-mammal"
   ],
-  "Mink": [
+  "MINK": [
     "animal",
     "animal-mammal"
   ],
-  "European Polecat": [
+  "EUROPEAN POLECAT": [
     "animal",
     "animal-mammal"
   ],
-  "Black-footed Ferret": [
+  "BLACK-FOOTED FERRET": [
     "animal",
     "animal-mammal"
   ],
-  "Otter": [
+  "OTTER": [
     "animal",
     "animal-mammal"
   ],
-  "Skunk": [
+  "SKUNK": [
     "animal",
     "animal-mammal"
   ],
-  "Badger": [
+  "BADGER": [
     "animal",
     "animal-mammal"
   ],
-  "Armadillo": [
+  "ARMADILLO": [
     "animal",
     "animal-mammal"
   ],
-  "Three-toed Sloth": [
+  "THREE-TOED SLOTH": [
     "animal",
     "animal-mammal"
   ],
-  "Orangutan": [
+  "ORANGUTAN": [
     "animal",
     "animal-mammal"
   ],
-  "Gorilla": [
+  "GORILLA": [
     "animal",
     "animal-mammal"
   ],
-  "Chimpanzee": [
+  "CHIMPANZEE": [
     "animal",
     "animal-mammal"
   ],
-  "Gibbon": [
+  "GIBBON": [
     "animal",
     "animal-mammal"
   ],
-  "Siamang": [
+  "SIAMANG": [
     "animal",
     "animal-mammal"
   ],
-  "Guenon": [
+  "GUENON": [
     "animal",
     "animal-mammal"
   ],
-  "Patas Monkey": [
+  "PATAS MONKEY": [
     "animal",
     "animal-mammal"
   ],
-  "Baboon": [
+  "BABOON": [
     "animal",
     "animal-mammal"
   ],
-  "Macaque": [
+  "MACAQUE": [
     "animal",
     "animal-mammal"
   ],
-  "Langur": [
+  "LANGUR": [
     "animal",
     "animal-mammal"
   ],
-  "Black-and-white Colobus": [
+  "BLACK-AND-WHITE COLOBUS": [
     "animal",
     "animal-mammal"
   ],
-  "Proboscis Monkey": [
+  "PROBOSCIS MONKEY": [
     "animal",
     "animal-mammal"
   ],
-  "Marmoset": [
+  "MARMOSET": [
     "animal",
     "animal-mammal"
   ],
-  "White-headed Capuchin": [
+  "WHITE-HEADED CAPUCHIN": [
     "animal",
     "animal-mammal"
   ],
-  "Howler Monkey": [
+  "HOWLER MONKEY": [
     "animal",
     "animal-mammal"
   ],
-  "Titi": [
+  "TITI": [
     "animal",
     "animal-mammal"
   ],
-  "Geoffroy's Spider Monkey": [
+  "GEOFFROY'S SPIDER MONKEY": [
     "animal",
     "animal-mammal"
   ],
-  "Common Squirrel Monkey": [
+  "COMMON SQUIRREL MONKEY": [
     "animal",
     "animal-mammal"
   ],
-  "Ring-tailed Lemur": [
+  "RING-TAILED LEMUR": [
     "animal",
     "animal-mammal"
   ],
-  "Indri": [
+  "INDRI": [
     "animal",
     "animal-mammal"
   ],
-  "Asian Elephant": [
+  "ASIAN ELEPHANT": [
     "animal",
     "animal-mammal"
   ],
-  "African Bush Elephant": [
+  "AFRICAN BUSH ELEPHANT": [
     "animal",
     "animal-mammal"
   ],
-  "Red Panda": [
+  "RED PANDA": [
     "animal",
     "animal-mammal"
   ],
-  "Giant Panda": [
+  "GIANT PANDA": [
     "animal",
     "animal-mammal"
   ],
-  "Snoek": [
+  "SNOEK": [
     "animal",
     "animal-fish"
   ],
-  "Eel": [
+  "EEL": [
     "animal",
     "animal-fish"
   ],
-  "Coho Salmon": [
+  "COHO SALMON": [
     "animal",
     "animal-fish"
   ],
-  "Rock Beauty": [
+  "ROCK BEAUTY": [
     "animal",
     "animal-fish"
   ],
-  "Clownfish": [
+  "CLOWNFISH": [
     "animal",
     "animal-fish"
   ],
-  "Sturgeon": [
+  "STURGEON": [
     "animal",
     "animal-fish"
   ],
-  "Garfish": [
+  "GARFISH": [
     "animal",
     "animal-fish"
   ],
-  "Lionfish": [
+  "LIONFISH": [
     "animal",
     "animal-fish"
   ],
-  "Pufferfish": [
+  "PUFFERFISH": [
     "animal",
     "animal-fish"
   ],
-  "Abacus": [
+  "ABACUS": [
     "item",
     "item-stationery"
   ],
-  "Abaya": [
+  "ABAYA": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Academic Gown": [
+  "ACADEMIC GOWN": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-outerwear"
   ],
-  "Accordion": [
+  "ACCORDION": [
     "item",
     "item-music",
     "item-music-keyboard"
   ],
-  "Acoustic Guitar": [
+  "ACOUSTIC GUITAR": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Aircraft Carrier": [
+  "AIRCRAFT CARRIER": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Airliner": [
+  "AIRLINER": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Airship": [
+  "AIRSHIP": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Altar": [
+  "ALTAR": [
     "item",
     "item-architecture"
   ],
-  "Ambulance": [
+  "AMBULANCE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Amphibious Vehicle": [
+  "AMPHIBIOUS VEHICLE": [
     "item",
     "item-vehicle",
     "item-vehicle-amphibious"
   ],
-  "Analog Clock": [
+  "ANALOG CLOCK": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Apiary": [
+  "APIARY": [
     "item",
     "item-architecture"
   ],
-  "Apron": [
+  "APRON": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-outerwear"
   ],
-  "Waste Container": [
+  "WASTE CONTAINER": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Assault Rifle": [
+  "ASSAULT RIFLE": [
     "item",
     "item-sports"
   ],
-  "Backpack": [
+  "BACKPACK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-bag"
   ],
-  "Bakery": [
+  "BAKERY": [
     "item",
     "item-architecture"
   ],
-  "Balance Beam": [
+  "BALANCE BEAM": [
     "item",
     "item-sports"
   ],
-  "Balloon": [
+  "BALLOON": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Ballpoint Pen": [
+  "BALLPOINT PEN": [
     "item",
     "item-stationery"
   ],
-  "Band-Aid": [
+  "BAND-AID": [
     "item",
     "item-health and beauty"
   ],
-  "Banjo": [
+  "BANJO": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Baluster": [
+  "BALUSTER": [
     "item",
     "item-architecture"
   ],
-  "Barbell": [
+  "BARBELL": [
     "item",
     "item-sports"
   ],
-  "Barber Chair": [
+  "BARBER CHAIR": [
     "item",
     "item-furniture"
   ],
-  "Barbershop": [
+  "BARBERSHOP": [
     "item",
     "item-architecture"
   ],
-  "Barn": [
+  "BARN": [
     "item",
     "item-architecture"
   ],
-  "Barometer": [
+  "BAROMETER": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Barrel": [
+  "BARREL": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Wheelbarrow": [
+  "WHEELBARROW": [
     "item",
     "item-home and garden",
     "item-home and garden-garden"
   ],
-  "Baseball": [
+  "BASEBALL": [
     "item",
     "item-sports"
   ],
-  "Basketball": [
+  "BASKETBALL": [
     "item",
     "item-sports"
   ],
-  "Bassinet": [
+  "BASSINET": [
     "item",
     "item-furniture"
   ],
-  "Bassoon": [
+  "BASSOON": [
     "item",
     "item-music",
     "item-music-woodwind"
   ],
-  "Swimming Cap": [
+  "SWIMMING CAP": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-swimwear"
   ],
-  "Bath Towel": [
+  "BATH TOWEL": [
     "item",
     "item-home and garden",
     "item-home and garden-bathroom"
   ],
-  "Bathtub": [
+  "BATHTUB": [
     "item",
     "item-home and garden",
     "item-home and garden-bathroom"
   ],
-  "Station Wagon": [
+  "STATION WAGON": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Lighthouse": [
+  "LIGHTHOUSE": [
     "item",
     "item-architecture"
   ],
-  "Beaker": [
+  "BEAKER": [
     "item",
     "item-equipment"
   ],
-  "Military Cap": [
+  "MILITARY CAP": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Beer Bottle": [
+  "BEER BOTTLE": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Beer Glass": [
+  "BEER GLASS": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Bell-cot": [
+  "BELL-COT": [
     "item",
     "item-architecture"
   ],
-  "Bib": [
+  "BIB": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Tandem Bicycle": [
+  "TANDEM BICYCLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Bikini": [
+  "BIKINI": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-swimwear"
   ],
-  "Ring Binder": [
+  "RING BINDER": [
     "item",
     "item-stationery"
   ],
-  "Binoculars": [
+  "BINOCULARS": [
     "item",
     "item-equipment"
   ],
-  "Birdhouse": [
+  "BIRDHOUSE": [
     "item",
     "item-architecture"
   ],
-  "Boathouse": [
+  "BOATHOUSE": [
     "item",
     "item-architecture"
   ],
-  "Bobsleigh": [
+  "BOBSLEIGH": [
     "item",
     "item-sports"
   ],
-  "Bolo Tie": [
+  "BOLO TIE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Poke Bonnet": [
+  "POKE BONNET": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Bookcase": [
+  "BOOKCASE": [
     "item",
     "item-furniture"
   ],
-  "Bookstore": [
+  "BOOKSTORE": [
     "item",
     "item-architecture"
   ],
-  "Bottle Cap": [
+  "BOTTLE CAP": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Bow": [
+  "BOW": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Bow Tie": [
+  "BOW TIE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Brass": [
+  "BRASS": [
     "item",
     "item-architecture"
   ],
-  "Bra": [
+  "BRA": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-underwear"
   ],
-  "Breakwater": [
+  "BREAKWATER": [
     "item",
     "item-architecture"
   ],
-  "Breastplate": [
+  "BREASTPLATE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-religious and traditional"
   ],
-  "Broom": [
+  "BROOM": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Bucket": [
+  "BUCKET": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Buckle": [
+  "BUCKLE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-belt"
   ],
-  "Bulletproof Vest": [
+  "BULLETPROOF VEST": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-miscellaneous"
   ],
-  "High-speed Train": [
+  "HIGH-SPEED TRAIN": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Butcher Shop": [
+  "BUTCHER SHOP": [
     "item",
     "item-architecture"
   ],
-  "Taxicab": [
+  "TAXICAB": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Cauldron": [
+  "CAULDRON": [
     "item",
     "item-kitchen",
     "item-kitchen-cookware"
   ],
-  "Candle": [
+  "CANDLE": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Cannon": [
+  "CANNON": [
     "item",
     "item-architecture"
   ],
-  "Canoe": [
+  "CANOE": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Can Opener": [
+  "CAN OPENER": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Cardigan": [
+  "CARDIGAN": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-sweater"
   ],
-  "Car Mirror": [
+  "CAR MIRROR": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Carousel": [
+  "CAROUSEL": [
     "item",
     "item-architecture"
   ],
-  "Tool Kit": [
+  "TOOL KIT": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Carton": [
+  "CARTON": [
     "item",
     "item-miscellaneous"
   ],
-  "Car Wheel": [
+  "CAR WHEEL": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Automated Teller Machine": [
+  "AUTOMATED TELLER MACHINE": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Cassette": [
+  "CASSETTE": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Cassette Player": [
+  "CASSETTE PLAYER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Castle": [
+  "CASTLE": [
     "item",
     "item-architecture"
   ],
-  "Catamaran": [
+  "CATAMARAN": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "CD Player": [
+  "CD PLAYER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Cello": [
+  "CELLO": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Mobile Phone": [
+  "MOBILE PHONE": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Chain": [
+  "CHAIN": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Chain-link Fence": [
+  "CHAIN-LINK FENCE": [
     "item",
     "item-architecture"
   ],
-  "Chain Mail": [
+  "CHAIN MAIL": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-religious and traditional"
   ],
-  "Chainsaw": [
+  "CHAINSAW": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Chest": [
+  "CHEST": [
     "item",
     "item-furniture"
   ],
-  "Chiffonier": [
+  "CHIFFONIER": [
     "item",
     "item-furniture"
   ],
-  "Chime": [
+  "CHIME": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "China Cabinet": [
+  "CHINA CABINET": [
     "item",
     "item-furniture"
   ],
-  "Christmas Stocking": [
+  "CHRISTMAS STOCKING": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Church": [
+  "CHURCH": [
     "item",
     "item-architecture"
   ],
-  "Movie Theater": [
+  "MOVIE THEATER": [
     "item",
     "item-architecture"
   ],
-  "Cleaver": [
+  "CLEAVER": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Cliff Dwelling": [
+  "CLIFF DWELLING": [
     "item",
     "item-architecture"
   ],
-  "Cloak": [
+  "CLOAK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-miscellaneous"
   ],
-  "Clogs": [
+  "CLOGS": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-footwear"
   ],
-  "Cocktail Shaker": [
+  "COCKTAIL SHAKER": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Coffee Mug": [
+  "COFFEE MUG": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Coffeemaker": [
+  "COFFEEMAKER": [
     "item",
     "item-kitchen",
     "item-kitchen-appliance"
   ],
-  "Coil": [
+  "COIL": [
     "item",
     "item-miscellaneous"
   ],
-  "Combination Lock": [
+  "COMBINATION LOCK": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Computer Keyboard": [
+  "COMPUTER KEYBOARD": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Confectionery Store": [
+  "CONFECTIONERY STORE": [
     "item",
     "item-architecture"
   ],
-  "Container Ship": [
+  "CONTAINER SHIP": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Convertible": [
+  "CONVERTIBLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Corkscrew": [
+  "CORKSCREW": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Cornet": [
+  "CORNET": [
     "item",
     "item-music",
     "item-music-brass"
   ],
-  "Cowboy Boot": [
+  "COWBOY BOOT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-footwear"
   ],
-  "Cowboy Hat": [
+  "COWBOY HAT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Cradle": [
+  "CRADLE": [
     "item",
     "item-furniture"
   ],
-  "Crash Helmet": [
+  "CRASH HELMET": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-miscellaneous"
   ],
-  "Crate": [
+  "CRATE": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Infant Bed": [
+  "INFANT BED": [
     "item",
     "item-furniture"
   ],
-  "Crock Pot": [
+  "CROCK POT": [
     "item",
     "item-appliance"
   ],
-  "Croquet Ball": [
+  "CROQUET BALL": [
     "item",
     "item-sports"
   ],
-  "Crutch": [
+  "CRUTCH": [
     "item",
     "item-equipment"
   ],
-  "Cuirass": [
+  "CUIRASS": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-religious and traditional"
   ],
-  "Dam": [
+  "DAM": [
     "item",
     "item-architecture"
   ],
-  "Desk": [
+  "DESK": [
     "item",
     "item-furniture"
   ],
-  "Desktop Computer": [
+  "DESKTOP COMPUTER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Rotary Dial Telephone": [
+  "ROTARY DIAL TELEPHONE": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Diaper": [
+  "DIAPER": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-underwear"
   ],
-  "Digital Clock": [
+  "DIGITAL CLOCK": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Digital Watch": [
+  "DIGITAL WATCH": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Dining Table": [
+  "DINING TABLE": [
     "item",
     "item-furniture"
   ],
-  "Dishcloth": [
+  "DISHCLOTH": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Dishwasher": [
+  "DISHWASHER": [
     "item",
     "item-appliances"
   ],
-  "Disc Brake": [
+  "DISC BRAKE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Dock": [
+  "DOCK": [
     "item",
     "item-architecture"
   ],
-  "Dog Sled": [
+  "DOG SLED": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Dome": [
+  "DOME": [
     "item",
     "item-architecture"
   ],
-  "Doormat": [
+  "DOORMAT": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Drilling Rig": [
+  "DRILLING RIG": [
     "item",
     "item-architecture"
   ],
-  "Drum": [
+  "DRUM": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "Drumstick": [
+  "DRUMSTICK": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "Dumbbell": [
+  "DUMBBELL": [
     "item",
     "item-sports"
   ],
-  "Dutch Oven": [
+  "DUTCH OVEN": [
     "item",
     "item-appliances"
   ],
-  "Electric Fan": [
+  "ELECTRIC FAN": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Electric Guitar": [
+  "ELECTRIC GUITAR": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Electric Locomotive": [
+  "ELECTRIC LOCOMOTIVE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Entertainment Center": [
+  "ENTERTAINMENT CENTER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Envelope": [
+  "ENVELOPE": [
     "item",
     "item-stationery"
   ],
-  "Espresso Machine": [
+  "ESPRESSO MACHINE": [
     "item",
     "item-appliances"
   ],
-  "Face Powder": [
+  "FACE POWDER": [
     "item",
     "item-health and beauty"
   ],
-  "Feather Boa": [
+  "FEATHER BOA": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Filing Cabinet": [
+  "FILING CABINET": [
     "item",
     "item-stationery"
   ],
-  "Fireboat": [
+  "FIREBOAT": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Fire Engine": [
+  "FIRE ENGINE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Fire Screen Sheet": [
+  "FIRE SCREEN SHEET": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Flagpole": [
+  "FLAGPOLE": [
     "item",
     "item-architecture"
   ],
-  "Flute": [
+  "FLUTE": [
     "item",
     "item-music",
     "item-music-flute"
   ],
-  "Folding Chair": [
+  "FOLDING CHAIR": [
     "item",
     "item-furniture"
   ],
-  "Football Helmet": [
+  "FOOTBALL HELMET": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-miscellaneous"
   ],
-  "Forklift": [
+  "FORKLIFT": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Fountain": [
+  "FOUNTAIN": [
     "item",
     "item-architecture"
   ],
-  "Fountain Pen": [
+  "FOUNTAIN PEN": [
     "item",
     "item-stationery"
   ],
-  "Four-poster Bed": [
+  "FOUR-POSTER BED": [
     "item",
     "item-furniture"
   ],
-  "Freight Car": [
+  "FREIGHT CAR": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "French Horn": [
+  "FRENCH HORN": [
     "item",
     "item-music",
     "item-music-brass"
   ],
-  "Frying Pan": [
+  "FRYING PAN": [
     "item",
     "item-kitchen",
     "item-kitchen-cookware"
   ],
-  "Fur Coat": [
+  "FUR COAT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-religious and traditional"
   ],
-  "Garbage Truck": [
+  "GARBAGE TRUCK": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Gas Mask": [
+  "GAS MASK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Gas Pump": [
+  "GAS PUMP": [
     "item",
     "item-architecture"
   ],
-  "Goblet": [
+  "GOBLET": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Go-kart": [
+  "GO-KART": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Golf Ball": [
+  "GOLF BALL": [
     "item",
     "item-sports"
   ],
-  "Golf Cart": [
+  "GOLF CART": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Gondola": [
+  "GONDOLA": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Gong": [
+  "GONG": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "Gown": [
+  "GOWN": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-dress"
   ],
-  "Grand Piano": [
+  "GRAND PIANO": [
     "item",
     "item-music",
     "item-music-keyboard"
   ],
-  "Greenhouse": [
+  "GREENHOUSE": [
     "item",
     "item-architecture"
   ],
-  "Grille": [
+  "GRILLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Grocery Store": [
+  "GROCERY STORE": [
     "item",
     "item-architecture"
   ],
-  "Guillotine": [
+  "GUILLOTINE": [
     "item",
     "item-stationery"
   ],
-  "Barrette": [
+  "BARRETTE": [
     "item",
     "item-health and beauty"
   ],
-  "Hair Spray": [
+  "HAIR SPRAY": [
     "item",
     "item-health and beauty"
   ],
-  "Half-track": [
+  "HALF-TRACK": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Hammer": [
+  "HAMMER": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Hamper": [
+  "HAMPER": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Hair Dryer": [
+  "HAIR DRYER": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Hand-held Computer": [
+  "HAND-HELD COMPUTER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Handkerchief": [
+  "HANDKERCHIEF": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Hard Disk Drive": [
+  "HARD DISK DRIVE": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Harmonica": [
+  "HARMONICA": [
     "item",
     "item-music",
     "item-music-woodwind"
   ],
-  "Harp": [
+  "HARP": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Harvester": [
+  "HARVESTER": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Hatchet": [
+  "HATCHET": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Holster": [
+  "HOLSTER": [
     "item",
     "item-sports"
   ],
-  "Home Theater": [
+  "HOME THEATER": [
     "item",
     "item-architecture"
   ],
-  "Honeycomb": [
+  "HONEYCOMB": [
     "nature",
     "nature-miscellaneous"
   ],
-  "Hook": [
+  "HOOK": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Hoop Skirt": [
+  "HOOP SKIRT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-skirt"
   ],
-  "Horizontal Bar": [
+  "HORIZONTAL BAR": [
     "item",
     "item-sports"
   ],
-  "Horse-drawn Vehicle": [
+  "HORSE-DRAWN VEHICLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Hourglass": [
+  "HOURGLASS": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "IPod": [
+  "IPOD": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Clothes Iron": [
+  "CLOTHES IRON": [
     "item",
     "item-appliances"
   ],
-  "Jack-o'-lantern": [
+  "JACK-O'-LANTERN": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Jeans": [
+  "JEANS": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-pants"
   ],
-  "Jeep": [
+  "JEEP": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "T-shirt": [
+  "T-SHIRT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-sweater"
   ],
-  "Jigsaw Puzzle": [
+  "JIGSAW PUZZLE": [
     "item",
     "item-toys and hobbies"
   ],
-  "Pulled Rickshaw": [
+  "PULLED RICKSHAW": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Joystick": [
+  "JOYSTICK": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Kimono": [
+  "KIMONO": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-religious and traditional"
   ],
-  "Knee Pad": [
+  "KNEE PAD": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-miscellaneous"
   ],
-  "Knot": [
+  "KNOT": [
     "item",
     "item-miscellaneous"
   ],
-  "Lab Coat": [
+  "LAB COAT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-miscellaneous"
   ],
-  "Ladle": [
+  "LADLE": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Lampshade": [
+  "LAMPSHADE": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Laptop Computer": [
+  "LAPTOP COMPUTER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Lawn Mower": [
+  "LAWN MOWER": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Lens Cap": [
+  "LENS CAP": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Paper Knife": [
+  "PAPER KNIFE": [
     "item",
     "item-stationery"
   ],
-  "Library": [
+  "LIBRARY": [
     "item",
     "item-architecture"
   ],
-  "Lifeboat": [
+  "LIFEBOAT": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Lighter": [
+  "LIGHTER": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Limousine": [
+  "LIMOUSINE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Ocean Liner": [
+  "OCEAN LINER": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Lipstick": [
+  "LIPSTICK": [
     "item",
     "item-health and beauty"
   ],
-  "Slip-on Shoe": [
+  "SLIP-ON SHOE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-footwear"
   ],
-  "Lotion": [
+  "LOTION": [
     "item",
     "item-health and beauty"
   ],
-  "Speaker": [
+  "SPEAKER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Loupe": [
+  "LOUPE": [
     "item",
     "item-equipment"
   ],
-  "Sawmill": [
+  "SAWMILL": [
     "item",
     "item-architecture"
   ],
-  "Magnetic Compass": [
+  "MAGNETIC COMPASS": [
     "item",
     "item-equipment"
   ],
-  "Mail Bag": [
+  "MAIL BAG": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-bag"
   ],
-  "Mailbox": [
+  "MAILBOX": [
     "item",
     "item-architecture"
   ],
-  "Tights": [
+  "TIGHTS": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-underwear"
   ],
-  "Tank Suit": [
+  "TANK SUIT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-swimwear"
   ],
-  "Manhole Cover": [
+  "MANHOLE COVER": [
     "item",
     "item-architecture"
   ],
-  "Maraca": [
+  "MARACA": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "Marimba": [
+  "MARIMBA": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "Mask": [
+  "MASK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Match": [
+  "MATCH": [
     "item",
     "item-equipment"
   ],
-  "Maypole": [
+  "MAYPOLE": [
     "item",
     "item-architecture"
   ],
-  "Maze": [
+  "MAZE": [
     "item",
     "item-architecture"
   ],
-  "Measuring Cup": [
+  "MEASURING CUP": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Medicine Chest": [
+  "MEDICINE CHEST": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Megalith": [
+  "MEGALITH": [
     "item",
     "item-architecture"
   ],
-  "Microphone": [
+  "MICROPHONE": [
     "item",
     "item-music",
     "item-music-miscellaneous"
   ],
-  "Microwave Oven": [
+  "MICROWAVE OVEN": [
     "item",
     "item-appliances"
   ],
-  "Military Uniform": [
+  "MILITARY UNIFORM": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outfit"
   ],
-  "Milk Can": [
+  "MILK CAN": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Minibus": [
+  "MINIBUS": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Miniskirt": [
+  "MINISKIRT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-skirt"
   ],
-  "Minivan": [
+  "MINIVAN": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Missile": [
+  "MISSILE": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Mitten": [
+  "MITTEN": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Mixing Bowl": [
+  "MIXING BOWL": [
     "item",
     "item-kitchen",
     "item-kitchen-cookware"
   ],
-  "Mobile Home": [
+  "MOBILE HOME": [
     "item",
     "item-architecture"
   ],
-  "Model T": [
+  "MODEL T": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Modem": [
+  "MODEM": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Monastery": [
+  "MONASTERY": [
     "item",
     "item-architecture"
   ],
-  "Monitor": [
+  "MONITOR": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Moped": [
+  "MOPED": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Mortar": [
+  "MORTAR": [
     "item",
     "item-kitchen",
     "item-kitchen-cookware"
   ],
-  "Square Academic Cap": [
+  "SQUARE ACADEMIC CAP": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-uniform"
   ],
-  "Mosque": [
+  "MOSQUE": [
     "item",
     "item-architecture"
   ],
-  "Mosquito Net": [
+  "MOSQUITO NET": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Scooter": [
+  "SCOOTER": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Mountain Bike": [
+  "MOUNTAIN BIKE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Tent": [
+  "TENT": [
     "item",
     "item-architecture"
   ],
-  "Computer Mouse": [
+  "COMPUTER MOUSE": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Mousetrap": [
+  "MOUSETRAP": [
     "item",
     "item-equipment"
   ],
-  "Moving Van": [
+  "MOVING VAN": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Muzzle": [
+  "MUZZLE": [
     "item",
     "item-equipment"
   ],
-  "Nail": [
+  "NAIL": [
     "item",
     "item-equipment"
   ],
-  "Neck Brace": [
+  "NECK BRACE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Necklace": [
+  "NECKLACE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Nipple": [
+  "NIPPLE": [
     "item",
     "item-health and beauty"
   ],
-  "Notebook Computer": [
+  "NOTEBOOK COMPUTER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Obelisk": [
+  "OBELISK": [
     "item",
     "item-architecture"
   ],
-  "Oboe": [
+  "OBOE": [
     "item",
     "item-music",
     "item-music-woodwind"
   ],
-  "Ocarina": [
+  "OCARINA": [
     "item",
     "item-music",
     "item-music-woodwind"
   ],
-  "Odometer": [
+  "ODOMETER": [
     "item",
     "item-vehicle"
   ],
-  "Oil Filter": [
+  "OIL FILTER": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Organ": [
+  "ORGAN": [
     "item",
     "item-music",
     "item-music-keyboard"
   ],
-  "Oscilloscope": [
+  "OSCILLOSCOPE": [
     "item",
     "item-equipment"
   ],
-  "Overskirt": [
+  "OVERSKIRT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-skirt"
   ],
-  "Bullock Cart": [
+  "BULLOCK CART": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Oxygen Mask": [
+  "OXYGEN MASK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Packet": [
+  "PACKET": [
     "item",
     "item-miscellaneous"
   ],
-  "Paddle": [
+  "PADDLE": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Paddle Wheel": [
+  "PADDLE WHEEL": [
     "item",
     "item-architecture"
   ],
-  "Padlock": [
+  "PADLOCK": [
     "item",
     "item-equipment"
   ],
-  "Paintbrush": [
+  "PAINTBRUSH": [
     "item",
     "item-stationery"
   ],
-  "Pajamas": [
+  "PAJAMAS": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outfit"
   ],
-  "Palace": [
+  "PALACE": [
     "item",
     "item-architecture"
   ],
-  "Pan Flute": [
+  "PAN FLUTE": [
     "item",
     "item-music",
     "item-music-woodwind"
   ],
-  "Paper Towel": [
+  "PAPER TOWEL": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Parachute": [
+  "PARACHUTE": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Parallel Bars": [
+  "PARALLEL BARS": [
     "item",
     "item-equipment"
   ],
-  "Park Bench": [
+  "PARK BENCH": [
     "item",
     "item-architecture"
   ],
-  "Parking Meter": [
+  "PARKING METER": [
     "item",
     "item-architecture"
   ],
-  "Passenger Car": [
+  "PASSENGER CAR": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Patio": [
+  "PATIO": [
     "item",
     "item-architecture"
   ],
-  "Payphone": [
+  "PAYPHONE": [
     "item",
     "item-architecture"
   ],
-  "Pedestal": [
+  "PEDESTAL": [
     "item",
     "item-architecture"
   ],
-  "Pencil Case": [
+  "PENCIL CASE": [
     "item",
     "item-stationery"
   ],
-  "Pencil Sharpener": [
+  "PENCIL SHARPENER": [
     "item",
     "item-stationery"
   ],
-  "Perfume": [
+  "PERFUME": [
     "item",
     "item-health and beauty"
   ],
-  "Petri Dish": [
+  "PETRI DISH": [
     "item",
     "item-equipment"
   ],
-  "Photocopier": [
+  "PHOTOCOPIER": [
     "item",
     "item-appliance"
   ],
-  "Plectrum": [
+  "PLECTRUM": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Pickelhaube": [
+  "PICKELHAUBE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Picket Fence": [
+  "PICKET FENCE": [
     "item",
     "item-architecture"
   ],
-  "Pickup Truck": [
+  "PICKUP TRUCK": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Pier": [
+  "PIER": [
     "item",
     "item-architecture"
   ],
-  "Piggy Bank": [
+  "PIGGY BANK": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Pill Bottle": [
+  "PILL BOTTLE": [
     "item",
     "item-health and beauty"
   ],
-  "Pillow": [
+  "PILLOW": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Ping-pong Ball": [
+  "PING-PONG BALL": [
     "item",
     "item-sports"
   ],
-  "Pinwheel": [
+  "PINWHEEL": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Pirate Ship": [
+  "PIRATE SHIP": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Pitcher": [
+  "PITCHER": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Hand Plane": [
+  "HAND PLANE": [
     "item",
     "item-equipment"
   ],
-  "Planetarium": [
+  "PLANETARIUM": [
     "item",
     "item-architecture"
   ],
-  "Plastic Bag": [
+  "PLASTIC BAG": [
     "item",
     "item-equipment"
   ],
-  "Plate Rack": [
+  "PLATE RACK": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Plow": [
+  "PLOW": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Plunger": [
+  "PLUNGER": [
     "item",
     "item-equipment"
   ],
-  "Polaroid Camera": [
+  "POLAROID CAMERA": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Pole": [
+  "POLE": [
     "item",
     "item-architecture"
   ],
-  "Police Van": [
+  "POLICE VAN": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Poncho": [
+  "PONCHO": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-miscellaneous"
   ],
-  "Billiard Table": [
+  "BILLIARD TABLE": [
     "item",
     "item-sports"
   ],
-  "Soda Bottle": [
+  "SODA BOTTLE": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Pot": [
+  "POT": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Potter's Wheel": [
+  "POTTER'S WHEEL": [
     "item",
     "item-equipment"
   ],
-  "Power Drill": [
+  "POWER DRILL": [
     "item",
     "item-equipment"
   ],
-  "Prayer Rug": [
+  "PRAYER RUG": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Printer": [
+  "PRINTER": [
     "item",
     "item-appliance"
   ],
-  "Prison": [
+  "PRISON": [
     "item",
     "item-architecture"
   ],
-  "Projectile": [
+  "PROJECTILE": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Projector": [
+  "PROJECTOR": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Hockey Puck": [
+  "HOCKEY PUCK": [
     "item",
     "item-sports"
   ],
-  "Punching Bag": [
+  "PUNCHING BAG": [
     "item",
     "item-sports"
   ],
-  "Purse": [
+  "PURSE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-bag"
   ],
-  "Quill": [
+  "QUILL": [
     "item",
     "item-stationery"
   ],
-  "Quilt": [
+  "QUILT": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Race Car": [
+  "RACE CAR": [
     "item",
     "item-sports"
   ],
-  "Racket": [
+  "RACKET": [
     "item",
     "item-sports"
   ],
-  "Radiator": [
+  "RADIATOR": [
     "item",
     "item-appliance"
   ],
-  "Radio": [
+  "RADIO": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Radio Telescope": [
+  "RADIO TELESCOPE": [
     "item",
     "item-architecture"
   ],
-  "Rain Barrel": [
+  "RAIN BARREL": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Recreational Vehicle": [
+  "RECREATIONAL VEHICLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Reel": [
+  "REEL": [
     "item",
     "item-sports"
   ],
-  "Reflex Camera": [
+  "REFLEX CAMERA": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Refrigerator": [
+  "REFRIGERATOR": [
     "item",
     "item-appliance"
   ],
-  "Remote Control": [
+  "REMOTE CONTROL": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Restaurant": [
+  "RESTAURANT": [
     "item",
     "item-architecture"
   ],
-  "Revolver": [
+  "REVOLVER": [
     "item",
     "item-sports"
   ],
-  "Rifle": [
+  "RIFLE": [
     "item",
     "item-sports"
   ],
-  "Rocking Chair": [
+  "ROCKING CHAIR": [
     "item",
     "item-furniture"
   ],
-  "Rotisserie": [
+  "ROTISSERIE": [
     "item",
     "item-appliance"
   ],
-  "Eraser": [
+  "ERASER": [
     "item",
     "item-stationery"
   ],
-  "Rugby Ball": [
+  "RUGBY BALL": [
     "item",
     "item-sports"
   ],
-  "Ruler": [
+  "RULER": [
     "item",
     "item-stationery"
   ],
-  "Running Shoe": [
+  "RUNNING SHOE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-footwear"
   ],
-  "Safe": [
+  "SAFE": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Safety Pin": [
+  "SAFETY PIN": [
     "item",
     "item-stationery"
   ],
-  "Salt Shaker": [
+  "SALT SHAKER": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Sandal": [
+  "SANDAL": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-footwear"
   ],
-  "Sarong": [
+  "SARONG": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-miscellaneous"
   ],
-  "Saxophone": [
+  "SAXOPHONE": [
     "item",
     "item-music",
     "item-music-woodwind"
   ],
-  "Scabbard": [
+  "SCABBARD": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Weighing Scale": [
+  "WEIGHING SCALE": [
     "item",
     "item-appliance"
   ],
-  "School Bus": [
+  "SCHOOL BUS": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Schooner": [
+  "SCHOONER": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Scoreboard": [
+  "SCOREBOARD": [
     "item",
     "item-sports"
   ],
-  "CRT Screen": [
+  "CRT SCREEN": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Screw": [
+  "SCREW": [
     "item",
     "item-equipment"
   ],
-  "Screwdriver": [
+  "SCREWDRIVER": [
     "item",
     "item-equipment"
   ],
-  "Seat Belt": [
+  "SEAT BELT": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Sewing Machine": [
+  "SEWING MACHINE": [
     "item",
     "item-appliances"
   ],
-  "Shield": [
+  "SHIELD": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Shoe Store": [
+  "SHOE STORE": [
     "item",
     "item-architecture"
   ],
-  "Shoji": [
+  "SHOJI": [
     "item",
     "item-architecture"
   ],
-  "Shopping Basket": [
+  "SHOPPING BASKET": [
     "item",
     "item-equipment"
   ],
-  "Shopping Cart": [
+  "SHOPPING CART": [
     "item",
     "item-equipment"
   ],
-  "Shovel": [
+  "SHOVEL": [
     "item",
     "item-equipment"
   ],
-  "Shower Cap": [
+  "SHOWER CAP": [
     "item",
     "item-health and beauty"
   ],
-  "Shower Curtain": [
+  "SHOWER CURTAIN": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Ski": [
+  "SKI": [
     "item",
     "item-sports"
   ],
-  "Ski Mask": [
+  "SKI MASK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-miscellaneous"
   ],
-  "Sleeping Bag": [
+  "SLEEPING BAG": [
     "item",
     "item-equipment"
   ],
-  "Slide Rule": [
+  "SLIDE RULE": [
     "item",
     "item-equipment"
   ],
-  "Sliding Door": [
+  "SLIDING DOOR": [
     "item",
     "item-architecture"
   ],
-  "Slot Machine": [
+  "SLOT MACHINE": [
     "item",
     "item-miscellaneous"
   ],
-  "Snorkel": [
+  "SNORKEL": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-miscellaneous"
   ],
-  "Snowmobile": [
+  "SNOWMOBILE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Snowplow": [
+  "SNOWPLOW": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Soap Dispenser": [
+  "SOAP DISPENSER": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Soccer Ball": [
+  "SOCCER BALL": [
     "item",
     "item-sports"
   ],
-  "Sock": [
+  "SOCK": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-footwear"
   ],
-  "Solar Thermal Collector": [
+  "SOLAR THERMAL COLLECTOR": [
     "item",
     "item-architecture"
   ],
-  "Sombrero": [
+  "SOMBRERO": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Soup Bowl": [
+  "SOUP BOWL": [
     "food",
     "food-cooked"
   ],
-  "Space Bar": [
+  "SPACE BAR": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Space Heater": [
+  "SPACE HEATER": [
     "item",
     "item-appliance"
   ],
-  "Space Shuttle": [
+  "SPACE SHUTTLE": [
     "item",
     "item-vehicle",
     "item-vehicle-spacecraft"
   ],
-  "Spatula": [
+  "SPATULA": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Motorboat": [
+  "MOTORBOAT": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Spider Web": [
+  "SPIDER WEB": [
     "item",
     "item-nature"
   ],
-  "Spindle": [
+  "SPINDLE": [
     "item",
     "item-equipment"
   ],
-  "Sports Car": [
+  "SPORTS CAR": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Spotlight": [
+  "SPOTLIGHT": [
     "item",
     "item-architecture"
   ],
-  "Stage": [
+  "STAGE": [
     "item",
     "item-architecture"
   ],
-  "Steam Locomotive": [
+  "STEAM LOCOMOTIVE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Through Arch Bridge": [
+  "THROUGH ARCH BRIDGE": [
     "item",
     "item-architecture"
   ],
-  "Steel Drum": [
+  "STEEL DRUM": [
     "item",
     "item-music",
     "item-music-percussion"
   ],
-  "Stethoscope": [
+  "STETHOSCOPE": [
     "item",
     "item-equipment"
   ],
-  "Scarf": [
+  "SCARF": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Stone Wall": [
+  "STONE WALL": [
     "item",
     "item-architecture"
   ],
-  "Stopwatch": [
+  "STOPWATCH": [
     "item",
     "item-equipment"
   ],
-  "Stove": [
+  "STOVE": [
     "item",
     "item-appliance"
   ],
-  "Strainer": [
+  "STRAINER": [
     "item",
     "item-kitchen",
     "item-kitchen-cookware"
   ],
-  "Tram": [
+  "TRAM": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Stretcher": [
+  "STRETCHER": [
     "item",
     "item-equipment"
   ],
-  "Couch": [
+  "COUCH": [
     "item",
     "item-furniture"
   ],
-  "Stupa": [
+  "STUPA": [
     "item",
     "item-architecture"
   ],
-  "Submarine": [
+  "SUBMARINE": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Suit": [
+  "SUIT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outfit"
   ],
-  "Sundial": [
+  "SUNDIAL": [
     "item",
     "item-architecture"
   ],
-  "Sunglass": [
+  "SUNGLASS": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Sunglasses": [
+  "SUNGLASSES": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Sunscreen": [
+  "SUNSCREEN": [
     "item",
     "item-health and beauty"
   ],
-  "Suspension Bridge": [
+  "SUSPENSION BRIDGE": [
     "item",
     "item-architecture"
   ],
-  "Mop": [
+  "MOP": [
     "item",
     "item-equipment"
   ],
-  "Sweatshirt": [
+  "SWEATSHIRT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-sweater"
   ],
-  "Swimsuit": [
+  "SWIMSUIT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-sportswear",
     "item-clothing and accessories-sportswear-swimwear"
   ],
-  "Swing": [
+  "SWING": [
     "item",
     "item-architecture"
   ],
-  "Switch": [
+  "SWITCH": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Syringe": [
+  "SYRINGE": [
     "item",
     "item-equipment"
   ],
-  "Table Lamp": [
+  "TABLE LAMP": [
     "item",
     "item-furniture"
   ],
-  "Tank": [
+  "TANK": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Tape Player": [
+  "TAPE PLAYER": [
     "item",
     "item-device",
     "item-device-electronics"
   ],
-  "Teapot": [
+  "TEAPOT": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Teddy Bear": [
+  "TEDDY BEAR": [
     "item",
     "item-ornaments and collectibles"
   ],
-  "Television": [
+  "TELEVISION": [
     "item",
     "item-appliance"
   ],
-  "Tennis Ball": [
+  "TENNIS BALL": [
     "item",
     "item-sports"
   ],
-  "Thatched Roof": [
+  "THATCHED ROOF": [
     "item",
     "item-architecture"
   ],
-  "Front Curtain": [
+  "FRONT CURTAIN": [
     "item",
     "item-architecture"
   ],
-  "Thimble": [
+  "THIMBLE": [
     "item",
     "item-equipment"
   ],
-  "Threshing Machine": [
+  "THRESHING MACHINE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Throne": [
+  "THRONE": [
     "item",
     "item-furniture"
   ],
-  "Tile Roof": [
+  "TILE ROOF": [
     "item",
     "item-architecture"
   ],
-  "Toaster": [
+  "TOASTER": [
     "item",
     "item-appliance"
   ],
-  "Tobacco Shop": [
+  "TOBACCO SHOP": [
     "item",
     "item-architecture"
   ],
-  "Toilet Seat": [
+  "TOILET SEAT": [
     "item",
     "item-furniture"
   ],
-  "Torch": [
+  "TORCH": [
     "item",
     "item-equipment"
   ],
-  "Totem Pole": [
+  "TOTEM POLE": [
     "item",
     "item-architecture"
   ],
-  "Tow Truck": [
+  "TOW TRUCK": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Toy Store": [
+  "TOY STORE": [
     "item",
     "item-architecture"
   ],
-  "Tractor": [
+  "TRACTOR": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Semi-trailer Truck": [
+  "SEMI-TRAILER TRUCK": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Tray": [
+  "TRAY": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Trench Coat": [
+  "TRENCH COAT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-outerwear",
     "item-clothing and accessories-outerwear-miscellaneous"
   ],
-  "Tricycle": [
+  "TRICYCLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Trimaran": [
+  "TRIMARAN": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Tripod": [
+  "TRIPOD": [
     "item",
     "item-equipment"
   ],
-  "Triumphal Arch": [
+  "TRIUMPHAL ARCH": [
     "item",
     "item-architecture"
   ],
-  "Trolleybus": [
+  "TROLLEYBUS": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Trombone": [
+  "TROMBONE": [
     "item",
     "item-music",
     "item-music-brass"
   ],
-  "Tub": [
+  "TUB": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Turnstile": [
+  "TURNSTILE": [
     "item",
     "item-architecture"
   ],
-  "Typewriter Keyboard": [
+  "TYPEWRITER KEYBOARD": [
     "item",
     "item-equipment"
   ],
-  "Umbrella": [
+  "UMBRELLA": [
     "item",
     "item-equipment"
   ],
-  "Unicycle": [
+  "UNICYCLE": [
     "item",
     "item-vehicle",
     "item-vehicle-landcraft"
   ],
-  "Upright Piano": [
+  "UPRIGHT PIANO": [
     "item",
     "item-music",
     "item-music-keyboard"
   ],
-  "Vacuum Cleaner": [
+  "VACUUM CLEANER": [
     "item",
     "item-appliance"
   ],
-  "Vase": [
+  "VASE": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Vault": [
+  "VAULT": [
     "item",
     "item-architecture"
   ],
-  "Velvet": [
+  "VELVET": [
     "item",
     "item-material"
   ],
-  "Vending Machine": [
+  "VENDING MACHINE": [
     "item",
     "item-architecture"
   ],
-  "Vestment": [
+  "VESTMENT": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-religious and traditional"
   ],
-  "Viaduct": [
+  "VIADUCT": [
     "item",
     "item-architecture"
   ],
-  "Violin": [
+  "VIOLIN": [
     "item",
     "item-music",
     "item-music-string"
   ],
-  "Volleyball": [
+  "VOLLEYBALL": [
     "item",
     "item-sports"
   ],
-  "Waffle Iron": [
+  "WAFFLE IRON": [
     "item",
     "item-appliance"
   ],
-  "Wall Clock": [
+  "WALL CLOCK": [
     "item",
     "item-home and garden",
     "item-home and garden-miscellaneous"
   ],
-  "Wallet": [
+  "WALLET": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-miscellaneous"
   ],
-  "Wardrobe": [
+  "WARDROBE": [
     "item",
     "item-furniture"
   ],
-  "Military Aircraft": [
+  "MILITARY AIRCRAFT": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Sink": [
+  "SINK": [
     "item",
     "item-appliance"
   ],
-  "Washing Machine": [
+  "WASHING MACHINE": [
     "item",
     "item-appliance"
   ],
-  "Water Bottle": [
+  "WATER BOTTLE": [
     "item",
     "item-equipment"
   ],
-  "Water Jug": [
+  "WATER JUG": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Water Tower": [
+  "WATER TOWER": [
     "item",
     "item-architecture"
   ],
-  "Whiskey Jug": [
+  "WHISKEY JUG": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Whistle": [
+  "WHISTLE": [
     "item",
     "item-sports"
   ],
-  "Wig": [
+  "WIG": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-headwear"
   ],
-  "Window Screen": [
+  "WINDOW SCREEN": [
     "item",
     "item-architecture"
   ],
-  "Window Shade": [
+  "WINDOW SHADE": [
     "item",
     "item-architecture"
   ],
-  "Windsor Tie": [
+  "WINDSOR TIE": [
     "item",
     "item-clothing and accessories",
     "item-clothing and accessories-accessory",
     "item-clothing and accessories-accessory-neckwear"
   ],
-  "Wine Bottle": [
+  "WINE BOTTLE": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Wing": [
+  "WING": [
     "item",
     "item-vehicle",
     "item-vehicle-aircraft"
   ],
-  "Wok": [
+  "WOK": [
     "item",
     "item-kitchen",
     "item-kitchen-cookware"
   ],
-  "Wooden Spoon": [
+  "WOODEN SPOON": [
     "item",
     "item-kitchen",
     "item-kitchen-utensil"
   ],
-  "Wool": [
+  "WOOL": [
     "item",
     "item-material"
   ],
-  "Split-rail Fence": [
+  "SPLIT-RAIL FENCE": [
     "item",
     "item-architecture"
   ],
-  "Shipwreck": [
+  "SHIPWRECK": [
     "item",
     "item-miscellaneous"
   ],
-  "Yawl": [
+  "YAWL": [
     "item",
     "item-vehicle",
     "item-vehicle-watercraft"
   ],
-  "Yurt": [
+  "YURT": [
     "item",
     "item-architecture"
   ],
-  "Website": [
+  "WEBSITE": [
     "item",
     "item-miscellaneous"
   ],
-  "Comic Book": [
+  "COMIC BOOK": [
     "item",
     "item-miscellaneous"
   ],
-  "Crossword": [
+  "CROSSWORD": [
     "item",
     "item-miscellaneous"
   ],
-  "Traffic Sign": [
+  "TRAFFIC SIGN": [
     "item",
     "item-architecture"
   ],
-  "Traffic Light": [
+  "TRAFFIC LIGHT": [
     "item",
     "item-architecture"
   ],
-  "Dust Jacket": [
+  "DUST JACKET": [
     "item",
     "item-stationery"
   ],
-  "Menu": [
+  "MENU": [
     "item",
     "item-miscellaneous"
   ],
-  "Plate": [
+  "PLATE": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Guacamole": [
+  "GUACAMOLE": [
     "food",
     "food-cooked"
   ],
-  "Consomme": [
+  "CONSOMME": [
     "food",
     "food-cooked"
   ],
-  "Hot Pot": [
+  "HOT POT": [
     "food",
     "food-cooked"
   ],
-  "Trifle": [
+  "TRIFLE": [
     "food",
     "food-dessert"
   ],
-  "Ice Cream": [
+  "ICE CREAM": [
     "food",
     "food-dessert"
   ],
-  "Ice Pop": [
+  "ICE POP": [
     "food",
     "food-dessert"
   ],
-  "Baguette": [
+  "BAGUETTE": [
     "food",
     "food-pastry"
   ],
-  "Bagel": [
+  "BAGEL": [
     "food",
     "food-pastry"
   ],
-  "Pretzel": [
+  "PRETZEL": [
     "food",
     "food-pastry"
   ],
-  "Cheeseburger": [
+  "CHEESEBURGER": [
     "food",
     "food-cooked"
   ],
-  "Hot Dog": [
+  "HOT DOG": [
     "food",
     "food-cooked"
   ],
-  "Mashed Potato": [
+  "MASHED POTATO": [
     "food",
     "food-cooked"
   ],
-  "Cabbage": [
+  "CABBAGE": [
     "food",
     "food-vegetable"
   ],
-  "Broccoli": [
+  "BROCCOLI": [
     "food",
     "food-vegetable"
   ],
-  "Cauliflower": [
+  "CAULIFLOWER": [
     "food",
     "food-vegetable"
   ],
-  "Zucchini": [
+  "ZUCCHINI": [
     "food",
     "food-vegetable"
   ],
-  "Spaghetti Squash": [
+  "SPAGHETTI SQUASH": [
     "food",
     "food-vegetable"
   ],
-  "Acorn Squash": [
+  "ACORN SQUASH": [
     "food",
     "food-vegetable"
   ],
-  "Butternut Squash": [
+  "BUTTERNUT SQUASH": [
     "food",
     "food-vegetable"
   ],
-  "Cucumber": [
+  "CUCUMBER": [
     "food",
     "food-vegetable"
   ],
-  "Artichoke": [
+  "ARTICHOKE": [
     "food",
     "food-vegetable"
   ],
-  "Bell Pepper": [
+  "BELL PEPPER": [
     "food",
     "food-vegetable"
   ],
-  "Cardoon": [
+  "CARDOON": [
     "food",
     "food-vegetable"
   ],
-  "Mushroom": [
+  "MUSHROOM": [
     "food",
     "food-vegetable"
   ],
-  "Granny Smith": [
+  "GRANNY SMITH": [
     "food",
     "food-fruit"
   ],
-  "Strawberry": [
+  "STRAWBERRY": [
     "food",
     "food-fruit"
   ],
-  "Orange": [
+  "ORANGE": [
     "food",
     "food-fruit"
   ],
-  "Lemon": [
+  "LEMON": [
     "food",
     "food-fruit"
   ],
-  "Fig": [
+  "FIG": [
     "food",
     "food-fruit"
   ],
-  "Pineapple": [
+  "PINEAPPLE": [
     "food",
     "food-fruit"
   ],
-  "Banana": [
+  "BANANA": [
     "food",
     "food-fruit"
   ],
-  "Jackfruit": [
+  "JACKFRUIT": [
     "food",
     "food-fruit"
   ],
-  "Custard Apple": [
+  "CUSTARD APPLE": [
     "food",
     "food-fruit"
   ],
-  "Pomegranate": [
+  "POMEGRANATE": [
     "food",
     "food-fruit"
   ],
-  "Hay": [
+  "HAY": [
     "food",
     "food-vegetable"
   ],
-  "Carbonara": [
+  "CARBONARA": [
     "food",
     "food-cooked"
   ],
-  "Chocolate Syrup": [
+  "CHOCOLATE SYRUP": [
     "food",
     "food-dessert"
   ],
-  "Dough": [
+  "DOUGH": [
     "food",
     "food-pastry"
   ],
-  "Meatloaf": [
+  "MEATLOAF": [
     "food",
     "food-cooked"
   ],
-  "Pizza": [
+  "PIZZA": [
     "food",
     "food-cooked"
   ],
-  "Pot Pie": [
+  "POT PIE": [
     "food",
     "food-cooked"
   ],
-  "Burrito": [
+  "BURRITO": [
     "food",
     "food-cooked"
   ],
-  "Red Wine": [
+  "RED WINE": [
     "food",
     "food-drink"
   ],
-  "Espresso": [
+  "ESPRESSO": [
     "food",
     "food-drink"
   ],
-  "Cup": [
+  "CUP": [
     "item",
     "item-kitchen",
     "item-kitchen-tableware"
   ],
-  "Eggnog": [
+  "EGGNOG": [
     "food",
     "food-drink"
   ],
-  "Alp": [
+  "ALP": [
     "nature",
     "nature-geography"
   ],
-  "Bubble": [
+  "BUBBLE": [
     "nature",
     "nature-miscellaneous"
   ],
-  "Cliff": [
+  "CLIFF": [
     "nature",
     "nature-geography"
   ],
-  "Coral Reef": [
+  "CORAL REEF": [
     "nature",
     "nature-geography"
   ],
-  "Geyser": [
+  "GEYSER": [
     "nature",
     "nature-geography"
   ],
-  "Lakeshore": [
+  "LAKESHORE": [
     "nature",
     "nature-geography"
   ],
-  "Promontory": [
+  "PROMONTORY": [
     "nature",
     "nature-geography"
   ],
-  "Shoal": [
+  "SHOAL": [
     "nature",
     "nature-geography"
   ],
-  "Seashore": [
+  "SEASHORE": [
     "nature",
     "nature-geography"
   ],
-  "Valley": [
+  "VALLEY": [
     "nature",
     "nature-geography"
   ],
-  "Volcano": [
+  "VOLCANO": [
     "nature",
     "nature-geography"
   ],
-  "Baseball Player": [
+  "BASEBALL PLAYER": [
     "people"
   ],
-  "Bridegroom": [
+  "BRIDEGROOM": [
     "people"
   ],
-  "Scuba Diver": [
+  "SCUBA DIVER": [
     "people"
   ],
-  "Rapeseed": [
+  "RAPESEED": [
     "nature",
     "nature-plant",
     "nature-plant-flower"
   ],
-  "Daisy": [
+  "DAISY": [
     "nature",
     "nature-plant",
     "nature-plant-flower"
   ],
-  "Yellow Lady's Slipper": [
+  "YELLOW LADY'S SLIPPER": [
     "nature",
     "nature-plant",
     "nature-plant-flower"
   ],
-  "Corn": [
+  "CORN": [
     "food",
     "food-vegetable"
   ],
-  "Acorn": [
+  "ACORN": [
     "nature",
     "nature-plant",
     "nature-plant-seeds"
   ],
-  "Rose Hip": [
+  "ROSE HIP": [
     "nature",
     "nature-plant",
     "nature-plant-flower"
   ],
-  "Horse Chestnut Seed": [
+  "HORSE CHESTNUT SEED": [
     "nature",
     "nature-plant",
     "nature-plant-seeds"
   ],
-  "Coral Fungus": [
+  "CORAL FUNGUS": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Agaric": [
+  "AGARIC": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Gyromitra": [
+  "GYROMITRA": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Stinkhorn Mushroom": [
+  "STINKHORN MUSHROOM": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Earth Star": [
+  "EARTH STAR": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Hen-of-the-woods": [
+  "HEN-OF-THE-WOODS": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Bolete": [
+  "BOLETE": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Ear": [
+  "EAR": [
     "nature",
     "nature-plant",
     "nature-plant-fungi"
   ],
-  "Toilet Paper": [
+  "TOILET PAPER": [
     "item",
     "item-home and garden",
     "item-home and garden-bathroom"
-  ],
-  "undefined": []
+  ]
 }
