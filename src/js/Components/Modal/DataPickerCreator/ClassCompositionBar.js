@@ -22,6 +22,7 @@ export default class ClassCompositionBar extends React.Component {
           return (
             <span
               className={`composition-span class-color-${colorIndex}`}
+              title={`${percentage.toFixed(2)}% ${name}`}
               key={id}
               style={{
                 width: `${percentage}%`
