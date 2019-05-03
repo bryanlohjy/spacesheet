@@ -47,7 +47,7 @@
           align-items: flex-start;
           justify-content: flex-start;
           overflow: auto;
-          padding: 0 12px 6px 12px;
+          padding: 0 0 6px 0;
 
           .selected-class {
             width: 100%;
@@ -55,20 +55,46 @@
             box-sizing: border-box;
             align-items: center;
             justify-content: space-between;
-            padding: 12px;
+            padding: 12px 12px 12px 24px;
 
             &:not(:last-child) {
               border-bottom: 1px solid $outlineGrey;
+            }
+
+            .name {
+              margin-right: auto;
             }
 
             .amount {
               display: flex;
               flex-direction: column;
               align-items: center;
+              padding: 0 15px;
 
               span {
                 font-size: 12px;
               }
+            }
+
+            .delete-button {
+              &:hover {
+              //   // border: 1px solid $actionColor;
+                color: $actionColor;
+              }
+              //
+              svg {
+                width: 26px;
+                height: 26px;
+              }
+              // // border: 1px solid $outlineGrey;
+              color: $outlineGrey;
+
+              cursor: pointer;
+              margin-right: 6px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
             }
           }
         }

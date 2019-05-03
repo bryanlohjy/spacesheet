@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { MdClear } from 'react-icons/md';
 
 export default class SelectedClass extends React.Component {
   render() {
     return (
       <div className="selected-class">
-        <div>{this.props.name}</div>
+        <div className="name">{this.props.name}</div>
         <div className="amount">
           <span>{this.props.amount.toFixed(1)*100}%</span>
           <input
@@ -19,6 +20,9 @@ export default class SelectedClass extends React.Component {
               this.props.onClassAmountChange(id, Math.max(e.target.value, 0.1));
             }}
           />
+        </div>
+        <div className='delete-button'>
+          <MdClear/>
         </div>
       </div>
     );
