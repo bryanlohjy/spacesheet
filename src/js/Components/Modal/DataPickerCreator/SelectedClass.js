@@ -21,7 +21,12 @@ export default class SelectedClass extends React.Component {
             }}
           />
         </div>
-        <div className='delete-button'>
+        <div
+          className='delete-button'
+          onClick={() => {
+            this.props.onRemoveSelectedClass(this.props.name);
+          }
+        }>
           <MdClear/>
         </div>
       </div>
@@ -33,5 +38,6 @@ SelectedClass.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
-  onClassAmountChange: PropTypes.func.isRequired
+  onClassAmountChange: PropTypes.func.isRequired,
+  onRemoveSelectedClass: PropTypes.func.isRequired
 };

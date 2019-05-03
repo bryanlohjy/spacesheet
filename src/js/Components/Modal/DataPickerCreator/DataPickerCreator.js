@@ -3,17 +3,33 @@ import PropTypes from 'prop-types';
 import ClassTreeSelector from './ClassTreeSelector/ClassTreeSelector';
 import SelectedClass from './SelectedClass';
 import ClassCompositionBar from './ClassCompositionBar';
+import trailMap from './trailMap.json';
+import classTree from './tree.json';
 
 export default class DataPickerCreator extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      classTree: [],
       selectedClasses: [
-      /*
-        { id, name, amount }
-      */
+        /*
+          { id, name, amount }
+        */
       ]
+    }
+  }
+
+  componentDidMount() {
+    this.loadClasses();
+  }
+
+  loadClasses() {
+    if (this.props.currentModel === 'BIGGAN') {
+      /* TODO: ajax it */
+      this.setState({
+        classTree
+      });
     }
   }
 
@@ -71,6 +87,19 @@ export default class DataPickerCreator extends React.Component {
     });
   }
 
+  onRemoveSelectedClass(removedClassName) {
+    let selectedClasses = this.state.selectedClasses.slice();
+    console.log(trailMap[removedClassName])
+
+    selectedClasses = selectedClasses.filter(_class => {
+      return _class.name !== removedClassName;
+    });
+
+    this.setState({
+      selectedClasses
+    });
+  }
+
   render() {
     let modelName;
 
@@ -91,6 +120,10 @@ export default class DataPickerCreator extends React.Component {
               <ClassTreeSelector
                 currentModel={this.props.currentModel}
                 onCheckToggle={this.onCheckToggle.bind(this)}
+                classes={this.state.classTree}
+                onUpdateCb={updatedData => {
+                  this.setState({classTree: updatedData})
+                }}
               />
             </section>
           </div>
@@ -107,6 +140,7 @@ export default class DataPickerCreator extends React.Component {
                     name={_class.name}
                     amount={_class.amount}
                     onClassAmountChange={this.onClassAmountChange.bind(this)}
+                    onRemoveSelectedClass={this.onRemoveSelectedClass.bind(this)}
                   />
                 )
               })
