@@ -57,13 +57,15 @@ export default class DataPickerCreator extends React.Component {
       return true;
     });
 
+
     const newClasses = Object.keys(changes).map(id => {
       const _class = changes[id];
 
       return {
         id: _class.id,
         name: _class.name,
-        amount: 1
+        amount: 1,
+        bigGANClassIndex: _class.bigGANClassIndex
       }
     });
 
@@ -111,6 +113,16 @@ export default class DataPickerCreator extends React.Component {
       classTree,
       selectedClasses
     });
+  }
+
+  createDataPicker() {
+    let label = new Array(1000).fill(0);
+    this.state.selectedClasses.forEach(_class => {
+      const { bigGANClassIndex, amount } = _class;
+      label[bigGANClassIndex] = amount;
+    });
+
+    console.log(label);
   }
 
   render() {
@@ -193,7 +205,7 @@ export default class DataPickerCreator extends React.Component {
 
         </section>
         <footer className="footer">
-          <button className="button">Create DataPicker</button>
+          <button className="button" onClick={this.createDataPicker.bind(this)}>Create DataPicker</button>
         </footer>
         {/* <div className="title">Use a desktop computer</div>
         <div className="content">
