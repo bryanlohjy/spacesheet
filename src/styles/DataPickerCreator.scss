@@ -66,22 +66,6 @@
               height: 10px;
               border-radius: 100%;
               margin-right: 10px;
-
-              &.class-color-0 {
-                background: $classColor0;
-              }
-              &.class-color-1 {
-                background: $classColor1;
-              }
-              &.class-color-2 {
-                background: $classColor2;
-              }
-              &.class-color-3 {
-                background: $classColor3;
-              }
-              &.class-color-4 {
-                background: $classColor4;
-              }
             }
 
             .name {
@@ -156,22 +140,6 @@
 
               .composition-span {
                 height: 100%;
-
-                &.class-color-0 {
-                  background: $classColor0;
-                }
-                &.class-color-1 {
-                  background: $classColor1;
-                }
-                &.class-color-2 {
-                  background: $classColor2;
-                }
-                &.class-color-3 {
-                  background: $classColor3;
-                }
-                &.class-color-4 {
-                  background: $classColor4;
-                }
               }
             }
           }

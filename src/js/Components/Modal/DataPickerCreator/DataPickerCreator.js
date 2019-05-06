@@ -5,6 +5,7 @@ import SelectedClass from './SelectedClass';
 import ClassCompositionBar from './ClassCompositionBar';
 import trailMap from './trailMap.json';
 import classTree from './tree.json';
+import classIndicatorColors from './classIndicatorColors';
 
 export default class DataPickerCreator extends React.Component {
   constructor(props) {
@@ -145,14 +146,17 @@ export default class DataPickerCreator extends React.Component {
             <section>
             {
               this.state.selectedClasses.map((_class, i) => {
-                const numClassColors = 5;
+                const numClassColors = classIndicatorColors.length;
+                const colorIndex = i%numClassColors;
+                const indicatorColor = classIndicatorColors[colorIndex];
+
                 return (
                   <SelectedClass
                     key={_class.id}
                     id={_class.id}
                     name={_class.name}
                     amount={_class.amount}
-                    colorIndex={i%numClassColors}
+                    indicatorColor={indicatorColor}
                     onClassAmountChange={this.onClassAmountChange.bind(this)}
                     onRemoveSelectedClass={this.onRemoveSelectedClass.bind(this)}
                   />

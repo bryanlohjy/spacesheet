@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classIndicatorColors from './classIndicatorColors';
 
 export default class ClassCompositionBar extends React.Component {
   get compositionSum() {
@@ -17,15 +18,17 @@ export default class ClassCompositionBar extends React.Component {
           let percentage = amount/this.compositionSum;
           percentage *= 100;
 
-          const numClassColors = 5;
+          const numClassColors = classIndicatorColors.length;
           const colorIndex = i%numClassColors;
+          const indicatorColor = classIndicatorColors[colorIndex];
           return (
             <span
-              className={`composition-span class-color-${colorIndex}`}
+              className={`composition-span`}
               title={`${percentage.toFixed(2)}% ${name}`}
               key={id}
               style={{
-                width: `${percentage}%`
+                width: `${percentage}%`,
+                background: indicatorColor
               }}
             />
           )
