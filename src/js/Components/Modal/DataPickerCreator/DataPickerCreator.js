@@ -145,7 +145,7 @@ export default class DataPickerCreator extends React.Component {
             <section>
             {
               this.state.selectedClasses.map((_class, i) => {
-                const numClassColors = 7;
+                const numClassColors = 5;
                 return (
                   <SelectedClass
                     key={_class.id}
