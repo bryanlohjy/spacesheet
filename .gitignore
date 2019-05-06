@@ -2,3 +2,4 @@ node_modules
 package_lock.json
 dist/data/mnist
 dump_checkpoints
+data_utils/temp_biggan_datapicker_utils/reconstructions
