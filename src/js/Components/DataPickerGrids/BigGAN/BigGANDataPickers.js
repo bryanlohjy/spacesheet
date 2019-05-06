@@ -1,4 +1,5 @@
 import BubbleFruit from './BubbleFruit.json';
+import Petridish from './Petridish.json';
 import BG from './biggan.json';
 
 module.exports = {
@@ -6,8 +7,8 @@ module.exports = {
     label: 'Bubble Fruit',
     data: BubbleFruit
   },
-  DEVICES: {
-    label: 'Devices',
-    data: BG,
+  PETRIDISH: {
+    label: 'Petridish',
+    data: Petridish
   }
 };
