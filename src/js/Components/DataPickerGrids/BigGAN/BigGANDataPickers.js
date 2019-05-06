@@ -6,8 +6,8 @@ module.exports = {
     label: 'Bubble Fruit',
     data: BubbleFruit
   },
-  BIGGAN: {
-    label: 'BigGAN',
+  DEVICES: {
+    label: 'Devices',
     data: BG,
   }
 };

@@ -101,6 +101,7 @@ export default class BigGANModel {
   decoupleVectorLabel(vec) {
     const vector = vec.slice(0, this.latentDim);
     const label = vec.slice(this.latentDim);
+    console.log(label)
 
     return {
       vector,
