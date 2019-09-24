@@ -134,10 +134,7 @@ export default class DataPickerCreator extends React.Component {
 
     return (
       <div className="datapicker-creator modal">
-        <header className="title">
-          <span>DataPicker Creator:</span>
-          <span className="subtitle">explore and combine {modelName} classes. Create a DataPicker from the resulting class</span>
-        </header>
+        <header className="title">DataPicker Creator</header>
         <section className="body">
           <div className="creator-section available">
             <header>Available classes</header>

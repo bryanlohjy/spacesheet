@@ -7,13 +7,7 @@
 
   .title {
     justify-content: flex-start;
-
-    .subtitle {
-      margin-left: 4px;
-      text-transform: none;
-      letter-spacing: normal;
-      font-size: 18px;
-    }
+    text-align: left;
   }
 
   .body {
@@ -23,6 +17,7 @@
     flex-grow: 1;
     width: 100%;
     height: 0;
+    overflow: auto;
 
     .creator-section {
       display: flex;
@@ -30,6 +25,7 @@
 
       &.available {
         width: 40%;
+        min-width: 300px;
 
         section {
           display: flex;
@@ -40,6 +36,7 @@
 
       &.selected {
         flex-grow: 1;
+        min-width: 300px;
 
         section {
           display: flex;
@@ -63,7 +60,9 @@
 
             .indicator {
               width: 12px;
+              min-width: 12px;
               height: 12px;
+              min-height: 12px;
               border-radius: 100%;
               margin-right: 10px;
             }
@@ -94,7 +93,7 @@
               &:hover {
                 color: $actionColor;
               }
-              //
+
               svg {
                 width: 26px;
                 height: 26px;
@@ -117,18 +116,22 @@
         $resultingClassSize: 300px;
 
         width: $resultingClassSize;
+        min-width: $resultingClassSize;
+
         overflow: hidden;
 
         section {
           display: flex;
           flex-direction: column;
-          height: 100%;
-          overflow: hidden;
+          overflow: auto;
 
           .resulting-class {
             display: flex;
             width: $resultingClassSize;
+            min-width: $resultingClassSize;
             height: $resultingClassSize;
+            min-height: $resultingClassSize;
+
             background: rgba(255, 255, 255, 0.8);
 
             .composition-bar {
