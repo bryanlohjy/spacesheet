@@ -21,12 +21,14 @@ export default class Modal extends React.Component {
   }
 
   render() {
+    const isDataPicker = this.props.modalSection === 'CREATE_DATAPICKER';
+
     return (
       <div
         className={`modal-overlay ${this.props.modalSection ? 'visible' : ''}`}
         onClick={this.onClose}
       >
-        <div onClick={e => { e.stopPropagation(); }}>
+        <div className={isDataPicker ? 'modal-dp-inner' : ''} onClick={e => { e.stopPropagation(); }}>
           {
             this.props.modalSection === 'MOBILE' &&
             <MobileModal/>
@@ -51,7 +53,7 @@ export default class Modal extends React.Component {
             />
           }
           {
-            this.props.modalSection === 'CREATE_DATAPICKER' &&
+            isDataPicker &&
             <DataPickerCreator
               closeModal={this.onClose}
               currentModel={this.props.currentModel}

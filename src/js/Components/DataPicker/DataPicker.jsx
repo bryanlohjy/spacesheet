@@ -260,7 +260,6 @@ export default class DataPicker extends React.Component {
           }
         }
         break;
-
       case 'mouseout':
         this.dragStart = null;
         this.setState({

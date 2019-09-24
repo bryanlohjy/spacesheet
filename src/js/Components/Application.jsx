@@ -285,6 +285,7 @@ export default class Application extends React.Component {
             {label: 'WORD2VEC', id: 'WORD2VEC', href: 'http://bryanlohjy.gitlab.io/spacesheet/word2vec.html'},
             {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
             {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
+            {label: 'BigGAN', id: 'BIGGAN', href: ''}
           ]}
           debugMode={this.state.debugMode}
           saveVectors={this.saveVectors}

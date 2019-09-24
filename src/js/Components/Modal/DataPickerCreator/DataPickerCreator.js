@@ -194,10 +194,6 @@ export default class DataPickerCreator extends React.Component {
                     <label>Name</label>
                     <input type="text" placeholder="BigGAN DataPicker"/>
                   </div>
-                  <div>
-                    <label>Size</label>
-                    <input type="number" min="3" max="10"/>
-                  </div>
                 </section>
               </div>
             </section>

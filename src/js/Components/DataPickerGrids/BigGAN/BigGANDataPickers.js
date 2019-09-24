@@ -1,14 +1,13 @@
 import BubbleFruit from './BubbleFruit.json';
-import Petridish from './Petridish.json';
-import BG from './biggan.json';
+import BigGAN from './BigGAN.json';
 
 module.exports = {
-  BUBBLEFRUIT: {
-    label: 'Bubble Fruit',
-    data: BubbleFruit
+  BG: {
+    label: 'BigGAN',
+    data: BigGAN
   },
-  PETRIDISH: {
-    label: 'Petridish',
-    data: Petridish
-  }
+  // BUBBLEFRUIT: {
+  //   label: 'Bubble Fruit',
+  //   data: BubbleFruit
+  // }
 };

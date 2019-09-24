@@ -5,9 +5,9 @@
 @import "./variables.scss";
 
 .modal-overlay {
-  > div {
-    width: 100%;
+  .modal-dp-inner {
     height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
