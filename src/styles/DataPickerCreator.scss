@@ -46,6 +46,12 @@
           overflow: auto;
           padding: 0 0 6px 0;
 
+          &.empty {
+            padding: 22px 24px;
+            align-items: center;
+            text-align: center;
+          }
+
           .selected-class {
             width: 100%;
             display: flex;
@@ -71,7 +77,6 @@
               margin-right: auto;
               text-align: left;
               white-space: pre;
-              max-width: 160px;
               overflow: hidden;
               text-overflow: ellipsis;
               font-weight: 500;

@@ -132,6 +132,8 @@ export default class DataPickerCreator extends React.Component {
       modelName = 'BigGAN';
     }
 
+    const noSelectedClasses = this.state.selectedClasses.length < 1;
+
     return (
       <div className="datapicker-creator modal">
         <header className="title">DataPicker Creator</header>
@@ -152,7 +154,11 @@ export default class DataPickerCreator extends React.Component {
 
           <div className="creator-section selected">
             <header>Selected classes</header>
-            <section>
+            <section className={noSelectedClasses ? 'empty' : ''}>
+            {
+              noSelectedClasses && <span>No classes selected.</span>
+            }
+
             {
               this.state.selectedClasses.map((_class, i) => {
                 const numClassColors = classIndicatorColors.length;
