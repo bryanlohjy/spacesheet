@@ -40,6 +40,44 @@
 
     text-align: center;
 
+    .button {
+      border: none;
+      padding: 10px 20px;
+
+      cursor: pointer;
+
+      background: $lightGrey;
+      transition: color 0.2s, outline-color 0.2s;
+      color: $actionColor;
+      box-shadow: 0px 3px 3px $outlineGrey;
+
+      outline: 1px solid $actionColor;
+
+      &:hover {
+        background: $actionColorTransparent;
+        color: $actionColor;
+        outline: 1px solid $actionColor;
+        text-decoration: none;
+      }
+
+      &:disabled,
+      &[disabled] {
+        cursor: default;
+        pointer-events: none;
+        box-shadow: none;
+        outline: 1px solid $outlineGrey;
+        color: $darkGrey;
+      }
+
+      text-transform: uppercase;
+      text-decoration: none;
+      text-align: center;
+      line-height: 22px;
+      letter-spacing: 1px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
     .title {
       display: flex;
       align-items: center;
@@ -108,34 +146,6 @@
         font-size: 16px;
         line-height: 22px;
         margin-bottom: 30px;
-      }
-
-      .button {
-        border: none;
-        padding: 10px 20px;
-
-        color: $darkGrey;
-
-        &:hover {
-          outline-color: $actionColor;
-          color: $actionColor;
-          text-decoration: none;
-        }
-
-        transition: color 0.2s, outline-color 0.2s;
-
-        cursor: pointer;
-
-        background: $lightGrey;
-        outline: 1px solid $outlineGrey;
-
-        text-transform: uppercase;
-        text-decoration: none;
-        text-align: center;
-        line-height: 22px;
-        letter-spacing: 1px;
-        font-size: 15px;
-        font-weight: 500;
       }
     }
   }

@@ -182,7 +182,7 @@ export default class DataPickerCreator extends React.Component {
           </div>
 
           <div className="creator-section creator">
-            <header>Resulting class sample</header>
+            <header>Example Samples</header>
             <section>
               <div className="resulting-class">
                 <div className="sample-image"/>
@@ -194,7 +194,7 @@ export default class DataPickerCreator extends React.Component {
                 <header>Details</header>
                 <section>
                   <div>
-                    <label>Name</label>
+                    <label>Name (optional)</label>
                     <input type="text" placeholder="BigGAN DataPicker"/>
                   </div>
                 </section>
@@ -204,7 +204,13 @@ export default class DataPickerCreator extends React.Component {
 
         </section>
         <footer className="footer">
-          <button className="button" onClick={this.createDataPicker.bind(this)}>Create DataPicker</button>
+          <button
+            className={`button`}
+            disabled={noSelectedClasses}
+            onClick={this.createDataPicker.bind(this)}
+          >
+            Create DataPicker
+          </button>
         </footer>
         {/* <div className="title">Use a desktop computer</div>
         <div className="content">

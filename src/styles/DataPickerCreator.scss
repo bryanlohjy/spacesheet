@@ -200,33 +200,5 @@
     box-sizing: border-box;
     justify-content: flex-end;
     display: flex;
-
-    .button {
-      border: none;
-      padding: 10px 20px;
-
-      color: $darkGrey;
-
-      &:hover {
-        outline-color: $actionColor;
-        color: $actionColor;
-        text-decoration: none;
-      }
-
-      transition: color 0.2s, outline-color 0.2s;
-
-      cursor: pointer;
-
-      background: $lightGrey;
-      outline: 1px solid $outlineGrey;
-
-      text-transform: uppercase;
-      text-decoration: none;
-      text-align: center;
-      line-height: 22px;
-      letter-spacing: 1px;
-      font-size: 15px;
-      font-weight: 500;
-    }
   }
 }
