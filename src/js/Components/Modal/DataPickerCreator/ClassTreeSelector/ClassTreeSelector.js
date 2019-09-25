@@ -10,8 +10,10 @@ export default class ClassTreeSelector extends React.Component {
   render() {
     return (
       <div className="class-tree-selector">
-        {/* TODO: search through tree */}
-        <input type="text" placeholder="Search for a class..." className="class-tree-search"/>
+        {/*
+          TODO: search through tree
+          <input type="text" placeholder="Search for a class..." className="class-tree-search"/>
+        */}
         <SuperTreeview
           data={this.props.classTree}
           onUpdateCb={this.props.onUpdateCb}
