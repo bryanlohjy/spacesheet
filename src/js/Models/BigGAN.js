@@ -7,9 +7,11 @@ import hash from 'object-hash';
 // https://www.npmjs.com/package/object-hash
 const math = dl.ENV.math;
 
-const modelUrl = "http://deeptom.staff.vuw.ac.nz:5000";
-// const modelUrl = "http://localhost:5000";
+// const modelUrl = "http://deeptom.staff.vuw.ac.nz:5000";
+const modelUrl = "http://localhost:5000";
 const decodeUrl = `${modelUrl}/decode`;
+const getLabelExamplesUrl = `${modelUrl}/label_examples`;
+const createDataPickerUrl = `${modelUrl}/create_datapicker`;
 
 const loadImg = (base64, imgElCallback) => {
   const imgPromise = new Promise((res, rej) => {
@@ -87,6 +89,7 @@ export default class BigGANModel {
   init(loadedCallback) { // executed by ModelLoader. This loads the checkpoint and model parameters
     loadedCallback(this);
   }
+
   drawFn(ctx, decodedData) { // logic to draw decoded vectors onto HTML canvas element
     if (decodedData instanceof HTMLImageElement) {
       ctx.imageSmoothingEnabled = false;
@@ -154,6 +157,7 @@ export default class BigGANModel {
     });
     return vec;
   }
+
   randVectorFn(params) {
     let randomSeed = !isNaN(parseInt(params)) ? params : randomInt(0, 99999);
     const r = randomInt(0, 100, randomSeed) / 100;
@@ -161,4 +165,29 @@ export default class BigGANModel {
     const b = randomInt(0, 100, randomSeed + 2) / 100;
     return [ r, g, b ];
   }
+
+  getLabelExamples(label) {
+    console.log('getLabelExamples');
+    return fetch(getLabelExamplesUrl, {
+      method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: ``
+    });
+  }
+
+  createDataPicker(label, name) {
+    console.log('createDataPicker');
+    return fetch(createDataPickerUrl, {
+      method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: ``
+    });
+  }
+
 }

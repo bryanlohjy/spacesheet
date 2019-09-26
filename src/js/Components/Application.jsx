@@ -29,6 +29,8 @@ import { saveAs } from 'file-saver';
 import { matrixForEach, cellCoordsToLabel } from './Spreadsheet/CellHelpers.js';
 import { formatDate } from '../lib/helpers.js';
 
+console.log(DataPickerGrids)
+
 export default class Application extends React.Component {
   constructor(props) {
     super(props);

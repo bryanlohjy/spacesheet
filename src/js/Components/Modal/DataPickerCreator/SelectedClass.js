@@ -20,6 +20,11 @@ export default class SelectedClass extends React.Component {
               const id = this.props.id;
               this.props.onClassAmountChange(id, Math.max(e.target.value, 0.1));
             }}
+            onKeyUp={e => {
+              if (e.keyCode < 37 || e.keyCode > 40) { return; }
+              this.props.afterAmountChanged(e);
+            }}
+            onMouseUp={this.props.afterAmountChanged}
           />
         </div>
         <div
@@ -41,5 +46,6 @@ SelectedClass.propTypes = {
   amount: PropTypes.number.isRequired,
   indicatorColor: PropTypes.string.isRequired,
   onClassAmountChange: PropTypes.func.isRequired,
-  onRemoveSelectedClass: PropTypes.func.isRequired
+  onRemoveSelectedClass: PropTypes.func.isRequired,
+  afterAmountChanged: PropTypes.func.isRequired
 };

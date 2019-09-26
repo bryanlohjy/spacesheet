@@ -57,6 +57,7 @@ export default class Modal extends React.Component {
             <DataPickerCreator
               closeModal={this.onClose}
               currentModel={this.props.currentModel}
+              model={this.props.model}
             />
           }
         </div>

@@ -19,6 +19,8 @@ export default class DataPickerCreator extends React.Component {
         */
       ]
     }
+
+    this.loadLabelExamples = this.loadLabelExamples.bind(this);
   }
 
   componentDidMount() {
@@ -32,6 +34,14 @@ export default class DataPickerCreator extends React.Component {
         classTree
       });
     }
+  }
+
+  loadLabelExamples() {
+    if (this.state.selectedClasses.length < 1) {
+      console.log('clear examples');
+      return;
+    }
+    this.props.model.getLabelExamples();
   }
 
   onCheckToggle(nodes, depth) {
@@ -73,6 +83,8 @@ export default class DataPickerCreator extends React.Component {
 
     this.setState({
       selectedClasses
+    }, () => {
+      this.loadLabelExamples();
     });
   }
 
@@ -112,6 +124,8 @@ export default class DataPickerCreator extends React.Component {
     this.setState({
       classTree,
       selectedClasses
+    }, () => {
+      this.loadLabelExamples();
     });
   }
 
@@ -122,7 +136,11 @@ export default class DataPickerCreator extends React.Component {
       label[bigGANClassIndex] = amount;
     });
 
-    console.log(label);
+    this.props.model.createDataPicker();
+  }
+
+  afterAmountChanged(e) {
+    this.loadLabelExamples();
   }
 
   render() {
@@ -174,6 +192,7 @@ export default class DataPickerCreator extends React.Component {
                     indicatorColor={indicatorColor}
                     onClassAmountChange={this.onClassAmountChange.bind(this)}
                     onRemoveSelectedClass={this.onRemoveSelectedClass.bind(this)}
+                    afterAmountChanged={this.afterAmountChanged.bind(this)}
                   />
                 )
               })
@@ -225,5 +244,6 @@ export default class DataPickerCreator extends React.Component {
 }
 DataPickerCreator.propTypes = {
   currentModel: PropTypes.string.isRequired,
-  closeModal: PropTypes.func.isRequired
+  closeModal: PropTypes.func.isRequired,
+  model: PropTypes.object.isRequired,
 };
