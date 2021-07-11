@@ -1,22 +1,22 @@
 import Coordinate from 'coordinate-systems';
-import {random, randomPick} from '../../lib/helpers.js';
+import { random, randomPick } from '../../lib/helpers.js';
 
-const toRadians = degree => {
-  return degree*(Math.PI/180);
+const toRadians = (degree) => {
+  return degree * (Math.PI / 180);
 };
 
-const toDegrees = rad => {
-  return rad/(Math.PI/180);
+const toDegrees = (rad) => {
+  return rad / (Math.PI / 180);
 };
 
 class ModJoystick {
   constructor(params) {
     // if it has params.rotation and params.radius,
-      // do inverse calculations to work out:
-        // joystickX
-        // joystickY
-        // joystickWidth
-        // joystickHeight
+    // do inverse calculations to work out:
+    // joystickX
+    // joystickY
+    // joystickWidth
+    // joystickHeight
 
     this.startDrag = false;
     this.polarToCartesian = this.polarToCartesian.bind(this);
@@ -67,7 +67,9 @@ class ModJoystick {
       el.addEventListener('mouseover', this.onJoystickMouseOver);
       el.addEventListener('mouseleave', this.onJoystickMouseLeave);
 
-      el.ondragstart = function() { return false };
+      el.ondragstart = function () {
+        return false;
+      };
 
       const markers = document.createElement('div');
       markers.classList.add('mod-markers');
@@ -78,7 +80,7 @@ class ModJoystick {
         const newSegment = document.createElement('div');
         newSegment.classList.add('segment');
 
-        const segmentRotation = segmentIndex*(180/(this.segments));
+        const segmentRotation = segmentIndex * (180 / this.segments);
         newSegment.style.transform = `rotate(${segmentRotation}deg)`;
 
         this.segmentEls.push(newSegment);
@@ -106,8 +108,8 @@ class ModJoystick {
 
   updateElFromParams(segment, dist) {
     this.resetJoystickPos();
-    
-    const {x, y} = this.polarToCartesian(segment, dist);
+
+    const { x, y } = this.polarToCartesian(segment, dist);
     this.joystickX += x;
     this.joystickY += y;
     this.updateJoystickPos();
@@ -124,14 +126,14 @@ class ModJoystick {
   }
 
   resetJoystickPos() {
-    this.joystickX = this.element.clientWidth/2;
-    this.joystickY = this.element.clientHeight/2;
+    this.joystickX = this.element.clientWidth / 2;
+    this.joystickY = this.element.clientHeight / 2;
     this.updateJoystickPos();
   }
 
   updateJoystickPos() {
-    this.joystickEl.style.left = `${this.joystickX-this.joystickWidth/2}px`;
-    this.joystickEl.style.top = `${this.joystickY-this.joystickHeight/2}px`;
+    this.joystickEl.style.left = `${this.joystickX - this.joystickWidth / 2}px`;
+    this.joystickEl.style.top = `${this.joystickY - this.joystickHeight / 2}px`;
   }
 
   updateSegmentHighlight(newSegment) {
@@ -139,15 +141,17 @@ class ModJoystick {
 
     if (prevSegment != newSegment) {
       if (prevSegment) {
-        const prevSegmentBottom = prevSegment-1;
-        const prevSegmentTop = prevSegment%this.segmentEls.length;
+        const prevSegmentBottom = prevSegment - 1;
+        const prevSegmentTop = prevSegment % this.segmentEls.length;
 
         this.segmentEls[prevSegmentTop].classList.remove('segment-highlighted');
-        this.segmentEls[prevSegmentBottom].classList.remove('segment-highlighted');
+        this.segmentEls[prevSegmentBottom].classList.remove(
+          'segment-highlighted'
+        );
       }
 
-      const newSegmentBottom = newSegment-1;
-      const newSegmentTop = newSegment%this.segmentEls.length;
+      const newSegmentBottom = newSegment - 1;
+      const newSegmentTop = newSegment % this.segmentEls.length;
 
       this.segmentEls[newSegmentTop].classList.add('segment-highlighted');
       this.segmentEls[newSegmentBottom].classList.add('segment-highlighted');
@@ -157,50 +161,57 @@ class ModJoystick {
   }
 
   polarToCartesian(segment, dist) {
-    const segmentArc = 180/this.segments
-    let rotation = (segment*segmentArc)-segmentArc-180;
+    const segmentArc = 180 / this.segments;
+    let rotation = segment * segmentArc - segmentArc - 180;
 
-    rotation = rotation + segmentArc/2; // to make joystick land on segment
+    rotation = rotation + segmentArc / 2; // to make joystick land on segment
     rotation = toRadians(rotation);
 
     const coord = new Coordinate.polar([dist, rotation]);
 
-    const x = coord.cartesian()[0]*(this.element.clientWidth/2);
-    const y = coord.cartesian()[1]*(this.element.clientWidth/2);
+    const x = coord.cartesian()[0] * (this.element.clientWidth / 2);
+    const y = coord.cartesian()[1] * (this.element.clientWidth / 2);
 
     return { x, y };
   }
 
   onMouseDown(e) {
     this.startDrag = true;
-    this.mouseOffsetX = e.clientX-this.joystickEl.getBoundingClientRect().left-this.joystickHeight/2;
-    this.mouseOffsetY = e.clientY-this.joystickEl.getBoundingClientRect().top-this.joystickWidth/2;
+    this.mouseOffsetX =
+      e.clientX -
+      this.joystickEl.getBoundingClientRect().left -
+      this.joystickHeight / 2;
+    this.mouseOffsetY =
+      e.clientY -
+      this.joystickEl.getBoundingClientRect().top -
+      this.joystickWidth / 2;
   }
 
   calcParams() {
     const center = {
-      x: this.element.clientWidth/2,
-      y: this.element.clientHeight/2,
+      x: this.element.clientWidth / 2,
+      y: this.element.clientHeight / 2,
     };
 
     const joystick = {
-      x: this.joystickX+this.mouseOffsetX,
-      y: this.joystickY+this.mouseOffsetY,
+      x: this.joystickX + this.mouseOffsetX,
+      y: this.joystickY + this.mouseOffsetY,
     };
 
-    const diffX = joystick.x-center.x;
-    const diffY = joystick.y-center.y;
+    const diffX = joystick.x - center.x;
+    const diffY = joystick.y - center.y;
 
     const coord = new Coordinate.cart([diffX, diffY]);
 
-    const rotation = toDegrees(coord.polar()[1])+180;
+    const rotation = toDegrees(coord.polar()[1]) + 180;
 
-    let segment = parseInt(rotation/(360/(this.segments*2))) + 1;
-    let degree = coord.polar()[0]/(this.element.clientWidth/2)
+    let segment = parseInt(rotation / (360 / (this.segments * 2))) + 1;
+    let degree = coord.polar()[0] / (this.element.clientWidth / 2);
 
-    if (segment > this.segments) { // inverse segments
-      segment = segment-this.segments;
-      degree = degree*-1;
+    if (segment > this.segments) {
+      // inverse segments
+      segment = segment - this.segments;
+      degree = degree * -1;
     }
 
     degree = Number(String(degree).substring(0, 4)).toFixed(2);
@@ -209,22 +220,32 @@ class ModJoystick {
   }
 
   onMouseUp(e) {
-    if (!this.startDrag) { return; }
+    if (!this.startDrag) {
+      return;
+    }
     this.startDrag = false;
-    const {segment, degree} = this.calcParams();
+    const { segment, degree } = this.calcParams();
     this.onSet(segment, degree);
   }
 
   onMouseMove(e) {
-    if (!this.startDrag) { return; }
-    let shiftX = e.clientX - this.joystickEl.getBoundingClientRect().left - this.joystickWidth/2;
-    let shiftY = e.clientY - this.joystickEl.getBoundingClientRect().top - this.joystickHeight/2;
+    if (!this.startDrag) {
+      return;
+    }
+    let shiftX =
+      e.clientX -
+      this.joystickEl.getBoundingClientRect().left -
+      this.joystickWidth / 2;
+    let shiftY =
+      e.clientY -
+      this.joystickEl.getBoundingClientRect().top -
+      this.joystickHeight / 2;
 
-    this.joystickX += shiftX-this.mouseOffsetX;
-    this.joystickY += shiftY-this.mouseOffsetY;
+    this.joystickX += shiftX - this.mouseOffsetX;
+    this.joystickY += shiftY - this.mouseOffsetY;
     this.updateJoystickPos();
 
-    const {segment, degree} = this.calcParams();
+    const { segment, degree } = this.calcParams();
 
     this.updateSegmentHighlight(segment);
 
@@ -232,16 +253,18 @@ class ModJoystick {
   }
 
   mouseLeave(e) {
-    if (!this.startDrag) { return; }
+    if (!this.startDrag) {
+      return;
+    }
     this.startDrag = false;
 
-    const {segment, degree} = this.calcParams();
+    const { segment, degree } = this.calcParams();
     this.onLeave(segment, degree);
   }
 }
 
 const randDist = () => {
-  return randomPick([random(-0.85, -0.4), random(0.4, 0.85)]).toFixed(2);
+  return randomPick([random(-0.4, -0.2), random(0.2, 0.4)]).toFixed(2);
 };
 
-export {ModJoystick, randDist}
+export { ModJoystick, randDist };

@@ -7,15 +7,16 @@ import ModelLoader from '../lib/ModelLoader.js';
 // import ModelToLoad from '../Models/Word2Vec.js';
 // import ModelToLoad from '../Models/MNISTModel.js';
 // import ModelToLoad from '../Models/Colours.js';
-import ModelToLoad from '../Models/BigGAN.js';
+// import ModelToLoad from '../Models/BigGAN.js';
+import ModelToLoad from '../Models/Runway.js';
 
-// import GenerateDataPicker from '../lib/DataPickerGenerator.js';
+import GenerateDataPicker from '../lib/DataPickerGenerator.js';
 // import DataPickerGrids from './DataPickerGrids/FaceModel/FaceDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/FontModel/FontDataPickers.js';
 // import DataPickerGrids from './DataPickerGrids/Word2Vec/Word2VecDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/MNISTModel/MNISTDataPicker.js';
 // import DataPickerGrids from './DataPickerGrids/ColorModel/ColorDataPicker.js';
-import DataPickerGrids from './DataPickerGrids/BigGAN/BigGANDataPickers.js';
+// import DataPickerGrids from './DataPickerGrids/BigGAN/BigGANDataPickers.js';
 import DataPickers from './DataPicker/DataPickers.jsx';
 // import FontDrawer from './FontDrawer/FontDrawer.jsx';
 
@@ -33,29 +34,34 @@ export default class Application extends React.Component {
   constructor(props) {
     super(props);
 
-    const debugMode = Boolean(window.location.hash && window.location.hash.toLowerCase() === '#debug');
+    const debugMode = Boolean(
+      window.location.hash && window.location.hash.toLowerCase() === '#debug'
+    );
 
     const sess = browser();
     const isMobileSection = sess.mobile ? 'MOBILE' : '';
 
     const sessBrowser = sess.name.toUpperCase();
     const unsupportedBrowsers = ['SAFARI'];
-    const isUnsupportedSection = unsupportedBrowsers.indexOf(sessBrowser) > -1 ? 'UNSUPPORTED' : '';
+    const isUnsupportedSection =
+      unsupportedBrowsers.indexOf(sessBrowser) > -1 ? 'UNSUPPORTED' : '';
 
     this.state = {
       model: null,
-      currentModel: 'BIGGAN', // FACES, FONTS, WORD2VEC, MNIST, COLOURS, BIGGAN
-      inputBarValue: "",
+      currentModel: 'RUNWAY', // FACES, FONTS, WORD2VEC, MNIST, COLOURS, BIGGAN, RUNWAY
+      inputBarValue: '',
       dataPickerGrids: null,
       debugMode,
       modalSection: isMobileSection || isUnsupportedSection || 'LOADING', // MOBILE, UNSSUPORTED, LOADING, INFO
       windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
+      windowHeight: window.innerHeight,
     };
 
     this.onHashChange = this.onHashChange.bind(this);
 
-    this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(this);
+    this.setSpreadsheetCellFromDataPicker = this.setSpreadsheetCellFromDataPicker.bind(
+      this
+    );
     this.getCellFromDataPicker = this.getCellFromDataPicker.bind(this);
     this.setInputBarValue = this.setInputBarValue.bind(this);
     this.saveVectors = this.saveVectors.bind(this);
@@ -64,10 +70,13 @@ export default class Application extends React.Component {
     this.afterResize = this.afterResize.bind(this);
 
     this.resizeTimer;
-  };
+  }
 
-  componentDidMount() { // Initialise model + load grid data for DataPicker
-    if (this.state.modalSection === 'MOBILE') { return; }
+  componentDidMount() {
+    // Initialise model + load grid data for DataPicker
+    if (this.state.modalSection === 'MOBILE') {
+      return;
+    }
 
     this.bottomNav = this.refs.bottomNav;
     this.memoryCtx = this.refs.memoryCanvas.getContext('2d'); // used to store and render drawings
@@ -75,17 +84,17 @@ export default class Application extends React.Component {
     const modelOpts = {
       afterDecode: (el) => {
         this.hotInstance.render();
-      }
+      },
     };
     const loader = new ModelLoader(this, ModelToLoad, modelOpts);
 
-    loader.load(async res => {
+    loader.load(async (res) => {
       if (!res.errors) {
         let dataPickerGrids;
         try {
           dataPickerGrids = DataPickerGrids;
         } catch (e) {
-          dataPickerGrids = GenerateDataPicker(10, 10, 'DATAPICKER', res.model);
+          dataPickerGrids = GenerateDataPicker(2, 2, 'DATAPICKER', res.model);
         }
 
         if (res.model.cacheDatapicker) {
@@ -98,13 +107,13 @@ export default class Application extends React.Component {
         });
 
         if (this.state.modalSection === 'LOADING') {
-          setTimeout(() => { // prevent flickering modal
+          setTimeout(() => {
+            // prevent flickering modal
             this.setState({
-              modalSection: ''
+              modalSection: '',
             });
           }, 2500);
         }
-
       } else {
         console.error(res.errors);
       }
@@ -112,10 +121,13 @@ export default class Application extends React.Component {
 
     window.addEventListener('hashchange', this.onHashChange, false);
     window.addEventListener('resize', this.onResize);
-  };
+  }
 
   onHashChange(e) {
-    if (window.location.hash && window.location.hash.toLowerCase() === '#debug') {
+    if (
+      window.location.hash &&
+      window.location.hash.toLowerCase() === '#debug'
+    ) {
       this.setState({
         debugMode: true,
       });
@@ -124,11 +136,11 @@ export default class Application extends React.Component {
         debugMode: false,
       });
     }
-  };
+  }
 
   saveVectors(e) {
     const zip = new JSZip();
-    const img = zip.folder("images");
+    const img = zip.folder('images');
 
     const vectors = {};
 
@@ -146,19 +158,20 @@ export default class Application extends React.Component {
           if (!parsed.error) {
             vectors[label] = Array.from(parsed.result);
             const imgData = canvasEl.toDataURL().split('base64,')[1];
-            img.file(`${label}.png`, imgData, {base64: true});
+            img.file(`${label}.png`, imgData, { base64: true });
           }
         }
       }
     });
 
-    const baseName = `spacesheet_${this.state.currentModel.toLowerCase()}_${formatDate(new Date())}`;
+    const baseName = `spacesheet_${this.state.currentModel.toLowerCase()}_${formatDate(
+      new Date()
+    )}`;
     zip.file(`${baseName}_vectors.json`, JSON.stringify(vectors));
-    zip.generateAsync({type: 'blob'})
-       .then(content => {
-          saveAs(content, `${baseName}.zip`);
-      	});
-  };
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      saveAs(content, `${baseName}.zip`);
+    });
+  }
 
   setSpreadsheetCellFromDataPicker(dataKey) {
     const selection = this.hotInstance.getSelected();
@@ -168,27 +181,29 @@ export default class Application extends React.Component {
       this.hotInstance.setDataAtCell(selection[0], selection[1], cellData);
       this.setInputBarValue(cellData);
     }
-  };
+  }
 
   setInputBarValue(value) {
     this.setState({ inputBarValue: value });
-  };
+  }
 
   getCellFromDataPicker(dataKey) {
     if (Array.isArray(dataKey)) {
       dataKey = dataKey[0];
     }
-    dataKey = dataKey.trim().replace(/["']/gi, "");
+    dataKey = dataKey.trim().replace(/["']/gi, '');
     const firstHyphen = dataKey.indexOf('-');
     const dataPickerKey = dataKey.substring(0, firstHyphen);
     const cellKey = dataKey.substring(firstHyphen + 1, dataKey.length);
-    const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[cellKey];
+    const cell = this.state.dataPickerGrids[dataPickerKey].dataPicker.cells[
+      cellKey
+    ];
     return cell.vector;
-  };
+  }
 
   setModalSection(modalSection) {
     this.setState({
-      modalSection
+      modalSection,
     });
   }
 
@@ -198,7 +213,9 @@ export default class Application extends React.Component {
   }
 
   afterResize(e) {
-    if (!this.hotInstance) { return; }
+    if (!this.hotInstance) {
+      return;
+    }
     // updates DataPicker
     this.setState({
       windowWidth: window.innerWidth,
@@ -221,39 +238,50 @@ export default class Application extends React.Component {
           currentModel={this.state.currentModel}
           model={this.state.model}
         />
-        <canvas className='memory-canvas' ref="memoryCanvas"/>
+        <canvas className="memory-canvas" ref="memoryCanvas" />
         <div className="component-container">
+          {this.state.currentModel !== 'RUNWAY' && (
+            <div className="left-container" style={{ maxWidth: appHeight }}>
+              <DataPickers
+                windowWidth={this.state.windowWidth}
+                windowHeight={this.state.windowHeight}
+                model={this.state.model}
+                dataPickerGrids={this.state.dataPickerGrids}
+                onCellClick={this.setSpreadsheetCellFromDataPicker}
+                ref="dataPickers"
+              />
+            </div>
+          )}
           <div
-            className="left-container"
-            style={{ maxWidth: appHeight }}
+            className={`right-container ${
+              this.state.currentModel === 'RUNWAY' ? 'full-width' : ''
+            }`}
+            ref="rightContainer"
           >
-            <DataPickers
-              windowWidth={this.state.windowWidth}
-              windowHeight={this.state.windowHeight}
-
-              model={ this.state.model }
-              dataPickerGrids={this.state.dataPickerGrids}
-              onCellClick={ this.setSpreadsheetCellFromDataPicker }
-              ref='dataPickers'
-            />
-          </div>
-          <div className="right-container" ref="rightContainer">
             <Spreadsheet
-              getCellFromDataPicker={ this.getCellFromDataPicker }
-              ref='spreadsheet'
-              model={ this.state.model }
-              setTableRef={ ref => {
+              getCellFromDataPicker={this.getCellFromDataPicker}
+              ref="spreadsheet"
+              model={this.state.model}
+              setTableRef={(ref) => {
                 this.hotInstance = ref.hotInstance;
                 window.hotInstance = this.hotInstance;
               }}
-              setFormulaParserRef={ parser => {
+              setFormulaParserRef={(parser) => {
                 this.formulaParser = parser;
               }}
               inputBarValue={this.state.inputBarValue}
               setInputBarValue={this.setInputBarValue}
-              afterRender={ forced => {
-                if (!forced) { return };
-                if (!this.refs.fontDrawer || !this.refs.fontDrawer.updateFontSamples || !this.hotInstance) { return; }
+              afterRender={(forced) => {
+                if (!forced) {
+                  return;
+                }
+                if (
+                  !this.refs.fontDrawer ||
+                  !this.refs.fontDrawer.updateFontSamples ||
+                  !this.hotInstance
+                ) {
+                  return;
+                }
                 this.refs.fontDrawer.updateFontSamples();
                 const editor = this.hotInstance.getActiveEditor();
                 if (editor) {
@@ -263,25 +291,44 @@ export default class Application extends React.Component {
               }}
               currentModel={this.state.currentModel}
             />
-            {
-              this.state.currentModel === 'FONTS' && this.state.model &&
+            {this.state.currentModel === 'FONTS' && this.state.model && (
               <FontDrawer
                 hotInstance={this.hotInstance}
                 formulaParser={this.formulaParser}
                 model={this.state.model}
-                ref='fontDrawer'
+                ref="fontDrawer"
               />
-            }
+            )}
           </div>
         </div>
         <BottomNav
           activeLink={this.state.currentModel}
           links={[
-            {label: 'Faces', id: 'FACES', href: 'http://bryanlohjy.gitlab.io/spacesheet/index.html'},
-            {label: 'Fonts', id: 'FONTS', href: 'http://bryanlohjy.gitlab.io/spacesheet/fonts.html'},
-            {label: 'WORD2VEC', id: 'WORD2VEC', href: 'http://bryanlohjy.gitlab.io/spacesheet/word2vec.html'},
-            {label: 'MNIST', id: 'MNIST', href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html'},
-            {label: 'Colours', id: 'COLOURS', href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html'},
+            {
+              label: 'Faces',
+              id: 'FACES',
+              href: 'http://bryanlohjy.gitlab.io/spacesheet/index.html',
+            },
+            {
+              label: 'Fonts',
+              id: 'FONTS',
+              href: 'http://bryanlohjy.gitlab.io/spacesheet/fonts.html',
+            },
+            {
+              label: 'WORD2VEC',
+              id: 'WORD2VEC',
+              href: 'http://bryanlohjy.gitlab.io/spacesheet/word2vec.html',
+            },
+            {
+              label: 'MNIST',
+              id: 'MNIST',
+              href: 'http://bryanlohjy.gitlab.io/spacesheet/mnist.html',
+            },
+            {
+              label: 'Colours',
+              id: 'COLOURS',
+              href: 'http://bryanlohjy.gitlab.io/spacesheet/colours.html',
+            },
           ]}
           debugMode={this.state.debugMode}
           saveVectors={this.saveVectors}
@@ -298,33 +345,40 @@ class BottomNav extends React.Component {
       <nav ref="bottomNav" className="bottom-nav">
         <div>
           <div className="logo">
-            <a href="http://vusd.github.io/spacesheet" target="_blank" className="logo-link">
-              <img
-                src='./dist/assets/logo.png'
-                alt="SpaceSheet Logo"
-              />
+            <a
+              href="http://vusd.github.io/spacesheet"
+              target="_blank"
+              className="logo-link"
+            >
+              <img src="./dist/assets/logo.png" alt="SpaceSheet Logo" />
             </a>
           </div>
-          {
-            this.props.links.map(link => {
-              const isCurrent = this.props.activeLink === link.id;
-              return (
-                <a
-                  key={link.id}
-                  className={isCurrent ? 'active' : ''}
-                  href={link.href}
-                >{link.label}</a>
-              )
-            })
-          }
+          {this.props.links.map((link) => {
+            const isCurrent = this.props.activeLink === link.id;
+            return (
+              <a
+                key={link.id}
+                className={isCurrent ? 'active' : ''}
+                href={link.href}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </div>
         <div>
-        {
-          this.props.debugMode &&
-          <a onClick={this.props.saveVectors}>Save vectors</a>
-        }
+          {this.props.debugMode && (
+            <a onClick={this.props.saveVectors}>Save images</a>
+          )}
           {/* <a href="http://vusd.github.io/spacesheet" target="_blank">Info</a> */}
-          <a onClick={e => { this.props.setModalSection('INFO'); }} className="info-button">i</a>
+          <a
+            onClick={(e) => {
+              this.props.setModalSection('INFO');
+            }}
+            className="info-button"
+          >
+            i
+          </a>
         </div>
       </nav>
     );
@@ -336,5 +390,5 @@ BottomNav.propTypes = {
   links: PropTypes.array.isRequired,
   debugMode: PropTypes.bool.isRequired,
   saveVectors: PropTypes.func,
-  setModalSection: PropTypes.func.isRequired
+  setModalSection: PropTypes.func.isRequired,
 };

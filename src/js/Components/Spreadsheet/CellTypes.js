@@ -5,25 +5,35 @@ import { getArgumentsFromFunction } from './FormulaParser.js';
 import { cellCoordsToLabel } from './CellHelpers.js';
 import { ModJoystick, randDist } from './ModJoystick.js';
 // takes in params from component and spits out an object of spreadsheet CellTypes
-const CellTypes = opts => {
+const CellTypes = (opts) => {
   const CustomTextEditor = CellEditor(opts);
   // Formula ==============
   // A non editable cell which renders references from the Formula
-  const cellWidth = Math.max(opts.outputWidth, opts.minCellSize || 0);
-  const cellHeight = Math.max(opts.outputHeight, opts.minCellSize || 0);
+  const cellWidth = Math.min(
+    Math.max(opts.outputWidth, opts.minCellSize || 0),
+    opts.maxCellSize
+  );
+  const cellHeight = Math.min(
+    Math.max(opts.outputHeight, opts.minCellSize || 0),
+    opts.maxCellSize
+  );
 
   const Formula = {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
         td.innerHTML = '';
         try {
-          const cellLabel = cellCoordsToLabel({row, col});
+          const cellLabel = cellCoordsToLabel({ row, col });
 
-          const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
+          const compiled = opts.formulaParser.parse(
+            data.replace('=', ''),
+            cellLabel
+          );
 
           const { result, error } = compiled;
           if (result || result === 0) {
-            if (typeof result === 'object') { // it is a vector
+            if (typeof result === 'object') {
+              // it is a vector
               const canvasContainer = document.createElement('div');
               canvasContainer.classList.add('canvas-container');
               canvasContainer.style.width = `${cellWidth - 1}px`;
@@ -43,7 +53,7 @@ const CellTypes = opts => {
               td.innerText = result;
             }
           } else {
-            td.innerText = error || "#ERROR!";
+            td.innerText = error || '#ERROR!';
           }
         } catch (e) {
           console.error(`Could not calculate. Row: ${row}, Col: ${col}`, e);
@@ -60,16 +70,20 @@ const CellTypes = opts => {
   };
 
   const Slider = {
-    renderer:  (hotInstance, td, row, col, prop, data, cellProperties) => {
+    renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       const initialArgs = getArgumentsFromFunction(data);
-      if (initialArgs.length === 0) { // if there are no arguments, use a smart default
+      if (initialArgs.length === 0) {
+        // if there are no arguments, use a smart default
         data = `=SLIDER(0, 1, 0.05)`;
         hotInstance.setDataAtCell(row, col, data);
       }
 
-      const cellLabel = cellCoordsToLabel({row, col});
+      const cellLabel = cellCoordsToLabel({ row, col });
 
-      const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
+      const compiled = opts.formulaParser.parse(
+        data.replace('=', ''),
+        cellLabel
+      );
       const { result, error } = compiled;
 
       let prevSliderValue;
@@ -98,13 +112,13 @@ const CellTypes = opts => {
           slider.setAttribute('type', 'range');
           slider.setAttribute('tabindex', '-1');
 
-          HandsOnTable.dom.addEvent(slider, 'input', function(e) {
+          HandsOnTable.dom.addEvent(slider, 'input', function (e) {
             hotInstance.render();
           });
-          HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function(e) {
+          HandsOnTable.dom.addEvent(sliderContainer, 'mousedown', function (e) {
             e.preventDefault();
           });
-          HandsOnTable.dom.addEvent(slider, 'mousedown', function(e) {
+          HandsOnTable.dom.addEvent(slider, 'mousedown', function (e) {
             e.stopPropagation();
           });
 
@@ -129,11 +143,11 @@ const CellTypes = opts => {
 
         if (!prevSlider) {
           // set value to halfway by default
-          slider.setAttribute('value', (min + max)/2);
+          slider.setAttribute('value', (min + max) / 2);
           sliderContainer.appendChild(valueSpan);
           sliderContainer.appendChild(slider);
           td.appendChild(sliderContainer);
-          hotInstance.render()
+          hotInstance.render();
         }
       } else {
         td.innerHTML = '';
@@ -147,14 +161,18 @@ const CellTypes = opts => {
     renderer: (hotInstance, td, row, col, prop, data, cellProperties) => {
       if (data && data.trim().length) {
         const randArgs = getArgumentsFromFunction(data);
-        if (randArgs.length === 0) { // if there are no arguments, create a random seed
-          data = `=RANDVAR(${ randomInt(0, 99999) })`;
+        if (randArgs.length === 0) {
+          // if there are no arguments, create a random seed
+          data = `=RANDVAR(${randomInt(0, 99999)})`;
           hotInstance.setDataAtCell(row, col, data);
         }
 
-        const cellLabel = cellCoordsToLabel({row, col});
+        const cellLabel = cellCoordsToLabel({ row, col });
 
-        const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
+        const compiled = opts.formulaParser.parse(
+          data.replace('=', ''),
+          cellLabel
+        );
 
         let { result, error } = compiled;
         if (result) {
@@ -180,7 +198,7 @@ const CellTypes = opts => {
             randomIcon.src = 'dist/assets/ic_autorenew_black_18px.svg';
             randomiseButton.appendChild(randomIcon);
 
-            HandsOnTable.dom.addEvent(td, 'mousedown', function(e) {
+            HandsOnTable.dom.addEvent(td, 'mousedown', function (e) {
               if (e.target === randomiseButton) {
                 e.stopPropagation();
                 e.stopImmediatePropagation();
@@ -188,11 +206,11 @@ const CellTypes = opts => {
               }
             });
 
-            HandsOnTable.dom.addEvent(randomiseButton, 'click', function(e) {
+            HandsOnTable.dom.addEvent(randomiseButton, 'click', function (e) {
               e.preventDefault();
               e.stopPropagation();
               e.stopImmediatePropagation();
-              const newValue = `=RANDVAR(${ randomInt(0, 99999) })`;
+              const newValue = `=RANDVAR(${randomInt(0, 99999)})`;
               opts.setInputBarValue(newValue);
               hotInstance.setDataAtCell(row, col, newValue);
             });
@@ -219,15 +237,21 @@ const CellTypes = opts => {
 
         const modSegmentCount = opts.modSegmentCount || 2;
 
-        if (args.length < 3) { // if there are no arguments, create a random seed
-          const segment = parseInt(random(1, modSegmentCount+1));
-          data = `=MOD(${args[0]}, ${args[1] || segment}, ${args[2] || randDist()})`;
+        if (args.length < 3) {
+          // if there are no arguments, create a random seed
+          const segment = parseInt(random(1, modSegmentCount + 1));
+          data = `=MOD(${args[0]}, ${args[1] || segment}, ${
+            args[2] || randDist()
+          })`;
           hotInstance.setDataAtCell(row, col, data);
         }
 
-        const cellLabel = cellCoordsToLabel({row, col});
+        const cellLabel = cellCoordsToLabel({ row, col });
 
-        const compiled = opts.formulaParser.parse(data.replace('=', ''), cellLabel);
+        const compiled = opts.formulaParser.parse(
+          data.replace('=', ''),
+          cellLabel
+        );
         let { result, error } = compiled;
 
         if (result && typeof result !== 'string') {
@@ -239,7 +263,10 @@ const CellTypes = opts => {
               const args = getArgumentsFromFunction(data);
               const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               opts.setInputBarValue(newFormula);
-              const compiledScrub = opts.formulaParser.parse(newFormula.substring(1), cellLabel);
+              const compiledScrub = opts.formulaParser.parse(
+                newFormula.substring(1),
+                cellLabel
+              );
 
               if (compiledScrub.result) {
                 const decodedScrub = opts.decodeFn(compiledScrub.result);
@@ -247,23 +274,25 @@ const CellTypes = opts => {
               } else {
                 td.innerHTML = compiledScrub.error;
               }
-            }
+            };
           })();
 
           const onJoystickLeave = (() => {
-            return (segment, dist) => { // reset
+            return (segment, dist) => {
+              // reset
               const args = getArgumentsFromFunction(data);
               const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               hotInstance.setDataAtCell(row, col, newFormula);
-            }
+            };
           })();
 
           const onJoystickSet = (() => {
-            return (segment, dist) => { // set data at cell
+            return (segment, dist) => {
+              // set data at cell
               const args = getArgumentsFromFunction(data);
               const newFormula = `=MOD(${args[0]}, ${segment}, ${dist})`;
               hotInstance.setDataAtCell(row, col, newFormula);
-            }
+            };
           })();
 
           const hasModCanvas = td.querySelector('.mod-container');
@@ -291,7 +320,7 @@ const CellTypes = opts => {
               onChange: onJoystickChange,
               onLeave: onJoystickLeave,
               onSet: onJoystickSet,
-              segments: modSegmentCount
+              segments: modSegmentCount,
             });
 
             canvasContainer.appendChild(canvas);
@@ -324,7 +353,6 @@ const CellTypes = opts => {
     editor: CustomTextEditor,
   };
 
-
   return {
     Formula,
     Text,
@@ -332,6 +360,6 @@ const CellTypes = opts => {
     RandVar,
     Mod,
   };
-}
+};
 
 module.exports = { CellTypes };

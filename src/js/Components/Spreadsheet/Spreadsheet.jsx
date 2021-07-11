@@ -7,10 +7,17 @@ import OperationDrawer from './OperationDrawer.jsx';
 import { CellTypes } from './CellTypes.js';
 import { getCellType, isFormula, cellCoordsToLabel } from './CellHelpers.js';
 
-import { FontDemoSheet, FaceDemoSheet, MNISTDemoSheet, Word2VecDemoSheet, ColourDemoSheet, BlankSheet } from './SpreadsheetData.js';
+import {
+  FontDemoSheet,
+  FaceDemoSheet,
+  MNISTDemoSheet,
+  Word2VecDemoSheet,
+  ColourDemoSheet,
+  BlankSheet,
+} from './SpreadsheetData.js';
 import { FormulaParser } from './FormulaParser.js';
 
-const OptimisedHotTable = Component => {
+const OptimisedHotTable = (Component) => {
   return class extends React.Component {
     constructor(props) {
       super(props);
@@ -21,19 +28,20 @@ const OptimisedHotTable = Component => {
     }
 
     render() {
-      return <Component {...this.props} ref={this.props.onRef}/>;
+      return <Component {...this.props} ref={this.props.onRef} />;
     }
-  }
-}
+  };
+};
 
 const WrappedHotTable = OptimisedHotTable(HotTable);
 
 export default class Spreadsheet extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { // updated using refs to prevent unnecessary table rendering
+    this.state = {
+      // updated using refs to prevent unnecessary table rendering
       inputBarAndOperationDrawerIsMounted: false,
-      inputBarValue: "",
+      inputBarValue: '',
       currentSelection: [0, 0, 0, 0],
     };
 
@@ -47,11 +55,13 @@ export default class Spreadsheet extends React.Component {
     this.afterUndoRedo = this.afterUndoRedo.bind(this);
 
     this.minCellSize = props.currentModel === 'FACES' ? 82 : 64;
+    this.maxCellSize = 150;
+
     this.minCols = 10;
     this.minRows = 10;
 
     this.modSegmentCount = 7;
-  };
+  }
 
   componentWillReceiveProps(newProps) {
     const modelFirstLoaded = newProps.model && !this.props.model;
@@ -64,7 +74,10 @@ export default class Spreadsheet extends React.Component {
   setSelectedCellData(operation, closeAfterSetting) {
     if (closeAfterSetting) {
       const selection = this.hotInstance.getSelected();
-      const prevData = this.hotInstance.getDataAtCell(selection[0], selection[1]);
+      const prevData = this.hotInstance.getDataAtCell(
+        selection[0],
+        selection[1]
+      );
       if (prevData !== operation) {
         this.hotInstance.setDataAtCell(selection[0], selection[1], operation);
         this.props.setInputBarValue(operation);
@@ -80,7 +93,8 @@ export default class Spreadsheet extends React.Component {
     editor.updateTableCellCaptureClass();
   }
 
-  initHotTable() { // initial settings, pre receiving model
+  initHotTable() {
+    // initial settings, pre receiving model
     this.hotInstance.updateSettings({
       colHeaders: true,
       rowHeaders: true,
@@ -105,9 +119,16 @@ export default class Spreadsheet extends React.Component {
     }, 0);
   }
 
-  updateHotTableSettings(model) { // runs once when model is loaded
-    const cellWidth = Math.max(this.minCellSize, model.outputWidth);
-    const cellHeight = Math.max(this.minCellSize, model.outputHeight);
+  updateHotTableSettings(model) {
+    // runs once when model is loaded
+    const cellWidth = Math.min(
+      Math.max(this.minCellSize, model.outputWidth),
+      this.maxCellSize
+    );
+    const cellHeight = Math.min(
+      Math.max(this.minCellSize, model.outputHeight),
+      this.maxCellSize
+    );
 
     const tableContainer = this.refs.tableContainer;
 
@@ -120,7 +141,7 @@ export default class Spreadsheet extends React.Component {
     const formulaParser = new FormulaParser(this.hotInstance, {
       getCellFromDataPicker: this.props.getCellFromDataPicker,
       model: model,
-      modSegmentCount: this.modSegmentCount
+      modSegmentCount: this.modSegmentCount,
     });
 
     this.props.setFormulaParserRef(formulaParser);
@@ -133,6 +154,7 @@ export default class Spreadsheet extends React.Component {
       formulaParser: formulaParser,
       setInputBarValue: this.props.setInputBarValue,
       minCellSize: this.minCellSize,
+      maxCellSize: this.maxCellSize,
       modSegmentCount: this.modSegmentCount,
     });
 
@@ -144,31 +166,37 @@ export default class Spreadsheet extends React.Component {
         const cellData = this.hotInstance.getDataAtRowProp(row, prop);
         switch (getCellType(cellData)) {
           case 'FORMULA':
-          cellProperties.renderer = cellTypes.Formula.renderer;
-          cellProperties.editor = cellTypes.Formula.editor;
-          break;
+            cellProperties.renderer = cellTypes.Formula.renderer;
+            cellProperties.editor = cellTypes.Formula.editor;
+            break;
           case 'SLIDER':
-          cellProperties.renderer = cellTypes.Slider.renderer;
-          cellProperties.editor = cellTypes.Slider.editor;
-          break;
+            cellProperties.renderer = cellTypes.Slider.renderer;
+            cellProperties.editor = cellTypes.Slider.editor;
+            break;
           case 'RANDVAR':
-          cellProperties.renderer = cellTypes.RandVar.renderer;
-          cellProperties.editor = cellTypes.RandVar.editor;
-          break;
+            cellProperties.renderer = cellTypes.RandVar.renderer;
+            cellProperties.editor = cellTypes.RandVar.editor;
+            break;
           case 'MOD':
-          cellProperties.renderer = cellTypes.Mod.renderer;
-          cellProperties.editor = cellTypes.Mod.editor;
-          break;
+            cellProperties.renderer = cellTypes.Mod.renderer;
+            cellProperties.editor = cellTypes.Mod.editor;
+            break;
           default:
-          cellProperties.renderer = cellTypes.Text.renderer;
-          cellProperties.editor = cellTypes.Text.editor;
+            cellProperties.renderer = cellTypes.Text.renderer;
+            cellProperties.editor = cellTypes.Text.editor;
         }
         return cellProperties;
       },
-      rowHeights: Math.max(model.outputHeight, this.minCellSize),
-      colWidths: Math.max(model.outputWidth, this.minCellSize),
+      rowHeights: Math.min(
+        Math.max(model.outputHeight, this.minCellSize),
+        this.maxCellSize
+      ),
+      colWidths: Math.min(
+        Math.max(model.outputWidth, this.minCellSize),
+        this.maxCellSize
+      ),
       comments: true,
-      contextMenu: ['commentsAddEdit', 'commentsRemove', 'commentsReadOnly']
+      contextMenu: ['commentsAddEdit', 'commentsRemove', 'commentsReadOnly'],
     });
 
     setTimeout(() => {
@@ -206,33 +234,40 @@ export default class Spreadsheet extends React.Component {
 
   afterSelection(r, c, r2, c2) {
     this.setState({
-      currentSelection: [r, c , r2, c2],
+      currentSelection: [r, c, r2, c2],
     });
   }
 
   afterRender(forced) {
-    if (!this.props.afterRender) { return; }
+    if (!this.props.afterRender) {
+      return;
+    }
     this.props.afterRender(forced);
-  };
+  }
 
   afterUndoRedo(changes) {
     const selection = this.hotInstance.getSelected();
     const data = this.hotInstance.getDataAtCell(selection[0], selection[1]);
     this.props.setInputBarValue(data);
-  };
+  }
 
   render() {
     return (
       <div className="spreadsheet-container">
         <div
-          ref={ el => {
-            if (!this.state.inputBarIsMounted && !this.inputBarAndOperationDrawerEl) {
+          ref={(el) => {
+            if (
+              !this.state.inputBarIsMounted &&
+              !this.inputBarAndOperationDrawerEl
+            ) {
               this.setState({ inputBarAndOperationDrawerIsMounted: true });
               this.inputBarAndOperationDrawerEl = el;
             }
           }}
         >
-          <input className="input-bar" type="text"
+          <input
+            className="input-bar"
+            type="text"
             disabled
             value={this.props.inputBarValue}
           />
@@ -245,12 +280,11 @@ export default class Spreadsheet extends React.Component {
             setInputBarValue={this.props.setInputBarValue}
           />
         </div>
-        {
-          this.state.inputBarAndOperationDrawerIsMounted &&
+        {this.state.inputBarAndOperationDrawerIsMounted && (
           <div className="table-container" ref="tableContainer">
             <WrappedHotTable
               className="table"
-              onRef={ ref => {
+              onRef={(ref) => {
                 if (ref && !this.hotInstance) {
                   this.props.setTableRef(ref);
                   this.hotInstance = ref.hotInstance;
@@ -258,21 +292,18 @@ export default class Spreadsheet extends React.Component {
                   setTimeout(this.initHotTable, 0);
                 }
               }}
-
-              root='hot'
-
+              root="hot"
               afterRender={this.afterRender}
               afterUndo={this.afterUndoRedo}
               afterRedo={this.afterUndoRedo}
               afterSelection={this.afterSelection}
-
               // merge cells needs to be present in render method
               mergeCells={this.defaultSheet && this.defaultSheet.mergeCells}
             />
           </div>
-        }
+        )}
       </div>
-    )
+    );
   }
 }
 

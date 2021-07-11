@@ -5,13 +5,15 @@ export default class ModelLoader {
     this.app = app;
     this.modelConstructor = modelConstructor;
     this.modelOpts = modelOpts;
-  };
+  }
   load(modelLoadedCallback) {
     let res = { errors: null, model: null };
 
     let errors = [];
     if (!this.modelConstructor) {
-      errors.push('The model constructor was not passed into the ModelLoader correctly. Check the ModelLoader object in Application.jsx');
+      errors.push(
+        'The model constructor was not passed into the ModelLoader correctly. Check the ModelLoader object in Application.jsx'
+      );
       res.errors = errors;
       modelLoadedCallback(res);
       return;
@@ -47,21 +49,40 @@ export default class ModelLoader {
 
     // all is well, load model
     setTimeout(() => {
-      model.init(loadedModel => {
-        // augment drawFN so it draws onto a memory ctx, and then onto the argument ctx - to simplify translation on DataPicker Canvas
-        const clonedDrawFn = loadedModel.drawFn.bind({});
-        const augmentedFn = (ctx, decodedData) => {
-          ctx.clearRect(0, 0, loadedModel.outputWidth, loadedModel.outputHeight);
-          clonedDrawFn(this.app.memoryCtx, decodedData);
-          const memoryCtxData = this.app.memoryCtx.getImageData(0, 0, loadedModel.outputWidth, loadedModel.outputHeight);
-          this.app.memoryCtx.putImageData(memoryCtxData, 0, 0);
-          ctx.drawImage(this.app.memoryCtx.canvas, 0, 0);
+      model.init((loadedModel) => {
+        if (this.modelConstructor.name !== 'RunwayModel') {
+          // augment drawFN so it draws onto a memory ctx, and then onto the argument ctx - to simplify translation on DataPicker Canvas
+          const clonedDrawFn = loadedModel.drawFn.bind({});
+
+          const memoryCtx = this.app.memoryCtx;
+          const memoryCanvas = memoryCtx.canvas;
+          memoryCanvas.width = loadedModel.outputWidth;
+          memoryCanvas.height = loadedModel.outputHeight;
+
+          const augmentedFn = (ctx, decodedData) => {
+            ctx.clearRect(
+              0,
+              0,
+              loadedModel.outputWidth,
+              loadedModel.outputHeight
+            );
+            clonedDrawFn(memoryCtx, decodedData);
+            const memoryCtxData = memoryCtx.getImageData(
+              0,
+              0,
+              loadedModel.outputWidth,
+              loadedModel.outputHeight
+            );
+            memoryCtx.putImageData(memoryCtxData, 0, 0);
+            ctx.drawImage(memoryCanvas, 0, 0);
+          };
+
+          loadedModel.drawFn = augmentedFn;
         }
-        loadedModel.drawFn = augmentedFn;
         res.model = loadedModel;
         res.errors = null;
         modelLoadedCallback(res);
       });
-    })
-  };
+    });
+  }
 }

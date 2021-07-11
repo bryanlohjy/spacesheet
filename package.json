@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@runwayml/hosted-models": "^0.3.0",
     "@tensorflow/tfjs": "^0.13.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "browser-detect": "^0.2.28",
